@@ -97,67 +97,70 @@ function Header() {
           </div>
         </div>
 
-<div >
-        <div className="flex justify-between items-center mb-1 mt-1 w-[94%] m-auto max-md:w-full px-2">
-          <div className=" gap-[12px]  hidden max-md:flex">
-            <div
-              className="w-5 h-[14px] mt-3 flex flex-col justify-between overflow-hidden   cursor-pointer"
-              onClick={handleClick}
-            >
-              <span className="w-full h-[2px] bg-black block"></span>
-              <span
-                className={`w-full h-[2px] bg-black block ${
-                  show ? "" : "ml-[-9px]"
-                }`}
-              ></span>
-              <span className="w-full h-[2px] bg-black block"></span>
+        <div>
+          <div className="flex justify-between items-center mb-1 mt-1 w-[94%] m-auto max-md:w-full px-2">
+            <div className=" gap-[12px]  hidden max-md:flex">
+              <div
+                className="w-5 h-[14px] mt-3 flex flex-col justify-between overflow-hidden   cursor-pointer"
+                onClick={handleClick}
+              >
+                <span className="w-full h-[2px] bg-black block"></span>
+                <span
+                  className={`w-full h-[2px] bg-black block ${
+                    show ? "" : "ml-[-9px]"
+                  }`}
+                ></span>
+                <span className="w-full h-[2px] bg-black block"></span>
+              </div>
+              <Search className="relative top-[20px] transform -translate-y-1/2 text-[#7B48A5] " />
             </div>
-            <Search className="relative top-[20px] transform -translate-y-1/2 text-[#7B48A5] " />
-          </div>
 
-          <div className="relative w-[270px] max-md:hidden ">
-            <Search className="absolute left-2  top-6 transform -translate-y-1/2 text-[#7B48A5]" />
-            <input
-              type="text"
-              placeholder="Search..."
-              className="border rounded-md pl-10 pr-2 w-full h-[45px] border-[#7B48A5] focus:outline-none focus:ring-2 focus:ring-[#d3b6e9] text-black"
-            />
-          </div>
-          <Link to="/">
-            <img
-              src="/logo/admirer_logo.png"
-              className="w-[110px] h-[72px] cover mr-[60px] max-md:mr-[0px] max-md:ml-[40px]"
-              alt=""
-            />
-          </Link>
-          <div className="flex gap-4 mt-1 max-md:mt-3">
-            <Link to="">
-              <div className="text-center flex mt-1 flex-col items-center">
-                <FaRegUser className="w-6 h-6 leading-2 text-[#7B48A5] max-md:mb-1" />
+            <div className="relative w-[270px] max-md:hidden ">
+              <Search className="absolute left-2  top-6 transform -translate-y-1/2 text-[#7B48A5]" />
+              <input
+                type="text"
+                placeholder="Search..."
+                className="border rounded-md pl-10 pr-2 w-full h-[45px] border-[#7B48A5] focus:outline-none focus:ring-2 focus:ring-[#d3b6e9] text-black"
+              />
+            </div>
+            <Link to="/">
+              <img
+                src="/logo/admirer_logo.png"
+                className="w-[110px] h-[72px] cover mr-[60px] max-md:mr-[0px] max-md:ml-[40px]"
+                alt=""
+              />
+            </Link>
+            <div className="flex gap-4 mt-1 max-md:mt-3">
+              <Link to="/LogIn">
+                <div
+                  className="text-center flex mt-1 flex-col items-center"
+                >
+                  <FaRegUser className="w-6 h-6 leading-2 text-[#7B48A5] max-md:mb-1" />
+                  <p className="text-lg max-md:hidden tracking-wide text-black">
+                    Login
+                  </p>
+                </div>
+              </Link>
+              <Link to="/SignUp">
+                <div className="text-center mt-1 flex flex-col items-center"
+                 >
+                  <FaRegHeart className="w-6 h-6 text-[#7B48A5]" />
+                  <p className="text-lg max-md:hidden tracking-wide text-black">
+                    Wishlist
+                  </p>
+                </div>
+              </Link>
+              <div
+                className="text-center flex flex-col items-center"
+                onClick={handleCart}
+              >
+                <MdOutlineShoppingBag className="w-7 h-7 text-[#7B48A5]" />
                 <p className="text-lg max-md:hidden tracking-wide text-black">
-                  Login
+                  Cart
                 </p>
               </div>
-            </Link>
-            <Link to="">
-              <div className="text-center mt-1 flex flex-col items-center">
-                <FaRegHeart className="w-6 h-6 text-[#7B48A5]" />
-                <p className="text-lg max-md:hidden tracking-wide text-black">
-                  Wishlist
-                </p>
-              </div>
-            </Link>
-            <div
-              className="text-center flex flex-col items-center"
-              onClick={handleCart}
-            >
-              <MdOutlineShoppingBag className="w-7 h-7 text-[#7B48A5]" />
-              <p className="text-lg max-md:hidden tracking-wide text-black">
-                Cart
-              </p>
             </div>
           </div>
-        </div>
         </div>
 
         <div className="relative w-[97%] m-auto mt-3 mb-1 hidden  max-md:flex ">
