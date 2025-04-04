@@ -63,7 +63,7 @@ const SignUp = () => {
                     required: "First name is required",
                   })}
                   placeholder="First Name"
-                  className="w-full h-[50px] bg-transparent border border-[var(--clr-common-border)] rounded-[4px] mt-[15px] mb-0 px-5 focus:outline-none focus:border-sky-400 focus:ring-1 focus:ring-sky-400 text-[var(--clr-common-text)] text-base"
+                  className="w-full h-[50px] bg-transparent border  border-gray-300 rounded-[4px] mt-[0px] mb-0 px-5 focus:outline-none focus:border-sky-400 focus:ring-1 focus:ring-sky-400 text-[var(--clr-common-text)] text-base"
                 />
                 {errors.firstName && (
                   <p className="mt-1 text-sm text-red-600">
@@ -81,7 +81,7 @@ const SignUp = () => {
                     required: "Last name is required",
                   })}
                   placeholder="Last Name"
-                  className="w-full h-[50px] bg-transparent border border-[var(--clr-common-border)] rounded-[4px] mt-[15px] mb-0 px-5 focus:outline-none focus:border-sky-400 focus:ring-1 focus:ring-sky-400 text-[var(--clr-common-text)] text-base"
+                  className="w-full h-[50px] bg-transparent border  border-gray-300  rounded-[4px] mt-[0px] mb-0 px-5 focus:outline-none focus:border-sky-400 focus:ring-1 focus:ring-sky-400 text-[var(--clr-common-text)] text-base"
                 />
                 {errors.lastName && (
                   <p className="mt-1 text-sm text-red-600">
@@ -104,7 +104,7 @@ const SignUp = () => {
                   },
                 })}
                 placeholder="Phone Number"
-                className="w-full h-[50px] bg-transparent border border-[var(--clr-common-border)] rounded-[4px] mt-[15px] mb-0 px-5 focus:outline-none focus:border-sky-400 focus:ring-1 focus:ring-sky-400 text-[var(--clr-common-text)] text-base"
+                className="w-full h-[50px] bg-transparent border  border-gray-300 rounded-[4px] mt-[0px] mb-0 px-5 focus:outline-none focus:border-sky-400 focus:ring-1 focus:ring-sky-400 text-[var(--clr-common-text)] text-base"
               />
               {errors.phoneNumber && (
                 <p className="mt-1 text-sm text-red-600">
@@ -126,7 +126,7 @@ const SignUp = () => {
                   },
                 })}
                 placeholder="Email"
-                className="w-full h-[50px] bg-transparent border border-[var(--clr-common-border)] rounded-[4px] mt-[15px] mb-0 px-5 focus:outline-none focus:border-sky-400 focus:ring-1 focus:ring-sky-400 text-[var(--clr-common-text)] text-base"
+                className="w-full h-[50px] bg-transparent border  border-gray-300 rounded-[4px] mt-[0px] mb-0 px-5 focus:outline-none focus:border-sky-400 focus:ring-1 focus:ring-sky-400 text-[var(--clr-common-text)] text-base"
               />
               {errors.email && (
                 <p className="mt-1 text-sm text-red-600">
@@ -149,11 +149,11 @@ const SignUp = () => {
                     },
                   })}
                   placeholder="Create New Password"
-                  className="flex-1 h-[50px] bg-transparent border border-[var(--clr-common-border)] rounded-[4px] mt-[15px] mb-0 px-5 focus:outline-none focus:border-sky-400 focus:ring-1 focus:ring-sky-400 text-[var(--clr-common-text)] text-base"
+                  className="flex-1 h-[50px] bg-transparent border  border-gray-300  rounded-[4px] mt-[0px] mb-0 px-5 focus:outline-none focus:border-sky-400 focus:ring-1 focus:ring-sky-400 text-[var(--clr-common-text)] text-base"
                 />
                 <button
                   type="button"
-                  className="ml-2 h-[50px] w-[50px] flex items-center justify-center text-gray-500 hover:text-gray-700 focus:outline-none mt-[15px] border border-[var(--clr-common-border)] rounded-[4px] hover:border-sky-400"
+                  className="ml-2 h-[50px] w-[50px] flex items-center justify-center text-gray-500 hover:text-gray-700 focus:outline-none mt-[0px] border border-[var(--clr-common-border)] rounded-[4px] hover:border-sky-400"
                   onClick={() => setShowPassword(!showPassword)}
                   aria-label={showPassword ? "Hide password" : "Show password"}
                 >
@@ -181,6 +181,16 @@ const SignUp = () => {
               </button>
             </div>
           </form>
+          <p className="text-center text-[13px] mt-6">
+            By continuing, I agree to the{" "}
+            <a href="/terms.php" className="text-purple-700 font-bold">
+              Terms of Use
+            </a>{" "}
+            &{" "}
+            <a href="/privacy.php" className="text-purple-700 font-bold">
+              Privacy Policy
+            </a>
+          </p>
         </div>
       </div>
     </div>
