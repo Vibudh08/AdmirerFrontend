@@ -24,7 +24,7 @@ const SignUp = () => {
   };
 
   const handleClose = () => {
-    navigate("/"); // Go back to previous page
+    navigate("/");
   };
 
   return (
@@ -43,7 +43,7 @@ const SignUp = () => {
           {/* Logo and Welcome Text */}
           <div className="flex flex-col items-center mb-6">
             <img
-              src="/logo/iconn.png" // Changed path (public folder is root)
+              src="/logo/iconn.png"
               alt="Admirer Logo"
               className="h-16 w-auto mb-2"
             />
@@ -55,7 +55,6 @@ const SignUp = () => {
           <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
             {/* First Name */}
             <div className="grid grid-cols-2 gap-4">
-              {/* First Name */}
               <div>
                 <input
                   id="firstName"
@@ -64,7 +63,7 @@ const SignUp = () => {
                     required: "First name is required",
                   })}
                   placeholder="First Name"
-                  className="w-full h-[50px] bg-transparent border border-[var(--clr-common-border)] rounded-[4px] mt-[15px] mb-0 px-5 focus:outline-none text-[var(--clr-common-text)] text-base"
+                  className="w-full h-[50px] bg-transparent border border-[var(--clr-common-border)] rounded-[4px] mt-[15px] mb-0 px-5 focus:outline-none focus:border-sky-400 focus:ring-1 focus:ring-sky-400 text-[var(--clr-common-text)] text-base"
                 />
                 {errors.firstName && (
                   <p className="mt-1 text-sm text-red-600">
@@ -82,7 +81,7 @@ const SignUp = () => {
                     required: "Last name is required",
                   })}
                   placeholder="Last Name"
-                  className="w-full h-[50px] bg-transparent border border-[var(--clr-common-border)] rounded-[4px] mt-[15px] mb-0 px-5 focus:outline-none text-[var(--clr-common-text)] text-base"
+                  className="w-full h-[50px] bg-transparent border border-[var(--clr-common-border)] rounded-[4px] mt-[15px] mb-0 px-5 focus:outline-none focus:border-sky-400 focus:ring-1 focus:ring-sky-400 text-[var(--clr-common-text)] text-base"
                 />
                 {errors.lastName && (
                   <p className="mt-1 text-sm text-red-600">
@@ -91,6 +90,7 @@ const SignUp = () => {
                 )}
               </div>
             </div>
+
             {/* Phone Number */}
             <div>
               <input
@@ -104,7 +104,7 @@ const SignUp = () => {
                   },
                 })}
                 placeholder="Phone Number"
-                className="w-full h-[50px] bg-transparent border border-[var(--clr-common-border)] rounded-[4px] mt-[15px] mb-0 px-5 focus:outline-none text-[var(--clr-common-text)] text-base"
+                className="w-full h-[50px] bg-transparent border border-[var(--clr-common-border)] rounded-[4px] mt-[15px] mb-0 px-5 focus:outline-none focus:border-sky-400 focus:ring-1 focus:ring-sky-400 text-[var(--clr-common-text)] text-base"
               />
               {errors.phoneNumber && (
                 <p className="mt-1 text-sm text-red-600">
@@ -112,6 +112,7 @@ const SignUp = () => {
                 </p>
               )}
             </div>
+
             {/* Email */}
             <div>
               <input
@@ -125,7 +126,7 @@ const SignUp = () => {
                   },
                 })}
                 placeholder="Email"
-                className="w-full h-[50px] bg-transparent border border-[var(--clr-common-border)] rounded-[4px] mt-[15px] mb-0 px-5 focus:outline-none text-[var(--clr-common-text)] text-base"
+                className="w-full h-[50px] bg-transparent border border-[var(--clr-common-border)] rounded-[4px] mt-[15px] mb-0 px-5 focus:outline-none focus:border-sky-400 focus:ring-1 focus:ring-sky-400 text-[var(--clr-common-text)] text-base"
               />
               {errors.email && (
                 <p className="mt-1 text-sm text-red-600">
@@ -133,6 +134,7 @@ const SignUp = () => {
                 </p>
               )}
             </div>
+
             {/* Password */}
             <div className="relative">
               <div className="flex items-center">
@@ -147,11 +149,11 @@ const SignUp = () => {
                     },
                   })}
                   placeholder="Create New Password"
-                  className="flex-1 h-[50px] bg-transparent border border-[var(--clr-common-border)] rounded-[4px] mt-[15px] mb-0 px-5 focus:outline-none text-[var(--clr-common-text)] text-base"
+                  className="flex-1 h-[50px] bg-transparent border border-[var(--clr-common-border)] rounded-[4px] mt-[15px] mb-0 px-5 focus:outline-none focus:border-sky-400 focus:ring-1 focus:ring-sky-400 text-[var(--clr-common-text)] text-base"
                 />
                 <button
                   type="button"
-                  className="ml-2 h-[50px] w-[50px] flex items-center justify-center text-gray-500 hover:text-gray-700 focus:outline-none mt-[15px] border border-[var(--clr-common-border)] rounded-[4px]"
+                  className="ml-2 h-[50px] w-[50px] flex items-center justify-center text-gray-500 hover:text-gray-700 focus:outline-none mt-[15px] border border-[var(--clr-common-border)] rounded-[4px] hover:border-sky-400"
                   onClick={() => setShowPassword(!showPassword)}
                   aria-label={showPassword ? "Hide password" : "Show password"}
                 >
@@ -173,7 +175,7 @@ const SignUp = () => {
             <div className="pt-2">
               <button
                 type="submit"
-                className="w-full h-[50px] flex justify-center items-center rounded-md text-white bg-purple-600 hover:bg-purple-700 focus:outline-none text-base font-medium"
+                className="w-full h-[50px] flex justify-center items-center rounded-md text-white bg-purple-500 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 text-base font-medium"
               >
                 Register
               </button>
