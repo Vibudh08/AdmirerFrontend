@@ -132,18 +132,15 @@ function Header() {
             </Link>
             <div className="flex gap-4 mt-1 max-md:mt-3">
               <Link to="/LogIn">
-                <div
-                  className="text-center flex mt-1 flex-col items-center"
-                >
+                <div className="text-center flex mt-1 flex-col items-center">
                   <FaRegUser className="w-6 h-6 leading-2 text-[#7B48A5] max-md:mb-1" />
                   <p className="text-lg max-md:hidden tracking-wide text-black">
                     Login
                   </p>
                 </div>
               </Link>
-              <Link to="/SignUp">
-                <div className="text-center mt-1 flex flex-col items-center"
-                 >
+              <Link to="">
+                <div className="text-center mt-1 flex flex-col items-center">
                   <FaRegHeart className="w-6 h-6 text-[#7B48A5]" />
                   <p className="text-lg max-md:hidden tracking-wide text-black">
                     Wishlist
