@@ -1,0 +1,20 @@
+*{
+    margin: 0;
+}
+
+.desktop-banner {
+    display: block !important;
+  }
+  .mobile-banner {
+    display: none !important;
+  }
+  
+  @media (max-width: 768px) {
+    .desktop-banner {
+      display: none !important;
+    }
+    .mobile-banner {
+      display: block !important;
+    }
+  }
+  
