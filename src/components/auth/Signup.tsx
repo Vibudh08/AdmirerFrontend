@@ -17,16 +17,16 @@ const SignUp = () => {
   } = useForm<FormProps>();
 
   const onSubmit = (data: FormProps) => {
-    console.log(data); // Form submission data
+    console.log(data);
   };
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md flex justify-center">
         <img
-          src="../public/logo/iconn.png" // Replace with your actual logo filename
+          src="../public/logo/iconn.png"
           alt="Admirer Logo"
-          className="h-16 w-auto" // Adjust size as needed (h-16 = 4rem height)
+          className="h-16 w-auto"
         />
       </div>
       <div className="text-center w-full text-xl">Welcome to Admirer</div>
@@ -35,12 +35,6 @@ const SignUp = () => {
           <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
             {/* First Name */}
             <div>
-              {/* <label
-                htmlFor="firstName"
-                className="block text-sm font-medium text-gray-700"
-              >
-                First Name
-              </label> */}
               <input
                 id="firstName"
                 type="text"
@@ -59,17 +53,12 @@ const SignUp = () => {
 
             {/* Last Name */}
             <div>
-              {/* <label
-                htmlFor="lastName"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Last Name
-              </label> */}
               <input
                 id="lastName"
                 type="text"
                 {...register("lastName", { required: "Last name is required" })}
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                placeholder="Last Name"
+                className="w-full h-[50px] bg-transparent border border-[var(--clr-common-border)] rounded-[4px] mt-[15px] mb-0 flex px-[20px] py-[10px] focus:outline-none text-[var(--clr-common-text)] text-[16px]"
               />
               {errors.lastName && (
                 <p className="mt-2 text-sm text-red-600">
@@ -78,14 +67,30 @@ const SignUp = () => {
               )}
             </div>
 
+            {/* Phone Number */}
+            <div>
+              <input
+                id="phoneNumber"
+                type="tel"
+                {...register("phoneNumber", {
+                  required: "Phone number is required",
+                  pattern: {
+                    value: /^[0-9]{10,15}$/,
+                    message: "Enter a valid phone number (10-15 digits)",
+                  },
+                })}
+                placeholder="Phone Number"
+                className="w-full h-[50px] bg-transparent border border-[var(--clr-common-border)] rounded-[4px] mt-[15px] mb-0 flex px-[20px] py-[10px] focus:outline-none text-[var(--clr-common-text)] text-[16px]"
+              />
+              {errors.phoneNumber && (
+                <p className="mt-2 text-sm text-red-600">
+                  {errors.phoneNumber.message}
+                </p>
+              )}
+            </div>
+
             {/* Email */}
             <div>
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Email
-              </label>
               <input
                 id="email"
                 type="email"
@@ -96,7 +101,8 @@ const SignUp = () => {
                     message: "Invalid email address",
                   },
                 })}
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                placeholder="Email"
+                className="w-full h-[50px] bg-transparent border border-[var(--clr-common-border)] rounded-[4px] mt-[15px] mb-0 flex px-[20px] py-[10px] focus:outline-none text-[var(--clr-common-text)] text-[16px]"
               />
               {errors.email && (
                 <p className="mt-2 text-sm text-red-600">
@@ -107,12 +113,6 @@ const SignUp = () => {
 
             {/* Password */}
             <div>
-              <label
-                htmlFor="password"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Password
-              </label>
               <input
                 id="password"
                 type="password"
@@ -123,7 +123,8 @@ const SignUp = () => {
                     message: "Password must be at least 8 characters",
                   },
                 })}
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                placeholder="Create New Password"
+                className="w-full h-[50px] bg-transparent border border-[var(--clr-common-border)] rounded-[4px] mt-[15px] mb-0 flex px-[20px] py-[10px] focus:outline-none text-[var(--clr-common-text)] text-[16px]"
               />
               {errors.password && (
                 <p className="mt-2 text-sm text-red-600">
