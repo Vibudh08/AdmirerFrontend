@@ -24,7 +24,7 @@ const SignUp = () => {
   };
 
   const handleClose = () => {
-    navigate(-1); // Go back to previous page
+    navigate("/"); // Go back to previous page
   };
 
   return (
