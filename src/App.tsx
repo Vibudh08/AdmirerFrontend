@@ -41,7 +41,7 @@ function App() {
                 discount="60"
                 return_day="12"
                 finalPrice="640"
-                checked
+                checked={false}
               />
             }
           />

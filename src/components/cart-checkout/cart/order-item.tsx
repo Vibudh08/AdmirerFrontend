@@ -1,5 +1,5 @@
 import React from "react";
-
+import { FaTimes } from "react-icons/fa";
 interface ItemProps {
   brandName: string;
   description: string;
@@ -25,9 +25,26 @@ const Item: React.FC<ItemProps> = ({
   // Convert quantity to number and create options up to quantity+5
   const qty = parseInt(quantity);
   const quantityOptions = Array.from({ length: qty + 5 }, (_, i) => i + 1);
-
+  const handleClose = () => {};
   return (
     <div className="w-[60%] h-[20%]">
+      <input
+        type="checkbox"
+        checked={checked}
+        onChange={() => {
+          checked = !checked;
+        }}
+        className="absolute left-2 top-2 h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+      />
+
+      {/* Cancel button on the right */}
+      <button
+        onClick={handleClose}
+        className="absolute right-2 top-2 text-gray-500 hover:text-gray-700 focus:outline-none"
+        aria-label="Remove item"
+      >
+        <FaTimes className="w-5 h-5" />
+      </button>
       <div className="flex border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition-shadow duration-200">
         {/* Image container - takes 40% width */}
         <div className="w-[40%] relative">

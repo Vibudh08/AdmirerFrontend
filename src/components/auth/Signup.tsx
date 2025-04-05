@@ -34,7 +34,7 @@ const SignUp = () => {
           {/* Close Button */}
           <button
             onClick={handleClose}
-            className="absolute left-4 top-4 text-gray-500 hover:text-gray-700 focus:outline-none"
+            className="absolute left-1 top-2 text-gray-500 hover:text-gray-700 focus:outline-none"
             aria-label="Close signup form"
           >
             <FaTimes className="w-5 h-5" />
