@@ -187,7 +187,7 @@ const SignUp = () => {
             <span className="text-[15px]">Already registered? </span>
             <button
               className="text-purple-700 font-bold text-[20px] hover:underline align-bottom"
-              onClick={() => navigate("/Login")}
+              onClick={() => navigate("/LogIn")}
             >
               Login
             </button>
