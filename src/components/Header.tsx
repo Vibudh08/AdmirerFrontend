@@ -117,12 +117,12 @@ function Header() {
 
             <div className="relative w-[270px] max-md:hidden ">
               <Search className="absolute left-2  top-6 transform -translate-y-1/2 text-[#7B48A5]" />
-              <input
+              <input 
                 type="text"
                 placeholder="Search..."
                 className="border rounded-md pl-10 pr-2 w-full h-[45px] border-[#7B48A5] focus:outline-none focus:ring-2 focus:ring-[#d3b6e9] text-black"
               />
-            </div>
+            </div> 
             <Link to="/">
               <img
                 src="/logo/admirer_logo.png"
@@ -132,18 +132,15 @@ function Header() {
             </Link>
             <div className="flex gap-4 mt-1 max-md:mt-3">
               <Link to="/LogIn">
-                <div
-                  className="text-center flex mt-1 flex-col items-center"
-                >
+                <div className="text-center flex mt-1 flex-col items-center">
                   <FaRegUser className="w-6 h-6 leading-2 text-[#7B48A5] max-md:mb-1" />
                   <p className="text-lg max-md:hidden tracking-wide text-black">
                     Login
                   </p>
                 </div>
               </Link>
-              <Link to="/SignUp">
-                <div className="text-center mt-1 flex flex-col items-center"
-                 >
+              <Link to="">
+                <div className="text-center mt-1 flex flex-col items-center">
                   <FaRegHeart className="w-6 h-6 text-[#7B48A5]" />
                   <p className="text-lg max-md:hidden tracking-wide text-black">
                     Wishlist

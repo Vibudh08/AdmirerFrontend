@@ -153,7 +153,7 @@ const SignUp = () => {
                 />
                 <button
                   type="button"
-                  className="ml-2 h-[50px] w-[50px] flex items-center justify-center text-gray-500 hover:text-gray-700 focus:outline-none mt-[0px] border border-[var(--clr-common-border)] rounded-[4px] hover:border-sky-400"
+                  className="ml-2 h-[50px] w-[50px] flex items-center justify-center text-gray-500 hover:text-gray-700 focus:outline-none mt-[0px] border border-gray-300 rounded-[4px] hover:border-sky-400"
                   onClick={() => setShowPassword(!showPassword)}
                   aria-label={showPassword ? "Hide password" : "Show password"}
                 >
@@ -175,12 +175,23 @@ const SignUp = () => {
             <div className="pt-2">
               <button
                 type="submit"
-                className="w-full h-[50px] flex justify-center items-center rounded-md text-white bg-purple-500 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 text-base font-medium"
+                className="w-full h-[50px] flex justify-center items-center rounded-md text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 text-base font-medium"
               >
                 Register
               </button>
             </div>
           </form>
+
+          {/* New line with "Already registered?" + Login button */}
+          <div className="text-center mt-4 text-md">
+            <span>Already registered? </span>
+            <button
+              className="text-purple-700 font-bold hover:underline align-bottom"
+              onClick={() => navigate("/LogIn")}
+            >
+              Login
+            </button>
+          </div>
           <p className="text-center text-[13px] mt-6">
             By continuing, I agree to the{" "}
             <a href="/terms.php" className="text-purple-700 font-bold">

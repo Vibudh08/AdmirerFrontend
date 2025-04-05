@@ -37,7 +37,7 @@ const Login = () => {
         </button>
         <div className="text-center mb-6">
           <img src="logo/iconn.png" alt="Logo" className="w-16 mx-auto mb-2" />
-          <h1 className="text-xl font-normal">Welcome to Admirer</h1>
+          <h1 className="text-xl font-semibold">Welcome to Admirer</h1>
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -50,7 +50,7 @@ const Login = () => {
                 required: "Mobile number is required",
               })}
               placeholder="Mobile number"
-              className="mt-1 block w-full border h-[45px] border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              className="mt-1 block w-full border h-[50px] border-gray-300 rounded-md shadow-sm py-2 px-5 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
             />
             {errors.phoneNumber && (
               <p className="mt-2 text-sm text-red-600">
@@ -72,12 +72,12 @@ const Login = () => {
                     message: "Password must be at least 8 characters",
                   },
                 })}
-                placeholder="Create New Password"
-                className="flex-1 h-[50px] bg-transparent border border-[var(--clr-common-border)] rounded-[4px] mt-[0px] mb-0 px-5 focus:outline-none focus:border-sky-400 focus:ring-1 focus:ring-sky-400 text-[var(--clr-common-text)] text-base"
+                placeholder="Enter Password"
+                className="flex-1 h-[50px] bg-transparent border border-gray-300 rounded-md mt-[0px] mb-0 px-5 focus:outline-none focus:border-sky-400 focus:ring-1 focus:ring-sky-400 text-[var(--clr-common-text)] text-base"
               />
               <button
                 type="button"
-                className="ml-2 h-[50px] w-[50px] flex items-center justify-center text-gray-500 hover:text-gray-700 focus:outline-none mt-[0px] border border-[var(--clr-common-border)] rounded-[4px] hover:border-sky-400"
+                className="ml-2 h-[50px] w-[50px] flex items-center justify-center border border-gray-300 text-gray-500 hover:text-gray-700 focus:outline-none mt-[0px] rounded-md hover:border-sky-400"
                 onClick={() => setShowPassword(!showPassword)}
                 aria-label={showPassword ? "Hide password" : "Show password"}
               >
@@ -101,11 +101,11 @@ const Login = () => {
           >
             Login
           </button>
-          <div className="text-center mt-4 text-sm">
+          <div className="text-center mt-4 text-md">
             Don't have an account?
             <button
               type="button"
-              className="text-purple-700 font-bold ml-1"
+              className="text-purple-700 font-bold ml-1 hover:underline align-bottom"
               onClick={() => {
                 navigate("/SignUp");
               }}
@@ -113,10 +113,10 @@ const Login = () => {
               Register
             </button>
           </div>
-          <div className="text-center mt-2">
+          <div className="text-center mt-1">
             <a
               href="/forget-password.php"
-              className="text-purple-700 font-semibold"
+              className="text-purple-700 font-semibold hover:underline align-bottom"
             >
               Forgot password?
             </a>
