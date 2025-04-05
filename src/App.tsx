@@ -6,6 +6,8 @@ import Home from "./pages/Home";
 import React, { useState, useEffect } from "react";
 import SignUp from "./components/auth/Signup";
 import Login from "./components/auth/Login";
+import Index from "./components/cart-checkout/checkout";
+import Layout from "./components/Layout";
 
 function App() {
   const [currentRoute, setCurrentRoute] = useState("/");
@@ -22,14 +24,21 @@ function App() {
   return (
     <>
       <BrowserRouter>
-        <RouteTracker />
-        {currentRoute !== "/SignUp" && currentRoute !== "/LogIn" && <Header />}
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/SignUp" element={<SignUp />} />
-          <Route path="/LogIn" element={<Login />} />
-        </Routes>
-        {currentRoute !== "/SignUp" && currentRoute !== "/LogIn" && <Footer />}
+        <Layout>
+          <RouteTracker />
+          {currentRoute !== "/SignUp" && currentRoute !== "/LogIn" && (
+            <Header />
+          )}
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/SignUp" element={<SignUp />} />
+            <Route path="/LogIn" element={<Login />} />
+            <Route path="/cart" element={<Index />} />
+          </Routes>
+          {currentRoute !== "/SignUp" && currentRoute !== "/LogIn" && (
+            <Footer />
+          )}
+        </Layout>
       </BrowserRouter>
     </>
   );

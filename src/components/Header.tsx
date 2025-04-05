@@ -147,15 +147,17 @@ function Header() {
                   </p>
                 </div>
               </Link>
+              <Link to="/cart">
               <div
                 className="text-center flex flex-col items-center"
-                onClick={handleCart}
+                // onClick={handleCart}
               >
                 <MdOutlineShoppingBag className="w-7 h-7 text-[#7B48A5]" />
                 <p className="text-lg max-md:hidden tracking-wide text-black">
                   Cart
                 </p>
               </div>
+              </Link>
             </div>
           </div>
         </div>
