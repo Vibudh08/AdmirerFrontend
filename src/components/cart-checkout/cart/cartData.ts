@@ -4,71 +4,68 @@ import { MdDescription } from "react-icons/md";
 // shoeData.js
 const shoeProducts = [
   {
-    urbanTrend: {
+     brandName:"urbanTrend",
       brandId:"13231",
       size: "42",
       description:"The Lifestyle Co Men Light Blue Solid Regular Fit Chambray Casual Shirt",
       qty: "1",
       price: "1599",
-      discounted: "639",
+     discount:"60",
       return_days: "12"
-    }
+    
   },
   {
-    wildPeak: {
+      brandName:"wildPeak",
       brandId:"13232",
       size: "40",
       description:"The Lifestyle Co Men Light Blue Solid Regular Fit Chambray Casual Shirt",
-      Qty: "1",
+      qty: "5",
       price: "1499",
-      discounted: "599",
+      discount:"40",
       return_days: "12"
-    }
+    
   },
   {
-    mountainHike: {
+    brandName:"mountainHike",
       brandId:"13233",
       size: "44",
       description:"The Lifestyle Co Men Light Blue Solid Regular Fit Chambray Casual Shirt",
-      Qty: "1",
+      qty: "1",
       price: "1699",
-      discounted: "679",
+      discount:"30",
       return_days: "12"
-    }
-  },
+    },
+
   {
-    trailBlazer: {
+      brandName:"trailBlazer",
       brandId:"13234",
       size: "38",
       description:"The Lifestyle Co Men Light Blue Solid Regular Fit Chambray Casual Shirt",
-      Qty: "1",
+      qty: "1",
       price: "1399",
-      discounted: "559",
+      discount:"90",
       return_days: "12"
-    }
   },
   {
-    summitPro: {
+      brandName:"summitPro",
       brandId:"13235",
       size: "42",
       description:"The Lifestyle Co Men Light Blue Solid Regular Fit Chambray Casual Shirt",
-      Qty: "2",
+      qty: "2",
       price: "3198",
-      discounted: "1278",
+      discount:"100",
       return_days: "12"
-    }
   },
   {
-    skyClimber: {
+      brandName:"skyClimber",
       brandId:"13236",
       size: "36",
       description:"The Lifestyle Co Men Light Blue Solid Regular Fit Chambray Casual Shirt",
-      Qty: "1",
+      qty: "1",
       price: "1299",
-      discounted: "519",
+      discount:"10",
       return_days: "12"
     }
-  }
 ];
 
 export default shoeProducts;

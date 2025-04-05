@@ -1,5 +1,6 @@
 import React from "react";
 import { FaTimes } from "react-icons/fa";
+
 interface ItemProps {
   brandName: string;
   description: string;
@@ -10,6 +11,7 @@ interface ItemProps {
   return_day: string;
   finalPrice: string;
   checked: boolean;
+  totalQuantity: string;
 }
 
 const Item: React.FC<ItemProps> = ({
@@ -17,35 +19,47 @@ const Item: React.FC<ItemProps> = ({
   description,
   price,
   quantity,
+  brandId,
   discount,
   return_day,
   finalPrice,
   checked,
+  totalQuantity,
 }) => {
-  // Convert quantity to number and create options up to quantity+5
-  const qty = parseInt(quantity);
-  const quantityOptions = Array.from({ length: qty + 5 }, (_, i) => i + 1);
-  const handleClose = () => {};
-  return (
-    <div className="w-[60%] h-[20%]">
-      <input
-        type="checkbox"
-        checked={checked}
-        onChange={() => {
-          checked = !checked;
-        }}
-        className="absolute left-2 top-2 h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-      />
+  let qty = parseInt(quantity);
+  const totalQty = parseInt(totalQuantity);
 
-      {/* Cancel button on the right */}
-      <button
-        onClick={handleClose}
-        className="absolute right-2 top-2 text-gray-500 hover:text-gray-700 focus:outline-none"
-        aria-label="Remove item"
-      >
-        <FaTimes className="w-5 h-5" />
-      </button>
+  // If quantity > totalQuantity, set quantity = totalQuantity
+  if (qty > totalQty) {
+    qty = totalQty;
+  }
+
+  // Range should always be from 1 to totalQty
+  const quantityOptions = Array.from({ length: totalQty }, (_, i) => i + 1);
+  return (
+    <div className="w-[50%] h-[20%] relative mt-[50px] mb-[50px]">
       <div className="flex border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition-shadow duration-200">
+        {/* Checkbox on the left */}
+        <div className="absolute left-2 top-2 z-10">
+          <input
+            type="checkbox"
+            checked={checked}
+            onChange={() => {}}
+            className="h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+          />
+        </div>
+
+        {/* Cancel button on the right */}
+        <div className="absolute right-2 top-2 z-10">
+          <button
+            onClick={() => {}}
+            className="text-gray-500 hover:text-gray-700 focus:outline-none"
+            aria-label="Remove item"
+          >
+            <FaTimes className="w-5 h-5" />
+          </button>
+        </div>
+
         {/* Image container - takes 40% width */}
         <div className="w-[40%] relative">
           <img
@@ -62,7 +76,7 @@ const Item: React.FC<ItemProps> = ({
             {brandName}
           </h2>
 
-          {/* Description - bold and close to heading */}
+          {/* Description */}
           <p className="text-gray-700 font-medium text-sm line-clamp-2 mb-4 leading-tight">
             {description}
           </p>
