@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Item from "./order-item";
 import shoeProducts from "./cartData";
-
+import DeliveryInfo from "./current-address";
 const Cart = () => {
   interface ItemProps {
     brandName: string;
@@ -22,9 +22,16 @@ const Cart = () => {
   useEffect(() => {
     setItemSize(totalItem.length);
   }, [totalItem]);
-
+  const onAddressChange = () => {};
   return (
     <>
+      <DeliveryInfo
+        name="yash"
+        pincode="110059"
+        address="UGF-9"
+        city="NEW DELHI"
+        state="DELHI"
+      />
       {totalItem.map((item, index) => (
         <>
           <div>
