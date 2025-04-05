@@ -117,12 +117,12 @@ function Header() {
 
             <div className="relative w-[270px] max-md:hidden ">
               <Search className="absolute left-2  top-6 transform -translate-y-1/2 text-[#7B48A5]" />
-              <input
+              <input 
                 type="text"
                 placeholder="Search..."
                 className="border rounded-md pl-10 pr-2 w-full h-[45px] border-[#7B48A5] focus:outline-none focus:ring-2 focus:ring-[#d3b6e9] text-black"
               />
-            </div>
+            </div> 
             <Link to="/">
               <img
                 src="/logo/admirer_logo.png"

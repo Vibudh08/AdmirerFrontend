@@ -175,7 +175,7 @@ const SignUp = () => {
             <div className="pt-2">
               <button
                 type="submit"
-                className="w-full h-[50px] flex justify-center items-center rounded-md text-white bg-purple-500 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 text-base font-medium"
+                className="w-full h-[50px] flex justify-center items-center rounded-md text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 text-base font-medium"
               >
                 Register
               </button>
@@ -183,10 +183,10 @@ const SignUp = () => {
           </form>
 
           {/* New line with "Already registered?" + Login button */}
-          <div className="text-center mt-4">
-            <span className="text-[15px]">Already registered? </span>
+          <div className="text-center mt-4 text-md">
+            <span>Already registered? </span>
             <button
-              className="text-purple-700 font-bold text-[20px] hover:underline align-bottom"
+              className="text-purple-700 font-bold hover:underline align-bottom"
               onClick={() => navigate("/LogIn")}
             >
               Login
