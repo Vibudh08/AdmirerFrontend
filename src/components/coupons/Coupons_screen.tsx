@@ -40,7 +40,7 @@ const Coupons_screen: React.FC<CouponsScreenProps> = ({ onClose }) => {
   const savingAmount = selected ? selected.savings.replace(/[^0-9]/g, "") : "0";
 
   return (
-    <div className="w-[500px] bg-[#f4f4f5] border rounded h-[500px] flex flex-col">
+    <div className="w-[500px] max-w-full bg-[#f4f4f5] border rounded h-[500px] flex flex-col">
       {/* Header */}
       <div className="flex justify-between p-5 pb-3 bg-white">
         <span className="text-[14px] font-semibold">APPLY COUPON</span>
@@ -79,7 +79,7 @@ const Coupons_screen: React.FC<CouponsScreenProps> = ({ onClose }) => {
       </div>
 
       {/* Footer */}
-      <div className="flex items-center justify-between bg-white px-5 py-2 border-t">
+      <div className="flex items-center justify-between bg-white px-5 py-2 border-t border-gray-300 shadow-[0_-2px_4px_rgba(0,0,0,0.1)]">
         <div>
           <p className="text-sm text-gray-500 font-medium mb-0">Maximum savings:</p>
           <p className="text-lg font-bold text-black mb-0"><span>₹</span>{savingAmount}</p>

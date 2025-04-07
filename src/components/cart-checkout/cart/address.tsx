@@ -88,7 +88,7 @@ const AddressBar = ({
       form={form}
       onFinish={handleSubmit}
       layout="vertical"
-      className="max-w-2xl mx-auto"
+      className="max-w-2xl mx-auto "
     >
       {/* Name Field - Added at the top */}
       <Form.Item
@@ -154,7 +154,7 @@ const AddressBar = ({
       <Form.Item>
         <div style={{ display: "flex", gap: "8px" }}>
           <Button
-            type="primary"
+            className="w-[180px] border rounded h-[40px] py-2 hover:!border-none text-sm  text-white hover:!bg-purple-700 hover:!text-white bg-purple-600"
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
@@ -166,8 +166,8 @@ const AddressBar = ({
           >
             {isLoading ? "Detecting Location..." : "Use Current Location"}
           </Button>
-          <Button
-            type="primary"
+          <Button className="w-[100px] border rounded hover:!border-none h-[40px] py-2 text-sm  text-white hover:!bg-purple-700 hover:!text-white bg-purple-600"
+            
             htmlType="submit"
             style={{ marginLeft: "auto" }}
           >

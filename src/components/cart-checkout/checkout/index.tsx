@@ -56,7 +56,7 @@ const Checkout: React.FC<IndexProps> = ({
   const handleCancel = () => setIsModalOpen(false);
   return (
     <>
-      <div className="w-[35%] p-5 py-6 border-l bg-white border-[#eaeaec]">
+      <div className="w-[35%] max-md:w-[100%] p-5 py-6 border-l bg-white border-[#eaeaec]">
         {/* Coupon Section */}
         <div className="mb-4">
           <h3 className="text-[13px] text-[rgb(83,87,102)] font-semibold mb-4">
@@ -102,10 +102,10 @@ const Checkout: React.FC<IndexProps> = ({
           <h3 className="text-[13px] text-[#535766] font-bold mb-4">
             PRICE DETAILS ({itemCount} item{itemCount > 1 ? "s" : ""})
           </h3>
-          <div className="leading-[30px]">
+          <div className="leading-[28px]">
             {priceDetails.map((detail, index) => (
               <div key={index} className="flex justify-between text-[14px]">
-                <div className="text-[#282c3f] leading-5">{detail.label}</div>
+                <div className="text-[#282c3f] tracking-normal">{detail.label}</div>
                 <div
                   className={`${
                     detail.isDiscount
@@ -148,7 +148,7 @@ const Checkout: React.FC<IndexProps> = ({
             onChange={() => setSelected("online")}
             className="form-radio text-purple-700 mr-3"
           />
-          <label className="text-[14px]">Online</label>
+          <label className="text-[14px] select-none cursor-pointer">Online</label>
         </div>
 
         <div
@@ -164,7 +164,7 @@ const Checkout: React.FC<IndexProps> = ({
             onChange={() => setSelected("cod")}
             className="form-radio text-purple-700 mr-3"
           />
-          <label className="text-[14px]">Cash On Delivery</label>
+          <label className="text-[14px] select-none cursor-pointer">Cash On Delivery</label>
         </div>
         <button className="w-full border rounded h-[44px] py-2 text-sm font-semibold text-white hover:bg-purple-700 bg-purple-600">
           PLACE ORDER

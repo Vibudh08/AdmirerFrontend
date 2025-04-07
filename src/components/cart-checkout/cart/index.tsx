@@ -25,7 +25,7 @@ const Cart = () => {
   const onAddressChange = () => {};
   return (
     <>
-      <div className="flex flex-col w-[65%] bg-white px-4 py-2">
+      <div className="flex flex-col w-[65%] max-md:w-[100%] bg-white px-4 py-2">
         <DeliveryInfo
           name="yash"
           pincode="110059"

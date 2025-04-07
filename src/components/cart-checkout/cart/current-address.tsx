@@ -77,17 +77,19 @@ const DeliveryInfo: React.FC<DeliveryInfoProps> = ({
 
       {/* Address Modal */}
       <Modal
-        title="Update Delivery Address"
-        open={isModalVisible}
-        onCancel={() => setIsModalVisible(false)}
-        footer={null}
-        width={700}
-      >
-        <AddressBar
-          setIsModalVisible={setIsModalVisible}
-          onAddressChange={handleAddressChange}
-        />
-      </Modal>
+  title="Update Delivery Address"
+  open={isModalVisible}
+  onCancel={() => setIsModalVisible(false)}
+  footer={null}
+  width={700}
+  centered
+>
+  <AddressBar
+    setIsModalVisible={setIsModalVisible}
+    onAddressChange={handleAddressChange}
+  />
+</Modal>
+
     </>
   );
 };
