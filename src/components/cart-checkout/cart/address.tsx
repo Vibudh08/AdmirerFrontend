@@ -1,7 +1,6 @@
 import React, { useState, useCallback } from "react";
 import { Form, Input, Button, Spin, Alert } from "antd";
 import { CompassOutlined } from "@ant-design/icons";
-
 interface AddressData {
   address1: string;
   city: string;
@@ -9,21 +8,16 @@ interface AddressData {
 }
 
 interface AddressBarProps {
+  setIsModalVisible: (visible: boolean) => void;
   onAddressChange: (address: AddressData) => void;
 }
-
-const AddressBar = ({ onAddressChange }: AddressBarProps) => {
+const AddressBar = ({
+  setIsModalVisible,
+  onAddressChange,
+}: AddressBarProps) => {
   const [form] = Form.useForm();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  // const handleInputChange = useCallback(
-  //   (changedValues: Partial<AddressData>) => {
-  //     const newAddress = form.getFieldsValue();
-  //     onAddressChange(newAddress);
-  //   },
-  //   [form, onAddressChange]
-  // );
 
   const handleGeolocationSuccess = useCallback(
     async (position: GeolocationPosition) => {
@@ -74,10 +68,13 @@ const AddressBar = ({ onAddressChange }: AddressBarProps) => {
       }
     );
   }, [handleGeolocationSuccess]);
-
+  const handleSubmit = () => {
+    setIsModalVisible(false);
+  };
   return (
     <Form
       form={form}
+      onFinish={handleSubmit}
       layout="vertical"
       className="max-w-2xl mx-auto"
       // onValuesChange={handleInputChange}

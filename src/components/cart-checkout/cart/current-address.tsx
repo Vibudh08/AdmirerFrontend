@@ -28,7 +28,7 @@ const DeliveryInfo: React.FC<DeliveryInfoProps> = ({
 
   const handleAddressChange = (newAddress: any) => {
     setAddressData(newAddress);
-    setIsModalVisible(false);
+    //setIsModalVisible(false);
   };
 
   return (
@@ -89,7 +89,10 @@ const DeliveryInfo: React.FC<DeliveryInfoProps> = ({
         footer={null}
         width={700}
       >
-        <AddressBar onAddressChange={handleAddressChange} />
+        <AddressBar
+          setIsModalVisible={setIsModalVisible}
+          onAddressChange={handleAddressChange}
+        />
       </Modal>
     </>
   );
