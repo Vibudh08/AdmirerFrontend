@@ -1,16 +1,24 @@
 import React, { useState, useCallback } from "react";
 import { Form, Input, Button, Spin, Alert } from "antd";
-import { CompassOutlined } from "@ant-design/icons";
+import {
+  CompassOutlined,
+  UserOutlined,
+  EnvironmentOutlined,
+} from "@ant-design/icons";
+
 interface AddressData {
+  name: string;
   address1: string;
   city: string;
   state: string;
+  pincode: string;
 }
 
 interface AddressBarProps {
   setIsModalVisible: (visible: boolean) => void;
   onAddressChange: (address: AddressData) => void;
 }
+
 const AddressBar = ({
   setIsModalVisible,
   onAddressChange,
@@ -33,6 +41,7 @@ const AddressBar = ({
 
         const data = await response.json();
         const newAddress = {
+          name: "", // Name isn't available from geolocation
           address1: data.address.road || data.address.highway || "",
           city:
             data.address.city ||
@@ -40,6 +49,7 @@ const AddressBar = ({
             data.address.village ||
             "",
           state: data.address.state || "",
+          pincode: data.address.postcode || "", // Added pincode from geolocation data
         };
 
         form.setFieldsValue(newAddress);
@@ -68,17 +78,31 @@ const AddressBar = ({
       }
     );
   }, [handleGeolocationSuccess]);
+
   const handleSubmit = () => {
     setIsModalVisible(false);
   };
+
   return (
     <Form
       form={form}
       onFinish={handleSubmit}
       layout="vertical"
       className="max-w-2xl mx-auto"
-      // onValuesChange={handleInputChange}
     >
+      {/* Name Field - Added at the top */}
+      <Form.Item
+        label="Full Name"
+        name="name"
+        rules={[{ required: true, message: "Please input your name!" }]}
+      >
+        <Input
+          placeholder="John Doe"
+          allowClear
+          prefix={<UserOutlined className="text-gray-400" />}
+        />
+      </Form.Item>
+
       <Form.Item
         label="Street Address"
         name="address1"
@@ -110,6 +134,22 @@ const AddressBar = ({
           <Input placeholder="New York" allowClear />
         </Form.Item>
       </div>
+
+      {/* Pincode Field - Added after state */}
+      <Form.Item
+        label="Pincode/Zip Code"
+        name="pincode"
+        rules={[
+          { required: true, message: "Please input your pincode!" },
+          { pattern: /^[0-9]+$/, message: "Pincode must contain only numbers" },
+        ]}
+      >
+        <Input
+          placeholder="123456"
+          allowClear
+          prefix={<EnvironmentOutlined className="text-gray-400" />}
+        />
+      </Form.Item>
 
       <Form.Item>
         <div style={{ display: "flex", gap: "8px" }}>
