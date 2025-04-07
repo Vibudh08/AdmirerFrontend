@@ -1,7 +1,7 @@
 import React from 'react'
 
 import Cart from '../cart-checkout/cart'
-import Checkout from '../cart-checkout/checkout/Index'
+import Checkout from '../cart-checkout/checkout'
 
 const Complete_cart_checkout = () => {
   return (
