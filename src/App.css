@@ -2,12 +2,34 @@
     margin: 0;
 }
 
+p{
+  margin-bottom: 0px !important;
+}
+/* Neutralize modal content styles */
+.no-padding-modal .ant-modal-content {
+  padding: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+}
+
+/* Remove modal header spacing if any */
+.no-padding-modal .ant-modal-header {
+  display: none !important;
+}
+
+/* Optional: remove modal close icon */
+.no-padding-modal .ant-modal-close {
+  display: none !important;
+}
+
 .desktop-banner {
     display: block !important;
   }
   .mobile-banner {
     display: none !important;
   }
+  
   
   @media (max-width: 768px) {
     .desktop-banner {

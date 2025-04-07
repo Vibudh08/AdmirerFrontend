@@ -28,13 +28,13 @@ const SignUp = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10 relative">
+    <div className="min-h-screen  flex flex-col justify-center bg-[#efe6f3]  px-4">
+      <div className=" sm:mx-auto sm:w-full sm:max-w-md">
+        <div className="bg-white py-8 px-4 shadow-xl rounded-2xl sm:px-10 relative">
           {/* Close Button */}
           <button
             onClick={handleClose}
-            className="absolute left-4 top-4 text-gray-500 hover:text-gray-700 focus:outline-none"
+            className="absolute left-4 top-5 text-gray-500 hover:text-gray-700 focus:outline-none"
             aria-label="Close signup form"
           >
             <FaTimes className="w-5 h-5" />
