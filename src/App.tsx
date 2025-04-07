@@ -7,8 +7,7 @@ import React, { useState, useEffect } from "react";
 import SignUp from "./components/auth/Signup";
 import Login from "./components/auth/Login";
 import Layout from "./components/Layout";
-import Index from "./components/cart-checkout/checkout/Index";
-import Coupons_screen from "./components/coupons/Coupons_screen";
+import Index from "./components/cart-checkout/checkout";
 import Cart from "./components/cart-checkout/cart";
 
 function App() {

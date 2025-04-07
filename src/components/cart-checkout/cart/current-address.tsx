@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Button, Modal } from "antd"; // Added Modal import
 import AddressBar from "./address";
+import { Color } from "antd/es/color-picker";
 interface DeliveryInfoProps {
   name: string;
   address: string;
@@ -41,6 +42,7 @@ const DeliveryInfo: React.FC<DeliveryInfoProps> = ({
           border: "1px solid #f0f0f0",
           borderRadius: "8px",
           padding: "16px",
+          backgroundColor: "white",
         }}
       >
         {/* Delivery Information (70% width) */}

@@ -37,7 +37,7 @@ const Item: React.FC<ItemProps> = ({
   // Range should always be from 1 to totalQty
   const quantityOptions = Array.from({ length: totalQty }, (_, i) => i + 1);
   return (
-    <div className="w-[50%] h-[20%] relative mt-[50px] mb-[50px]">
+    <div className="w-[50%] h-[20%] relative mt-[50px] mb-[50px]  bg-white">
       <div className="flex border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition-shadow duration-200">
         {/* Checkbox on the left */}
         <div className="absolute left-2 top-2 z-10">
