@@ -42,9 +42,8 @@ function Header() {
 
       <div
         className={`categories fixed z-[1000] bg-white h-[100vh] w-[310px] px-[30px] py-[40px] flex-col 
-        transition-all duration-500 ease-in-out transform border border-white ${
-          show ? "translate-x-0 opacity-100" : "-translate-x-full opacity-0"
-        }`}
+        transition-all duration-500 ease-in-out transform border border-white ${show ? "translate-x-0 opacity-100" : "-translate-x-full opacity-0"
+          }`}
       >
         <IoClose
           className="text-2xl absolute right-3 top-5"
@@ -62,8 +61,8 @@ function Header() {
 
       <div
         className={`cart fixed z-[1000] bg-white h-[100vh] w-[340px] px-[30px] py-[40px] flex-col 
-  transition-all duration-500 ease-in-out transform right-0 border border-white
-  ${cartShow ? "translate-x-0 opacity-100" : "translate-x-full opacity-0"}`}
+        transition-all duration-500 ease-in-out transform right-0 border border-white
+        ${cartShow ? "translate-x-0 opacity-100" : "translate-x-full opacity-0"}`}
       >
         <IoClose
           className="text-2xl absolute right-3 top-5 cursor-pointer"
@@ -106,9 +105,8 @@ function Header() {
               >
                 <span className="w-full h-[2px] bg-black block"></span>
                 <span
-                  className={`w-full h-[2px] bg-black block ${
-                    show ? "" : "ml-[-9px]"
-                  }`}
+                  className={`w-full h-[2px] bg-black block ${show ? "" : "ml-[-9px]"
+                    }`}
                 ></span>
                 <span className="w-full h-[2px] bg-black block"></span>
               </div>
@@ -117,12 +115,12 @@ function Header() {
 
             <div className="relative w-[270px] max-md:hidden ">
               <Search className="absolute left-2  top-6 transform -translate-y-1/2 text-[#7B48A5]" />
-              <input 
+              <input
                 type="text"
                 placeholder="Search..."
-                className="border rounded-md pl-10 pr-2 w-full h-[45px] border-[#7B48A5] focus:outline-none focus:ring-2 focus:ring-[#d3b6e9] text-black"
+                className="border rounded-md pl-10 pr-2 w-full h-[45px] border-[#7B48A5] pt-1 focus:outline-none focus:ring-2 focus:ring-[#d3b6e9] text-black"
               />
-            </div> 
+            </div>
             <Link to="/">
               <img
                 src="/logo/admirer_logo.png"
@@ -148,15 +146,15 @@ function Header() {
                 </div>
               </Link>
               <Link to="/cart">
-              <div
-                className="text-center flex flex-col items-center"
+                <div
+                  className="text-center flex flex-col items-center"
                 // onClick={handleCart}
-              >
-                <MdOutlineShoppingBag className="w-7 h-7 text-[#7B48A5]" />
-                <p className="text-lg max-md:hidden tracking-wide text-black">
-                  Cart
-                </p>
-              </div>
+                >
+                  <MdOutlineShoppingBag className="w-7 h-7 text-[#7B48A5]" />
+                  <p className="text-lg max-md:hidden tracking-wide text-black">
+                    Cart
+                  </p>
+                </div>
               </Link>
             </div>
           </div>

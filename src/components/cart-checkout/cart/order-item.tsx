@@ -37,15 +37,15 @@ const Item: React.FC<ItemProps> = ({
   // Range should always be from 1 to totalQty
   const quantityOptions = Array.from({ length: totalQty }, (_, i) => i + 1);
   return (
-    <div className="w-[50%] h-[20%] relative mt-[50px] mb-[50px]">
-      <div className="flex border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition-shadow duration-200">
+    <div className=" bg-white relative mt-1 mb-2">
+      <div className="flex border border-gray-200 rounded-lg overflow-hidden hover:shadow-sm transition-shadow duration-200">
         {/* Checkbox on the left */}
         <div className="absolute left-2 top-2 z-10">
           <input
             type="checkbox"
             checked={checked}
             onChange={() => {}}
-            className="h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+            className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
           />
         </div>
 
@@ -56,14 +56,14 @@ const Item: React.FC<ItemProps> = ({
             className="text-gray-500 hover:text-gray-700 focus:outline-none"
             aria-label="Remove item"
           >
-            <FaTimes className="w-5 h-5" />
+            <FaTimes className="w-4 h-4" />
           </button>
         </div>
 
         {/* Image container - takes 40% width */}
-        <div className="w-[40%] relative">
+        <div className="w-[40%] relative ">
           <img
-            className="w-full h-full object-cover min-h-[180px]"
+            className=" w-full h-full"
             src="https://images.pexels.com/photos/54334/running-shoe-shoe-brooks-highly-functional-54334.jpeg?cs=srgb&dl=shoe-sneakers-footwear-54334.jpg&fm=jpg"
             alt={brandName}
           />
@@ -72,17 +72,17 @@ const Item: React.FC<ItemProps> = ({
         {/* Content container - takes 60% width */}
         <div className="w-[60%] p-3 flex flex-col">
           {/* Brand name */}
-          <h2 className="text-lg font-bold text-gray-900 mb-0.5">
+          <h2 className="text-[16px] font-bold text-gray-900 mb-1">
             {brandName}
           </h2>
 
           {/* Description */}
-          <p className="text-gray-700 font-medium text-sm line-clamp-2 mb-4 leading-tight">
+          <p className="text-gray-700 font-medium text-[13px] line-clamp-2 mb-4 leading-snug">
             {description}
           </p>
 
           {/* Quantity with dropdown */}
-          <div className="flex items-center mb-4">
+          <div className="flex items-center mb-3 mt-2">
             <span className="font-semibold text-sm mr-2 text-gray-700">
               Qty:
             </span>
@@ -99,7 +99,7 @@ const Item: React.FC<ItemProps> = ({
           </div>
 
           {/* Price section */}
-          <div className="flex items-center gap-2 mb-1.5">
+          <div className="flex items-center gap-2 mb-1">
             <span className="text-gray-400 line-through text-xs">₹{price}</span>
             <span className="text-red-600 text-xs font-bold bg-red-50 px-1 py-0.5 rounded">
               {discount}% off
@@ -110,7 +110,7 @@ const Item: React.FC<ItemProps> = ({
           </div>
 
           {/* Return policy */}
-          <div className="text-xs text-gray-500 flex items-center mt-auto">
+          <div className="text-xs text-gray-500 flex items-center ">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="h-3 w-3 mr-1"

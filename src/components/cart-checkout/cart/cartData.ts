@@ -25,47 +25,47 @@ const shoeProducts = [
       return_days: "12"
     
   },
-  {
-    brandName:"mountainHike",
-      brandId:"13233",
-      size: "44",
-      description:"The Lifestyle Co Men Light Blue Solid Regular Fit Chambray Casual Shirt",
-      qty: "1",
-      price: "1699",
-      discount:"30",
-      return_days: "12"
-    },
+  // {
+  //   brandName:"mountainHike",
+  //     brandId:"13233",
+  //     size: "44",
+  //     description:"The Lifestyle Co Men Light Blue Solid Regular Fit Chambray Casual Shirt",
+  //     qty: "1",
+  //     price: "1699",
+  //     discount:"30",
+  //     return_days: "12"
+  //   },
 
-  {
-      brandName:"trailBlazer",
-      brandId:"13234",
-      size: "38",
-      description:"The Lifestyle Co Men Light Blue Solid Regular Fit Chambray Casual Shirt",
-      qty: "1",
-      price: "1399",
-      discount:"90",
-      return_days: "12"
-  },
-  {
-      brandName:"summitPro",
-      brandId:"13235",
-      size: "42",
-      description:"The Lifestyle Co Men Light Blue Solid Regular Fit Chambray Casual Shirt",
-      qty: "2",
-      price: "3198",
-      discount:"100",
-      return_days: "12"
-  },
-  {
-      brandName:"skyClimber",
-      brandId:"13236",
-      size: "36",
-      description:"The Lifestyle Co Men Light Blue Solid Regular Fit Chambray Casual Shirt",
-      qty: "1",
-      price: "1299",
-      discount:"10",
-      return_days: "12"
-    }
+  // {
+  //     brandName:"trailBlazer",
+  //     brandId:"13234",
+  //     size: "38",
+  //     description:"The Lifestyle Co Men Light Blue Solid Regular Fit Chambray Casual Shirt",
+  //     qty: "1",
+  //     price: "1399",
+  //     discount:"90",
+  //     return_days: "12"
+  // },
+  // {
+  //     brandName:"summitPro",
+  //     brandId:"13235",
+  //     size: "42",
+  //     description:"The Lifestyle Co Men Light Blue Solid Regular Fit Chambray Casual Shirt",
+  //     qty: "2",
+  //     price: "3198",
+  //     discount:"100",
+  //     return_days: "12"
+  // },
+  // {
+  //     brandName:"skyClimber",
+  //     brandId:"13236",
+  //     size: "36",
+  //     description:"The Lifestyle Co Men Light Blue Solid Regular Fit Chambray Casual Shirt",
+  //     qty: "1",
+  //     price: "1299",
+  //     discount:"10",
+  //     return_days: "12"
+  //   }
 ];
 
 export default shoeProducts;

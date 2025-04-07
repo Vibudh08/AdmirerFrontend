@@ -1,6 +1,10 @@
 *{
     margin: 0;
 }
+
+p{
+  margin-bottom: 0px !important;
+}
 /* Neutralize modal content styles */
 .no-padding-modal .ant-modal-content {
   padding: 0 !important;

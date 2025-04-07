@@ -7,9 +7,8 @@ import React, { useState, useEffect } from "react";
 import SignUp from "./components/auth/Signup";
 import Login from "./components/auth/Login";
 import Layout from "./components/Layout";
-import Index from "./components/cart-checkout/checkout/Index";
-import Coupons_screen from "./components/coupons/Coupons_screen";
-import Cart from "./components/cart-checkout/cart";
+import Cart from "./components/cart-checkout/cart"; 
+import Complete_cart_checkout from "./components/order-cycle/";
 
 function App() {
   const [currentRoute, setCurrentRoute] = useState("/");
@@ -35,8 +34,8 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/SignUp" element={<SignUp />} />
             <Route path="/LogIn" element={<Login />} />
-            <Route path="/cart" element={<Index />} />
             <Route path="/test" element={<Cart />} />
+            <Route path="/cart" element={<Complete_cart_checkout/>}/>
           </Routes>
           {currentRoute !== "/SignUp" && currentRoute !== "/LogIn" && (
             <Footer />

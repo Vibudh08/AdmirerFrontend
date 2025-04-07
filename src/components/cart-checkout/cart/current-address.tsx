@@ -64,20 +64,12 @@ const DeliveryInfo: React.FC<DeliveryInfoProps> = ({
             justifyContent: "flex-end",
           }}
         >
-          <Button
-            type="primary"
+          <button
+            className="w-[100px] border rounded h-[40px] py-2 text-sm  text-white hover:bg-purple-700 bg-purple-600"
             onClick={() => setIsModalVisible(true)}
-            style={{
-              backgroundColor: "#722ed1",
-              borderColor: "#722ed1",
-              color: "white",
-              fontWeight: "500",
-              width: "100%",
-              maxWidth: "120px",
-            }}
           >
             Change
-          </Button>
+          </button>
         </div>
       </div>
 

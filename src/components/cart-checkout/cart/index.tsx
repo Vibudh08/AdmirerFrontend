@@ -25,36 +25,41 @@ const Cart = () => {
   const onAddressChange = () => {};
   return (
     <>
-      <DeliveryInfo
-        name="yash"
-        pincode="110059"
-        address="UGF-9"
-        city="NEW DELHI"
-        state="DELHI"
-      />
-      {totalItem.map((item, index) => (
-        <>
-          <div>
-            <Item
-              brandName={item.brandName}
-              description={item.description}
-              price={item.price}
-              quantity={item.qty}
-              brandId={item.brandId}
-              discount={item.discount}
-              return_day={item.return_days}
-              finalPrice={(
-                parseFloat(item.price || "0") -
-                (parseFloat(item.price || "0") *
-                  parseFloat(item.discount || "0")) /
-                  100
-              ).toFixed(2)}
-              checked={false}
-              totalQuantity="10"
-            />
-          </div>
-        </>
-      ))}
+      <div className="flex flex-col w-[65%] bg-white px-4 py-2">
+        <DeliveryInfo
+          name="yash"
+          pincode="110059"
+          address="UGF-9"
+          city="NEW DELHI"
+          state="DELHI"
+        />
+
+        <div className="flex flex-col">
+          {totalItem.map((item, index) => (
+            <>
+              <div>
+                <Item
+                  brandName={item.brandName}
+                  description={item.description}
+                  price={item.price}
+                  quantity={item.qty}
+                  brandId={item.brandId}
+                  discount={item.discount}
+                  return_day={item.return_days}
+                  finalPrice={(
+                    parseFloat(item.price || "0") -
+                    (parseFloat(item.price || "0") *
+                      parseFloat(item.discount || "0")) /
+                      100
+                  ).toFixed(2)}
+                  checked={false}
+                  totalQuantity="10"
+                />
+              </div>
+            </>
+          ))}
+        </div>
+      </div>
     </>
   );
 };
