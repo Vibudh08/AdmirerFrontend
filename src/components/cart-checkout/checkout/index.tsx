@@ -65,7 +65,7 @@ const Index: React.FC<IndexProps> = ({
             <div className="flex justify-between items-center">
               <div className="flex gap-5">
                 <GoTag className="text-[19px] mt-1" />
-                <p className="font-semibold text-[#282c3f]">Apply Coupons</p>
+                <p className="font-semibold text-[#282c3f] mb-0 mt-1">Apply Coupons</p>
               </div>
               <button
                 className="px-3 py-1 border border-[#7B48A5] text-sm font-semibold text-[#7B48A5] hover:bg-[rgb(245,245,245)]"
