@@ -136,7 +136,7 @@ const SignUp = () => {
             </div>
 
             {/* Password */}
-            <div className="relative">
+            {/* <div className="relative">
               <div className="flex items-center">
                 <input
                   id="password"
@@ -169,7 +169,7 @@ const SignUp = () => {
                   {errors.password.message}
                 </p>
               )}
-            </div>
+            </div> */}
 
             {/* Submit Button */}
             <div className="pt-2">
