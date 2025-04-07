@@ -6,6 +6,9 @@ import Home from "./pages/Home";
 import React, { useState, useEffect } from "react";
 import SignUp from "./components/auth/Signup";
 import Login from "./components/auth/Login";
+import Layout from "./components/Layout";
+import Index from "./components/cart-checkout/checkout/Index";
+import Coupons_screen from "./components/coupons/Coupons_screen";
 import Cart from "./components/cart-checkout/cart";
 
 function App() {
@@ -23,15 +26,22 @@ function App() {
   return (
     <>
       <BrowserRouter>
-        <RouteTracker />
-        {currentRoute !== "/SignUp" && currentRoute !== "/LogIn" && <Header />}
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/SignUp" element={<SignUp />} />
-          <Route path="/LogIn" element={<Login />} />
-          <Route path="/test" element={<Cart />} />
-        </Routes>
-        {currentRoute !== "/SignUp" && currentRoute !== "/LogIn" && <Footer />}
+        <Layout>
+          <RouteTracker />
+          {currentRoute !== "/SignUp" && currentRoute !== "/LogIn" && (
+            <Header />
+          )}
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/SignUp" element={<SignUp />} />
+            <Route path="/LogIn" element={<Login />} />
+            <Route path="/cart" element={<Index />} />
+            <Route path="/test" element={<Cart />} />
+          </Routes>
+          {currentRoute !== "/SignUp" && currentRoute !== "/LogIn" && (
+            <Footer />
+          )}
+        </Layout>
       </BrowserRouter>
     </>
   );
