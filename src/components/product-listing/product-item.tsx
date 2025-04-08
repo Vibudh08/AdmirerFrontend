@@ -6,7 +6,7 @@ interface productItemProps {
   description: string;
   originalPrice: string;
   discount: string;
-  imageUrl?: string; // Added optional image URL prop
+  imageUrl?: string;
 }
 
 const ProductItem: React.FC<productItemProps> = ({
@@ -23,6 +23,18 @@ const ProductItem: React.FC<productItemProps> = ({
         maxWidth: "300px",
         fontFamily: "Arial, sans-serif",
         marginLeft: "40px",
+        backgroundColor: "#fff",
+        border: "3px solid black", // Thick border
+        borderTopWidth: "8px", // Thick at the top
+        borderRadius: "12px",
+        padding: "16px",
+        boxSizing: "border-box",
+        display: "flex",
+        flexDirection: "column",
+        gap: "10px", // Gap between each item
+        marginTop: "40px",
+        marginBottom: "40px",
+        marginRight: "40px",
       }}
     >
       {/* Product Image */}
@@ -33,7 +45,6 @@ const ProductItem: React.FC<productItemProps> = ({
           width: "100%",
           height: "auto",
           borderRadius: "8px",
-          marginBottom: "12px",
         }}
       />
 
@@ -42,8 +53,7 @@ const ProductItem: React.FC<productItemProps> = ({
         style={{
           fontWeight: "bold",
           color: "black",
-          fontSize: "18px",
-          marginBottom: "4px",
+          fontSize: "20px",
         }}
       >
         {name}
@@ -54,20 +64,27 @@ const ProductItem: React.FC<productItemProps> = ({
         style={{
           color: "#666",
           fontSize: "14px",
-          marginBottom: "8px",
+          lineHeight: "1.5",
         }}
       >
         {description}
       </div>
 
       {/* Price Section */}
-      <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "10px",
+          flexWrap: "wrap",
+        }}
+      >
         {/* Current Price */}
         <span
           style={{
             fontWeight: "bold",
             color: "black",
-            fontSize: "16px",
+            fontSize: "18px",
           }}
         >
           Rs {price}
@@ -78,7 +95,7 @@ const ProductItem: React.FC<productItemProps> = ({
           style={{
             textDecoration: "line-through",
             color: "#999",
-            fontSize: "14px",
+            fontSize: "16px",
           }}
         >
           Rs {originalPrice}
@@ -88,14 +105,14 @@ const ProductItem: React.FC<productItemProps> = ({
         <span
           style={{
             backgroundColor: "#ffebee",
-            color: "#f44336",
-            padding: "2px 6px",
-            borderRadius: "4px",
-            fontSize: "12px",
+            color: "#d32f2f",
             fontWeight: "bold",
+            fontSize: "14px",
+            padding: "4px 8px",
+            borderRadius: "6px",
           }}
         >
-          ({discount}% OFF)
+          {discount} OFF
         </span>
       </div>
     </div>
