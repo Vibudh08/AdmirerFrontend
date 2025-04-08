@@ -28,7 +28,7 @@ const SignUp = () => {
   };
 
   return (
-    <div className="min-h-screen  flex flex-col justify-center bg-[#efe6f3]  px-4">
+    <div className="min-h-screen  flex flex-col justify-center px-4">
       <div className=" sm:mx-auto sm:w-full sm:max-w-md">
         <div className="bg-white py-8 px-4 shadow-xl rounded-2xl sm:px-10 relative">
           {/* Close Button */}

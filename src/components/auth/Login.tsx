@@ -47,7 +47,7 @@ const Login = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-[#efe6f3]  p-4">
+    <div className="flex items-center justify-center min-h-screen p-4">
       <div className="relative bg-white rounded-2xl shadow-xl p-8 w-full max-w-md">
         {/* Close Button */}
         <button
