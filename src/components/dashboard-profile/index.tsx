@@ -38,7 +38,7 @@ const Dashboard_Profile = () => {
   const isValid = newNumber.length === 10 && error === "";
 
   return (
-    <div className="max-w-2xl mx-auto bg-white shadow-md p-12 max-sm:p-3 rounded-md mt-10">
+    <div className=" m-auto bg-white shadow-md p-8 max-sm:p-4 max-sm:mt-5 w-[100%]">
       <h2 className="text-xl font-semibold mb-6 border-b pb-2">Edit Details</h2>
 
       {/* Mobile Number */}
@@ -48,7 +48,7 @@ const Dashboard_Profile = () => {
           <span className="text-green-600 font-medium">9971900418</span>
           <div className="ml-auto">
             <button
-              className="text-sm border rounded px-6 py-2 hover:bg-gray-100"
+              className="text-sm border rounded px-6 py-1 hover:bg-gray-100"
               onClick={showModal}
             >
               CHANGE
@@ -61,21 +61,21 @@ const Dashboard_Profile = () => {
       <input
         type="text"
         placeholder="Full Name"
-        className="w-full border rounded px-4 py-2 mb-4 text-sm"
+        className="w-full border rounded px-4 py-3 mb-4 text-sm"
       />
 
       {/* Email */}
       <input
         type="email"
         placeholder="Email"
-        className="w-full border rounded px-4 py-2 mb-4 text-sm"
+        className="w-full border rounded px-4 py-3 mb-4 text-sm"
       />
 
       {/* Gender */}
       <div className="flex border rounded mb-4 overflow-hidden">
         <button
           onClick={() => setGender("male")}
-          className={`w-1/2 py-2 text-sm ${
+          className={`w-1/2 py-3 text-sm ${
             gender === "male"
               ? "text-purple-600 border-r bg-purple-50"
               : "bg-white text-gray-600"
@@ -85,7 +85,7 @@ const Dashboard_Profile = () => {
         </button>
         <button
           onClick={() => setGender("female")}
-          className={`w-1/2 py-2 text-sm ${
+          className={`w-1/2 py-3 text-sm ${
             gender === "female"
               ? "text-pink-600 bg-pink-50"
               : "bg-white text-gray-600"
@@ -99,7 +99,7 @@ const Dashboard_Profile = () => {
       <input
         type="text"
         placeholder="Birthday (dd/mm/yyyy)"
-        className="w-full border rounded px-4 py-2 mb-4 text-sm"
+        className="w-full border rounded px-4 py-3 mb-4 text-sm"
       />
 
       {/* Alternate Mobile Details */}
@@ -113,7 +113,7 @@ const Dashboard_Profile = () => {
         <input
           type="tel"
           placeholder="Mobile Number"
-          className="w-full border rounded-r px-4 py-2 text-sm"
+          className="w-full border rounded-r px-4 py-3 text-sm"
         />
       </div>
 
@@ -144,7 +144,7 @@ const Dashboard_Profile = () => {
             type="text"
             value="9971900418"
             readOnly
-            className="w-full border px-4 py-2 rounded bg-gray-100 text-sm text-gray-600 cursor-not-allowed"
+            className="w-full border px-4 py-3 rounded bg-gray-100 text-sm text-gray-600 cursor-not-allowed"
           />
         </div>
 
@@ -159,7 +159,7 @@ const Dashboard_Profile = () => {
             onChange={handleInputChange}
             placeholder="Enter new mobile number"
             maxLength={10}
-            className="w-full border px-4 py-2 rounded text-sm"
+            className="w-full border px-4 py-3 rounded text-sm"
           />
         </div>
 
@@ -172,7 +172,7 @@ const Dashboard_Profile = () => {
           type="primary"
           block
           disabled={!isValid}
-          className="!bg-[#9333ea] !border-[#9333ea] !text-white !font-medium mt-2"
+          className="!bg-[#9333ea] !border-[#9333ea] !text-white text-lg !font-medium mt-2 h-[45px]"
         >
           Submit
         </Button>
