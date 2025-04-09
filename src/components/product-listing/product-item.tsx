@@ -1,6 +1,5 @@
 import React from "react";
-import { FaShoppingCart } from "react-icons/fa";
-import { FiShoppingBag } from "react-icons/fi";
+import { FaHeart } from "react-icons/fa";
 
 interface productItemProps {
   name: string;
@@ -51,17 +50,12 @@ const ProductItem: React.FC<productItemProps> = ({
       </div>
 
       {/* Button Section */}
-      <div className="flex justify-between gap-2.5 mt-2.5">
-        {/* Add to Cart Button */}
-        <button className="bg-yellow-300 text-black px-4 py-2.5 rounded-lg font-bold cursor-pointer flex items-center gap-1.5 flex-1 justify-center border-none outline-none">
-          <FaShoppingCart />
-          Add to cart
-        </button>
-
-        {/* Buy Now Button */}
-        <button className="bg-green-500 text-white px-4 py-2.5 rounded-lg font-bold cursor-pointer flex items-center gap-1.5 flex-1 justify-center border-none outline-none">
-          <FiShoppingBag />
-          Buy Now
+      <div className="flex justify-center mt-2.5">
+        <button className="relative group bg-transparent text-red-400 hover:text-red-500 p-3 rounded-full cursor-pointer border border-red-200">
+          <FaHeart size={20} />
+          <span className="absolute left-1/2 top-full mt-2 transform -translate-x-1/2 scale-0 group-hover:scale-100 bg-black text-white text-xs rounded-lg px-2 py-1 transition-transform">
+            Wishlist
+          </span>
         </button>
       </div>
     </div>
