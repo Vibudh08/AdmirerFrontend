@@ -20,8 +20,21 @@ const ProductItem: React.FC<productItemProps> = ({
 }) => {
   return (
     <div className="max-w-[300px] font-sans mx-10 my-10 bg-white rounded-xl p-4 flex flex-col gap-2.5 border border-gray-300">
-      {/* Product Image */}
-      <img src={imageUrl} alt="product" className="w-full h-auto rounded-lg" />
+      {/* Product Image with Hover Button */}
+      <div className="relative group">
+        <img
+          src={imageUrl}
+          alt="product"
+          className="w-full h-auto rounded-lg"
+        />
+
+        {/* Heart Button at Top Right (Hidden initially, shows on hover) */}
+        <button className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+          <div className="bg-white p-2 rounded-full border border-red-300 text-red-400 hover:text-red-500 shadow-md">
+            <FaHeart size={20} />
+          </div>
+        </button>
+      </div>
 
       {/* Product Name */}
       <div className="font-bold text-black text-xl truncate overflow-hidden whitespace-nowrap">
@@ -35,28 +48,13 @@ const ProductItem: React.FC<productItemProps> = ({
 
       {/* Price Section */}
       <div className="flex items-center gap-2.5 flex-wrap">
-        {/* Current Price */}
         <span className="font-bold text-black text-lg">Rs {price}</span>
-
-        {/* Original Price (strikethrough) */}
         <span className="line-through text-gray-400 text-xs">
           Rs {originalPrice}
         </span>
-
-        {/* Discount Badge */}
         <span className="bg-red-50 text-red-700 font-bold text-sm px-2 py-1 rounded text-xs">
           {discount}% OFF
         </span>
-      </div>
-
-      {/* Button Section */}
-      <div className="flex justify-center mt-2.5">
-        <button className="relative group bg-transparent text-red-400 hover:text-red-500 p-3 rounded-full cursor-pointer border border-red-200">
-          <FaHeart size={20} />
-          <span className="absolute left-1/2 top-full mt-2 transform -translate-x-1/2 scale-0 group-hover:scale-100 bg-black text-white text-xs rounded-lg px-2 py-1 transition-transform">
-            Wishlist
-          </span>
-        </button>
       </div>
     </div>
   );
