@@ -12,6 +12,9 @@ import OrderPage from "./components/dashboard-orders";
 import Dashboard_Profile from "./components/dashboard-profile";
 import OrderDetails from "./components/dashboard-orders/OrderDetails";
 import Dashboard from "./pages/Dashboard";
+import ProductItem from "./components/product-listing/product-item";
+import LeftSideBar from "./components/product-listing/left-side-bar";
+import ProductListing from "./pages/product-listing";
 import ProductDetails from "./pages/ProductDetail";
 
 function App() {
@@ -39,10 +42,12 @@ function App() {
             <Route path="/SignUp" element={<SignUp />} />
             <Route path="/LogIn" element={<Login />} />
             <Route path="/test" element={<ProductDetails/>} />
-            <Route path="/test2" element={<Dashboard_Profile/>} />
-            <Route path="/order/:id" element={<OrderDetails/>}/>
-            <Route path="/cart" element={<Complete_cart_checkout/>}/>
-            <Route path="/dashboard" element={<Dashboard/>}/>
+            <Route path="/dashboard_profile" element={<Dashboard_Profile />} />
+            <Route path="/order/:id" element={<OrderDetails />} />
+            <Route path="/cart" element={<Complete_cart_checkout />} />
+            <Route path="/test3" element={<ProductListing />} />
+            <Route path="/left" element={<LeftSideBar />} />
+            <Route path="/dashboard" element={<Dashboard />} />
           </Routes>
           {currentRoute !== "/SignUp" && currentRoute !== "/LogIn" && (
             <Footer />
