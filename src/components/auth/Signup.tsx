@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { FaTimes, FaEye, FaEyeSlash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import { signUp_API } from "../api/api-end-points";
 
 interface FormProps {
   firstName: string;
@@ -20,7 +21,19 @@ const SignUp = () => {
   } = useForm<FormProps>();
   const [showPassword, setShowPassword] = useState(false);
   const onSubmit = (data: FormProps) => {
-    console.log(data);
+    const user = {
+      firstname: data.firstName,
+      lastname: data.lastName,
+      mobile: data.phoneNumber,
+      email: data.email,
+    };
+    fetch(signUp_API, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(user),
+    });
   };
 
   const handleClose = () => {
