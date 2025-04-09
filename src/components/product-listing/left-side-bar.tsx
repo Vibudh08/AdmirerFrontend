@@ -6,8 +6,8 @@ import {
 
 const LeftSideBar = () => {
   const [priceRanges, setPriceRanges] = useState<string[]>([]);
-  const [selectedRange, setSelectedRange] = useState<string>("");
-  const [selectedCategory, setSelectedCategory] = useState<string>("");
+  const [selectedRanges, setSelectedRanges] = useState<string[]>([]);
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [categories, setCategories] = useState<Record<string, string[]>>({});
   const [expandedSections, setExpandedSections] = useState<
     Record<string, boolean>
@@ -24,9 +24,6 @@ const LeftSideBar = () => {
       .then((response) => response.json())
       .then((data) => {
         setPriceRanges(data);
-        if (data.length > 0) {
-          setSelectedRange(data[0]); // Auto-select first price range
-        }
       })
       .catch((error) => {
         console.error("Error fetching price ranges:", error);
@@ -39,15 +36,6 @@ const LeftSideBar = () => {
       .then((response) => response.json())
       .then((data) => {
         setCategories(data);
-        // Auto-select the first available category or subcategory
-        const firstCategory = Object.keys(data)[0];
-        if (firstCategory) {
-          if (data[firstCategory].length > 0) {
-            setSelectedCategory(data[firstCategory][0]);
-          } else {
-            setSelectedCategory(firstCategory);
-          }
-        }
       })
       .catch((error) => {
         console.error("Error fetching categories:", error);
@@ -55,11 +43,23 @@ const LeftSideBar = () => {
   }, []);
 
   const handleRangeChange = (range: string) => {
-    setSelectedRange(range);
+    setSelectedRanges((prev) => {
+      if (prev.includes(range)) {
+        return prev.filter((r) => r !== range);
+      } else {
+        return [...prev, range];
+      }
+    });
   };
 
   const handleCategoryChange = (category: string) => {
-    setSelectedCategory(category);
+    setSelectedCategories((prev) => {
+      if (prev.includes(category)) {
+        return prev.filter((c) => c !== category);
+      } else {
+        return [...prev, category];
+      }
+    });
   };
 
   const toggleSection = (section: string) => {
@@ -87,18 +87,18 @@ const LeftSideBar = () => {
             {priceRanges.map((range, index) => (
               <div key={`price-${index}`} className="flex items-center">
                 <input
-                  type="radio"
+                  type="checkbox"
                   id={`range-${index}`}
                   name="priceRange"
                   value={range}
-                  checked={selectedRange === range}
+                  checked={selectedRanges.includes(range)}
                   onChange={() => handleRangeChange(range)}
                   className="h-4 w-4 text-purple-600 focus:ring-purple-500"
                 />
                 <label
                   htmlFor={`range-${index}`}
                   className={`ml-3 font-bold px-3 py-1 rounded-full text-sm transition-colors duration-200 ${
-                    selectedRange === range
+                    selectedRanges.includes(range)
                       ? "bg-purple-600 text-white"
                       : "bg-purple-400 text-white hover:bg-purple-500"
                   }`}
@@ -131,18 +131,18 @@ const LeftSideBar = () => {
                   onClick={() => toggleSection(category)}
                 >
                   <input
-                    type="radio"
+                    type="checkbox"
                     id={`cat-${category}`}
-                    name="allCategories"
+                    name="categories"
                     value={category}
-                    checked={selectedCategory === category}
+                    checked={selectedCategories.includes(category)}
                     onChange={() => handleCategoryChange(category)}
                     className="h-4 w-4 text-purple-600 focus:ring-purple-500"
                   />
                   <label
                     htmlFor={`cat-${category}`}
                     className={`ml-2 font-semibold ${
-                      selectedCategory === category
+                      selectedCategories.includes(category)
                         ? "text-purple-800"
                         : "text-purple-700"
                     }`}
@@ -163,18 +163,18 @@ const LeftSideBar = () => {
                         className="flex items-center"
                       >
                         <input
-                          type="radio"
+                          type="checkbox"
                           id={`${category}-${idx}`}
-                          name="allCategories"
+                          name="subcategories"
                           value={subcategory}
-                          checked={selectedCategory === subcategory}
+                          checked={selectedCategories.includes(subcategory)}
                           onChange={() => handleCategoryChange(subcategory)}
                           className="h-4 w-4 text-purple-600 focus:ring-purple-500"
                         />
                         <label
                           htmlFor={`${category}-${idx}`}
                           className={`ml-2 font-medium ${
-                            selectedCategory === subcategory
+                            selectedCategories.includes(subcategory)
                               ? "text-purple-800 font-semibold"
                               : "text-purple-600"
                           }`}
