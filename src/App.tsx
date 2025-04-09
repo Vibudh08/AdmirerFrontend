@@ -44,18 +44,6 @@ function App() {
             <Route path="/dashboard_profile" element={<Dashboard_Profile />} />
             <Route path="/order/:id" element={<OrderDetails />} />
             <Route path="/cart" element={<Complete_cart_checkout />} />
-            <Route
-              path="/test2"
-              element={
-                <ProductItem
-                  name="Jwellery"
-                  price="120000"
-                  description="very costly but value of money"
-                  originalPrice="240000"
-                  discount="50"
-                />
-              }
-            />
             <Route path="/test3" element={<ProductListing />} />
             <Route path="/left" element={<LeftSideBar />} />
             <Route path="/dashboard" element={<Dashboard />} />
