@@ -70,7 +70,7 @@ const LeftSideBar = () => {
   };
 
   return (
-    <div className="w-[30%] p-4 rounded-lg bg-purple-100 shadow-sm border border-black">
+    <div className="w-[30%] m-6 p-6 rounded-2xl bg-white shadow-md border border-black">
       {/* Price Range Section */}
       <div className="mb-6">
         <div
