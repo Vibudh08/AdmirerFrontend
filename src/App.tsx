@@ -14,6 +14,7 @@ import OrderDetails from "./components/dashboard-orders/OrderDetails";
 import Dashboard from "./pages/Dashboard";
 import ProductItem from "./components/product-listing/product-item";
 import LeftSideBar from "./components/product-listing/left-side-bar";
+import ProductListing from "./pages/product-listing";
 
 function App() {
   const [currentRoute, setCurrentRoute] = useState("/");
@@ -55,6 +56,7 @@ function App() {
                 />
               }
             />
+            <Route path="/test3" element={<ProductListing />} />
             <Route path="/left" element={<LeftSideBar />} />
             <Route path="/dashboard" element={<Dashboard />} />
           </Routes>

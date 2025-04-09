@@ -5,14 +5,13 @@ import {
 } from "../api/api-end-points";
 
 const LeftSideBar = () => {
-  // Updated type to match new API response format
   const [priceRanges, setPriceRanges] = useState<number[][]>([]);
   const [selectedPriceRange, setSelectedPriceRange] = useState<
     [number, number]
   >([0, 0]);
   const [sliderValue, setSliderValue] = useState<number>(0);
   const [maxSliderValue, setMaxSliderValue] = useState<number>(10000);
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [categories, setCategories] = useState<Record<string, string[]>>({});
   const [expandedSections, setExpandedSections] = useState<
     Record<string, boolean>
@@ -34,8 +33,18 @@ const LeftSideBar = () => {
         const highestRange = getHighestPriceRange(data);
         setMaxSliderValue(highestRange);
 
-        // Set initial price range to [0, 0]
-        setSelectedPriceRange([0, 0]);
+        // Set initial price range to first range from API
+        if (data.length > 0) {
+          const firstRange = data[0];
+          const rangeToSet =
+            firstRange.length === 1
+              ? [firstRange[0], firstRange[0]]
+              : [firstRange[0], firstRange[1]];
+
+          setSelectedPriceRange(rangeToSet as [number, number]);
+          setSliderValue(firstRange[0]);
+          console.log("Default selected price range:", rangeToSet);
+        }
       })
       .catch((error) => {
         console.error("Error fetching price ranges:", error);
@@ -48,6 +57,27 @@ const LeftSideBar = () => {
       .then((response) => response.json())
       .then((data) => {
         setCategories(data);
+
+        // Set initial category selection
+        const firstCategory = Object.keys(data)[0];
+        if (firstCategory) {
+          if (data[firstCategory].length > 0) {
+            // If subcategories exist, select first subcategory
+            setSelectedCategory(data[firstCategory][0]);
+            console.log("Default selected category:", {
+              category: firstCategory,
+              subcategory: data[firstCategory][0],
+            });
+          } else {
+            // If no subcategories, select the category itself
+            setSelectedCategory(firstCategory);
+
+            console.log("Default selected category:", {
+              category: firstCategory,
+              subcategory: null,
+            });
+          }
+        }
       })
       .catch((error) => {
         console.error("Error fetching categories:", error);
@@ -57,53 +87,21 @@ const LeftSideBar = () => {
   // Parse price ranges to get the highest value
   const getHighestPriceRange = (ranges: number[][]): number => {
     if (!ranges || ranges.length === 0) return 10000;
-
-    // Handle single-value range like [10000]
     const lastRange = ranges[ranges.length - 1];
-    if (lastRange.length === 1) {
-      // Add a buffer for the maximum
-      return lastRange[0] * 1.5;
-    }
-
-    // Get the highest value from all ranges
-    let highestValue = 0;
-    ranges.forEach((range) => {
-      const maxInRange = Math.max(...range);
-      if (maxInRange > highestValue) {
-        highestValue = maxInRange;
-      }
-    });
-
-    return highestValue;
+    return lastRange.length === 1 ? lastRange[0] * 1 : Math.max(...lastRange);
   };
 
-  // Get price range array [min, max] based on slider value
   const getPriceRangeFromValue = (value: number): [number, number] => {
-    // If no ranges yet or value is 0, return [0, 0]
-    if (priceRanges.length === 0 || value === 0) {
-      return [0, 0];
-    }
-
-    // Find the appropriate range based on slider value
-    let selectedRange: [number, number] = [0, 0];
+    if (priceRanges.length === 0 || value === 0) return [0, 0];
 
     for (const range of priceRanges) {
-      if (range.length === 1) {
-        // Handle single-value range like [10000]
-        if (value >= range[0]) {
-          selectedRange = [range[0], maxSliderValue];
-        }
-      } else if (range.length >= 2) {
-        // Standard range [min, max]
-        if (value >= range[0] && value <= range[1]) {
-          selectedRange = [range[0], range[1]];
-          break;
-        }
+      if (range.length === 1 && value >= range[0]) {
+        return [range[0], maxSliderValue];
+      } else if (range.length >= 2 && value >= range[0] && value <= range[1]) {
+        return [range[0], range[1]];
       }
     }
-
-    console.log("Selected price range:", selectedRange);
-    return selectedRange;
+    return [0, 0];
   };
 
   const handleSliderChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -111,16 +109,38 @@ const LeftSideBar = () => {
     setSliderValue(value);
     const newRange = getPriceRangeFromValue(value);
     setSelectedPriceRange(newRange);
+    console.log("Selected price range:", newRange);
   };
 
   const handleCategoryChange = (category: string) => {
-    setSelectedCategories((prev) => {
-      if (prev.includes(category)) {
-        return prev.filter((c) => c !== category);
-      } else {
-        return [...prev, category];
+    setSelectedCategory(category);
+
+    // Find if this is a main category or subcategory
+    let isMainCategory = false;
+    let parentCategory = "";
+
+    for (const [cat, subcats] of Object.entries(categories)) {
+      if (cat === category) {
+        isMainCategory = true;
+        break;
       }
-    });
+      if (subcats.includes(category)) {
+        parentCategory = cat;
+        break;
+      }
+    }
+
+    if (isMainCategory) {
+      console.log("Selected category:", {
+        category: category,
+        subcategory: null,
+      });
+    } else {
+      console.log("Selected category:", {
+        category: parentCategory,
+        subcategory: category,
+      });
+    }
   };
 
   const toggleSection = (section: string) => {
@@ -130,45 +150,8 @@ const LeftSideBar = () => {
     }));
   };
 
-  // Generate price slider tick marks
-  const generateSliderMarks = () => {
-    // Create a mark for each 1000 increment
-    const step = 1000;
-    const marks = [];
-    const numMarks = Math.ceil(maxSliderValue / step);
-
-    for (let i = 0; i <= numMarks; i++) {
-      const value = i * step;
-      if (value <= maxSliderValue) {
-        marks.push(
-          <div
-            key={`mark-${i}`}
-            className="absolute h-3 w-0.5 bg-purple-300 -mt-0.5"
-            style={{ left: `${(value / maxSliderValue) * 100}%` }}
-          >
-            {i % 5 === 0 && (
-              <div className="mt-4 text-xs text-purple-700 -ml-4">
-                {value >= 1000 ? `${value / 1000}k` : value}
-              </div>
-            )}
-          </div>
-        );
-      }
-    }
-
-    return marks;
-  };
-
-  // Format price for display
-  const formatPrice = (price: number) => {
-    if (price >= 1000) {
-      return `${price / 1000}k`;
-    }
-    return price;
-  };
-
   return (
-    <div className="w-[30%] m-6 p-6 rounded-2xl bg-white shadow-md border border-black">
+    <div className=" m-6 p-6  bg-white shadow-md ">
       {/* Price Range Section */}
       <div className="mb-6">
         <div
@@ -183,21 +166,14 @@ const LeftSideBar = () => {
         {expandedSections.price && (
           <div className="flex flex-col space-y-6 mt-4">
             <div className="px-2 relative">
-              <div className="relative">
-                <input
-                  type="range"
-                  min="0"
-                  max={maxSliderValue}
-                  value={sliderValue}
-                  onChange={handleSliderChange}
-                  className="w-full h-2 bg-purple-200 rounded-lg appearance-none cursor-pointer relative z-10"
-                />
-                <div className="absolute top-1/2 left-0 w-full transform -translate-y-1/2 h-0.5">
-                  {generateSliderMarks()}
-                </div>
-              </div>
-
-              {/* Current slider value tooltip */}
+              <input
+                type="range"
+                min="0"
+                max={maxSliderValue}
+                value={sliderValue}
+                onChange={handleSliderChange}
+                className="w-full h-2 bg-purple-200 rounded-lg appearance-none cursor-pointer"
+              />
               <div
                 className="absolute -top-8 transform -translate-x-1/2 bg-purple-700 text-white px-2 py-1 rounded text-sm whitespace-nowrap"
                 style={{ left: `${(sliderValue / maxSliderValue) * 100}%` }}
@@ -205,12 +181,10 @@ const LeftSideBar = () => {
                 ₹{sliderValue}
               </div>
             </div>
-
-            {/* Selected range display */}
             {selectedPriceRange[0] > 0 && (
               <div className="bg-purple-100 p-3 rounded-lg">
                 <p className="text-purple-800 text-sm font-medium">
-                  Selected range: ₹{selectedPriceRange[0]} -
+                  Range: ₹{selectedPriceRange[0]} -
                   {selectedPriceRange[1] === maxSliderValue
                     ? " and above"
                     : ` ₹${selectedPriceRange[1]}`}
@@ -236,31 +210,35 @@ const LeftSideBar = () => {
           <div className="mt-3">
             {Object.entries(categories).map(([category, subcategories]) => (
               <div key={category} className="mb-4">
-                <div
-                  className="flex items-center cursor-pointer"
-                  onClick={() => toggleSection(category)}
-                >
+                <div className="flex items-center">
                   <input
-                    type="checkbox"
+                    type="radio"
                     id={`cat-${category}`}
-                    name="categories"
+                    name="allCategories"
                     value={category}
-                    checked={selectedCategories.includes(category)}
+                    checked={selectedCategory === category}
                     onChange={() => handleCategoryChange(category)}
                     className="h-4 w-4 text-purple-600 focus:ring-purple-500"
                   />
                   <label
                     htmlFor={`cat-${category}`}
                     className={`ml-2 font-semibold ${
-                      selectedCategories.includes(category)
+                      selectedCategory === category
                         ? "text-purple-800"
                         : "text-purple-700"
                     }`}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleSection(category);
+                    }}
                   >
                     {category}
                   </label>
                   {subcategories.length > 0 && (
-                    <span className="ml-2 text-purple-800">
+                    <span
+                      className="ml-2 text-purple-800 cursor-pointer"
+                      onClick={() => toggleSection(category)}
+                    >
                       {expandedSections[category] ? "−" : "+"}
                     </span>
                   )}
@@ -273,18 +251,18 @@ const LeftSideBar = () => {
                         className="flex items-center"
                       >
                         <input
-                          type="checkbox"
+                          type="radio"
                           id={`${category}-${idx}`}
-                          name="subcategories"
+                          name="allCategories"
                           value={subcategory}
-                          checked={selectedCategories.includes(subcategory)}
+                          checked={selectedCategory === subcategory}
                           onChange={() => handleCategoryChange(subcategory)}
                           className="h-4 w-4 text-purple-600 focus:ring-purple-500"
                         />
                         <label
                           htmlFor={`${category}-${idx}`}
                           className={`ml-2 font-medium ${
-                            selectedCategories.includes(subcategory)
+                            selectedCategory === subcategory
                               ? "text-purple-800 font-semibold"
                               : "text-purple-600"
                           }`}
