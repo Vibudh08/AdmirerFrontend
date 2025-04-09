@@ -20,15 +20,17 @@ const ProductItem: React.FC<productItemProps> = ({
   imageUrl = "http://ww1.prweb.com/prfiles/2012/10/31/10079702/emily_qtrbnd_5.jpg",
 }) => {
   return (
-    <div className="max-w-[300px] font-sans mx-10 my-10 bg-white rounded-xl p-4 flex flex-col gap-2.5">
+    <div className="max-w-[300px] font-sans mx-10 my-10 bg-white rounded-xl p-4 flex flex-col gap-2.5 border border-gray-300">
       {/* Product Image */}
       <img src={imageUrl} alt="product" className="w-full h-auto rounded-lg" />
 
       {/* Product Name */}
-      <div className="font-bold text-black text-xl">{name}</div>
+      <div className="font-bold text-black text-xl truncate overflow-hidden whitespace-nowrap">
+        {name}
+      </div>
 
       {/* Product Description */}
-      <div className="text-gray-400 text-xs leading-relaxed font-bold">
+      <div className="text-gray-400 text-xs leading-relaxed font-bold truncate overflow-hidden whitespace-nowrap">
         {description}
       </div>
 
@@ -38,12 +40,12 @@ const ProductItem: React.FC<productItemProps> = ({
         <span className="font-bold text-black text-lg">Rs {price}</span>
 
         {/* Original Price (strikethrough) */}
-        <span className="line-through text-gray-400 text-base">
+        <span className="line-through text-gray-400 text-xs">
           Rs {originalPrice}
         </span>
 
         {/* Discount Badge */}
-        <span className="bg-red-50 text-red-700 font-bold text-sm px-2 py-1 rounded">
+        <span className="bg-red-50 text-red-700 font-bold text-sm px-2 py-1 rounded text-xs">
           {discount}% OFF
         </span>
       </div>
