@@ -5,8 +5,13 @@ import {
 } from "../api/api-end-points";
 
 const LeftSideBar = () => {
-  const [priceRanges, setPriceRanges] = useState<string[]>([]);
-  const [selectedRanges, setSelectedRanges] = useState<string[]>([]);
+  // Updated type to match new API response format
+  const [priceRanges, setPriceRanges] = useState<number[][]>([]);
+  const [selectedPriceRange, setSelectedPriceRange] = useState<
+    [number, number]
+  >([0, 0]);
+  const [sliderValue, setSliderValue] = useState<number>(0);
+  const [maxSliderValue, setMaxSliderValue] = useState<number>(10000);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [categories, setCategories] = useState<Record<string, string[]>>({});
   const [expandedSections, setExpandedSections] = useState<
@@ -22,8 +27,15 @@ const LeftSideBar = () => {
       method: "GET",
     })
       .then((response) => response.json())
-      .then((data) => {
+      .then((data: number[][]) => {
         setPriceRanges(data);
+
+        // Set initial max slider value based on highest price range
+        const highestRange = getHighestPriceRange(data);
+        setMaxSliderValue(highestRange);
+
+        // Set initial price range to [0, 0]
+        setSelectedPriceRange([0, 0]);
       })
       .catch((error) => {
         console.error("Error fetching price ranges:", error);
@@ -42,14 +54,63 @@ const LeftSideBar = () => {
       });
   }, []);
 
-  const handleRangeChange = (range: string) => {
-    setSelectedRanges((prev) => {
-      if (prev.includes(range)) {
-        return prev.filter((r) => r !== range);
-      } else {
-        return [...prev, range];
+  // Parse price ranges to get the highest value
+  const getHighestPriceRange = (ranges: number[][]): number => {
+    if (!ranges || ranges.length === 0) return 10000;
+
+    // Handle single-value range like [10000]
+    const lastRange = ranges[ranges.length - 1];
+    if (lastRange.length === 1) {
+      // Add a buffer for the maximum
+      return lastRange[0] * 1.5;
+    }
+
+    // Get the highest value from all ranges
+    let highestValue = 0;
+    ranges.forEach((range) => {
+      const maxInRange = Math.max(...range);
+      if (maxInRange > highestValue) {
+        highestValue = maxInRange;
       }
     });
+
+    return highestValue;
+  };
+
+  // Get price range array [min, max] based on slider value
+  const getPriceRangeFromValue = (value: number): [number, number] => {
+    // If no ranges yet or value is 0, return [0, 0]
+    if (priceRanges.length === 0 || value === 0) {
+      return [0, 0];
+    }
+
+    // Find the appropriate range based on slider value
+    let selectedRange: [number, number] = [0, 0];
+
+    for (const range of priceRanges) {
+      if (range.length === 1) {
+        // Handle single-value range like [10000]
+        if (value >= range[0]) {
+          selectedRange = [range[0], maxSliderValue];
+        }
+      } else if (range.length >= 2) {
+        // Standard range [min, max]
+        if (value >= range[0] && value <= range[1]) {
+          selectedRange = [range[0], range[1]];
+          break;
+        }
+      }
+    }
+
+    console.log("Selected price range:", selectedRange);
+    return selectedRange;
+  };
+
+  const handleSliderChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = parseInt(event.target.value, 10);
+    setSliderValue(value);
+    const newRange = getPriceRangeFromValue(value);
+    setSelectedPriceRange(newRange);
   };
 
   const handleCategoryChange = (category: string) => {
@@ -69,6 +130,43 @@ const LeftSideBar = () => {
     }));
   };
 
+  // Generate price slider tick marks
+  const generateSliderMarks = () => {
+    // Create a mark for each 1000 increment
+    const step = 1000;
+    const marks = [];
+    const numMarks = Math.ceil(maxSliderValue / step);
+
+    for (let i = 0; i <= numMarks; i++) {
+      const value = i * step;
+      if (value <= maxSliderValue) {
+        marks.push(
+          <div
+            key={`mark-${i}`}
+            className="absolute h-3 w-0.5 bg-purple-300 -mt-0.5"
+            style={{ left: `${(value / maxSliderValue) * 100}%` }}
+          >
+            {i % 5 === 0 && (
+              <div className="mt-4 text-xs text-purple-700 -ml-4">
+                {value >= 1000 ? `${value / 1000}k` : value}
+              </div>
+            )}
+          </div>
+        );
+      }
+    }
+
+    return marks;
+  };
+
+  // Format price for display
+  const formatPrice = (price: number) => {
+    if (price >= 1000) {
+      return `${price / 1000}k`;
+    }
+    return price;
+  };
+
   return (
     <div className="w-[30%] m-6 p-6 rounded-2xl bg-white shadow-md border border-black">
       {/* Price Range Section */}
@@ -83,30 +181,42 @@ const LeftSideBar = () => {
           </span>
         </div>
         {expandedSections.price && (
-          <div className="flex flex-col space-y-3 mt-3">
-            {priceRanges.map((range, index) => (
-              <div key={`price-${index}`} className="flex items-center">
+          <div className="flex flex-col space-y-6 mt-4">
+            <div className="px-2 relative">
+              <div className="relative">
                 <input
-                  type="checkbox"
-                  id={`range-${index}`}
-                  name="priceRange"
-                  value={range}
-                  checked={selectedRanges.includes(range)}
-                  onChange={() => handleRangeChange(range)}
-                  className="h-4 w-4 text-purple-600 focus:ring-purple-500"
+                  type="range"
+                  min="0"
+                  max={maxSliderValue}
+                  value={sliderValue}
+                  onChange={handleSliderChange}
+                  className="w-full h-2 bg-purple-200 rounded-lg appearance-none cursor-pointer relative z-10"
                 />
-                <label
-                  htmlFor={`range-${index}`}
-                  className={`ml-3 font-bold px-3 py-1 rounded-full text-sm transition-colors duration-200 ${
-                    selectedRanges.includes(range)
-                      ? "bg-purple-600 text-white"
-                      : "bg-purple-400 text-white hover:bg-purple-500"
-                  }`}
-                >
-                  {range}
-                </label>
+                <div className="absolute top-1/2 left-0 w-full transform -translate-y-1/2 h-0.5">
+                  {generateSliderMarks()}
+                </div>
               </div>
-            ))}
+
+              {/* Current slider value tooltip */}
+              <div
+                className="absolute -top-8 transform -translate-x-1/2 bg-purple-700 text-white px-2 py-1 rounded text-sm whitespace-nowrap"
+                style={{ left: `${(sliderValue / maxSliderValue) * 100}%` }}
+              >
+                ₹{sliderValue}
+              </div>
+            </div>
+
+            {/* Selected range display */}
+            {selectedPriceRange[0] > 0 && (
+              <div className="bg-purple-100 p-3 rounded-lg">
+                <p className="text-purple-800 text-sm font-medium">
+                  Selected range: ₹{selectedPriceRange[0]} -
+                  {selectedPriceRange[1] === maxSliderValue
+                    ? " and above"
+                    : ` ₹${selectedPriceRange[1]}`}
+                </p>
+              </div>
+            )}
           </div>
         )}
       </div>
