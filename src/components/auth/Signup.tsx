@@ -28,7 +28,7 @@ const SignUp = () => {
   };
 
   return (
-    <div className="min-h-screen  flex flex-col justify-center bg-[#efe6f3]  px-4">
+    <div className="min-h-screen  flex flex-col justify-center px-4">
       <div className=" sm:mx-auto sm:w-full sm:max-w-md">
         <div className="bg-white py-8 px-4 shadow-xl rounded-2xl sm:px-10 relative">
           {/* Close Button */}
@@ -134,43 +134,6 @@ const SignUp = () => {
                 </p>
               )}
             </div>
-
-            {/* Password */}
-            {/* <div className="relative">
-              <div className="flex items-center">
-                <input
-                  id="password"
-                  type={showPassword ? "text" : "password"}
-                  {...register("password", {
-                    required: "Password is required",
-                    minLength: {
-                      value: 8,
-                      message: "Password must be at least 8 characters",
-                    },
-                  })}
-                  placeholder="Create New Password"
-                  className="flex-1 h-[50px] bg-transparent border  border-gray-300  rounded-[4px] mt-[0px] mb-0 px-5 focus:outline-none focus:border-sky-400 focus:ring-1 focus:ring-sky-400 text-[var(--clr-common-text)] text-base"
-                />
-                <button
-                  type="button"
-                  className="ml-2 h-[50px] w-[50px] flex items-center justify-center text-gray-500 hover:text-gray-700 focus:outline-none mt-[0px] border border-gray-300 rounded-[4px] hover:border-sky-400"
-                  onClick={() => setShowPassword(!showPassword)}
-                  aria-label={showPassword ? "Hide password" : "Show password"}
-                >
-                  {showPassword ? (
-                    <FaEyeSlash className="w-5 h-5" />
-                  ) : (
-                    <FaEye className="w-5 h-5" />
-                  )}
-                </button>
-              </div>
-              {errors.password && (
-                <p className="mt-1 text-sm text-red-600">
-                  {errors.password.message}
-                </p>
-              )}
-            </div> */}
-
             {/* Submit Button */}
             <div className="pt-2">
               <button

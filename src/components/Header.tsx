@@ -77,17 +77,17 @@ function Header() {
             <nav className="box-navigation text-center p-2 bg-[#e5d6eb]">
               <Slider {...offerBanner}>
                 <div className="swiper-slide">
-                  <p className="top-bar-text fw-5 text-[#7925bf]">
+                  <p className="top-bar-text fw-5 text-[#7925bf] text-[14px]">
                     Summer sale discount off 70%
                   </p>
                 </div>
                 <div className="swiper-slide">
-                  <p className="top-bar-text fw-5 text-[#7925bf]">
+                  <p className="top-bar-text fw-5 text-[#7925bf] text-[14px]">
                     Time to refresh your wardrobe.
                   </p>
                 </div>
                 <div className="swiper-slide">
-                  <p className="top-bar-text fw-5 text-[#7925bf]">
+                  <p className="top-bar-text fw-5 text-[#7925bf] text-[14px]">
                     cvyuijnhbg tbijh
                   </p>
                 </div>
