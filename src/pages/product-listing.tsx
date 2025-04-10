@@ -43,7 +43,7 @@ const ProductListing = () => {
       <div className="flex flex-col lg:flex-row w-full h-full gap-4 sm:gap-8">
         {/* Left Sidebar - Optimized for mobile and desktop */}
         <div
-          className={`fixed lg:static inset-y-0 left-0 z-30 w-[85%] sm:w-3/4 lg:w-[22%] xl:w-[20%] lg:min-w-[280px] bg-white rounded-r-xl lg:rounded-xl shadow-xl border border-gray-200 transform ${
+          className={`fixed lg:static inset-y-0 left-0 z-[1000] w-[85%] sm:w-3/4 lg:w-[22%] xl:w-[20%] lg:min-w-[280px] bg-white rounded-r-xl lg:rounded-xl shadow-xl border border-gray-200 transform ${
             showMobileFilters ? "translate-x-0" : "-translate-x-full"
           } lg:translate-x-0 transition-transform duration-300 ease-in-out overflow-y-auto max-h-screen`}
         >
@@ -61,7 +61,7 @@ const ProductListing = () => {
         {/* Overlay with click outside behavior */}
         {showMobileFilters && (
           <div
-            className="fixed inset-0 bg-black bg-opacity-50 z-20 lg:hidden transition-opacity duration-300"
+            className="fixed inset-0 bg-black bg-opacity-50 z-[999] lg:hidden transition-opacity duration-300"
             onClick={() => setShowMobileFilters(false)}
             role="presentation"
           />
