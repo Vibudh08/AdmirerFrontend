@@ -42,6 +42,7 @@ const LeftSideBar = () => {
       .catch((error) => {
         console.error("Error fetching price ranges:", error);
       });
+    // function to be called when any value changes
 
     // Fetch categories
     fetch(productCategoy_API, {
@@ -77,6 +78,12 @@ const LeftSideBar = () => {
       });
   }, []);
   // functions related for price range
+  useEffect(() => {
+    // Log current min and max values
+    console.log("Current price range:", { min: minVal, max: maxVal });
+
+    // Execute your custom function here
+  }, [minVal, maxVal]);
   const slideMin = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const value: number = parseInt(e.target.value, 10);
     if (value >= sliderMinValue && maxVal - value >= minGap) {
@@ -193,6 +200,9 @@ const LeftSideBar = () => {
     <div className=" m-6 p-6  bg-white shadow-md ">
       {/* Price Range Section */}
       <div className="bg-white rounded-lg p-5 w-full max-w-md mx-auto shadow-sm">
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="text-lg font-bold text-purple-800">Price Range</h3>
+        </div>
         {/* Input boxes */}
         <div className="flex justify-between mb-8 gap-4">
           <div className="flex-1 min-w-0">
