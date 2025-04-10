@@ -16,6 +16,7 @@ import ProductItem from "./components/product-listing/product-item";
 import LeftSideBar from "./components/product-listing/left-side-bar";
 import ProductListing from "./pages/product-listing";
 import ProductDetails from "./pages/ProductDetail";
+import Wishlist from "./pages/Wishlist";
 
 function App() {
   const [currentRoute, setCurrentRoute] = useState("/");
@@ -48,6 +49,7 @@ function App() {
             <Route path="/test3" element={<ProductListing />} />
             <Route path="/left" element={<LeftSideBar />} />
             <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/wishlist" element={<Wishlist/>}/>
           </Routes>
           {currentRoute !== "/SignUp" && currentRoute !== "/LogIn" && (
             <Footer />

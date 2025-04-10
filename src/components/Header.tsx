@@ -137,7 +137,7 @@ function Header() {
                   </p>
                 </div>
               </Link>
-              <Link to="">
+              <Link to="/wishlist">
                 <div className="text-center mt-1 flex flex-col items-center">
                   <FaRegHeart className="w-6 h-6 text-[#7B48A5]" />
                   <p className="text-lg max-md:hidden tracking-wide text-black">

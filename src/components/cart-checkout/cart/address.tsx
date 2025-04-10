@@ -97,7 +97,7 @@ const AddressBar = ({
         rules={[{ required: true, message: "Please input your name!" }]}
       >
         <Input
-          placeholder="John Doe"
+          // placeholder="John Doe"
           allowClear
           prefix={<UserOutlined className="text-gray-400" />}
         />
@@ -111,7 +111,7 @@ const AddressBar = ({
         ]}
       >
         <Input
-          placeholder="123 Main Street"
+          // placeholder="123 Main Street"
           allowClear
           prefix={<CompassOutlined className="text-gray-400" />}
         />
@@ -123,7 +123,7 @@ const AddressBar = ({
           name="city"
           rules={[{ required: true, message: "Please input your city!" }]}
         >
-          <Input placeholder="New York" allowClear />
+          <Input allowClear />
         </Form.Item>
 
         <Form.Item
@@ -131,7 +131,7 @@ const AddressBar = ({
           name="state"
           rules={[{ required: true, message: "Please input your state!" }]}
         >
-          <Input placeholder="New York" allowClear />
+          <Input  allowClear />
         </Form.Item>
       </div>
 
@@ -145,7 +145,7 @@ const AddressBar = ({
         ]}
       >
         <Input
-          placeholder="123456"
+          placeholder="6 digits [0,9] PIN code"
           allowClear
           prefix={<EnvironmentOutlined className="text-gray-400" />}
         />
