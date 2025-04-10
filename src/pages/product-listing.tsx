@@ -1,42 +1,97 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import ProductItem from "../components/product-listing/product-item";
 import LeftSideBar from "../components/product-listing/left-side-bar";
+import { FiFilter, FiX } from "react-icons/fi";
 
 const ProductListing = () => {
+  const [showMobileFilters, setShowMobileFilters] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Check if mobile view on mount and resize
+  useEffect(() => {
+    const checkIfMobile = () => {
+      setIsMobile(window.innerWidth < 1024); // lg breakpoint
+    };
+
+    checkIfMobile();
+    window.addEventListener("resize", checkIfMobile);
+
+    return () => window.removeEventListener("resize", checkIfMobile);
+  }, []);
+
+  // Close sidebar when switching to desktop view
+  useEffect(() => {
+    if (!isMobile) {
+      setShowMobileFilters(false);
+    }
+  }, [isMobile]);
+
   return (
-    <div className="min-h-screen bg-gray-100 p-2 sm:p-4">
+    <div className="min-h-screen bg-gray-100 p-2 sm:p-4 relative">
+      {/* Mobile Filter Button - Fixed position for easy access */}
+      <button
+        aria-label="Open filters"
+        className={`lg:hidden fixed bottom-6 right-6 z-20 bg-purple-600 text-white p-3 rounded-full shadow-lg flex items-center justify-center transition-transform hover:scale-105 active:scale-95 ${
+          showMobileFilters ? "opacity-0 pointer-events-none" : "opacity-100"
+        }`}
+        onClick={() => setShowMobileFilters(true)}
+      >
+        <FiFilter size={20} />
+        <span className="sr-only">Open Filters</span>
+      </button>
+
       <div className="flex flex-col lg:flex-row w-full h-full gap-4 sm:gap-8">
-        {/* Left Sidebar - Collapsible on mobile */}
-        <div className="w-full lg:w-[20%] lg:min-w-[250px] bg-white rounded-xl shadow-md border border-gray-200">
+        {/* Left Sidebar - Optimized for mobile and desktop */}
+        <div
+          className={`fixed lg:static inset-y-0 left-0 z-30 w-[85%] sm:w-3/4 lg:w-[22%] xl:w-[20%] lg:min-w-[280px] bg-white rounded-r-xl lg:rounded-xl shadow-xl border border-gray-200 transform ${
+            showMobileFilters ? "translate-x-0" : "-translate-x-full"
+          } lg:translate-x-0 transition-transform duration-300 ease-in-out overflow-y-auto max-h-screen`}
+        >
+          {/* Close button with better touch target */}
+          <button
+            aria-label="Close filters"
+            className="lg:hidden absolute top-4 right-4 p-2 text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500 rounded-full"
+            onClick={() => setShowMobileFilters(false)}
+          >
+            <FiX size={24} />
+          </button>
           <LeftSideBar />
         </div>
 
-        {/* Right Content Area */}
-        <div className="flex-grow bg-white rounded-xl shadow-md border border-gray-200 p-2 sm:p-4">
-          {/* Product Grid - Responsive columns */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
-            <ProductItem
-              name="Jwellery"
-              price="120000"
-              description="Very costly but value of money"
-              originalPrice="240000"
-              discount="50"
-            />
-            <ProductItem
-              name="Diamond Ring"
-              price="85000"
-              description="Elegant diamond ring for special occasions"
-              originalPrice="120000"
-              discount="30"
-            />
-            <ProductItem
-              name="Gold Chain"
-              price="45000"
-              description="24k pure gold chain with premium finish"
-              originalPrice="60000"
-              discount="25"
-            />
-            {/* Add more products as needed */}
+        {/* Overlay with click outside behavior */}
+        {showMobileFilters && (
+          <div
+            className="fixed inset-0 bg-black bg-opacity-50 z-20 lg:hidden transition-opacity duration-300"
+            onClick={() => setShowMobileFilters(false)}
+            role="presentation"
+          />
+        )}
+
+        {/* Right Content Area with optimized padding */}
+        <div className="flex-grow bg-white rounded-xl shadow-sm border border-gray-200 p-3 sm:p-4 lg:p-6">
+          {/* Product Grid with responsive columns and optimized gaps */}
+          <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-3 xs:gap-4 sm:gap-5">
+            {[...Array(8)].map((_, i) => (
+              <ProductItem
+                key={i}
+                name={
+                  ["Jwellery", "Diamond Ring", "Gold Chain", "Silver Necklace"][
+                    i % 4
+                  ]
+                }
+                price={["120000", "85000", "45000", "32000"][i % 4]}
+                description={
+                  [
+                    "Very costly but value of money",
+                    "Elegant diamond ring for special occasions",
+                    "24k pure gold chain with premium finish",
+                    "925 sterling silver with anti-tarnish coating",
+                  ][i % 4]
+                }
+                originalPrice={["240000", "120000", "60000", "45000"][i % 4]}
+                discount={["50", "30", "25", "20"][i % 4]}
+              />
+            ))}
           </div>
         </div>
       </div>
