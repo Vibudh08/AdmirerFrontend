@@ -68,9 +68,9 @@ const ProductListing = () => {
         )}
 
         {/* Right Content Area with optimized padding */}
-        <div className="flex-grow bg-white rounded-xl shadow-sm border border-gray-200 p-3 sm:p-4 lg:p-6">
-          {/* Product Grid with responsive columns and optimized gaps */}
-          <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-3 xs:gap-4 sm:gap-5">
+        <div className="flex-grow bg-white rounded-xl shadow-sm border border-gray-200 p-2 sm:p-3 lg:p-4">
+          {/* Optimized Product Grid */}
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-2 sm:gap-3 md:gap-4">
             {[...Array(8)].map((_, i) => (
               <ProductItem
                 key={i}
@@ -90,6 +90,7 @@ const ProductListing = () => {
                 }
                 originalPrice={["240000", "120000", "60000", "45000"][i % 4]}
                 discount={["50", "30", "25", "20"][i % 4]}
+                compactView={isMobile}
               />
             ))}
           </div>
