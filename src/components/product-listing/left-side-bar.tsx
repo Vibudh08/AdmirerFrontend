@@ -194,42 +194,42 @@ const LeftSideBar = () => {
       {/* Price Range Section */}
       <div className="bg-white rounded-lg p-5 w-full max-w-md mx-auto shadow-sm">
         {/* Input boxes */}
-        <div className="flex justify-between mb-8">
-          <div className="w-1/2 pr-2">
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Min
+        <div className="flex justify-between mb-8 gap-4">
+          <div className="flex-1 min-w-0">
+            <label className="block text-xs font-medium text-gray-600 mb-1">
+              Min (Rs)
             </label>
             <div className="relative">
-              <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">
-                $
-              </span>
               <input
                 type="number"
                 value={minInput}
                 onChange={handleMinInput}
                 onKeyDown={(e) => handleInputKeyDown(e, "min")}
-                className="w-full pl-7 py-2 border border-gray-300 rounded-md text-center"
+                className="w-full px-3 py-1 border border-gray-300 rounded text-sm text-center [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                 min={sliderMinValue}
                 max={maxVal - minGap}
+                style={{
+                  width: `${Math.max(minInput.toString().length + 5, 6)}ch`,
+                }}
               />
             </div>
           </div>
-          <div className="w-1/2 pl-2">
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Max
+          <div className="flex-1 min-w-0">
+            <label className="block text-xs font-medium text-gray-600 mb-1">
+              Max (Rs)
             </label>
             <div className="relative">
-              <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">
-                $
-              </span>
               <input
                 type="number"
                 value={maxInput}
                 onChange={handleMaxInput}
                 onKeyDown={(e) => handleInputKeyDown(e, "max")}
-                className="w-full pl-7 py-2 border border-gray-300 rounded-md text-center"
+                className="w-full px-3 py-1 border border-gray-300 rounded text-sm text-center [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                 min={minVal + minGap}
                 max={sliderMaxValue}
+                style={{
+                  width: `${Math.max(maxInput.toString().length + 5, 6)}ch`,
+                }}
               />
             </div>
           </div>
@@ -252,7 +252,7 @@ const LeftSideBar = () => {
             onMouseUp={stopDrag}
             onTouchStart={startDrag}
             onTouchEnd={stopDrag}
-            className="absolute w-full h-1 -top-1 appearance-none pointer-events-none bg-transparent [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-indigo-600 [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:relative [&::-webkit-slider-thumb]:z-10 [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-white [&::-webkit-slider-thumb]:shadow-md"
+            className="absolute w-full h-1 top-1/2 -translate-y-1/2 appearance-none pointer-events-none bg-transparent [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-indigo-600 [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:relative [&::-webkit-slider-thumb]:z-10 [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-white [&::-webkit-slider-thumb]:shadow-md"
           />
 
           <input
@@ -265,7 +265,7 @@ const LeftSideBar = () => {
             onMouseUp={stopDrag}
             onTouchStart={startDrag}
             onTouchEnd={stopDrag}
-            className="absolute w-full h-1 -top-1 appearance-none pointer-events-none bg-transparent [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-indigo-600 [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:relative [&::-webkit-slider-thumb]:z-10 [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-white [&::-webkit-slider-thumb]:shadow-md"
+            className="absolute w-full h-1 top-1/2 -translate-y-1/2 appearance-none pointer-events-none bg-transparent [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-indigo-600 [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:relative [&::-webkit-slider-thumb]:z-10 [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-white [&::-webkit-slider-thumb]:shadow-md"
           />
 
           {/* Tooltips */}
