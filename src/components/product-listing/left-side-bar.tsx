@@ -5,12 +5,7 @@ import {
 } from "../api/api-end-points";
 
 const LeftSideBar = () => {
-  const [priceRanges, setPriceRanges] = useState<number[][]>([]);
-  const [selectedPriceRange, setSelectedPriceRange] = useState<
-    [number, number]
-  >([0, 0]);
-  const [sliderValue, setSliderValue] = useState<number>(0);
-  const [maxSliderValue, setMaxSliderValue] = useState<number>(10000);
+  // category data definition
   const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [categories, setCategories] = useState<Record<string, string[]>>({});
   const [expandedSections, setExpandedSections] = useState<
@@ -20,35 +15,34 @@ const LeftSideBar = () => {
     categories: true,
   });
 
+  // price data declaration
+  const [sliderMinValue, setSliderMinValue] = useState(0);
+  const [sliderMaxValue, setSliderMaxValue] = useState(1000);
+  const [minVal, setMinVal] = useState(0);
+  const [maxVal, setMaxVal] = useState(1000);
+  const [minInput, setMinInput] = useState(0);
+  const [maxInput, setMaxInput] = useState(1000);
+  const [isDragging, setIsDragging] = useState(false);
+  const minGap = 50; // Minimum gap between sliders
+
   useEffect(() => {
     // Fetch price ranges
     fetch(productPriceCategoryInfo_API, {
       method: "GET",
     })
       .then((response) => response.json())
-      .then((data: number[][]) => {
-        setPriceRanges(data);
-
-        // Set initial max slider value based on highest price range
-        const highestRange = getHighestPriceRange(data);
-        setMaxSliderValue(highestRange);
-
-        // Set initial price range to first range from API
-        if (data.length > 0) {
-          const firstRange = data[0];
-          const rangeToSet =
-            firstRange.length === 1
-              ? [firstRange[0], firstRange[0]]
-              : [firstRange[0], firstRange[1]];
-
-          setSelectedPriceRange(rangeToSet as [number, number]);
-          setSliderValue(firstRange[0]);
-          console.log("Default selected price range:", rangeToSet);
-        }
+      .then((data) => {
+        setSliderMinValue(data.minPrice);
+        setSliderMaxValue(data.maxPrice);
+        setMinVal(data.minPrice);
+        setMaxVal(data.maxPrice);
+        setMinInput(data.minPrice);
+        setMaxInput(data.maxPrice);
       })
       .catch((error) => {
         console.error("Error fetching price ranges:", error);
       });
+    // function to be called when any value changes
 
     // Fetch categories
     fetch(productCategoy_API, {
@@ -83,35 +77,87 @@ const LeftSideBar = () => {
         console.error("Error fetching categories:", error);
       });
   }, []);
+  // functions related for price range
+  useEffect(() => {
+    // Log current min and max values
+    console.log("Current price range:", { min: minVal, max: maxVal });
 
-  // Parse price ranges to get the highest value
-  const getHighestPriceRange = (ranges: number[][]): number => {
-    if (!ranges || ranges.length === 0) return 10000;
-    const lastRange = ranges[ranges.length - 1];
-    return lastRange.length === 1 ? lastRange[0] * 1 : Math.max(...lastRange);
+    // Execute your custom function here
+  }, [minVal, maxVal]);
+  const slideMin = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    const value: number = parseInt(e.target.value, 10);
+    if (value >= sliderMinValue && maxVal - value >= minGap) {
+      setMinVal(value);
+      setMinInput(value);
+    }
   };
 
-  const getPriceRangeFromValue = (value: number): [number, number] => {
-    if (priceRanges.length === 0 || value === 0) return [0, 0];
+  const slideMax = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    const value: number = parseInt(e.target.value, 10);
+    if (value <= sliderMaxValue && value - minVal >= minGap) {
+      setMaxVal(value);
+      setMaxInput(value);
+    }
+  };
 
-    for (const range of priceRanges) {
-      if (range.length === 1 && value >= range[0]) {
-        return [range[0], maxSliderValue];
-      } else if (range.length >= 2 && value >= range[0] && value <= range[1]) {
-        return [range[0], range[1]];
+  const setSliderTrack = (): { left: string; right: string } => {
+    const minPercent: number =
+      ((minVal - sliderMinValue) / (sliderMaxValue - sliderMinValue)) * 100;
+    const maxPercent: number =
+      ((maxVal - sliderMinValue) / (sliderMaxValue - sliderMinValue)) * 100;
+
+    return {
+      left: `${minPercent}%`,
+      right: `${100 - maxPercent}%`,
+    };
+  };
+
+  const handleMinInput = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    const value: number =
+      e.target.value === "" ? sliderMinValue : parseInt(e.target.value, 10);
+    if (!isNaN(value) && value >= sliderMinValue && value <= maxVal - minGap) {
+      setMinInput(value);
+      setMinVal(value);
+    }
+  };
+
+  const handleMaxInput = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    const value: number =
+      e.target.value === "" ? sliderMaxValue : parseInt(e.target.value, 10);
+    if (!isNaN(value) && value <= sliderMaxValue && value >= minVal + minGap) {
+      setMaxInput(value);
+      setMaxVal(value);
+    }
+  };
+
+  const handleInputKeyDown = (
+    e: React.KeyboardEvent<HTMLInputElement>,
+    type: "min" | "max"
+  ): void => {
+    if (e.key === "Enter") {
+      const value: number = parseInt((e.target as HTMLInputElement).value, 10);
+      if (
+        type === "min" &&
+        value >= sliderMinValue &&
+        value <= maxVal - minGap
+      ) {
+        setMinVal(value);
+      } else if (
+        type === "max" &&
+        value <= sliderMaxValue &&
+        value >= minVal + minGap
+      ) {
+        setMaxVal(value);
       }
     }
-    return [0, 0];
   };
 
-  const handleSliderChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = parseInt(event.target.value, 10);
-    setSliderValue(value);
-    const newRange = getPriceRangeFromValue(value);
-    setSelectedPriceRange(newRange);
-    console.log("Selected price range:", newRange);
-  };
+  const startDrag = (): void => setIsDragging(true);
+  const stopDrag = (): void => setIsDragging(false);
 
+  const trackStyle = setSliderTrack();
+
+  // functions related to category
   const handleCategoryChange = (category: string) => {
     setSelectedCategory(category);
 
@@ -153,48 +199,107 @@ const LeftSideBar = () => {
   return (
     <div className=" m-6 p-6  bg-white shadow-md ">
       {/* Price Range Section */}
-      <div className="mb-6">
-        <div
-          className="flex justify-between items-center cursor-pointer"
-          onClick={() => toggleSection("price")}
-        >
+      <div className="bg-white rounded-lg p-0 w-full max-w-md mx-auto shadow-sm">
+        <div className="flex justify-between items-center mb-4">
           <h3 className="text-lg font-bold text-purple-800">Price Range</h3>
-          <span className="text-purple-800">
-            {expandedSections.price ? "−" : "+"}
-          </span>
         </div>
-        {expandedSections.price && (
-          <div className="flex flex-col space-y-6 mt-4">
-            <div className="px-2 relative">
+        {/* Input boxes */}
+        <div className="flex justify-between mb-8 gap-4">
+          <div className="flex-1 min-w-0">
+            <label className="block text-xs font-medium text-gray-600 mb-1">
+              Min (Rs)
+            </label>
+            <div className="relative">
               <input
-                type="range"
-                min="0"
-                max={maxSliderValue}
-                value={sliderValue}
-                onChange={handleSliderChange}
-                className="w-full h-2 bg-purple-200 rounded-lg appearance-none cursor-pointer"
+                type="number"
+                value={minInput}
+                onChange={handleMinInput}
+                onKeyDown={(e) => handleInputKeyDown(e, "min")}
+                className="w-full px-3 py-1 border border-gray-300 rounded text-sm text-center [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                min={sliderMinValue}
+                max={maxVal - minGap}
+                style={{
+                  width: `${Math.max(minInput.toString().length + 5, 6)}ch`,
+                }}
               />
-              <div
-                className="absolute -top-8 transform -translate-x-1/2 bg-purple-700 text-white px-2 py-1 rounded text-sm whitespace-nowrap"
-                style={{ left: `${(sliderValue / maxSliderValue) * 100}%` }}
-              >
-                ₹{sliderValue}
-              </div>
             </div>
-            {selectedPriceRange[0] > 0 && (
-              <div className="bg-purple-100 p-3 rounded-lg">
-                <p className="text-purple-800 text-sm font-medium">
-                  Range: ₹{selectedPriceRange[0]} -
-                  {selectedPriceRange[1] === maxSliderValue
-                    ? " and above"
-                    : ` ₹${selectedPriceRange[1]}`}
-                </p>
-              </div>
-            )}
           </div>
-        )}
-      </div>
+          <div className="flex-1 min-w-0">
+            <label className="block text-xs font-medium text-gray-600 mb-1">
+              Max (Rs)
+            </label>
+            <div className="relative">
+              <input
+                type="number"
+                value={maxInput}
+                onChange={handleMaxInput}
+                onKeyDown={(e) => handleInputKeyDown(e, "max")}
+                className="w-full px-3 py-1 border border-gray-300 rounded text-sm text-center [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                min={minVal + minGap}
+                max={sliderMaxValue}
+                style={{
+                  width: `${Math.max(maxInput.toString().length + 5, 6)}ch`,
+                }}
+              />
+            </div>
+          </div>
+        </div>
 
+        {/* Slider */}
+        <div className="relative h-1 bg-gray-300 rounded-full my-8">
+          <div
+            className="absolute h-full bg-indigo-600 rounded-full"
+            style={trackStyle}
+          ></div>
+
+          <input
+            type="range"
+            min={sliderMinValue}
+            max={sliderMaxValue}
+            value={minVal}
+            onChange={slideMin}
+            onMouseDown={startDrag}
+            onMouseUp={stopDrag}
+            onTouchStart={startDrag}
+            onTouchEnd={stopDrag}
+            className="absolute w-full h-1 top-1/2 -translate-y-1/2 appearance-none pointer-events-none bg-transparent [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-indigo-600 [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:relative [&::-webkit-slider-thumb]:z-10 [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-white [&::-webkit-slider-thumb]:shadow-md"
+          />
+
+          <input
+            type="range"
+            min={sliderMinValue}
+            max={sliderMaxValue}
+            value={maxVal}
+            onChange={slideMax}
+            onMouseDown={startDrag}
+            onMouseUp={stopDrag}
+            onTouchStart={startDrag}
+            onTouchEnd={stopDrag}
+            className="absolute w-full h-1 top-1/2 -translate-y-1/2 appearance-none pointer-events-none bg-transparent [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-indigo-600 [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:relative [&::-webkit-slider-thumb]:z-10 [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-white [&::-webkit-slider-thumb]:shadow-md"
+          />
+
+          {/* Tooltips */}
+          {isDragging && (
+            <>
+              <div
+                className="absolute -top-8 text-xs text-gray-600 bg-white px-2 py-1 rounded border border-gray-200 shadow-sm whitespace-nowrap"
+                style={{ left: trackStyle.left, transform: "translateX(-50%)" }}
+              >
+                ${minVal}
+              </div>
+              <div
+                className="absolute -top-8 text-xs text-gray-600 bg-white px-2 py-1 rounded border border-gray-200 shadow-sm whitespace-nowrap"
+                style={{
+                  right: trackStyle.right,
+                  transform: "translateX(50%)",
+                }}
+              >
+                ${maxVal}
+              </div>
+            </>
+          )}
+        </div>
+      </div>
       {/* Categories Section */}
       <div>
         <div
