@@ -2,6 +2,10 @@ import React, { useState, useEffect } from "react";
 import ProductItem from "../components/product-listing/product-item";
 import LeftSideBar from "../components/product-listing/left-side-bar";
 import { FiFilter, FiX } from "react-icons/fi";
+import {
+  product_listing_API,
+  productPriceCategoryInfo_API,
+} from "../components/api/api-end-points";
 
 const ProductListing = () => {
   const [showMobileFilters, setShowMobileFilters] = useState(false);
@@ -26,6 +30,46 @@ const ProductListing = () => {
     }
   }, [isMobile]);
 
+  // API and all constants declaration
+
+  interface productItemApiProps {
+    name: string;
+    discount: string;
+    price: string;
+    description: string;
+  }
+  const [productDataArray, setProductDataArray] = useState<
+    productItemApiProps[]
+  >([]);
+  const [minVal, setMinVal] = useState(0);
+  const [maxVal, setMaxVal] = useState(0);
+  useEffect(() => {
+    fetch(product_listing_API, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        maxPrice: "2000",
+        minPrice: "300",
+        category: "Jewellery",
+      }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setProductDataArray(data);
+      });
+  }, []);
+  useEffect(() => {
+    fetch(productPriceCategoryInfo_API, {
+      method: "GET",
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setMinVal(Number(data.minPrice));
+        setMaxVal(Number(data.maxPrice));
+      });
+  }, []);
   return (
     <div className="min-h-screen bg-gray-100 p-2 sm:p-4 relative">
       {/* Mobile Filter Button - Fixed position for easy access */}
@@ -55,7 +99,7 @@ const ProductListing = () => {
           >
             <FiX size={24} />
           </button>
-          <LeftSideBar />
+          <LeftSideBar minimum={minVal} maximum={maxVal} />
         </div>
 
         {/* Overlay with click outside behavior */}

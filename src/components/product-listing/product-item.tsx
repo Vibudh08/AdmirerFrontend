@@ -1,15 +1,6 @@
 import React from "react";
 import { FaHeart } from "react-icons/fa";
-
-interface productItemProps {
-  name: string;
-  price: string;
-  description: string;
-  originalPrice: string;
-  discount: string;
-  imageUrl?: string;
-  compactView?: boolean;
-}
+import productItemProps from "./product-item-interface";
 
 const ProductItem: React.FC<productItemProps> = ({
   name,

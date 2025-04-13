@@ -3,8 +3,11 @@ import {
   productPriceCategoryInfo_API,
   productCategoy_API,
 } from "../api/api-end-points";
-
-const LeftSideBar = () => {
+interface LeftSideBarProps {
+  minimum: number;
+  maximum: number;
+}
+const LeftSideBar: React.FC<LeftSideBarProps> = ({ minimum, maximum }) => {
   // category data definition
   const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [categories, setCategories] = useState<Record<string, string[]>>({});
@@ -27,23 +30,12 @@ const LeftSideBar = () => {
 
   useEffect(() => {
     // Fetch price ranges
-    fetch(productPriceCategoryInfo_API, {
-      method: "GET",
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setSliderMinValue(data.minPrice);
-        setSliderMaxValue(data.maxPrice);
-        setMinVal(data.minPrice);
-        setMaxVal(data.maxPrice);
-        setMinInput(data.minPrice);
-        setMaxInput(data.maxPrice);
-      })
-      .catch((error) => {
-        console.error("Error fetching price ranges:", error);
-      });
-    // function to be called when any value changes
-
+    setSliderMinValue(minimum);
+    setSliderMaxValue(maximum);
+    setMinVal(minimum);
+    setMaxVal(maximum);
+    setMinInput(minimum);
+    setMaxInput(maximum);
     // Fetch categories
     fetch(productCategoy_API, {
       method: "GET",
