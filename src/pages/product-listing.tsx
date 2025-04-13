@@ -33,7 +33,7 @@ const ProductListing = () => {
   // API and all constants declaration
 
   interface productItemApiProps {
-    name: string;
+    product_name: string;
     discount: string;
     price: string;
     description: string;
@@ -50,8 +50,8 @@ const ProductListing = () => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        maxPrice: "2000",
-        minPrice: "300",
+        maxPrice: "4000",
+        minPrice: "200",
         category: "Jewellery",
       }),
     })
@@ -115,25 +115,18 @@ const ProductListing = () => {
         <div className="flex-grow bg-white rounded-xl shadow-sm border border-gray-200 p-2 sm:p-3 lg:p-4">
           {/* Optimized Product Grid */}
           <div className="grid grid-cols-2 md:grid-cols-3 gap-2 sm:gap-3 md:gap-4">
-            {[...Array(8)].map((_, i) => (
+            {productDataArray.map((item, index) => (
               <ProductItem
-                key={i}
-                name={
-                  ["Jwellery", "Diamond Ring", "Gold Chain", "Silver Necklace"][
-                    i % 4
-                  ]
-                }
-                price={["120000", "85000", "45000", "32000"][i % 4]}
-                description={
-                  [
-                    "Very costly but value of money",
-                    "Elegant diamond ring for special occasions",
-                    "24k pure gold chain with premium finish",
-                    "925 sterling silver with anti-tarnish coating",
-                  ][i % 4]
-                }
-                originalPrice={["240000", "120000", "60000", "45000"][i % 4]}
-                discount={["50", "30", "25", "20"][i % 4]}
+                key={index}
+                name={item.product_name}
+                price={item.discount}
+                description={item.description}
+                originalPrice={item.price}
+                discount={`${Math.round(
+                  ((Number(item.price) - Number(item.discount)) /
+                    Number(item.price)) *
+                    100
+                )}%`}
                 compactView={isMobile}
               />
             ))}
