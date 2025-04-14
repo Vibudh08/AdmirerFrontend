@@ -2,6 +2,11 @@ import React, { useState, useEffect } from "react";
 import ProductItem from "../components/product-listing/product-item";
 import LeftSideBar from "../components/product-listing/left-side-bar";
 import { FiFilter, FiX } from "react-icons/fi";
+import {
+  product_listing_API,
+  productPriceCategoryInfo_API,
+} from "../components/api/api-end-points";
+import { MinusCircle } from "lucide-react";
 
 const ProductListing = () => {
   const [showMobileFilters, setShowMobileFilters] = useState(false);
@@ -26,6 +31,53 @@ const ProductListing = () => {
     }
   }, [isMobile]);
 
+  // API and all constants declaration
+
+  interface productItemApiProps {
+    product_name: string;
+    discount: string;
+    price: string;
+    description: string;
+  }
+  const [productDataArray, setProductDataArray] = useState<
+    productItemApiProps[]
+  >([]);
+  const [minVal, setMinVal] = useState(0);
+  const [maxVal, setMaxVal] = useState(0);
+  const [dynamicMinVal, setDynamicMinVal] = useState(0);
+  const [dynamicMaxVal, setDynamicMaxVal] = useState(0);
+  useEffect(() => {
+    fetch(product_listing_API, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        maxPrice: maxVal,
+        minPrice: minVal,
+        category: "Jewellery",
+      }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setProductDataArray(data);
+      });
+  }, [minVal, maxVal]);
+  useEffect(() => {
+    fetch(productPriceCategoryInfo_API, {
+      method: "GET",
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setMinVal(Number(data.minPrice));
+        setMaxVal(Number(data.maxPrice));
+        setDynamicMinVal(Number(data.minPrice));
+        setDynamicMaxVal(Number(data.maxPrice));
+      });
+  }, []);
+  useEffect(() => {
+    console.log("the minVal and maxVal is ", minVal, " ", maxVal);
+  }, [minVal, maxVal]);
   return (
     <div className="min-h-screen bg-gray-100 p-2 sm:p-4 relative">
       {/* Mobile Filter Button - Fixed position for easy access */}
@@ -55,7 +107,12 @@ const ProductListing = () => {
           >
             <FiX size={24} />
           </button>
-          <LeftSideBar />
+          <LeftSideBar
+            minimum={minVal}
+            maximum={maxVal}
+            setDynamicMin={setDynamicMinVal}
+            setDynamicMax={setDynamicMaxVal}
+          />
         </div>
 
         {/* Overlay with click outside behavior */}
@@ -71,28 +128,29 @@ const ProductListing = () => {
         <div className="flex-grow bg-white rounded-xl shadow-sm border border-gray-200 p-2 sm:p-3 lg:p-4">
           {/* Optimized Product Grid */}
           <div className="grid grid-cols-2 md:grid-cols-3 gap-2 sm:gap-3 md:gap-4">
-            {[...Array(8)].map((_, i) => (
-              <ProductItem
-                key={i}
-                name={
-                  ["Jwellery", "Diamond Ring", "Gold Chain", "Silver Necklace"][
-                    i % 4
-                  ]
-                }
-                price={["120000", "85000", "45000", "32000"][i % 4]}
-                description={
-                  [
-                    "Very costly but value of money",
-                    "Elegant diamond ring for special occasions",
-                    "24k pure gold chain with premium finish",
-                    "925 sterling silver with anti-tarnish coating",
-                  ][i % 4]
-                }
-                originalPrice={["240000", "120000", "60000", "45000"][i % 4]}
-                discount={["50", "30", "25", "20"][i % 4]}
-                compactView={isMobile}
-              />
-            ))}
+            {productDataArray
+              .filter((item) => {
+                const discountedPrice = Number(item.discount); // Ensure it's a number
+                return (
+                  discountedPrice >= dynamicMinVal &&
+                  discountedPrice <= dynamicMaxVal
+                );
+              })
+              .map((item, index) => (
+                <ProductItem
+                  key={index}
+                  name={item.product_name}
+                  price={item.discount}
+                  description={item.description}
+                  originalPrice={item.price}
+                  discount={`${Math.round(
+                    ((Number(item.price) - Number(item.discount)) /
+                      Number(item.price)) *
+                      100
+                  )}%`}
+                  compactView={isMobile}
+                />
+              ))}
           </div>
         </div>
       </div>
