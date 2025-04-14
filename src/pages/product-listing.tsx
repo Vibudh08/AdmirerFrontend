@@ -43,6 +43,9 @@ const ProductListing: React.FC<ProductLsitingProps> = ({
     product_name: string;
     discount: string;
     price: string;
+    cat_id: string;
+    sub_cat_name: string;
+    id: string;
     description: string;
   }
   const [productDataArray, setProductDataArray] = useState<
@@ -53,6 +56,11 @@ const ProductListing: React.FC<ProductLsitingProps> = ({
   const [dynamicMinVal, setDynamicMinVal] = useState(0);
   const [dynamicMaxVal, setDynamicMaxVal] = useState(0);
   const [loading, setLoading] = useState(false);
+  // subcategory filter constants
+  const [subCategory, setSubCategory] = useState("");
+  useEffect(() => {
+    console.log("the new subcategory user selected is - ", subCategory);
+  }, [subCategory]);
   useEffect(() => {
     setLoading(true);
     fetch(product_listing_API, {
@@ -127,6 +135,7 @@ const ProductListing: React.FC<ProductLsitingProps> = ({
             setDynamicMin={setDynamicMinVal}
             setDynamicMax={setDynamicMaxVal}
             category={category}
+            setSubCategory={setSubCategory}
           />
         </div>
 
@@ -152,7 +161,8 @@ const ProductListing: React.FC<ProductLsitingProps> = ({
                     const discountedPrice = Number(item.discount); // Ensure it's a number
                     return (
                       discountedPrice >= dynamicMinVal &&
-                      discountedPrice <= dynamicMaxVal
+                      discountedPrice <= dynamicMaxVal &&
+                      (subCategory === item.sub_cat_name || subCategory === "")
                     );
                   })
                   .map((item, index) => (

@@ -6,12 +6,15 @@ interface LeftSideBarProps {
   setDynamicMin: (val: number) => void;
   setDynamicMax: (val: number) => void;
   category: string;
+  setSubCategory: (val: string) => void;
 }
 const LeftSideBar: React.FC<LeftSideBarProps> = ({
   minimum,
   maximum,
   setDynamicMin,
   setDynamicMax,
+  category,
+  setSubCategory,
 }) => {
   // category data definition
   const [selectedCategory, setSelectedCategory] = useState<string>("");
@@ -32,14 +35,38 @@ const LeftSideBar: React.FC<LeftSideBarProps> = ({
   const [maxInput, setMaxInput] = useState(maximum);
   const [isDragging, setIsDragging] = useState(false);
   const minGap = 50; // Minimum gap between sliders
+
+  // useEffect(() => {
+  //   fetch(catSubcat_API, {
+  //     method: "POST",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //     body: JSON.stringify({
+  //       category: { category },
+  //     }),
+  //   })
+  //     .then((response) => response.json())
+  //     .then((data) => {
+  //       console.log("The category of the left-side-bar is = ", data);
+  //     });
+  // }, []);
   useEffect(() => {
     // Fetch categories
-    fetch(productCategoy_API, {
-      method: "GET",
+    fetch(catSubcat_API, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        category: { category },
+      }),
     })
       .then((response) => response.json())
       .then((data) => {
-        setCategories(data);
+        const firstKey = Object.keys(data)[0];
+        const firstPair = { [firstKey]: data[firstKey] };
+        setCategories(firstPair);
 
         // Set initial category selection
         const firstCategory = Object.keys(data)[0];
@@ -179,11 +206,13 @@ const LeftSideBar: React.FC<LeftSideBarProps> = ({
         category: category,
         subcategory: null,
       });
+      setSubCategory("");
     } else {
       console.log("Selected category:", {
         category: parentCategory,
         subcategory: category,
       });
+      setSubCategory(category);
     }
   };
 
