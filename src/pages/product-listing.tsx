@@ -117,11 +117,11 @@ const ProductListing: React.FC<ProductLsitingProps> = ({
       <div className="flex flex-col lg:flex-row w-full h-full gap-4 sm:gap-8">
         {/* Left Sidebar - Optimized for mobile and desktop */}
         <div
-          className={`fixed lg:static inset-y-0 left-0 z-[1000] w-[85%] sm:w-3/4 lg:w-[22%] xl:w-[20%] lg:min-w-[280px] bg-white rounded-r-xl lg:rounded-xl shadow-xl border border-gray-200 transform ${
+          className={`fixed lg:sticky top-0 lg:top-4 lg:h-[calc(100vh-2rem)] inset-y-0 left-0 z-[1000] w-[85%] sm:w-3/4 lg:w-[22%] xl:w-[20%] lg:min-w-[280px] bg-white rounded-r-xl lg:rounded-xl shadow-xl border border-gray-200 transform ${
             showMobileFilters ? "translate-x-0" : "-translate-x-full"
           } lg:translate-x-0 transition-transform duration-300 ease-in-out overflow-y-auto max-h-screen`}
         >
-          {/* Close button with better touch target */}
+          {/* Close button for mobile */}
           <button
             aria-label="Close filters"
             className="lg:hidden absolute top-4 right-4 p-2 text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500 rounded-full"
@@ -129,6 +129,7 @@ const ProductListing: React.FC<ProductLsitingProps> = ({
           >
             <FiX size={24} />
           </button>
+
           <LeftSideBar
             minimum={minVal}
             maximum={maxVal}

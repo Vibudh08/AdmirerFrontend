@@ -35,30 +35,21 @@ const ProductItem: React.FC<productItemProps> = ({
 
       {/* Product Name */}
       <div
-        className={`font-bold text-black ${
-          compactView ? "text-sm line-clamp-1" : "text-lg line-clamp-2"
+        className={`font-semibold text-black ${
+          compactView ? "text-sm line-clamp-1" : "text-lg line-clamp-1"
         }`}
       >
         {name}
       </div>
 
-      {/* Product Description */}
-      <div
-        className={`text-gray-500 ${
-          compactView ? "line-clamp-1" : "line-clamp-2"
-        }`}
-      >
-        {description}
-      </div>
-
       {/* Price Section */}
       <div className="flex items-center gap-1.5 sm:gap-2.5 flex-wrap">
-        <span className="font-bold text-black">Rs {price}</span>
-        <span className="line-through text-gray-400 text-xs">
+        <span className="font-semibold text-black text-lg">Rs {price}</span>
+        <span className="line-through text-gray-400 text-sm">
           Rs {originalPrice}
         </span>
         <span className="bg-red-50 text-red-700 font-bold px-1.5 py-0.5 sm:px-2 sm:py-1 rounded text-xs">
-          {discount}% OFF
+          {discount} OFF
         </span>
       </div>
     </div>

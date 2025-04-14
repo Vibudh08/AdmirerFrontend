@@ -226,7 +226,7 @@ const LeftSideBar: React.FC<LeftSideBarProps> = ({
   return (
     <div className=" m-6 p-6  bg-white shadow-md ">
       {/* Price Range Section */}
-      <div className="bg-white rounded-lg p-0 w-full max-w-md mx-auto shadow-sm">
+      <div className="bg-white rounded-lg p-0 w-full max-w-md mx-auto ">
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-lg font-bold text-purple-800">Price Range</h3>
         </div>
@@ -242,7 +242,7 @@ const LeftSideBar: React.FC<LeftSideBarProps> = ({
                 value={minInput}
                 onChange={handleMinInput}
                 onKeyDown={(e) => handleInputKeyDown(e, "min")}
-                className="w-full px-3 py-1 border border-gray-300 rounded text-sm text-center [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                className="w-full px-3 py-1 border border-gray-300 rounded text-sm text-center [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none select-none"
                 min={sliderMinValue}
                 max={maxVal - minGap}
                 style={{
@@ -261,7 +261,7 @@ const LeftSideBar: React.FC<LeftSideBarProps> = ({
                 value={maxInput}
                 onChange={handleMaxInput}
                 onKeyDown={(e) => handleInputKeyDown(e, "max")}
-                className="w-full px-3 py-1 border border-gray-300 rounded text-sm text-center [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                className="w-full px-3 py-1 border border-gray-300 rounded text-sm text-center [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none select-none"
                 min={minVal + minGap}
                 max={sliderMaxValue}
                 style={{
@@ -312,7 +312,7 @@ const LeftSideBar: React.FC<LeftSideBarProps> = ({
                 className="absolute -top-8 text-xs text-gray-600 bg-white px-2 py-1 rounded border border-gray-200 shadow-sm whitespace-nowrap"
                 style={{ left: trackStyle.left, transform: "translateX(-50%)" }}
               >
-                ${minVal}
+                ₹{minVal}
               </div>
               <div
                 className="absolute -top-8 text-xs text-gray-600 bg-white px-2 py-1 rounded border border-gray-200 shadow-sm whitespace-nowrap"
@@ -321,7 +321,7 @@ const LeftSideBar: React.FC<LeftSideBarProps> = ({
                   transform: "translateX(50%)",
                 }}
               >
-                ${maxVal}
+                ₹{maxVal}
               </div>
             </>
           )}

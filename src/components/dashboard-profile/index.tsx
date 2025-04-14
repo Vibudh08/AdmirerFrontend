@@ -7,6 +7,8 @@ const Dashboard_Profile = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newNumber, setNewNumber] = useState("");
   const [error, setError] = useState("");
+  const [altNumber, setAltNumber] = useState("");
+  const [altError, setAltError] = useState("");
 
   const showModal = () => setIsModalOpen(true);
   const handleCancel = () => {
@@ -15,7 +17,27 @@ const Dashboard_Profile = () => {
     setError("");
   };
 
-  const handleInputChange = (e: { target: { value: any; }; }) => {
+  const handleAltInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+
+    // Allow only digits
+    if (!/^\d*$/.test(value)) return;
+
+    setAltNumber(value);
+
+    // Validation logic
+    if (value.length > 0 && value[0] === "0") {
+      setAltError("Number cannot start with 0");
+    } else if (value.length > 10) {
+      setAltError("Number cannot exceed 10 digits");
+    } else if (value.length === 10) {
+      setAltError(""); // valid
+    } else {
+      setAltError("Enter a valid 10-digit number");
+    }
+  };
+
+  const handleInputChange = (e: { target: { value: any } }) => {
     const value = e.target.value;
 
     // Allow only digits
@@ -43,7 +65,9 @@ const Dashboard_Profile = () => {
 
       {/* Mobile Number */}
       <div className="mb-4">
-        <label className="text-sm font-medium text-gray-700">Mobile Number*</label>
+        <label className="text-sm font-medium text-gray-700">
+          Mobile Number*
+        </label>
         <div className="flex items-center border rounded px-3 py-2 mt-1">
           <span className="text-green-600 font-medium">9971900418</span>
           <div className="ml-auto">
@@ -87,7 +111,7 @@ const Dashboard_Profile = () => {
           onClick={() => setGender("female")}
           className={`w-1/2 py-3 text-sm ${
             gender === "female"
-              ? "text-pink-600 bg-pink-50"
+              ? "text-pink-600 bg-pink-50 border-l"
               : "bg-white text-gray-600"
           }`}
         >
@@ -106,19 +130,25 @@ const Dashboard_Profile = () => {
       <div className="mb-2 text-sm font-medium text-gray-700">
         Alternate mobile details
       </div>
-      <div className="flex mb-5">
+
+      <div className="flex mb-2">
         <span className="flex items-center px-3 border border-r-0 rounded-l text-sm text-gray-600">
           +91
         </span>
         <input
           type="tel"
+          value={altNumber}
+          onChange={handleAltInputChange}
           placeholder="Mobile Number"
+          maxLength={10}
           className="w-full border rounded-r px-4 py-3 text-sm"
         />
       </div>
 
+      {altError && <p className="text-red-500 text-sm ">{altError}</p>}
+
       {/* Save Button */}
-      <button className="w-full bg-purple-600 hover:bg-purple-700 text-white py-3 rounded">
+      <button className="w-full bg-purple-600 mt-2 hover:bg-purple-700 text-white py-3 rounded">
         SAVE DETAILS
       </button>
 
@@ -163,9 +193,7 @@ const Dashboard_Profile = () => {
           />
         </div>
 
-        {error && (
-          <p className="text-red-500 text-sm mb-4">{error}</p>
-        )}
+        {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
 
         {/* Submit Button */}
         <Button
