@@ -71,7 +71,7 @@ const ProductListing: React.FC<ProductLsitingProps> = ({
       body: JSON.stringify({
         maxPrice: maxVal,
         minPrice: minVal,
-        category: category,
+        category: Number(category),
       }),
     })
       .then((response) => response.json())
@@ -135,7 +135,7 @@ const ProductListing: React.FC<ProductLsitingProps> = ({
             maximum={maxVal}
             setDynamicMin={setDynamicMinVal}
             setDynamicMax={setDynamicMaxVal}
-            category={category}
+            category={Number(category)}
             setSubCategory={setSubCategory}
           />
         </div>
