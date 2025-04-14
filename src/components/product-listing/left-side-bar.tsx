@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from "react";
-import {
-  productPriceCategoryInfo_API,
-  productCategoy_API,
-} from "../api/api-end-points";
+import { productCategoy_API, catSubcat_API } from "../api/api-end-points";
 interface LeftSideBarProps {
   minimum: number;
   maximum: number;
   setDynamicMin: (val: number) => void;
   setDynamicMax: (val: number) => void;
+  category: string;
 }
 const LeftSideBar: React.FC<LeftSideBarProps> = ({
   minimum,
@@ -34,7 +32,6 @@ const LeftSideBar: React.FC<LeftSideBarProps> = ({
   const [maxInput, setMaxInput] = useState(maximum);
   const [isDragging, setIsDragging] = useState(false);
   const minGap = 50; // Minimum gap between sliders
-
   useEffect(() => {
     // Fetch categories
     fetch(productCategoy_API, {

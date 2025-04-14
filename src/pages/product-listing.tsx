@@ -7,8 +7,14 @@ import {
   productPriceCategoryInfo_API,
 } from "../components/api/api-end-points";
 import { MinusCircle } from "lucide-react";
-
-const ProductListing = () => {
+interface ProductLsitingProps {
+  category: string;
+  subcategory?: string;
+}
+const ProductListing: React.FC<ProductLsitingProps> = ({
+  category,
+  subcategory,
+}) => {
   const [showMobileFilters, setShowMobileFilters] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
@@ -46,7 +52,9 @@ const ProductListing = () => {
   const [maxVal, setMaxVal] = useState(0);
   const [dynamicMinVal, setDynamicMinVal] = useState(0);
   const [dynamicMaxVal, setDynamicMaxVal] = useState(0);
+  const [loading, setLoading] = useState(false);
   useEffect(() => {
+    setLoading(true);
     fetch(product_listing_API, {
       method: "POST",
       headers: {
@@ -55,12 +63,18 @@ const ProductListing = () => {
       body: JSON.stringify({
         maxPrice: maxVal,
         minPrice: minVal,
-        category: "Jewellery",
+        category: category,
       }),
     })
       .then((response) => response.json())
       .then((data) => {
         setProductDataArray(data);
+      })
+      .catch((err) => {
+        console.error("Failed to fetch products:", err);
+      })
+      .finally(() => {
+        setLoading(false);
       });
   }, [minVal, maxVal]);
   useEffect(() => {
@@ -112,6 +126,7 @@ const ProductListing = () => {
             maximum={maxVal}
             setDynamicMin={setDynamicMinVal}
             setDynamicMax={setDynamicMaxVal}
+            category={category}
           />
         </div>
 
@@ -127,30 +142,36 @@ const ProductListing = () => {
         {/* Right Content Area with optimized padding */}
         <div className="flex-grow bg-white rounded-xl shadow-sm border border-gray-200 p-2 sm:p-3 lg:p-4">
           {/* Optimized Product Grid */}
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-2 sm:gap-3 md:gap-4">
-            {productDataArray
-              .filter((item) => {
-                const discountedPrice = Number(item.discount); // Ensure it's a number
-                return (
-                  discountedPrice >= dynamicMinVal &&
-                  discountedPrice <= dynamicMaxVal
-                );
-              })
-              .map((item, index) => (
-                <ProductItem
-                  key={index}
-                  name={item.product_name}
-                  price={item.discount}
-                  description={item.description}
-                  originalPrice={item.price}
-                  discount={`${Math.round(
-                    ((Number(item.price) - Number(item.discount)) /
-                      Number(item.price)) *
-                      100
-                  )}%`}
-                  compactView={isMobile}
-                />
-              ))}
+          <div className="min-h-[200px] flex justify-center items-center">
+            {loading ? (
+              <div className="animate-spin rounded-full h-10 w-10 border-4 border-purple-500 border-t-transparent"></div>
+            ) : (
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-2 sm:gap-3 md:gap-4">
+                {productDataArray
+                  .filter((item) => {
+                    const discountedPrice = Number(item.discount); // Ensure it's a number
+                    return (
+                      discountedPrice >= dynamicMinVal &&
+                      discountedPrice <= dynamicMaxVal
+                    );
+                  })
+                  .map((item, index) => (
+                    <ProductItem
+                      key={index}
+                      name={item.product_name}
+                      price={item.discount}
+                      description={item.description}
+                      originalPrice={item.price}
+                      discount={`${Math.round(
+                        ((Number(item.price) - Number(item.discount)) /
+                          Number(item.price)) *
+                          100
+                      )}%`}
+                      compactView={isMobile}
+                    />
+                  ))}
+              </div>
+            )}
           </div>
         </div>
       </div>
