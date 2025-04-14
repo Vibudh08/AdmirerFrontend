@@ -41,28 +41,32 @@ const bannerImages = [
 // Categories
 const categories = [
   {
-    title: "COUPLE RING",
+    title: "EARRINGS",
     image:
-      "/home/category-images/couplering.jpg",
+      "https://d25g9z9s77rn4i.cloudfront.net/uploads/product/194/1737539642_bdac2baf411a5259c0b3.jpg",
   },
   {
-    title: "NECKLACE",
+    title: "MANGALSUTRA",
     image:
-      "/home/category-images/necklace.jpg",
+      "https://5.imimg.com/data5/SELLER/Default/2024/1/379075426/DP/OM/VC/60528717/artificial-jewellery-necklace-set.jpg",
   },
   {
-    title: "LETTER RING",
+    title: "PENDANTS",
     image:
-      "/home/category-images/letterring.jpg",
+      "https://ratnalayajewels.com/wp-content/uploads/sites/449/2022/04/PHOTO-2022-04-11-15-14-09_3.jpg",
   },
   {
-    title: "STONE RING",
-    image: "/home/category-images/stonering.jpg",
+    title: "MANGALSUTRA",
+    image: "https://m.media-amazon.com/images/I/914Hiv6tAzL._AC_UY1100_.jpg",
   },
   {
-    title: "RING CORNER",
+    title: "MANGALSUTRA",
     image:
-      "/home/category-images/Ringcorner.jpg",
+      "https://rubans.in/cdn/shop/products/rubans-gold-plated-red-green-stone-studded-temple-jewellery-set-necklace-set-33613007782062.png?v=1678797822",
+  },
+  {
+    title: "FINGER RINGS",
+    image: "https://www.candere.com/media/jewellery/images/KCGR030__1.jpeg",
   },
 ];
 
