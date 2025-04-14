@@ -9,7 +9,7 @@ const CustomPrevArrow = ({ onClick }: { onClick: () => void }) => (
     className="absolute left-5 top-1/2 transform -translate-y-1/2 z-10 bg-white p-1 rounded-full shadow-md hover:bg-black transition hover:text-white"
     onClick={onClick}
   >
-    <IoIosArrowBack className="text-3xl text-gray-700 hover:text-white" />
+    <IoIosArrowBack className="text-3xl max-md:text-2xl text-gray-700 hover:text-white" />
   </button>
 );
 
@@ -18,7 +18,7 @@ const CustomNextArrow = ({ onClick }: { onClick: () => void }) => (
     className="absolute right-5 top-1/2 transform -translate-y-1/2 z-10 bg-white p-1 rounded-full shadow-md hover:bg-black transition hover:text-white"
     onClick={onClick}
   >
-    <IoIosArrowForward className="text-3xl text-gray-700 hover:text-white" />
+    <IoIosArrowForward className="text-3xl max-md:text-2xl text-gray-700 hover:text-white" />
   </button>
 );
 
@@ -41,32 +41,28 @@ const bannerImages = [
 // Categories
 const categories = [
   {
-    title: "EARRINGS",
+    title: "COUPLE RING",
     image:
-      "https://d25g9z9s77rn4i.cloudfront.net/uploads/product/194/1737539642_bdac2baf411a5259c0b3.jpg",
+      "/home/category-images/couplering.jpg",
   },
   {
-    title: "MANGALSUTRA",
+    title: "NECKLACE",
     image:
-      "https://5.imimg.com/data5/SELLER/Default/2024/1/379075426/DP/OM/VC/60528717/artificial-jewellery-necklace-set.jpg",
+      "/home/category-images/necklace.jpg",
   },
   {
-    title: "PENDANTS",
+    title: "LETTER RING",
     image:
-      "https://ratnalayajewels.com/wp-content/uploads/sites/449/2022/04/PHOTO-2022-04-11-15-14-09_3.jpg",
+      "/home/category-images/letterring.jpg",
   },
   {
-    title: "MANGALSUTRA",
-    image: "https://m.media-amazon.com/images/I/914Hiv6tAzL._AC_UY1100_.jpg",
+    title: "STONE RING",
+    image: "/home/category-images/stonering.jpg",
   },
   {
-    title: "MANGALSUTRA",
+    title: "RING CORNER",
     image:
-      "https://rubans.in/cdn/shop/products/rubans-gold-plated-red-green-stone-studded-temple-jewellery-set-necklace-set-33613007782062.png?v=1678797822",
-  },
-  {
-    title: "FINGER RINGS",
-    image: "https://www.candere.com/media/jewellery/images/KCGR030__1.jpeg",
+      "/home/category-images/Ringcorner.jpg",
   },
 ];
 
@@ -135,10 +131,10 @@ const Home = () => {
       {/* Categories */}
       <section>
         <div className="text-center py-6 pt-12 bg-white">
-          <h2 className="text-4xl max-md:text-3xl font-semibold text-gray-800 mb-1">
+          <h2 className="text-4xl max-md:text-2xl font-semibold text-gray-800 mb-1">
             Find Your Perfect Match
           </h2>
-          <p className="text-xl text-gray-600 tracking-wider">
+          <p className="text-xl max-md:text-lg text-gray-600 tracking-wider">
             Shop by Categories
           </p>
           <div className="mt-8 max-md:mt-4 w-[85%] max-md:w-full max-md:p-3 grid grid-cols-4 max-md:grid-cols-2 gap-4 max-md:gap-3 m-auto">
@@ -148,7 +144,7 @@ const Home = () => {
                   <img
                     src={cat.image}
                     alt={cat.title}
-                    className="w-full h-64 object-cover"
+                    className="w-full object-cover"
                   />
                 </div>
                 <h3 className="text-lg font-semibold text-gray-800">
@@ -163,10 +159,10 @@ const Home = () => {
       {/* Collections */}
       <section>
         <div className="bg-white flex flex-col items-center p-6">
-          <h2 className="text-4xl max-md:text-3xl font-semibold text-gray-800 mb-1">
+          <h2 className="text-4xl max-md:text-2xl font-semibold text-gray-800 mb-1">
             Admirer Collections
           </h2>
-          <p className="text-xl text-gray-600 tracking-wider">
+          <p className="text-xl max-md:text-lg text-gray-600 tracking-wider">
             Explore our newly launched collection
           </p>
           <div className="mt-8 grid grid-cols-2 max-md:grid-cols-1 gap-2 max-md:gap-0 w-[90%] max-md:w-[97%] m-auto">
@@ -195,7 +191,7 @@ const Home = () => {
       {/* Curated */}
       <section>
         <div className="bg-white flex flex-col items-center p-6">
-          <h2 className="text-4xl max-md:text-3xl font-semibold text-gray-800 mb-1">
+          <h2 className="text-4xl max-md:text-2xl font-semibold text-gray-800 mb-1">
             Curated For You
           </h2>
           <div className="mt-8 grid grid-cols-3 max-md:grid-cols-1 gap-2 max-md:gap-3 w-[90%] max-md:w-[97%] m-auto h-[450px] max-md:h-auto">

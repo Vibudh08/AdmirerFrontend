@@ -5,4 +5,6 @@ export default {
     extend: {},
   },
   plugins: [require("preline/plugin")],
+  plugins: [require('@tailwindcss/line-clamp')],
+
 };

@@ -96,7 +96,7 @@ function Header() {
           </div>
         </div>
 
-        <div>
+        <div className="w-[93%] m-auto max-md:w-full">
           <div className="flex justify-between items-center mb-1 mt-1 w-[94%] m-auto max-md:w-full px-2">
             <div className=" gap-[12px]  hidden max-md:flex">
               <div
@@ -113,26 +113,27 @@ function Header() {
               <Search className="relative top-[20px] transform -translate-y-1/2 text-[#7B48A5] " />
             </div>
 
-            <div className="relative w-[270px] max-md:hidden ">
-              <Search className="absolute left-2  top-6 transform -translate-y-1/2 text-[#7B48A5]" />
-              <input
-                type="text"
-                placeholder="Search..."
-                className="border rounded-md pl-10 pr-2 w-full h-[45px] border-[#7B48A5] pt-1 focus:outline-none focus:ring-2 focus:ring-[#d3b6e9] text-black"
-              />
-            </div>
+            
             <Link to="/">
               <img
                 src="/logo/admirer_logo.png"
-                className="w-[110px] h-[72px] cover mr-[60px] max-md:mr-[0px] max-md:ml-[40px]"
+                className="w-[105px] h-[70px] cover ml-5"
                 alt=""
               />
             </Link>
-            <div className="flex gap-4 mt-1 max-md:mt-3">
+            <div className="relative w-[550px] max-md:hidden ">
+              <Search className="absolute left-2 ml-2.5 w-6 mt-1 h-6 top-6 transform -translate-y-1/2 text-[#7B48A5]" />
+              <input
+                type="text"
+                placeholder="Search..."
+                className="border rounded-full mt-1 pl-12 pr-2 w-full h-[45px] border-[#7B48A5] pt-1.5 focus:outline-none focus:ring-2 focus:ring-[#d3b6e9] text-black"
+              />
+            </div>
+            <div className="flex gap-5 mt-1 max-md:mt-3">
               <Link to="/LogIn">
                 <div className="text-center flex mt-1 flex-col items-center">
                   <FaRegUser className="w-6 h-6 leading-2 text-[#7B48A5] max-md:mb-1" />
-                  <p className="text-lg max-md:hidden tracking-wide text-black">
+                  <p className="text-lg max-md:hidden tracking-wider text-gray-800">
                     Login
                   </p>
                 </div>
@@ -140,7 +141,7 @@ function Header() {
               <Link to="/wishlist">
                 <div className="text-center mt-1 flex flex-col items-center">
                   <FaRegHeart className="w-6 h-6 text-[#7B48A5]" />
-                  <p className="text-lg max-md:hidden tracking-wide text-black">
+                  <p className="text-lg max-md:hidden tracking-wider text-gray-800">
                     Wishlist
                   </p>
                 </div>
@@ -151,7 +152,7 @@ function Header() {
                 // onClick={handleCart}
                 >
                   <MdOutlineShoppingBag className="w-7 h-7 text-[#7B48A5]" />
-                  <p className="text-lg max-md:hidden tracking-wide text-black">
+                  <p className="text-lg max-md:hidden tracking-wider text-gray-800">
                     Cart
                   </p>
                 </div>

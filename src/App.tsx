@@ -17,6 +17,15 @@ import LeftSideBar from "./components/product-listing/left-side-bar";
 import ProductListing from "./pages/product-listing";
 import ProductDetails from "./pages/ProductDetail";
 import Wishlist from "./pages/Wishlist";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import TermsConditions from "./pages/TermsConditions";
+import ReturnRefund from "./pages/ReturnRefund";
+import ExchangePolicy from "./pages/ExchangePolicy";
+import ShippingPolicy from "./pages/ShippingPolicy";
+import HelpContact from "./pages/Help_Faqs";
+import BlogPage from "./pages/Blogs";
+import BlogDetails from "./pages/BlogDetails";
+import AboutPage from "./pages/About";
 
 function App() {
   const [currentRoute, setCurrentRoute] = useState("/");
@@ -50,6 +59,15 @@ function App() {
             <Route path="/left" element={<LeftSideBar />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/wishlist" element={<Wishlist/>}/>
+            <Route path="/privacy" element={<PrivacyPolicy/>}/>
+            <Route path="/terms" element={<TermsConditions/>}/>
+            <Route path="/return" element={<ReturnRefund/>}/>
+            <Route path="/exchange" element={<ExchangePolicy/>}/>
+            <Route path="/shipping" element={<ShippingPolicy/>}/>
+            <Route path="/help_faq" element={<HelpContact/>}/>
+            <Route path="/blogs" element={<BlogPage/>}/>
+            <Route path="/blog-details/:id" element={<BlogDetails/>} />
+            <Route path="/about" element={<AboutPage/>}/>
           </Routes>
           {currentRoute !== "/SignUp" && currentRoute !== "/LogIn" && (
             <Footer />
