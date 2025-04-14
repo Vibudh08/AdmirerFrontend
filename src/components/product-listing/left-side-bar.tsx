@@ -5,7 +5,7 @@ interface LeftSideBarProps {
   maximum: number;
   setDynamicMin: (val: number) => void;
   setDynamicMax: (val: number) => void;
-  category: string;
+  category: Number;
   setSubCategory: (val: string) => void;
 }
 const LeftSideBar: React.FC<LeftSideBarProps> = ({
