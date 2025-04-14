@@ -51,23 +51,22 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/SignUp" element={<SignUp />} />
             <Route path="/LogIn" element={<Login />} />
-            <Route path="/test" element={<ProductDetails/>} />
+            <Route path="/test" element={<ProductDetails />} />
             <Route path="/dashboard_profile" element={<Dashboard_Profile />} />
             <Route path="/order/:id" element={<OrderDetails />} />
             <Route path="/cart" element={<Complete_cart_checkout />} />
             <Route path="/test3" element={<ProductListing />} />
-            <Route path="/left" element={<LeftSideBar />} />
             <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/wishlist" element={<Wishlist/>}/>
-            <Route path="/privacy" element={<PrivacyPolicy/>}/>
-            <Route path="/terms" element={<TermsConditions/>}/>
-            <Route path="/return" element={<ReturnRefund/>}/>
-            <Route path="/exchange" element={<ExchangePolicy/>}/>
-            <Route path="/shipping" element={<ShippingPolicy/>}/>
-            <Route path="/help_faq" element={<HelpContact/>}/>
-            <Route path="/blogs" element={<BlogPage/>}/>
-            <Route path="/blog-details/:id" element={<BlogDetails/>} />
-            <Route path="/about" element={<AboutPage/>}/>
+            <Route path="/wishlist" element={<Wishlist />} />
+            <Route path="/privacy" element={<PrivacyPolicy />} />
+            <Route path="/terms" element={<TermsConditions />} />
+            <Route path="/return" element={<ReturnRefund />} />
+            <Route path="/exchange" element={<ExchangePolicy />} />
+            <Route path="/shipping" element={<ShippingPolicy />} />
+            <Route path="/help_faq" element={<HelpContact />} />
+            <Route path="/blogs" element={<BlogPage />} />
+            <Route path="/blog-details/:id" element={<BlogDetails />} />
+            <Route path="/about" element={<AboutPage />} />
           </Routes>
           {currentRoute !== "/SignUp" && currentRoute !== "/LogIn" && (
             <Footer />
