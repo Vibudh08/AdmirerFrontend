@@ -73,11 +73,11 @@ const LeftSideBar: React.FC<LeftSideBarProps> = ({
         if (firstCategory) {
           if (data[firstCategory].length > 0) {
             // If subcategories exist, select first subcategory
-            setSelectedCategory(data[firstCategory][0]);
-            console.log("Default selected category:", {
-              category: firstCategory,
-              subcategory: data[firstCategory][0],
-            });
+            // setSelectedCategory(data[firstCategory][0]);
+            // console.log("Default selected category:", {
+            //   category: firstCategory,
+            //   subcategory: data[firstCategory][0],
+            // });
           } else {
             // If no subcategories, select the category itself
             setSelectedCategory(firstCategory);
