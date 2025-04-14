@@ -6,8 +6,15 @@ import {
 interface LeftSideBarProps {
   minimum: number;
   maximum: number;
+  setDynamicMin: (val: number) => void;
+  setDynamicMax: (val: number) => void;
 }
-const LeftSideBar: React.FC<LeftSideBarProps> = ({ minimum, maximum }) => {
+const LeftSideBar: React.FC<LeftSideBarProps> = ({
+  minimum,
+  maximum,
+  setDynamicMin,
+  setDynamicMax,
+}) => {
   // category data definition
   const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [categories, setCategories] = useState<Record<string, string[]>>({});
@@ -19,23 +26,16 @@ const LeftSideBar: React.FC<LeftSideBarProps> = ({ minimum, maximum }) => {
   });
 
   // price data declaration
-  const [sliderMinValue, setSliderMinValue] = useState(0);
-  const [sliderMaxValue, setSliderMaxValue] = useState(1000);
-  const [minVal, setMinVal] = useState(0);
-  const [maxVal, setMaxVal] = useState(1000);
-  const [minInput, setMinInput] = useState(0);
-  const [maxInput, setMaxInput] = useState(1000);
+  const [sliderMinValue, setSliderMinValue] = useState(minimum);
+  const [sliderMaxValue, setSliderMaxValue] = useState(maximum);
+  const [minVal, setMinVal] = useState(minimum);
+  const [maxVal, setMaxVal] = useState(maximum);
+  const [minInput, setMinInput] = useState(minimum);
+  const [maxInput, setMaxInput] = useState(maximum);
   const [isDragging, setIsDragging] = useState(false);
   const minGap = 50; // Minimum gap between sliders
 
   useEffect(() => {
-    // Fetch price ranges
-    setSliderMinValue(minimum);
-    setSliderMaxValue(maximum);
-    setMinVal(minimum);
-    setMaxVal(maximum);
-    setMinInput(minimum);
-    setMaxInput(maximum);
     // Fetch categories
     fetch(productCategoy_API, {
       method: "GET",
@@ -73,9 +73,18 @@ const LeftSideBar: React.FC<LeftSideBarProps> = ({ minimum, maximum }) => {
   useEffect(() => {
     // Log current min and max values
     console.log("Current price range:", { min: minVal, max: maxVal });
-
     // Execute your custom function here
+    setDynamicMax(maxVal);
+    setDynamicMin(minVal);
   }, [minVal, maxVal]);
+  useEffect(() => {
+    setSliderMinValue(minimum);
+    setSliderMaxValue(maximum);
+    setMinVal(minimum);
+    setMaxVal(maximum);
+    setMinInput(minimum);
+    setMaxInput(maximum);
+  }, [minimum, maximum]);
   const slideMin = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const value: number = parseInt(e.target.value, 10);
     if (value >= sliderMinValue && maxVal - value >= minGap) {

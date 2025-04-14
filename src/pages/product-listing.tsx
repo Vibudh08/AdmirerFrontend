@@ -6,6 +6,7 @@ import {
   product_listing_API,
   productPriceCategoryInfo_API,
 } from "../components/api/api-end-points";
+import { MinusCircle } from "lucide-react";
 
 const ProductListing = () => {
   const [showMobileFilters, setShowMobileFilters] = useState(false);
@@ -43,6 +44,8 @@ const ProductListing = () => {
   >([]);
   const [minVal, setMinVal] = useState(0);
   const [maxVal, setMaxVal] = useState(0);
+  const [dynamicMinVal, setDynamicMinVal] = useState(0);
+  const [dynamicMaxVal, setDynamicMaxVal] = useState(0);
   useEffect(() => {
     fetch(product_listing_API, {
       method: "POST",
@@ -50,8 +53,8 @@ const ProductListing = () => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        maxPrice: "4000",
-        minPrice: "200",
+        maxPrice: maxVal,
+        minPrice: minVal,
         category: "Jewellery",
       }),
     })
@@ -59,7 +62,7 @@ const ProductListing = () => {
       .then((data) => {
         setProductDataArray(data);
       });
-  }, []);
+  }, [minVal, maxVal]);
   useEffect(() => {
     fetch(productPriceCategoryInfo_API, {
       method: "GET",
@@ -68,8 +71,13 @@ const ProductListing = () => {
       .then((data) => {
         setMinVal(Number(data.minPrice));
         setMaxVal(Number(data.maxPrice));
+        setDynamicMinVal(Number(data.minPrice));
+        setDynamicMaxVal(Number(data.maxPrice));
       });
   }, []);
+  useEffect(() => {
+    console.log("the minVal and maxVal is ", minVal, " ", maxVal);
+  }, [minVal, maxVal]);
   return (
     <div className="min-h-screen bg-gray-100 p-2 sm:p-4 relative">
       {/* Mobile Filter Button - Fixed position for easy access */}
@@ -99,7 +107,12 @@ const ProductListing = () => {
           >
             <FiX size={24} />
           </button>
-          <LeftSideBar minimum={minVal} maximum={maxVal} />
+          <LeftSideBar
+            minimum={minVal}
+            maximum={maxVal}
+            setDynamicMin={setDynamicMinVal}
+            setDynamicMax={setDynamicMaxVal}
+          />
         </div>
 
         {/* Overlay with click outside behavior */}
@@ -115,21 +128,29 @@ const ProductListing = () => {
         <div className="flex-grow bg-white rounded-xl shadow-sm border border-gray-200 p-2 sm:p-3 lg:p-4">
           {/* Optimized Product Grid */}
           <div className="grid grid-cols-2 md:grid-cols-3 gap-2 sm:gap-3 md:gap-4">
-            {productDataArray.map((item, index) => (
-              <ProductItem
-                key={index}
-                name={item.product_name}
-                price={item.discount}
-                description={item.description}
-                originalPrice={item.price}
-                discount={`${Math.round(
-                  ((Number(item.price) - Number(item.discount)) /
-                    Number(item.price)) *
-                    100
-                )}%`}
-                compactView={isMobile}
-              />
-            ))}
+            {productDataArray
+              .filter((item) => {
+                const discountedPrice = Number(item.discount); // Ensure it's a number
+                return (
+                  discountedPrice >= dynamicMinVal &&
+                  discountedPrice <= dynamicMaxVal
+                );
+              })
+              .map((item, index) => (
+                <ProductItem
+                  key={index}
+                  name={item.product_name}
+                  price={item.discount}
+                  description={item.description}
+                  originalPrice={item.price}
+                  discount={`${Math.round(
+                    ((Number(item.price) - Number(item.discount)) /
+                      Number(item.price)) *
+                      100
+                  )}%`}
+                  compactView={isMobile}
+                />
+              ))}
           </div>
         </div>
       </div>
