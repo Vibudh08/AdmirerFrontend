@@ -12,6 +12,8 @@ interface AddressData {
   city: string;
   state: string;
   pincode: string;
+  flat: string;
+  locality: string;
 }
 
 interface AddressBarProps {
@@ -49,7 +51,9 @@ const AddressBar = ({
             data.address.village ||
             "",
           state: data.address.state || "",
-          pincode: data.address.postcode || "", // Added pincode from geolocation data
+          pincode: data.address.postcode || "",
+          flat: "", // Flat isn't available from geolocation
+          locality: data.address.neighbourhood || data.address.suburb || "", // Added locality from geolocation data
         };
 
         form.setFieldsValue(newAddress);
@@ -96,11 +100,18 @@ const AddressBar = ({
         name="name"
         rules={[{ required: true, message: "Please input your name!" }]}
       >
-        <Input
-          // placeholder="John Doe"
-          allowClear
-          prefix={<UserOutlined className="text-gray-400" />}
-        />
+        <Input allowClear prefix={<UserOutlined className="text-gray-400" />} />
+      </Form.Item>
+
+      {/* Flat Field - Added after name */}
+      <Form.Item
+        label="Flat/House No."
+        name="flat"
+        rules={[
+          { required: true, message: "Please input your flat/house number!" },
+        ]}
+      >
+        <Input allowClear placeholder="e.g. B-102, Sunshine Apartments" />
       </Form.Item>
 
       <Form.Item
@@ -111,10 +122,18 @@ const AddressBar = ({
         ]}
       >
         <Input
-          // placeholder="123 Main Street"
           allowClear
           prefix={<CompassOutlined className="text-gray-400" />}
         />
+      </Form.Item>
+
+      {/* Locality Field - Added after street address */}
+      <Form.Item
+        label="Locality/Area"
+        name="locality"
+        rules={[{ required: true, message: "Please input your locality!" }]}
+      >
+        <Input allowClear placeholder="e.g. Downtown, Westside" />
       </Form.Item>
 
       <div className="grid grid-cols-2 gap-4">
@@ -131,7 +150,7 @@ const AddressBar = ({
           name="state"
           rules={[{ required: true, message: "Please input your state!" }]}
         >
-          <Input  allowClear />
+          <Input allowClear />
         </Form.Item>
       </div>
 
@@ -166,8 +185,8 @@ const AddressBar = ({
           >
             {isLoading ? "Detecting Location..." : "Use Current Location"}
           </Button>
-          <Button className="w-[100px] border rounded hover:!border-none h-[40px] py-2 text-sm  text-white hover:!bg-purple-700 hover:!text-white bg-purple-600"
-            
+          <Button
+            className="w-[100px] border rounded hover:!border-none h-[40px] py-2 text-sm  text-white hover:!bg-purple-700 hover:!text-white bg-purple-600"
             htmlType="submit"
             style={{ marginLeft: "auto" }}
           >
