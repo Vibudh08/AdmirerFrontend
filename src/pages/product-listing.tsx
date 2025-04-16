@@ -45,8 +45,10 @@ const ProductListing: React.FC<ProductLsitingProps> = ({
     price: string;
     cat_id: string;
     sub_cat_name: string;
-    id: number;
+    
+    // id: string;
     description: string;
+    id: number;
   }
   const [productDataArray, setProductDataArray] = useState<
     productItemApiProps[]
@@ -76,6 +78,7 @@ const ProductListing: React.FC<ProductLsitingProps> = ({
     })
       .then((response) => response.json())
       .then((data) => {
+        // console.log(data)
         setProductDataArray(data);
       })
       .catch((err) => {
@@ -169,7 +172,8 @@ const ProductListing: React.FC<ProductLsitingProps> = ({
                   .map((item, index) => (
                     <ProductItem
                       key={index}
-                      name={item.product_name}
+                      id={item.id}
+                  name={item.product_name}
                       price={item.discount}
                       description={item.description}
                       originalPrice={item.price}

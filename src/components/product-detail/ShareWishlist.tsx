@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { IoShareSocialOutline } from "react-icons/io5";
-
+import { wishlist_add_remove } from "../api/api-end-points";
 import {
   FaHeart,
   FaRegHeart,
@@ -10,14 +10,44 @@ import {
   FaLinkedinIn,
   FaTelegramPlane,
 } from "react-icons/fa";
-const ProductActions = () => {
-  const [inWishlist, setInWishlist] = useState(false);
+
+interface ProductActionsProps {
+  productId: number;
+  wishlist: number; // 0 or 1
+}
+
+const ProductActions: React.FC<ProductActionsProps> = ({ productId, wishlist }) => {
+  const [inWishlist, setInWishlist] = useState(wishlist === 1);
   const [shareOpen, setShareOpen] = useState(false);
 
-  const toggleWishlist = () => {
-    setInWishlist(!inWishlist);
-    // You can add API call logic here
-    console.log(inWishlist ? "Removed from wishlist" : "Added to wishlist");
+  const toggleWishlist = async () => {
+    try {
+      const response = await fetch(wishlist_add_remove, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer 7|P6gdNwdWbYxXLygVRTwSHAN1qnhK7kH5kdC9A6Zad16cbca7",
+        },
+        body: JSON.stringify({
+          product_id: productId,
+          wishlist: inWishlist ? 0 : 1,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        setInWishlist(!inWishlist);
+        console.log(result.message || "Wishlist updated");
+      } else if (response.status === 401) {
+        alert("Unauthorized user. Please log in.");
+      } else {
+        alert("Something went wrong.");
+        console.error(result);
+      }
+    } catch (err) {
+      console.error("Error toggling wishlist:", err);
+    }
   };
 
   const toggleSharePopup = () => {
@@ -26,7 +56,6 @@ const ProductActions = () => {
 
   return (
     <div className="flex items-center gap-2 relative">
-      {/* Wishlist Icon */}
       <button
         onClick={toggleWishlist}
         className="text-xl text-purple-500 hover:scale-110 transition-transform"
@@ -35,66 +64,20 @@ const ProductActions = () => {
         {inWishlist ? <FaHeart /> : <FaRegHeart />}
       </button>
 
-      {/* Share Button */}
       <button
         onClick={toggleSharePopup}
         className="hover:scale-105 transition-transform"
         aria-label="Share"
       >
-        <IoShareSocialOutline className="text-2xl text-purple-500 hover:scale-110 transition-transform" />
+        {/* <IoShareSocialOutline className="text-2xl text-purple-500 hover:scale-110 transition-transform" /> */}
       </button>
 
-      {/* Overlay */}
       {shareOpen && (
         <div
           className="fixed inset-0 bg-black bg-opacity-40 z-30"
           onClick={toggleSharePopup}
         />
       )}
-
-      {/* Share Popup */}
-      {/* {shareOpen && (
-        <div className="absolute z-40 top-10 left-0 bg-white p-4 rounded-lg shadow-lg w-64">
-          <div className="flex justify-between items-center mb-2">
-            <h5 className="text-sm font-semibold">Share This Product</h5>
-            <button onClick={toggleSharePopup} className="text-lg font-bold">
-              &times;
-            </button>
-          </div>
-          <div className="flex justify-between items-center text-white text-lg gap-2">
-            <a
-              href="#"
-              className="bg-blue-600 p-2 rounded-full hover:bg-blue-700"
-            >
-              <FaFacebookF />
-            </a>
-            <a
-              href="#"
-              className="bg-blue-400 p-2 rounded-full hover:bg-blue-500"
-            >
-              <FaTwitter />
-            </a>
-            <a
-              href="#"
-              className="bg-green-500 p-2 rounded-full hover:bg-green-600"
-            >
-              <FaWhatsapp />
-            </a>
-            <a
-              href="#"
-              className="bg-blue-700 p-2 rounded-full hover:bg-blue-800"
-            >
-              <FaLinkedinIn />
-            </a>
-            <a
-              href="#"
-              className="bg-blue-500 p-2 rounded-full hover:bg-blue-600"
-            >
-              <FaTelegramPlane />
-            </a>
-          </div>
-        </div>
-      )} */}
     </div>
   );
 };
