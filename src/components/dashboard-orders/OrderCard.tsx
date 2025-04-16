@@ -46,7 +46,7 @@ const OrderCard: React.FC = () => {
       method: "GET",
       headers: {
         authorization:
-          "Bearer 43|tPT8Vf0wr3Pjy7iQV1w9Fojw0sRokCz4mUuLwh6zd0e7cf94",
+          "Bearer 45|wGPYJNyiBunf3oT3reVR4766lXFkrTiH6XbZjzdXaac3a80a",
       },
     })
       .then((response) => response.json())

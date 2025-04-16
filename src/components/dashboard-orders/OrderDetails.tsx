@@ -49,24 +49,27 @@ const OrderDetails: React.FC = () => {
   }, []);
   //Address handling
   interface Address {
-    firstname: string;
-    lastname: string;
+    first_name: string;
+    last_name: string;
     flat: string;
     street: string;
     locality: string;
     city: string;
-    zipcode: string;
+    zip_code: string;
     country_name: string;
     state: string;
+    addr_type: string;
   }
-  const [address, setAddress] = useState<Address[]>([]);
+  const [address, setAddress] = useState<Address>();
   useEffect(() => {
     fetch(getAddress_API, {
-      method: "GET",
+      method: "post",
       headers: {
-        authorization:
-          "Bearer 44|Be6L8yF3cunNZL7ZDjcFGrJjHJSC9acpkLonVVzs3eeb70be",
+        "Content-Type": "application/json",
       },
+      body: JSON.stringify({
+        id: id,
+      }),
     })
       .then((response) => response.json())
       .then((data) => {
@@ -212,14 +215,16 @@ const OrderDetails: React.FC = () => {
             <h4 className="text-sm font-semibold mb-1">Shipping details</h4>
             <p className="text-xs text-gray-700 leading-5">
               <strong>
-                {address[0]?.firstname} {address[0]?.lastname}
+                {address?.first_name} {address?.last_name}
               </strong>
               ,&nbsp;
-              {address[0]?.flat},&nbsp;
-              {address[0]?.street},&nbsp;
-              {address[0]?.locality},&nbsp;
-              {address[0]?.city},&nbsp;
-              {address[0]?.state} - {address[0]?.zipcode},&nbsp;
+              {address?.flat},&nbsp;
+              {address?.street},&nbsp;
+              {address?.locality},&nbsp;
+              {address?.city},&nbsp;
+              {address?.state} - {address?.zip_code},&nbsp;
+              {address?.addr_type}
+              <br />
               <strong>Phone number:</strong> 8736977153
             </p>
           </div>
