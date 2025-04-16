@@ -1,12 +1,14 @@
 import React, { useState, useCallback } from "react";
-import { Form, Input, Button, Spin, Alert } from "antd";
+import { Form, Input, Button, Spin, Alert, Select } from "antd";
 import {
   CompassOutlined,
   UserOutlined,
   EnvironmentOutlined,
   MailOutlined,
+  HomeOutlined,
+  ShopOutlined,
 } from "@ant-design/icons";
-
+import { signUp_API } from "../../api/api-end-points";
 interface AddressData {
   firstName: string;
   lastName: string;
@@ -17,6 +19,7 @@ interface AddressData {
   pincode: string;
   flat: string;
   locality: string;
+  addressType: string;
 }
 
 interface AddressBarProps {
@@ -46,9 +49,9 @@ const AddressBar = ({
 
         const data = await response.json();
         const newAddress = {
-          firstName: "", // Not available from geolocation
-          lastName: "", // Not available from geolocation
-          email: "", // Not available from geolocation
+          firstName: "",
+          lastName: "",
+          email: "",
           street: data.address.road || data.address.highway || "",
           city:
             data.address.city ||
@@ -59,6 +62,7 @@ const AddressBar = ({
           pincode: data.address.postcode || "",
           flat: "",
           locality: data.address.neighbourhood || data.address.suburb || "",
+          addressType: "home", // Default to home
         };
 
         form.setFieldsValue(newAddress);
@@ -91,21 +95,24 @@ const AddressBar = ({
   const handleSubmit = (values: AddressData) => {
     setIsModalVisible(false);
     console.log(values);
-    fetch("/signUp", {
+    fetch(signUp_API, {
       method: "POST",
       headers: {
+        authorization:
+          "Bearer 46|7wmR2xE2HsbCoEoOJPI12BJ6MsTywTMmTx7s3Piwa7cf09ff",
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
         firstname: values.firstName,
         lastname: values.lastName,
-        email: values.email,
+        email: values.email?.trim() === "" ? null : values.email,
         flat: values.flat,
         street: values.street,
         locality: values.locality,
         city: values.city,
         state: values.state,
         pincode: values.pincode,
+        addressType: values.addressType,
       }),
     });
   };
@@ -157,6 +164,27 @@ const AddressBar = ({
         />
       </Form.Item>
 
+      {/* Address Type Field */}
+      <Form.Item
+        label="Address Type"
+        name="addressType"
+        rules={[{ required: true, message: "Please select address type!" }]}
+        initialValue="home"
+      >
+        <Select
+          options={[
+            { value: "home", label: "Home", icon: <HomeOutlined /> },
+            { value: "work", label: "Work", icon: <ShopOutlined /> },
+            { value: "other", label: "Other" },
+          ]}
+          optionRender={(option) => (
+            <div>
+              {option.data.icon} {option.data.label}
+            </div>
+          )}
+        />
+      </Form.Item>
+
       {/* Flat Field */}
       <Form.Item
         label="Flat/House No."
@@ -170,7 +198,7 @@ const AddressBar = ({
 
       <Form.Item
         label="Street Address"
-        name="address1"
+        name="street"
         rules={[
           { required: true, message: "Please input your street address!" },
         ]}
@@ -218,7 +246,7 @@ const AddressBar = ({
         ]}
       >
         <Input
-          placeholder="6 digits [0,9] PIN code"
+          placeholder="6 digits [0-9] PIN code"
           allowClear
           prefix={<EnvironmentOutlined className="text-gray-400" />}
         />
