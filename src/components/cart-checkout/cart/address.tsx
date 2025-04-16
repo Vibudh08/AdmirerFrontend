@@ -7,7 +7,8 @@ import {
 } from "@ant-design/icons";
 
 interface AddressData {
-  name: string;
+  firstName: string;
+  lastName: string;
   address1: string;
   city: string;
   state: string;
@@ -43,7 +44,8 @@ const AddressBar = ({
 
         const data = await response.json();
         const newAddress = {
-          name: "", // Name isn't available from geolocation
+          firstName: "", // Not available from geolocation
+          lastName: "", // Not available from geolocation
           address1: data.address.road || data.address.highway || "",
           city:
             data.address.city ||
@@ -52,8 +54,8 @@ const AddressBar = ({
             "",
           state: data.address.state || "",
           pincode: data.address.postcode || "",
-          flat: "", // Flat isn't available from geolocation
-          locality: data.address.neighbourhood || data.address.suburb || "", // Added locality from geolocation data
+          flat: "",
+          locality: data.address.neighbourhood || data.address.suburb || "",
         };
 
         form.setFieldsValue(newAddress);
@@ -83,8 +85,20 @@ const AddressBar = ({
     );
   }, [handleGeolocationSuccess]);
 
-  const handleSubmit = () => {
+  const handleSubmit = (values: AddressData) => {
     setIsModalVisible(false);
+    // You can access all form values here including firstName and lastName
+    console.log(values);
+    fetch("/signUp", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        firstname: values.firstName,
+        lastname: values.lastName,
+      }),
+    });
   };
 
   return (
@@ -92,18 +106,31 @@ const AddressBar = ({
       form={form}
       onFinish={handleSubmit}
       layout="vertical"
-      className="max-w-2xl mx-auto "
+      className="max-w-2xl mx-auto"
     >
-      {/* Name Field - Added at the top */}
-      <Form.Item
-        label="Full Name"
-        name="name"
-        rules={[{ required: true, message: "Please input your name!" }]}
-      >
-        <Input allowClear prefix={<UserOutlined className="text-gray-400" />} />
-      </Form.Item>
+      {/* First Name and Last Name Fields */}
+      <div className="grid grid-cols-2 gap-4">
+        <Form.Item
+          label="First Name"
+          name="firstName"
+          rules={[{ required: true, message: "Please input your first name!" }]}
+        >
+          <Input
+            allowClear
+            prefix={<UserOutlined className="text-gray-400" />}
+          />
+        </Form.Item>
 
-      {/* Flat Field - Added after name */}
+        <Form.Item
+          label="Last Name"
+          name="lastName"
+          rules={[{ required: true, message: "Please input your last name!" }]}
+        >
+          <Input allowClear />
+        </Form.Item>
+      </div>
+
+      {/* Flat Field */}
       <Form.Item
         label="Flat/House No."
         name="flat"
@@ -127,7 +154,7 @@ const AddressBar = ({
         />
       </Form.Item>
 
-      {/* Locality Field - Added after street address */}
+      {/* Locality Field */}
       <Form.Item
         label="Locality/Area"
         name="locality"
@@ -154,7 +181,7 @@ const AddressBar = ({
         </Form.Item>
       </div>
 
-      {/* Pincode Field - Added after state */}
+      {/* Pincode Field */}
       <Form.Item
         label="Pincode/Zip Code"
         name="pincode"
@@ -173,7 +200,7 @@ const AddressBar = ({
       <Form.Item>
         <div style={{ display: "flex", gap: "8px" }}>
           <Button
-            className="w-[180px] border rounded h-[40px] py-2 hover:!border-none text-sm  text-white hover:!bg-purple-700 hover:!text-white bg-purple-600"
+            className="w-[180px] border rounded h-[40px] py-2 hover:!border-none text-sm text-white hover:!bg-purple-700 hover:!text-white bg-purple-600"
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
@@ -186,7 +213,7 @@ const AddressBar = ({
             {isLoading ? "Detecting Location..." : "Use Current Location"}
           </Button>
           <Button
-            className="w-[100px] border rounded hover:!border-none h-[40px] py-2 text-sm  text-white hover:!bg-purple-700 hover:!text-white bg-purple-600"
+            className="w-[100px] border rounded hover:!border-none h-[40px] py-2 text-sm text-white hover:!bg-purple-700 hover:!text-white bg-purple-600"
             htmlType="submit"
             style={{ marginLeft: "auto" }}
           >
