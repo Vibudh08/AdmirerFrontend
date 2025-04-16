@@ -45,7 +45,7 @@ const ProductListing: React.FC<ProductLsitingProps> = ({
     price: string;
     cat_id: string;
     sub_cat_name: string;
-    id: string;
+    id: number;
     description: string;
   }
   const [productDataArray, setProductDataArray] = useState<

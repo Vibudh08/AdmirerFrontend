@@ -1,8 +1,43 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Modal, Button } from "antd";
 import { CloseOutlined } from "@ant-design/icons";
-
+import { user_profile_API } from "../api/api-end-points";
 const Dashboard_Profile = () => {
+  interface profileDataProps {
+    first_name: string;
+    last_name: String;
+    mobile: string;
+    email: string;
+    flat: string;
+    street: string;
+    locality: string;
+    city: string;
+    zipcode: string;
+    state: string;
+    country: string;
+    address_type: string;
+    status: string;
+  }
+  const [profileData, setProfileData] = useState<profileDataProps>();
+
+  useEffect(() => {
+    fetch(user_profile_API, {
+      method: "GET",
+      headers: {
+        authorization:
+          "Bearer 43|tPT8Vf0wr3Pjy7iQV1w9Fojw0sRokCz4mUuLwh6zd0e7cf94",
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("this is user-profile data = ", data);
+        setProfileData(data);
+      });
+  }, []);
+  useEffect(() => {
+    console.log("the profile data is - ", profileData);
+  }, [profileData]);
+
   const [gender, setGender] = useState("male");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newNumber, setNewNumber] = useState("");
@@ -69,7 +104,9 @@ const Dashboard_Profile = () => {
           Mobile Number*
         </label>
         <div className="flex items-center border rounded px-3 py-2 mt-1">
-          <span className="text-green-600 font-medium">9971900418</span>
+          <span className="text-green-600 font-medium">
+            {profileData?.mobile}
+          </span>
           <div className="ml-auto">
             <button
               className="text-sm border rounded px-6 py-1 hover:bg-gray-100"
@@ -172,7 +209,7 @@ const Dashboard_Profile = () => {
           </label>
           <input
             type="text"
-            value="9971900418"
+            value={profileData?.mobile}
             readOnly
             className="w-full border px-4 py-3 rounded bg-gray-100 text-sm text-gray-600 cursor-not-allowed"
           />

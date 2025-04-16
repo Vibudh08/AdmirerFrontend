@@ -5,3 +5,7 @@ export const productCategoy_API = apiHeader + "product-category";
 export const signUp_API = apiHeader + "signUp";
 export const product_listing_API = apiHeader + "productFilteredList";
 export const catSubcat_API = apiHeader + "catSubCat";
+export const user_profile_API = apiHeader + "user-profile";
+export const order_status_API = apiHeader + "recent-orders";
+export const order_detail_API = apiHeader + "order-detail";
+export const getAddress_API = apiHeader + "getAddress";
