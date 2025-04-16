@@ -4,12 +4,14 @@ import {
   CompassOutlined,
   UserOutlined,
   EnvironmentOutlined,
+  MailOutlined,
 } from "@ant-design/icons";
 
 interface AddressData {
   firstName: string;
   lastName: string;
-  address1: string;
+  email?: string;
+  street: string;
   city: string;
   state: string;
   pincode: string;
@@ -46,7 +48,8 @@ const AddressBar = ({
         const newAddress = {
           firstName: "", // Not available from geolocation
           lastName: "", // Not available from geolocation
-          address1: data.address.road || data.address.highway || "",
+          email: "", // Not available from geolocation
+          street: data.address.road || data.address.highway || "",
           city:
             data.address.city ||
             data.address.town ||
@@ -87,7 +90,6 @@ const AddressBar = ({
 
   const handleSubmit = (values: AddressData) => {
     setIsModalVisible(false);
-    // You can access all form values here including firstName and lastName
     console.log(values);
     fetch("/signUp", {
       method: "POST",
@@ -97,6 +99,13 @@ const AddressBar = ({
       body: JSON.stringify({
         firstname: values.firstName,
         lastname: values.lastName,
+        email: values.email,
+        flat: values.flat,
+        street: values.street,
+        locality: values.locality,
+        city: values.city,
+        state: values.state,
+        pincode: values.pincode,
       }),
     });
   };
@@ -129,6 +138,24 @@ const AddressBar = ({
           <Input allowClear />
         </Form.Item>
       </div>
+
+      {/* Email Field */}
+      <Form.Item
+        label="Email (Optional)"
+        name="email"
+        rules={[
+          {
+            type: "email",
+            message: "Please enter a valid email address!",
+          },
+        ]}
+      >
+        <Input
+          allowClear
+          prefix={<MailOutlined className="text-gray-400" />}
+          placeholder="example@domain.com"
+        />
+      </Form.Item>
 
       {/* Flat Field */}
       <Form.Item
