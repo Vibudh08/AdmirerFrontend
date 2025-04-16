@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 const ProductAccordion = ({ description }: { description: string }) => {
-  const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const [openIndex, setOpenIndex] = useState<number | null>(0); // 🔥 Open by default
 
   const toggleItem = (index: number) => {
     setOpenIndex(openIndex === index ? null : index);
@@ -92,14 +92,14 @@ const ProductAccordion = ({ description }: { description: string }) => {
 };
 
 const Section = ({ title, items }: { title: string; items: string[] }) => (
-    <div>
-      <h3 className="font-semibold mb-2">{title}</h3>
-      <ul className="list-disc list-inside space-y-2">
-        {items.map((item, i) => (
-          <li className="list-none" key={i}>●&nbsp;  {item}</li>
-        ))}
-      </ul>
-    </div>
-  );
+  <div>
+    <h3 className="font-semibold mb-2">{title}</h3>
+    <ul className="list-disc list-inside space-y-2">
+      {items.map((item, i) => (
+        <li className="list-none" key={i}>●&nbsp;  {item}</li>
+      ))}
+    </ul>
+  </div>
+);
 
 export default ProductAccordion;

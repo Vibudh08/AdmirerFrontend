@@ -101,8 +101,18 @@ const curated = [
       "https://www.tanishq.co.in/dw/image/v2/BKCK_PRD/on/demandware.static/-/Library-Sites-TanishqSharedLibrary/default/dw1e976d94/homepage/ShopByGender/sbg-kids.jpg",
   },
 ];
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 const Home = () => {
+  const [activeTab, setActiveTab] = useState(0);
+  const tabs = ["First", "Second", "Third"];
+  const chunkSize = Math.ceil(curated.length / 3);
+  const chunks = [
+    curated.slice(0, chunkSize),
+    curated.slice(chunkSize, chunkSize * 2),
+    curated.slice(chunkSize * 2),
+  ];
   const sliderSettings = {
     dots: false,
     infinite: true,
@@ -194,23 +204,66 @@ const Home = () => {
 
       {/* Curated */}
       <section>
-        <div className="bg-white flex flex-col items-center p-6">
-          <h2 className="text-4xl max-md:text-2xl font-semibold text-gray-800 mb-1">
-            Curated For You
-          </h2>
-          <div className="mt-8 grid grid-cols-3 max-md:grid-cols-1 gap-2 max-md:gap-3 w-[90%] max-md:w-[97%] m-auto h-[450px] max-md:h-auto">
-            {curated.map((item, idx) => (
-              <div key={idx}>
-                <img
-                  src={item.image}
-                  className="w-full h-[90%] object-cover rounded-xl"
-                  alt={`Curated ${idx}`}
-                />
-              </div>
-            ))}
-          </div>
+      <div className="bg-white flex flex-col items-center p-6">
+        <h2 className="text-4xl max-md:text-2xl font-semibold text-gray-800 mb-1">
+          Curated For You
+        </h2>
+
+        {/* Mobile Toggle Buttons */}
+        <div className="mt-4 flex max-md:flex justify-center space-x-2 md:hidden">
+          {tabs.map((tab, index) => (
+            <button
+              key={tab}
+              onClick={() => setActiveTab(index)}
+              className={`px-4 py-1 rounded-full border ${
+                activeTab === index
+                  ? "bg-black text-white"
+                  : "bg-gray-100 text-gray-700"
+              } text-sm transition`}
+            >
+              {tab}
+            </button>
+          ))}
         </div>
-      </section>
+
+        {/* Desktop View */}
+        <div className="mt-8 grid grid-cols-3 max-md:hidden gap-2 w-[90%] m-auto h-[450px]">
+          {curated.map((item, idx) => (
+            <div key={idx}>
+              <img
+                src={item.image}
+                className="w-full h-[90%] object-cover rounded-xl"
+                alt={`Curated ${idx}`}
+              />
+            </div>
+          ))}
+        </div>
+
+        {/* Mobile Slide View */}
+        <div className="mt-8 md:hidden overflow-hidden w-[97%]">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activeTab}
+              initial={{ x: 300, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              exit={{ x: -300, opacity: 0 }}
+              transition={{ duration: 0.4 }}
+              className="grid grid-cols-1 gap-3"
+            >
+              {chunks[activeTab].map((item, idx) => (
+                <div key={idx}>
+                  <img
+                    src={item.image}
+                    className="w-full object-cover rounded-xl"
+                    alt={`Curated ${idx}`}
+                  />
+                </div>
+              ))}
+            </motion.div>
+          </AnimatePresence>
+        </div>
+      </div>
+    </section>
 
       {/* Banner */}
       <section className="bg-white py-6">

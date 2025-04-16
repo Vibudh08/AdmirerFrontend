@@ -6,4 +6,5 @@ export default interface productItemProps {
   discount: string;
   imageUrl?: string;
   compactView?: boolean;
+  id: number;
 }
