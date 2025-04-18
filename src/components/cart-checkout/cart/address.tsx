@@ -1,17 +1,25 @@
 import React, { useState, useCallback } from "react";
-import { Form, Input, Button, Spin, Alert } from "antd";
+import { Form, Input, Button, Spin, Alert, Select } from "antd";
 import {
   CompassOutlined,
   UserOutlined,
   EnvironmentOutlined,
+  MailOutlined,
+  HomeOutlined,
+  ShopOutlined,
 } from "@ant-design/icons";
-
+import { signUp_API } from "../../api/api-end-points";
 interface AddressData {
-  name: string;
-  address1: string;
+  firstName: string;
+  lastName: string;
+  email?: string;
+  street: string;
   city: string;
   state: string;
   pincode: string;
+  flat: string;
+  locality: string;
+  addressType: string;
 }
 
 interface AddressBarProps {
@@ -41,15 +49,20 @@ const AddressBar = ({
 
         const data = await response.json();
         const newAddress = {
-          name: "", // Name isn't available from geolocation
-          address1: data.address.road || data.address.highway || "",
+          firstName: "",
+          lastName: "",
+          email: "",
+          street: data.address.road || data.address.highway || "",
           city:
             data.address.city ||
             data.address.town ||
             data.address.village ||
             "",
           state: data.address.state || "",
-          pincode: data.address.postcode || "", // Added pincode from geolocation data
+          pincode: data.address.postcode || "",
+          flat: "",
+          locality: data.address.neighbourhood || data.address.suburb || "",
+          addressType: "home", // Default to home
         };
 
         form.setFieldsValue(newAddress);
@@ -79,8 +92,29 @@ const AddressBar = ({
     );
   }, [handleGeolocationSuccess]);
 
-  const handleSubmit = () => {
+  const handleSubmit = (values: AddressData) => {
     setIsModalVisible(false);
+    console.log(values);
+    fetch(signUp_API, {
+      method: "POST",
+      headers: {
+        authorization:
+          "Bearer 46|7wmR2xE2HsbCoEoOJPI12BJ6MsTywTMmTx7s3Piwa7cf09ff",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        firstname: values.firstName,
+        lastname: values.lastName,
+        email: values.email?.trim() === "" ? null : values.email,
+        flat: values.flat,
+        street: values.street,
+        locality: values.locality,
+        city: values.city,
+        state: values.state,
+        pincode: values.pincode,
+        addressType: values.addressType,
+      }),
+    });
   };
 
   return (
@@ -88,33 +122,100 @@ const AddressBar = ({
       form={form}
       onFinish={handleSubmit}
       layout="vertical"
-      className="max-w-2xl mx-auto "
+      className="max-w-2xl mx-auto"
     >
-      {/* Name Field - Added at the top */}
+      {/* First Name and Last Name Fields */}
+      <div className="grid grid-cols-2 gap-4">
+        <Form.Item
+          label="First Name"
+          name="firstName"
+          rules={[{ required: true, message: "Please input your first name!" }]}
+        >
+          <Input
+            allowClear
+            prefix={<UserOutlined className="text-gray-400" />}
+          />
+        </Form.Item>
+
+        <Form.Item
+          label="Last Name"
+          name="lastName"
+          rules={[{ required: true, message: "Please input your last name!" }]}
+        >
+          <Input allowClear />
+        </Form.Item>
+      </div>
+
+      {/* Email Field */}
       <Form.Item
-        label="Full Name"
-        name="name"
-        rules={[{ required: true, message: "Please input your name!" }]}
+        label="Email (Optional)"
+        name="email"
+        rules={[
+          {
+            type: "email",
+            message: "Please enter a valid email address!",
+          },
+        ]}
       >
         <Input
-          // placeholder="John Doe"
           allowClear
-          prefix={<UserOutlined className="text-gray-400" />}
+          prefix={<MailOutlined className="text-gray-400" />}
+          placeholder="example@domain.com"
         />
+      </Form.Item>
+
+      {/* Address Type Field */}
+      <Form.Item
+        label="Address Type"
+        name="addressType"
+        rules={[{ required: true, message: "Please select address type!" }]}
+        initialValue="home"
+      >
+        <Select
+          options={[
+            { value: "home", label: "Home", icon: <HomeOutlined /> },
+            { value: "work", label: "Work", icon: <ShopOutlined /> },
+            { value: "other", label: "Other" },
+          ]}
+          optionRender={(option) => (
+            <div>
+              {option.data.icon} {option.data.label}
+            </div>
+          )}
+        />
+      </Form.Item>
+
+      {/* Flat Field */}
+      <Form.Item
+        label="Flat/House No."
+        name="flat"
+        rules={[
+          { required: true, message: "Please input your flat/house number!" },
+        ]}
+      >
+        <Input allowClear placeholder="e.g. B-102, Sunshine Apartments" />
       </Form.Item>
 
       <Form.Item
         label="Street Address"
-        name="address1"
+        name="street"
         rules={[
           { required: true, message: "Please input your street address!" },
         ]}
       >
         <Input
-          // placeholder="123 Main Street"
           allowClear
           prefix={<CompassOutlined className="text-gray-400" />}
         />
+      </Form.Item>
+
+      {/* Locality Field */}
+      <Form.Item
+        label="Locality/Area"
+        name="locality"
+        rules={[{ required: true, message: "Please input your locality!" }]}
+      >
+        <Input allowClear placeholder="e.g. Downtown, Westside" />
       </Form.Item>
 
       <div className="grid grid-cols-2 gap-4">
@@ -131,11 +232,11 @@ const AddressBar = ({
           name="state"
           rules={[{ required: true, message: "Please input your state!" }]}
         >
-          <Input  allowClear />
+          <Input allowClear />
         </Form.Item>
       </div>
 
-      {/* Pincode Field - Added after state */}
+      {/* Pincode Field */}
       <Form.Item
         label="Pincode/Zip Code"
         name="pincode"
@@ -145,7 +246,7 @@ const AddressBar = ({
         ]}
       >
         <Input
-          placeholder="6 digits [0,9] PIN code"
+          placeholder="6 digits [0-9] PIN code"
           allowClear
           prefix={<EnvironmentOutlined className="text-gray-400" />}
         />
@@ -154,7 +255,7 @@ const AddressBar = ({
       <Form.Item>
         <div style={{ display: "flex", gap: "8px" }}>
           <Button
-            className="w-[180px] border rounded h-[40px] py-2 hover:!border-none text-sm  text-white hover:!bg-purple-700 hover:!text-white bg-purple-600"
+            className="w-[180px] border rounded h-[40px] py-2 hover:!border-none text-sm text-white hover:!bg-purple-700 hover:!text-white bg-purple-600"
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
@@ -166,8 +267,8 @@ const AddressBar = ({
           >
             {isLoading ? "Detecting Location..." : "Use Current Location"}
           </Button>
-          <Button className="w-[100px] border rounded hover:!border-none h-[40px] py-2 text-sm  text-white hover:!bg-purple-700 hover:!text-white bg-purple-600"
-            
+          <Button
+            className="w-[100px] border rounded hover:!border-none h-[40px] py-2 text-sm text-white hover:!bg-purple-700 hover:!text-white bg-purple-600"
             htmlType="submit"
             style={{ marginLeft: "auto" }}
           >
