@@ -3,6 +3,8 @@ import Item from "./order-item";
 import shoeProducts from "./cartData";
 import DeliveryInfo from "./current-address";
 const Cart = () => {
+  // for API addition
+  useEffect(() => {});
   interface ItemProps {
     brandName: string;
     brandId: string;

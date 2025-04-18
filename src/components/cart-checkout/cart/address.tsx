@@ -99,7 +99,7 @@ const AddressBar = ({
       method: "POST",
       headers: {
         authorization:
-          "Bearer 46|7wmR2xE2HsbCoEoOJPI12BJ6MsTywTMmTx7s3Piwa7cf09ff",
+          "Bearer 47|sIWp4seLT3JaKk5mir27SZkAKdKXKsvCvQQbZqeM30be2205",
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
