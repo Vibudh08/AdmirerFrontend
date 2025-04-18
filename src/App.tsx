@@ -24,8 +24,10 @@ import BlogPage from "./pages/Blogs";
 import BlogDetails from "./pages/BlogDetails";
 import AboutPage from "./pages/About";
 
+
 function App() {
   const [currentRoute, setCurrentRoute] = useState("/");
+  const [categoryId, setCategoryId] = useState("");
   function RouteTracker() {
     const location = useLocation();
 
@@ -45,14 +47,14 @@ function App() {
             <Header />
           )}
           <Routes>
-            <Route path="/" element={<Home />} />
+            <Route path="/" element={<Home setCategoryId={setCategoryId} />} />
             <Route path="/SignUp" element={<SignUp />} />
             <Route path="/LogIn" element={<Login />} />
             <Route path="/product/:id" element={<ProductDetails />} />
             <Route path="/dashboard_profile" element={<Dashboard_Profile />} />
             <Route path="/order/:id" element={<OrderDetails />} />
             <Route path="/cart" element={<Complete_cart_checkout />} />
-            <Route path="/test3" element={<ProductListing category={"26"} />} />
+            <Route path="/listing" element={<ProductListing category={categoryId} />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/wishlist" element={<Wishlist />} />
             <Route path="/privacy" element={<PrivacyPolicy />} />
