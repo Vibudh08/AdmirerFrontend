@@ -23,7 +23,7 @@ const ProductAccordion = ({ description }: { description: string }) => {
             openIndex === 0 ? "max-h-[600px]" : "max-h-0"
           }`}
         >
-          <div className="px-4 py-4 text-gray-700 text-sm">
+          <div className="px-4 max-md:px-2 py-4 text-gray-700 text-sm">
             <div
               className="product__details-des"
               dangerouslySetInnerHTML={{ __html: description }}

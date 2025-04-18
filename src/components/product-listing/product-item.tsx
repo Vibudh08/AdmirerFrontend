@@ -53,7 +53,7 @@ const ProductItem: React.FC<productItemProps> = ({
 
   return (
     <div
-      className={`w-full font-sans bg-white rounded-xl p-2 sm:p-3 flex flex-col gap-1.5 sm:gap-2.5 border border-gray-200 ${
+      className={`w-full font-sans bg-white rounded-xl p-2 sm:p-3 cursor-pointer flex flex-col gap-1.5 sm:gap-2.5 border border-gray-200 ${
         compactView ? "text-xs" : "text-sm"
       }` } onClick={handleClick}
     >

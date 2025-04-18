@@ -350,7 +350,7 @@ const LeftSideBar: React.FC<LeftSideBarProps> = ({
                     value={category}
                     checked={selectedCategory === category}
                     onChange={() => handleCategoryChange(category)}
-                    className="h-4 w-4 text-purple-600 focus:ring-purple-500"
+                    className="h-4 w-4 hidden text-purple-600 focus:ring-purple-500"
                   />
                   <label
                     htmlFor={`cat-${category}`}

@@ -55,7 +55,7 @@ const ProductActions: React.FC<ProductActionsProps> = ({ productId, wishlist }) 
   };
 
   return (
-    <div className="flex items-center gap-2 relative">
+    <div className="flex items-start pt-1.5 gap-2 relative">
       <button
         onClick={toggleWishlist}
         className="text-xl text-purple-500 hover:scale-110 transition-transform"

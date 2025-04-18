@@ -16,19 +16,19 @@ import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 // Arrows
 const CustomPrevArrow = ({ onClick }: { onClick: () => void }) => (
   <button
-    className="absolute left-[-25px] top-1/2 transform -translate-y-1/2 z-10 bg-white p-1 rounded-full shadow-md hover:bg-black transition hover:text-white"
+    className="absolute left-[-25px] top-1/2 transform -translate-y-1/2 z-10 bg-white p-1 rounded-full shadow-md hover:bg-black transition hover:text-white max-md:left-0.5"
     onClick={onClick}
   >
-    <IoIosArrowBack className="text-3xl max-md:text-2xl text-gray-700 hover:text-white" />
+    <IoIosArrowBack className="text-3xl max-md:text-xl text-gray-700 hover:text-white" />
   </button>
 );
 
 const CustomNextArrow = ({ onClick }: { onClick: () => void }) => (
   <button
-    className="absolute right-[-25px] top-1/2 transform -translate-y-1/2 z-10 bg-white p-1 rounded-full shadow-md hover:bg-black transition hover:text-white"
+    className="absolute right-[-25px] top-1/2 transform -translate-y-1/2 z-10 bg-white p-1 rounded-full shadow-md hover:bg-black transition hover:text-white max-md:right-0.5"
     onClick={onClick}
   >
-    <IoIosArrowForward className="text-3xl max-md:text-2xl text-gray-700 hover:text-white" />
+    <IoIosArrowForward className="text-3xl max-md:text-xl text-gray-700 hover:text-white" />
   </button>
 );
 
@@ -60,7 +60,17 @@ const ProductDetails = () => {
     arrows: true,
     prevArrow: <CustomPrevArrow onClick={() => {}} />,
     nextArrow: <CustomNextArrow onClick={() => {}} />,
+    responsive: [
+      {
+        breakpoint: 768, // for screens <768px (typical mobile)
+        settings: {
+          slidesToShow: 2,
+          slidesToScroll: 1,
+        },
+      },
+    ],
   };
+  
 
   const handleBuyNow = () => {
     const token = "Bearer 7|P6gdNwdWbYxXLygVRTwSHAN1qnhK7kH5kdC9A6Zad16cbca7"; // Adjust key if different
@@ -296,7 +306,14 @@ const ProductDetails = () => {
                 <div className="text-xl text-gray-700 mb-2 font-medium">
                   {product.product_name}
                 </div>
-                <div className="text-3xl items-center gap-2 text-gray-800 mb-1">
+                
+              </div>
+              <ProductActions
+                productId={product.id} 
+                wishlist={product.wishlist}
+              />
+            </div>
+            <div className="text-3xl items-center gap-2 text-gray-800 mb-1">
                   ₹{product.discount}{" "}
                   <span className="text-gray-400 line-through text-lg mr-1">
                     ₹{product.price}
@@ -305,12 +322,6 @@ const ProductDetails = () => {
                     {product.discount_percent}% OFF
                   </span>
                 </div>
-              </div>
-              <ProductActions
-                productId={product.id} 
-                wishlist={product.wishlist}
-              />
-            </div>
             <div className="text-sm text-gray-500 mb-1">Incl. of all taxes</div>
 
             {/* <div className="w-full bg-gradient-to-r tracking-wide from-purple-200 to-white text-md mt-3 text-purple-800 p-3 rounded-md">
@@ -375,18 +386,18 @@ const ProductDetails = () => {
         <ProductAccordion description={product.description} />
       </div>
       <div className="mt-10">
-        <h2 className="text-3xl font-semibold mb-6   text-center">
+        <h2 className="text-3xl max-md:text-2xl font-semibold mb-6   text-center">
           Related Products
         </h2>
 
-        <div className="grid grid-cols-1 w-[85%] m-auto  !gap-4">
+        <div className="grid grid-cols-1 w-[85%] max-md:w-[98%] m-auto !gap-4 ">
           <Slider {...relatedProductsSlider}>
             {relatedProducts.map((item) => (
               <div
                 key={item.id}
-                className="px-2" // Add horizontal spacing here
+                className="px-2 max-md:px-1" // Add horizontal spacing here
               >
-                <div className="w-full font-sans bg-white rounded-xl p-3 flex flex-col gap-2 border border-gray-200">
+                <div className="w-full font-sans bg-white rounded-xl p-3 max-md:p-1.5 flex flex-col gap-2 max-md:gap-1 border border-gray-200">
                   <div className="relative group">
                     <img
                       src={item.image || "https://via.placeholder.com/100"}
@@ -409,18 +420,18 @@ const ProductDetails = () => {
                     </button>
                   </div>
 
-                  <div className="font-medium text-lg truncate">
+                  <div className="font-medium text-lg max-md:text-[16px] truncate">
                     {item.title}
                   </div>
 
-                  <div className="flex items-center gap-2 text-lg">
-                    <span className="font-semibold text-black">
+                  <div className="flex items-center gap-2 max-md:gap-1.5 text-lg">
+                    <span className="font-semibold text-black max-md:text-[16px]">
                       ₹{item.discount}
                     </span>
-                    <span className="line-through text-md text-gray-400">
+                    <span className="line-through text-md text-gray-400 max-md:text-[15px]">
                       ₹{item.price}
                     </span>
-                    <span className="bg-red-50 text-red-700 font-bold px-1 py-0.5 rounded text-xs">
+                    <span className="bg-red-50 text-red-700 font-bold px-1 py-0.5 rounded text-xs max-md:text-[12px]">
                       {item.discount_percent}% OFF
                     </span>
                   </div>

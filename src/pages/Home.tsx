@@ -1,7 +1,14 @@
 import Slider from "react-slick";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import TestimonialsSection from "../components/testimonial/Testimonial";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+
+// ✅ Move this outside the component
+interface HomePageProps {
+  setCategoryId: React.Dispatch<React.SetStateAction<string>>;
+}
 
 // Arrows
 const CustomPrevArrow = ({ onClick }: { onClick: () => void }) => (
@@ -22,97 +29,46 @@ const CustomNextArrow = ({ onClick }: { onClick: () => void }) => (
   </button>
 );
 
-// Banners
-const bannerImages = [
-  {
-    desktop: "/home/banner.jpg",
-    mobile: "/home/bannermobile.png",
-  },
-  {
-    desktop: "/home/banner2.jpg",
-    mobile: "/home/bannermobile1.jpg",
-  },
-  {
-    desktop: "/home/banner3.jpg",
-    mobile: "/home/bannermobile2.jpg",
-  },
-];
+// Interfaces
+interface BannerItem {
+  image: string;
+  mobile_img: string;
+  url: string;
+}
+interface CategoryItem {
+  image: string;
+  title: string;
+  url: string;
+}
+interface AdvertisementItem {
+  image: string;
+  url: string;
+}
+interface OffersItem {
+  image: string;
+  url: string;
+}
+interface BannerData {
+  image: string;
+  url: string;
+}
+interface BottomBanner {
+  mobile_banner: BannerData;
+  desktop_banner: BannerData;
+}
 
-// Categories
-const categories = [
-  {
-    title: "EARRINGS",
-    image:
-      "https://d25g9z9s77rn4i.cloudfront.net/uploads/product/194/1737539642_bdac2baf411a5259c0b3.jpg",
-  },
-  {
-    title: "MANGALSUTRA",
-    image:
-      "https://5.imimg.com/data5/SELLER/Default/2024/1/379075426/DP/OM/VC/60528717/artificial-jewellery-necklace-set.jpg",
-  },
-  {
-    title: "PENDANTS",
-    image:
-      "https://ratnalayajewels.com/wp-content/uploads/sites/449/2022/04/PHOTO-2022-04-11-15-14-09_3.jpg",
-  },
-  {
-    title: "MANGALSUTRA",
-    image: "https://m.media-amazon.com/images/I/914Hiv6tAzL._AC_UY1100_.jpg",
-  },
-  {
-    title: "MANGALSUTRA",
-    image:
-      "https://rubans.in/cdn/shop/products/rubans-gold-plated-red-green-stone-studded-temple-jewellery-set-necklace-set-33613007782062.png?v=1678797822",
-  },
-  {
-    title: "FINGER RINGS",
-    image: "https://www.candere.com/media/jewellery/images/KCGR030__1.jpeg",
-  },
-];
+const Home: React.FC<HomePageProps> = ({ setCategoryId }) => {
+  const [banners, setBanners] = useState<BannerItem[]>([]);
+  const [category, setCategory] = useState<CategoryItem[]>([]);
+  const [advertisement, setAdvertisement] = useState<AdvertisementItem[]>([]);
+  const [offers, setOffers] = useState<OffersItem[]>([]);
+  const [bottombanner, setBottombanner] = useState<BottomBanner>({
+    mobile_banner: { image: "", url: "" },
+    desktop_banner: { image: "", url: "" },
+  });
 
-// Collections
-const collections = [
-  {
-    image:
-      "https://www.tanishq.co.in/on/demandware.static/-/Library-Sites-TanishqSharedLibrary/default/dw622645f4/homepage/tanishq-collections/soulmate-desktop.jpg",
-  },
-  {
-    image:
-      "https://www.tanishq.co.in/on/demandware.static/-/Library-Sites-TanishqSharedLibrary/default/dweeb09ff3/homepage/tanishq-collections/string-it.jpg",
-  },
-  {
-    image:
-      "https://www.tanishq.co.in/on/demandware.static/-/Library-Sites-TanishqSharedLibrary/default/dw3cd1adf0/homepage/tanishq-collections/kids-jewellery.jpg",
-  },
-];
+  const navigate = useNavigate();
 
-// Curated
-const curated = [
-  {
-    image:
-      "https://www.tanishq.co.in/dw/image/v2/BKCK_PRD/on/demandware.static/-/Library-Sites-TanishqSharedLibrary/default/dw811805ad/homepage/ShopByGender/sbg-women.jpg",
-  },
-  {
-    image:
-      "https://www.tanishq.co.in/dw/image/v2/BKCK_PRD/on/demandware.static/-/Library-Sites-TanishqSharedLibrary/default/dwe6fec18e/homepage/ShopByGender/sbg-men.jpg",
-  },
-  {
-    image:
-      "https://www.tanishq.co.in/dw/image/v2/BKCK_PRD/on/demandware.static/-/Library-Sites-TanishqSharedLibrary/default/dw1e976d94/homepage/ShopByGender/sbg-kids.jpg",
-  },
-];
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-
-const Home = () => {
-  const [activeTab, setActiveTab] = useState(0);
-  const tabs = ["First", "Second", "Third"];
-  const chunkSize = Math.ceil(curated.length / 3);
-  const chunks = [
-    curated.slice(0, chunkSize),
-    curated.slice(chunkSize, chunkSize * 2),
-    curated.slice(chunkSize * 2),
-  ];
   const sliderSettings = {
     dots: false,
     infinite: true,
@@ -126,16 +82,46 @@ const Home = () => {
     nextArrow: <CustomNextArrow onClick={() => {}} />,
   };
 
+  const handleClick = (url: string) => {
+    const id = url.replace("cat-", "").replace("subcat-", "");
+    setCategoryId(id);
+    navigate("/listing");
+  };
+
+  useEffect(() => {
+    axios
+      .get("http://127.0.0.1:8000/api/homepage-data")
+      .then((response) => {
+        const data = response.data.data;
+        setBanners(data.banners);
+        setCategory(data.category_subcategory);
+        setAdvertisement(data.advertisement);
+        setOffers(data.offers_slider);
+        setBottombanner(data.bottom_banner);
+      })
+      .catch((error) => {
+        console.error("Error fetching homepage data:", error);
+      });
+  }, []);
+
   return (
     <>
-      {/* Hero Banner */}
+      {/* Hero Slider */}
       <section>
         <div className="relative">
           <Slider {...sliderSettings}>
-            {bannerImages.map((banner, index) => (
-              <div key={index}>
-                <img className="w-full desktop-banner" src={banner.desktop} />
-                <img className="w-full mobile-banner" src={banner.mobile} />
+            {banners.map((item, index) => (
+              <div key={index} onClick={() => handleClick(item.url)} className="cursor-pointer">
+                <img
+                  className="w-full desktop-banner hidden md:block"
+                  src={item.image}
+                  alt={`Banner ${index}`}
+                />
+                <img
+                  className="w-full mobile-banner block md:hidden"
+                  src={item.mobile_img}
+                  alt={`Mobile Banner ${index}`}
+                />
               </div>
             ))}
           </Slider>
@@ -152,8 +138,8 @@ const Home = () => {
             Shop by Categories
           </p>
           <div className="mt-8 max-md:mt-4 w-[85%] max-md:w-full max-md:p-3 grid grid-cols-4 max-md:grid-cols-2 gap-4 max-md:gap-3 m-auto">
-            {categories.map((cat, index) => (
-              <div key={index}>
+            {category.map((cat, index) => (
+              <div key={index} onClick={() => handleClick(cat.url)} className="cursor-pointer">
                 <div className="rounded-xl overflow-hidden mb-4">
                   <img
                     src={cat.image}
@@ -170,7 +156,7 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Collections */}
+      {/* Advertisement Section */}
       <section>
         <div className="bg-white flex flex-col items-center p-6">
           <h2 className="text-4xl max-md:text-2xl font-semibold text-gray-800 mb-1">
@@ -179,110 +165,107 @@ const Home = () => {
           <p className="text-xl max-md:text-lg text-gray-600 tracking-wider">
             Explore our newly launched collection
           </p>
-          <div className="mt-8 grid grid-cols-2 max-md:grid-cols-1 gap-2 max-md:gap-0 w-[90%] max-md:w-[97%] m-auto">
-            <div>
-              <img
-                src={collections[0].image}
-                alt="Main collection"
-                className="w-full h-auto rounded-xl max-md:h-[97%]"
-              />
+          {advertisement.length >= 3 && (
+            <div className="mt-8 grid grid-cols-2 max-md:grid-cols-1 gap-2 max-md:gap-0 w-[90%] max-md:w-[97%] m-auto">
+              <div>
+                <img
+                onClick={() => handleClick(advertisement[0].url)} 
+                  src={advertisement[0].image}
+                  alt="Main collection"
+                  className="w-full h-auto rounded-xl max-md:h-[97%] cursor-pointer"
+                />
+              </div>
+              <div className="grid gap-1.5 max-md:gap-3">
+                <img
+                onClick={() => handleClick(advertisement[1].url)}
+                  src={advertisement[1].image}
+                  alt="advertisement 1"
+                  className="w-full h-auto rounded-xl cursor-pointer"
+                />
+                <img
+                onClick={() => handleClick(advertisement[1].url)}
+                  src={advertisement[2].image}
+                  alt="advertisement 2"
+                  className="w-full h-auto rounded-xl cursor-pointer"
+                />
+              </div>
             </div>
-            <div className="grid gap-1.5 max-md:gap-3">
-              {collections.slice(1).map((item, idx) => (
-                <div key={idx}>
-                  <img
-                    src={item.image}
-                    alt={`Collection ${idx}`}
-                    className="w-full h-auto rounded-xl"
-                  />
-                </div>
-              ))}
-            </div>
-          </div>
+          )}
         </div>
       </section>
 
-      {/* Curated */}
-      <section>
-      <div className="bg-white flex flex-col items-center p-6">
-        <h2 className="text-4xl max-md:text-2xl font-semibold text-gray-800 mb-1">
-          Curated For You
-        </h2>
-
-        {/* Mobile Toggle Buttons */}
-        <div className="mt-4 flex max-md:flex justify-center space-x-2 md:hidden">
-          {tabs.map((tab, index) => (
-            <button
-              key={tab}
-              onClick={() => setActiveTab(index)}
-              className={`px-4 py-1 rounded-full border ${
-                activeTab === index
-                  ? "bg-black text-white"
-                  : "bg-gray-100 text-gray-700"
-              } text-sm transition`}
-            >
-              {tab}
-            </button>
-          ))}
-        </div>
-
-        {/* Desktop View */}
-        <div className="mt-8 grid grid-cols-3 max-md:hidden gap-2 w-[90%] m-auto h-[450px]">
-          {curated.map((item, idx) => (
-            <div key={idx}>
-              <img
-                src={item.image}
-                className="w-full h-[90%] object-cover rounded-xl"
-                alt={`Curated ${idx}`}
-              />
-            </div>
-          ))}
-        </div>
-
-        {/* Mobile Slide View */}
-        <div className="mt-8 md:hidden overflow-hidden w-[97%]">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={activeTab}
-              initial={{ x: 300, opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              exit={{ x: -300, opacity: 0 }}
-              transition={{ duration: 0.4 }}
-              className="grid grid-cols-1 gap-3"
-            >
-              {chunks[activeTab].map((item, idx) => (
-                <div key={idx}>
-                  <img
-                    src={item.image}
-                    className="w-full object-cover rounded-xl"
-                    alt={`Curated ${idx}`}
-                  />
-                </div>
-              ))}
-            </motion.div>
-          </AnimatePresence>
-        </div>
-      </div>
-    </section>
-
-      {/* Banner */}
-      <section className="bg-white py-6">
-        <div className="w-[87%] m-auto">
-          <img
-            src="https://admirer.in/assets/images/gifbanner.gif"
-            className="w-full rounded-lg desktop-banner"
-            alt=""
-          />
-          <img
-            src="https://admirer.in/assets/img/banner/maingif.gif"
-            className="w-full rounded-lg mobile-banner"
-            alt=""
-          />
-        </div>
-      </section>
-
+      {/* Offers Section */}
       <section className="">
-        <TestimonialsSection/>
+  <div className="bg-white flex flex-col items-center p-6 pb-16 max-md:p-4">
+    <h2 className="text-4xl max-md:text-2xl font-semibold text-gray-800 mb-1">
+      Curated For You
+    </h2>
+
+    {/* Desktop View: Grid */}
+    <div className="mt-8 hidden md:grid grid-cols-3 gap-2 w-[90%] m-auto h-[450px]">
+      {offers.map((item, idx) => (
+        <div
+          key={idx}
+          onClick={() => handleClick(item.url)}
+          className="cursor-pointer"
+        >
+          <img
+            src={item.image}
+            className="w-full h-full object-cover rounded-xl"
+            alt={`Curated ${idx}`}
+          />
+        </div>
+      ))}
+    </div>
+
+    {/* Mobile View: Scrollable Carousel */}
+    <div className="mt-8 w-full md:hidden overflow-hidden">
+      <div className="flex gap-2.5 overflow-x-auto scroll-smooth snap-x snap-mandatory px-4">
+        {offers.map((item, idx) => (
+          <div
+            key={idx}
+            onClick={() => handleClick(item.url)}
+            className="flex-shrink-0 w-[72vw] snap-center"
+          >
+            <img
+              src={item.image}
+              className="w-full h-[auto] object-cover rounded-xl"
+              alt={`Curated ${idx}`}
+            />
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+
+
+
+      {/* Bottom Banner */}
+      {bottombanner.desktop_banner.image && bottombanner.mobile_banner.image && (
+        <section className="bg-white py-6 pb-12">
+          <div className="w-[87%] m-auto">
+            <img
+            onClick={() => handleClick(bottombanner.desktop_banner.url)}
+              src={bottombanner.desktop_banner.image}
+              className="w-full rounded-lg desktop-banner cursor-pointer"
+              alt="Desktop Bottom Banner"
+            />
+            <img
+            onClick={() => handleClick(bottombanner.mobile_banner.url)}
+              src={bottombanner.mobile_banner.image}
+              className="w-full rounded-lg mobile-banner cursor-pointer"
+              alt="Mobile Bottom Banner"
+            />
+          </div>
+        </section>
+      )}
+
+      <section>
+        <TestimonialsSection />
       </section>
 
     </>
