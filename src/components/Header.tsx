@@ -96,7 +96,7 @@ function Header() {
           </div>
         </div>
 
-        <div className="w-[93%] m-auto max-md:w-full">
+        <div className="w-[95%] m-auto max-md:w-full">
           <div className="flex justify-between items-center mb-1 mt-1 w-[94%] m-auto max-md:w-full px-2">
             <div className=" gap-[12px]  hidden max-md:flex">
               <div
@@ -113,22 +113,24 @@ function Header() {
               <Search className="relative top-[20px] transform -translate-y-1/2 text-[#7B48A5] " />
             </div>
 
-            
+            <div className="flex gap-6 text-center align-center items-center">
+
             <Link to="/">
               <img
                 src="/logo/admirer_logo.png"
                 className="w-[105px] h-[70px] cover ml-5"
                 alt=""
-              />
+                />
             </Link>
-            <div className="relative w-[550px] max-md:hidden ">
-              <Search className="absolute left-2 ml-2.5 w-6 mt-1 h-6 top-6 transform -translate-y-1/2 text-[#7B48A5]" />
+            <div className="relative w-[400px] max-md:hidden ">
+              <Search className="absolute left-1 ml-2.5 w-5 mt-1 h-5 top-6 transform -translate-y-1/2 text-[#7B48A5]" />
               <input
                 type="text"
-                placeholder="Search..."
-                className="border rounded-full mt-1 pl-12 pr-2 w-full h-[45px] border-[#7B48A5] pt-1.5 focus:outline-none focus:ring-2 focus:ring-[#d3b6e9] text-black"
-              />
+                placeholder="Search for product, category..."
+                className="border rounded-[10px] mt-1 pl-10 pr-2 w-full h-[45px] border-[#7B48A5] pt-1 focus:outline-none focus:ring-2 focus:ring-[#d3b6e9] text-black"
+                />
             </div>
+                </div>
             <div className="flex gap-5 mt-1 max-md:mt-3">
               <Link to="/LogIn">
                 <div className="text-center flex mt-1 flex-col items-center">

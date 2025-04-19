@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { GoTag } from "react-icons/go";
-import { Modal, Button } from "antd";
-import Coupons_screen from "../../coupons/Coupons_screen"; // Adjust path as needed
+import { Modal } from "antd";
+import Coupons_screen from "../../coupons/Coupons_screen";
 
 interface PriceDetail {
   label: string;
@@ -23,21 +23,21 @@ interface IndexProps {
 
 const Checkout: React.FC<IndexProps> = ({
   itemCount = 1,
-  totalMRP = "14,995",
-  discount = "10,497",
+  totalMRP = "0",
+  discount = "0",
   couponApplied = false,
   platformFee = "Free",
   shippingFee = "Free",
-  totalAmount = "14,995",
+  totalAmount = "0",
 }) => {
   const priceDetails: PriceDetail[] = [
     { label: "Total MRP", value: `₹${totalMRP}` },
     { label: "Discount on MRP", value: `-₹${discount}`, isDiscount: true },
-    {
-      label: "Coupon Discount",
-      value: couponApplied ? "₹500" : "Apply Coupon",
-      isLink: !couponApplied,
-    },
+    // {
+    //   label: "Coupon Discount",
+    //   value: couponApplied ? "₹500" : "Apply Coupon",
+    //   isLink: !couponApplied,
+    // },
     {
       label: "Platform Fee",
       value: platformFee,
@@ -49,16 +49,18 @@ const Checkout: React.FC<IndexProps> = ({
       isFree: shippingFee === "Free",
     },
   ];
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selected, setSelected] = useState("online");
 
   const showModal = () => setIsModalOpen(true);
   const handleCancel = () => setIsModalOpen(false);
+
   return (
     <>
       <div className="w-[35%] max-md:w-[100%] p-5 py-6 border-l bg-white border-[#eaeaec]">
         {/* Coupon Section */}
-        <div className="mb-4">
+        {/* <div className="mb-4">
           <h3 className="text-[13px] text-[rgb(83,87,102)] font-semibold mb-4">
             COUPONS
           </h3>
@@ -95,11 +97,11 @@ const Checkout: React.FC<IndexProps> = ({
           </div>
         </div>
 
-        <hr />
+        <hr /> */}
 
         {/* Price Details */}
-        <div className="mt-5 mb-4">
-          <h3 className="text-[13px] text-[#535766] font-bold mb-4">
+        <div className="mt-3 mb-4">
+          <h3 className="text-[14px] text-[#535766] font-bold mb-4">
             PRICE DETAILS ({itemCount} item{itemCount > 1 ? "s" : ""})
           </h3>
           <div className="leading-[28px]">
@@ -133,7 +135,7 @@ const Checkout: React.FC<IndexProps> = ({
         </div>
         <hr />
 
-        <h2 className="text-[13px] text-[#535766] font-bold mb-4 mt-5">PAYMENT METHOD</h2>
+        <h2 className="text-[14px] text-[#535766] font-bold mb-4 mt-5">PAYMENT METHOD</h2>
 
         <div
           onClick={() => setSelected("online")}
@@ -153,7 +155,7 @@ const Checkout: React.FC<IndexProps> = ({
 
         <div
           onClick={() => setSelected("cod")}
-          className={`flex items-center p-2 border rounded mt-2 cursor-pointer mb-5 ${
+          className={`flex items-center p-2 border rounded mt-2.5 cursor-pointer mb-5 ${
             selected === "cod" ? "border-purple-600" : "border-gray-300"
           }`}
         >
