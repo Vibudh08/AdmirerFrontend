@@ -97,7 +97,7 @@ const Login = () => {
       localStorage.setItem("user", JSON.stringify(result.user));
 
       // Redirect to dashboard
-      navigate("/dashboard");
+      navigate("/");
     } catch (err) {
       setError(err instanceof Error ? err.message : "OTP verification failed");
     } finally {
