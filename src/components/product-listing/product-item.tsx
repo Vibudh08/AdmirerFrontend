@@ -27,7 +27,7 @@ const ProductItem: React.FC<productItemProps> = ({
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: "Bearer 1|ih5YRhqe23zdA5jl7dA7dnwe5Zi6V8x30sXBoIp7590ae9bd", // Replace with dynamic token in real app
+          Authorization: "Bearer " + localStorage.getItem("auth_token"), // Replace with dynamic token in real app
         },
         body: JSON.stringify({
           product_id: id,
@@ -55,7 +55,8 @@ const ProductItem: React.FC<productItemProps> = ({
     <div
       className={`w-full font-sans bg-white rounded-xl p-2 sm:p-3 cursor-pointer flex flex-col gap-1.5 sm:gap-2.5 border border-gray-200 ${
         compactView ? "text-xs" : "text-sm"
-      }` } onClick={handleClick}
+      }`}
+      onClick={handleClick}
     >
       {/* Product Image with Wishlist Button */}
       <div className="relative group aspect-square">

@@ -72,8 +72,7 @@ const Cart: React.FC<CartProps> = ({
         { pid: id },
         {
           headers: {
-            Authorization:
-              "Bearer 17|CeeIWIGgNLCx4ithCPu2EtNgPGEP7juo2VoyX3JKb0fc61cb",
+            Authorization: "Bearer " + localStorage.getItem("auth_token"),
           },
         }
       );
@@ -90,8 +89,7 @@ const Cart: React.FC<CartProps> = ({
           "http://127.0.0.1:8000/api/cart-products",
           {
             headers: {
-              Authorization:
-                "Bearer 18|K8jXBSF34paKtxbmNrNT2PlEecIO4Rt6762VN9Uy657a7794",
+              Authorization: "Bearer " + localStorage.getItem("auth_token"),
             },
           }
         );

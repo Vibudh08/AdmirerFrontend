@@ -25,7 +25,9 @@ const LeftSideBar: React.FC<LeftSideBarProps> = ({
     price: true,
     categories: true,
   });
-
+  useEffect(() => {
+    console.log("I am inside leftside bar and category is = ", category);
+  }, [category]);
   // price data declaration
   const [sliderMinValue, setSliderMinValue] = useState(minimum);
   const [sliderMaxValue, setSliderMaxValue] = useState(maximum);
@@ -59,7 +61,7 @@ const LeftSideBar: React.FC<LeftSideBarProps> = ({
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        category: { category },
+        category: category,
       }),
     })
       .then((response) => response.json())
@@ -92,7 +94,7 @@ const LeftSideBar: React.FC<LeftSideBarProps> = ({
       .catch((error) => {
         console.error("Error fetching categories:", error);
       });
-  }, []);
+  }, [category]);
   // functions related for price range
   useEffect(() => {
     // Log current min and max values

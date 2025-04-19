@@ -24,7 +24,6 @@ import BlogPage from "./pages/Blogs";
 import BlogDetails from "./pages/BlogDetails";
 import AboutPage from "./pages/About";
 
-
 function App() {
   const [currentRoute, setCurrentRoute] = useState("/");
   const [categoryId, setCategoryId] = useState("");
@@ -54,7 +53,14 @@ function App() {
             <Route path="/dashboard_profile" element={<Dashboard_Profile />} />
             <Route path="/order/:id" element={<OrderDetails />} />
             <Route path="/cart" element={<Complete_cart_checkout />} />
-            <Route path="/listing" element={<ProductListing category={categoryId} />} />
+            {/* <Route
+              path="/listing"
+              element={<ProductListing category={categoryId} />}
+            /> */}
+            <Route
+              path="/test3"
+              element={<ProductListing subcategory={11} />}
+            />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/wishlist" element={<Wishlist />} />
             <Route path="/privacy" element={<PrivacyPolicy />} />

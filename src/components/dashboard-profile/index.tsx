@@ -106,7 +106,7 @@ const Dashboard_Profile = () => {
     fetch(user_profile_API, {
       method: "GET",
       headers: {
-        authorization: AUTH_TOKEN,
+        authorization: "Bearer " + localStorage.getItem("auth_token"),
       },
     })
       .then((response) => response.json())
@@ -286,7 +286,7 @@ const Dashboard_Profile = () => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: AUTH_TOKEN,
+        Authorization: "Bearer " + localStorage.getItem("auth_token"),
       },
       body: JSON.stringify(payload),
     })
@@ -298,7 +298,7 @@ const Dashboard_Profile = () => {
         fetch(user_profile_API, {
           method: "GET",
           headers: {
-            authorization: AUTH_TOKEN,
+            authorization: "Bearer " + localStorage.getItem("auth_token"),
           },
         })
           .then((res) => res.json())
@@ -682,19 +682,18 @@ const Dashboard_Profile = () => {
           )}
         </div>
 
-
-          <Button
-            className={`w-full !bg-purple-600 hover:!bg-purple-700 h-[45px] mt-2 !text-white !border-none`}
-            onClick={() => {
-              if (newNumber.length === 10 && modalMobileError === "") {
-                updateProfileAPI(newNumber);
-                setIsModalOpen(false);
-                setNewNumber("");
-              }
-            }}
-          >
-            SEND OTP 
-          </Button>
+        <Button
+          className={`w-full !bg-purple-600 hover:!bg-purple-700 h-[45px] mt-2 !text-white !border-none`}
+          onClick={() => {
+            if (newNumber.length === 10 && modalMobileError === "") {
+              updateProfileAPI(newNumber);
+              setIsModalOpen(false);
+              setNewNumber("");
+            }
+          }}
+        >
+          SEND OTP
+        </Button>
       </Modal>
     </div>
   );

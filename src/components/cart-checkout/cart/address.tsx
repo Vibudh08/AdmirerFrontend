@@ -98,8 +98,7 @@ const AddressBar = ({
     fetch(signUp_API, {
       method: "POST",
       headers: {
-        authorization:
-          "Bearer 46|7wmR2xE2HsbCoEoOJPI12BJ6MsTywTMmTx7s3Piwa7cf09ff",
+        authorization: "Bearer " + localStorage.getItem("auth_token"),
         "Content-Type": "application/json",
       },
       body: JSON.stringify({

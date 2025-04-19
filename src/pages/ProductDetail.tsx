@@ -70,7 +70,6 @@ const ProductDetails = () => {
       },
     ],
   };
-  
 
   const handleBuyNow = () => {
     const token = "Bearer 7|P6gdNwdWbYxXLygVRTwSHAN1qnhK7kH5kdC9A6Zad16cbca7"; // Adjust key if different
@@ -83,22 +82,22 @@ const ProductDetails = () => {
 
   const toggleWishlist = async (prodId?: string) => {
     const productIdToToggle = prodId || id;
-  
+
     try {
       const response = await fetch(wishlist_add_remove, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: "Bearer 9|IJYJjENble0i25K5bw0d1tkCkUpw2OHwk5J7T6Vd72335ada",
+          Authorization: "Bearer " + localStorage.getItem("auth_token"),
         },
         body: JSON.stringify({
           product_id: productIdToToggle,
           wishlist: isWishlisted ? 0 : 1,
         }),
       });
-  
+
       const result = await response.json();
-  
+
       if (response.ok) {
         setIsWishlisted(!isWishlisted);
         console.log(result.message || "Wishlist updated");
@@ -112,7 +111,6 @@ const ProductDetails = () => {
       console.error("Error toggling wishlist:", err);
     }
   };
-  
 
   const handleAddToCart = async () => {
     try {
@@ -127,7 +125,7 @@ const ProductDetails = () => {
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: token,
+            Authorization: "Bearer " + localStorage.getItem("auth_token"),
           },
         }
       );
@@ -150,8 +148,7 @@ const ProductDetails = () => {
         .get(`http://127.0.0.1:8000/api/product-details/${id}`, {
           headers: {
             "Content-Type": "application/json",
-            Authorization:
-              "Bearer 7|P6gdNwdWbYxXLygVRTwSHAN1qnhK7kH5kdC9A6Zad16cbca7",
+            Authorization: "Bearer " + localStorage.getItem("auth_token"),
           },
         })
         .then((response) => {
@@ -306,22 +303,21 @@ const ProductDetails = () => {
                 <div className="text-xl text-gray-700 mb-2 font-medium">
                   {product.product_name}
                 </div>
-                
               </div>
               <ProductActions
-                productId={product.id} 
+                productId={product.id}
                 wishlist={product.wishlist}
               />
             </div>
             <div className="text-3xl items-center gap-2 text-gray-800 mb-1">
-                  ₹{product.discount}{" "}
-                  <span className="text-gray-400 line-through text-lg mr-1">
-                    ₹{product.price}
-                  </span>
-                  <span className="bg-red-50 text-red-700 font-bold px-2  py-1  rounded text-xs">
-                    {product.discount_percent}% OFF
-                  </span>
-                </div>
+              ₹{product.discount}{" "}
+              <span className="text-gray-400 line-through text-lg mr-1">
+                ₹{product.price}
+              </span>
+              <span className="bg-red-50 text-red-700 font-bold px-2  py-1  rounded text-xs">
+                {product.discount_percent}% OFF
+              </span>
+            </div>
             <div className="text-sm text-gray-500 mb-1">Incl. of all taxes</div>
 
             {/* <div className="w-full bg-gradient-to-r tracking-wide from-purple-200 to-white text-md mt-3 text-purple-800 p-3 rounded-md">
