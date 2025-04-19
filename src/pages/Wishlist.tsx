@@ -10,7 +10,7 @@ const Wishlist = () => {
     try {
       const response = await fetch(get_wishlist_data, {
         headers: {
-          Authorization: "Bearer 8|Ub7JerRH88jSZ7ggbnRBxu1CrrfqJMJGNmVfMbtb9c2811f8", // Replace with dynamic token
+          Authorization: "Bearer 18|K8jXBSF34paKtxbmNrNT2PlEecIO4Rt6762VN9Uy657a7794", // Replace with dynamic token
         },
       });
 
@@ -37,7 +37,7 @@ const Wishlist = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: "Bearer 8|Ub7JerRH88jSZ7ggbnRBxu1CrrfqJMJGNmVfMbtb9c2811f8",
+          Authorization: "Bearer 18|K8jXBSF34paKtxbmNrNT2PlEecIO4Rt6762VN9Uy657a7794",
         },
         body: JSON.stringify({ product_id }),
       });
