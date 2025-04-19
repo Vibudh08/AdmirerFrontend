@@ -65,7 +65,7 @@ const Wishlist = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: "Bearer 8|Ub7JerRH88jSZ7ggbnRBxu1CrrfqJMJGNmVfMbtb9c2811f8",
+          Authorization: "Bearer 18|K8jXBSF34paKtxbmNrNT2PlEecIO4Rt6762VN9Uy657a7794",
         },
         body: JSON.stringify({ wishlist_id }),
       });

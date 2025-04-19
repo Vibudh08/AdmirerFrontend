@@ -91,7 +91,7 @@ const Cart: React.FC<CartProps> = ({
           {
             headers: {
               Authorization:
-                "Bearer 17|CeeIWIGgNLCx4ithCPu2EtNgPGEP7juo2VoyX3JKb0fc61cb",
+                "Bearer 18|K8jXBSF34paKtxbmNrNT2PlEecIO4Rt6762VN9Uy657a7794",
             },
           }
         );
