@@ -16,7 +16,10 @@ interface ProductActionsProps {
   wishlist: number; // 0 or 1
 }
 
-const ProductActions: React.FC<ProductActionsProps> = ({ productId, wishlist }) => {
+const ProductActions: React.FC<ProductActionsProps> = ({
+  productId,
+  wishlist,
+}) => {
   const [inWishlist, setInWishlist] = useState(wishlist === 1);
   const [shareOpen, setShareOpen] = useState(false);
 
@@ -26,7 +29,7 @@ const ProductActions: React.FC<ProductActionsProps> = ({ productId, wishlist }) 
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: "Bearer 7|P6gdNwdWbYxXLygVRTwSHAN1qnhK7kH5kdC9A6Zad16cbca7",
+          Authorization: "Bearer " + localStorage.getItem("auth_token"),
         },
         body: JSON.stringify({
           product_id: productId,

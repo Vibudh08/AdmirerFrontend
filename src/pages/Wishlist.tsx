@@ -10,7 +10,7 @@ const Wishlist = () => {
     try {
       const response = await fetch(get_wishlist_data, {
         headers: {
-          Authorization: "Bearer 18|K8jXBSF34paKtxbmNrNT2PlEecIO4Rt6762VN9Uy657a7794", // Replace with dynamic token
+          Authorization: "Bearer " + localStorage.getItem("auth_token"), // Replace with dynamic token
         },
       });
 
@@ -33,18 +33,21 @@ const Wishlist = () => {
 
   const handleMoveToCart = async (product_id: number) => {
     try {
-      const res = await fetch("http://127.0.0.1:8000/api/user/wishlist/movecart", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "Bearer 18|K8jXBSF34paKtxbmNrNT2PlEecIO4Rt6762VN9Uy657a7794",
-        },
-        body: JSON.stringify({ product_id }),
-      });
-  
+      const res = await fetch(
+        "http://127.0.0.1:8000/api/user/wishlist/movecart",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + localStorage.getItem("auth_token"),
+          },
+          body: JSON.stringify({ product_id }),
+        }
+      );
+
       const data = await res.json();
       console.log("Moved to cart:", data);
-  
+
       if (res.ok) {
         // Optionally show a toast or message here
         setWishlistItems((prev) =>
@@ -57,22 +60,24 @@ const Wishlist = () => {
       console.error("Error moving to cart:", error);
     }
   };
-  
 
   const handleRemove = async (wishlist_id: number) => {
     try {
-      const res = await fetch("http://127.0.0.1:8000/api/user/wishlist/remove", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "Bearer 8|Ub7JerRH88jSZ7ggbnRBxu1CrrfqJMJGNmVfMbtb9c2811f8",
-        },
-        body: JSON.stringify({ wishlist_id }),
-      });
-  
+      const res = await fetch(
+        "http://127.0.0.1:8000/api/user/wishlist/remove",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + localStorage.getItem("auth_token"),
+          },
+          body: JSON.stringify({ wishlist_id }),
+        }
+      );
+
       const data = await res.json();
       console.log("Removed:", data);
-  
+
       // After removing, re-fetch or update list
       setWishlistItems((prev) =>
         prev.filter((item) => item.wishlist_id !== wishlist_id)
@@ -81,7 +86,6 @@ const Wishlist = () => {
       console.error("Error removing wishlist item:", error);
     }
   };
-  
 
   useEffect(() => {
     fetchWishlist();
@@ -91,7 +95,8 @@ const Wishlist = () => {
     <div className="bg-white py-5">
       <div className="p-5 max-md:p-2 w-[90%] max-md:w-full m-auto">
         <h1 className="mb-6 max-md:mb-4 font-semibold text-lg tracking-wide">
-          My Wishlist <span className="font-normal">({wishlistItems.length} items)</span>
+          My Wishlist{" "}
+          <span className="font-normal">({wishlistItems.length} items)</span>
         </h1>
 
         {loading ? (
@@ -100,21 +105,22 @@ const Wishlist = () => {
           <p>No items in wishlist.</p>
         ) : (
           <div className="grid grid-cols-4 max-lg:grid-cols-3 max-md:grid-cols-2 gap-10 max-md:gap-2">
-            {wishlistItems && wishlistItems.map((item) => (
-              <WishlistCard
-                key={item.id}
-                wishlist_id={item.wishlist_id}
-                name={item.product_name}
-                price={item.discount}
-                description={item.description}
-                originalPrice={item.price}
-                discount={item.discount_percent}
-                imageUrl={item.image_url}
-                id={item.id}
-                onRemove={handleRemove}
-                onMoveToCart={handleMoveToCart}
-              />
-            ))}
+            {wishlistItems &&
+              wishlistItems.map((item) => (
+                <WishlistCard
+                  key={item.id}
+                  wishlist_id={item.wishlist_id}
+                  name={item.product_name}
+                  price={item.discount}
+                  description={item.description}
+                  originalPrice={item.price}
+                  discount={item.discount_percent}
+                  imageUrl={item.image_url}
+                  id={item.id}
+                  onRemove={handleRemove}
+                  onMoveToCart={handleMoveToCart}
+                />
+              ))}
           </div>
         )}
       </div>
