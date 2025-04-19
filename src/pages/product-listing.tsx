@@ -5,8 +5,10 @@ import { FiFilter, FiX } from "react-icons/fi";
 import {
   product_listing_API,
   productPriceCategoryInfo_API,
+  getSubCatName_API,
 } from "../components/api/api-end-points";
 import { MinusCircle } from "lucide-react";
+import { response } from "express";
 interface ProductLsitingProps {
   category: string;
   subcategory?: string;
@@ -45,7 +47,7 @@ const ProductListing: React.FC<ProductLsitingProps> = ({
     price: string;
     cat_id: string;
     sub_cat_name: string;
-    
+
     // id: string;
     description: string;
     id: number;
@@ -63,6 +65,26 @@ const ProductListing: React.FC<ProductLsitingProps> = ({
   useEffect(() => {
     console.log("the new subcategory user selected is - ", subCategory);
   }, [subCategory]);
+  useEffect(() => {
+    if (subcategory) {
+      fetch(getSubCatName_API, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          subcatId: Number(subcategory),
+        }),
+      })
+        .then((response) => response.json())
+        .then((value) => {
+          console.log("the value from subcat api is = ", value);
+          setSubCategory(value?.subcatName);
+        });
+      //setSubCategory(subcategory);
+      console.log("Initial subcategory from props:", subcategory);
+    }
+  }, [subcategory]);
   useEffect(() => {
     setLoading(true);
     fetch(product_listing_API, {
@@ -87,7 +109,7 @@ const ProductListing: React.FC<ProductLsitingProps> = ({
       .finally(() => {
         setLoading(false);
       });
-  }, [minVal, maxVal]);
+  }, [minVal, maxVal, category]);
   useEffect(() => {
     fetch(productPriceCategoryInfo_API, {
       method: "GET",
@@ -173,7 +195,7 @@ const ProductListing: React.FC<ProductLsitingProps> = ({
                     <ProductItem
                       key={index}
                       id={item.id}
-                  name={item.product_name}
+                      name={item.product_name}
                       price={item.discount}
                       description={item.description}
                       originalPrice={item.price}
