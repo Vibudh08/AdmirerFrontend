@@ -53,13 +53,13 @@ function App() {
             <Route path="/dashboard_profile" element={<Dashboard_Profile />} />
             <Route path="/order/:id" element={<OrderDetails />} />
             <Route path="/cart" element={<Complete_cart_checkout />} />
-            <Route
+            {/* <Route
               path="/listing"
               element={<ProductListing category={categoryId} />}
-            />
+            /> */}
             <Route
               path="/test3"
-              element={<ProductListing category="26" subcategory="12" />}
+              element={<ProductListing subcategory={12} />}
             />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/wishlist" element={<Wishlist />} />

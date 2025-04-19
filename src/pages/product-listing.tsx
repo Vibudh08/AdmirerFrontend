@@ -7,16 +7,15 @@ import {
   productPriceCategoryInfo_API,
   getSubCatName_API,
 } from "../components/api/api-end-points";
-import { MinusCircle } from "lucide-react";
-import { response } from "express";
 interface ProductLsitingProps {
-  category: string;
-  subcategory?: string;
+  category?: Number;
+  subcategory?: Number;
 }
 const ProductListing: React.FC<ProductLsitingProps> = ({
   category,
   subcategory,
 }) => {
+  const [cat, setCat] = useState(category);
   const [showMobileFilters, setShowMobileFilters] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
@@ -80,6 +79,10 @@ const ProductListing: React.FC<ProductLsitingProps> = ({
         .then((value) => {
           console.log("the value from subcat api is = ", value);
           setSubCategory(value?.subcatName);
+          if (!category) {
+            console.log("the category it is from is = ", value?.catId);
+            setCat(value?.catId);
+          }
         });
       //setSubCategory(subcategory);
       console.log("Initial subcategory from props:", subcategory);
@@ -95,7 +98,7 @@ const ProductListing: React.FC<ProductLsitingProps> = ({
       body: JSON.stringify({
         maxPrice: maxVal,
         minPrice: minVal,
-        category: Number(category),
+        category: Number(cat),
       }),
     })
       .then((response) => response.json())
@@ -109,7 +112,7 @@ const ProductListing: React.FC<ProductLsitingProps> = ({
       .finally(() => {
         setLoading(false);
       });
-  }, [minVal, maxVal, category]);
+  }, [minVal, maxVal, cat]);
   useEffect(() => {
     fetch(productPriceCategoryInfo_API, {
       method: "GET",
@@ -160,7 +163,7 @@ const ProductListing: React.FC<ProductLsitingProps> = ({
             maximum={maxVal}
             setDynamicMin={setDynamicMinVal}
             setDynamicMax={setDynamicMaxVal}
-            category={Number(category)}
+            category={Number(cat)}
             setSubCategory={setSubCategory}
           />
         </div>
