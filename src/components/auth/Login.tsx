@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { FaTimes } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-
+import { otp_send_API, verifyLogin_API } from "../api/api-end-points";
 interface FormProps {
   phoneNumber: string;
   otp: string;
@@ -11,6 +11,8 @@ interface FormProps {
 const Login = () => {
   const [otpSent, setOtpSent] = useState(false);
   const [timer, setTimer] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
   const handleClose = () => {
@@ -20,6 +22,7 @@ const Login = () => {
   const {
     register,
     handleSubmit,
+    getValues,
     formState: { errors },
   } = useForm<FormProps>();
 
@@ -34,16 +37,72 @@ const Login = () => {
     return () => clearInterval(interval);
   }, [timer]);
 
-  const handleSendOtp = () => {
-    // Here you would typically call your OTP sending API
-    console.log("OTP sent to phone number");
-    setOtpSent(true);
-    setTimer(60); // Start 60-second timer
+  const handleSendOtp = async () => {
+    const phoneNumber = getValues("phoneNumber");
+    setIsLoading(true);
+    setError("");
+
+    try {
+      const response = await fetch(otp_send_API, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          phone: phoneNumber,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Failed to send OTP");
+      }
+
+      setOtpSent(true);
+      setTimer(60); // Start 60-second timer
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to send OTP");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const onSubmit = (data: FormProps) => {
-    console.log(data); // Form submission data with OTP
-    // Here you would verify the OTP with your backend
+  const onSubmit = async (data: FormProps) => {
+    setIsLoading(true);
+    setError("");
+
+    try {
+      const response = await fetch(verifyLogin_API, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          phone: data.phoneNumber,
+          otp: data.otp,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.message || "OTP verification failed");
+      }
+
+      // Store token and user data
+      localStorage.setItem("auth_token", result.token);
+      localStorage.setItem("user", JSON.stringify(result.user));
+
+      // Redirect to dashboard
+      navigate("/dashboard");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "OTP verification failed");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -62,6 +121,12 @@ const Login = () => {
           <h1 className="text-xl font-normal">Welcome to Admirer</h1>
         </div>
 
+        {error && (
+          <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-md">
+            {error}
+          </div>
+        )}
+
         <form onSubmit={handleSubmit(onSubmit)}>
           {/* Mobile Number */}
           <div className="mb-4">
@@ -77,7 +142,7 @@ const Login = () => {
               })}
               placeholder="Mobile number"
               className="mt-1 block w-full border h-[50px] border-gray-300 rounded-md shadow-sm py-2 px-5 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-              disabled={otpSent}
+              disabled={otpSent || isLoading}
             />
             {errors.phoneNumber && (
               <p className="mt-2 text-sm text-red-600">
@@ -101,6 +166,7 @@ const Login = () => {
                 })}
                 placeholder="Enter OTP"
                 className="mt-1 block w-full border h-[50px] border-gray-300 rounded-md shadow-sm py-2 px-5 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                disabled={isLoading}
               />
               {errors.otp && (
                 <p className="mt-2 text-sm text-red-600">
@@ -121,23 +187,26 @@ const Login = () => {
               <button
                 type="button"
                 onClick={handleSendOtp}
-                className="flex-1 bg-purple-600 text-white rounded py-3 hover:bg-purple-700 transition"
+                className="flex-1 bg-purple-600 text-white rounded py-3 hover:bg-purple-700 transition disabled:opacity-50"
+                disabled={isLoading}
               >
-                Send OTP
+                {isLoading ? "Sending..." : "Send OTP"}
               </button>
             ) : (
               <>
                 <button
                   type="submit"
-                  className="flex-1 bg-purple-600 text-white rounded py-3 hover:bg-purple-700 transition"
+                  className="flex-1 bg-purple-600 text-white rounded py-3 hover:bg-purple-700 transition disabled:opacity-50"
+                  disabled={isLoading}
                 >
-                  Verify
+                  {isLoading ? "Verifying..." : "Verify"}
                 </button>
                 {timer === 0 && (
                   <button
                     type="button"
                     onClick={handleSendOtp}
-                    className="flex-1 bg-gray-200 text-gray-700 rounded py-3 hover:bg-gray-300 transition"
+                    className="flex-1 bg-gray-200 text-gray-700 rounded py-3 hover:bg-gray-300 transition disabled:opacity-50"
+                    disabled={isLoading}
                   >
                     Resend OTP
                   </button>
