@@ -45,8 +45,7 @@ const OrderCard: React.FC = () => {
     fetch(order_status_API, {
       method: "GET",
       headers: {
-        authorization:
-          "Bearer 45|wGPYJNyiBunf3oT3reVR4766lXFkrTiH6XbZjzdXaac3a80a",
+        authorization: "Bearer " + localStorage.getItem("auth_token"),
       },
     })
       .then((response) => response.json())
