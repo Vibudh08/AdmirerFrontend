@@ -2,6 +2,7 @@
 
 import React from "react";
 import { FaTimes } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 interface ItemProps {
   id: number;
@@ -59,14 +60,19 @@ const Item: React.FC<ItemProps> = ({
         </div>
 
         <div className="w-[40%] relative ">
+<Link to={`/product/${id}`}>
           <img className="w-full h-full" src={image} alt={brandName} />
+        </Link>
         </div>
+
 
         <div className="w-[60%] p-3 flex flex-col h-fit">
           <div className="hidden">{id}</div>
-          <h2 className="text-[16px] font-[500] text-gray-900 mb-1 w-[95%]">
+          <Link to={`/product/${id}`}>
+          <h2 className="text-[17px] font-[500] text-gray-900 mb-1 w-[95%]">
             {brandName}
           </h2>
+          </Link>
 
           <p className="text-gray-700 font-medium text-[13px] line-clamp-2 mb-4 leading-snug">
             {description}

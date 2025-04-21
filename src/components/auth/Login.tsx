@@ -116,10 +116,11 @@ const Login = () => {
         >
           <FaTimes className="w-5 h-5" />
         </button>
-        <div className="text-center mb-6">
-          <img src="logo/iconn.png" alt="Logo" className="w-16 mx-auto mb-2" />
+        <div className="text-center mb-5">
+          <img src="logo/iconn.png" alt="Logo" className="w-16 mx-auto " />
           <h1 className="text-xl font-normal">Welcome to Admirer</h1>
         </div>
+        <div className="text-xl mb-4">Login / SignUp</div>
 
         {error && (
           <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-md">
@@ -215,7 +216,7 @@ const Login = () => {
             )}
           </div>
 
-          <div className="text-center mt-4 text-md">
+          {/* <div className="text-center mt-4 text-md">
             Don't have an account?
             <button
               type="button"
@@ -226,7 +227,7 @@ const Login = () => {
             >
               Register
             </button>
-          </div>
+          </div> */}
         </form>
 
         <p className="text-center text-[13px] mt-6">

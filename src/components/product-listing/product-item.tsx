@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { FaHeart } from "react-icons/fa";
+import { FaRegHeart } from "react-icons/fa";
 import productItemProps from "./product-item-interface";
 import { wishlist_add_remove } from "../api/api-end-points";
 import { useNavigate } from "react-router-dom";
@@ -66,20 +67,26 @@ const ProductItem: React.FC<productItemProps> = ({
           className="w-full h-full object-cover rounded-lg"
         />
 
-        <button
-          className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity"
-          onClick={toggleWishlist}
-        >
-          <div
-            className={`p-1 sm:p-2 rounded-full border shadow-md ${
-              isWishlisted
-                ? "bg-red-100 border-red-400 text-red-600"
-                : "bg-white border-red-300 text-red-400 hover:text-red-500"
-            }`}
-          >
-            <FaHeart size={compactView ? 16 : 20} />
-          </div>
-        </button>
+<button
+  className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity"
+  onClick={(e) => {
+    e.stopPropagation(); // Prevents the click from reaching parent div
+    toggleWishlist();
+  }}
+>
+  <div
+    className={`p-1 sm:p-2 rounded-full border shadow-md ${
+      isWishlisted
+        ? "bg-red-100 border-red-500 text-red-500"
+        : "bg-white border-red-500 text-red-500 "
+    }`}
+  >
+    {isWishlisted ? <FaHeart size={compactView ? 16 : 20} /> : <FaRegHeart size={compactView ? 16 : 20}/>}
+    
+    
+  </div>
+</button>
+
       </div>
 
       <div className="hidden">{id}</div>
