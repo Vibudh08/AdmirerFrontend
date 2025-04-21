@@ -1,5 +1,6 @@
 import React from "react";
 import { IoClose } from "react-icons/io5";
+import { Link } from "react-router-dom";
 
 interface productItemProps {
   name: string;
@@ -27,14 +28,18 @@ const ProductItem: React.FC<productItemProps> = ({
   onMoveToCart,
 }) => {
   return (
+    
     <div className="max-w-[300px] font-sans bg-white rounded-[5px] p-4 max-md:p-2 pb-2 flex flex-col gap-1 max-md:gap-1 border  border-gray-300">
       {/* Product Image with Hover Button */}
       <div className="relative group">
+      <Link to={`/product/${id}`}>
         <img
           src={imageUrl}
           alt="product"
           className="w-full h-auto rounded-lg"
         />
+        
+    </Link>
 
         {/* Heart Button at Top Right (Hidden initially, shows on hover) */}
         <button
@@ -52,9 +57,11 @@ const ProductItem: React.FC<productItemProps> = ({
       <div className="hidden">{id}</div>
 
       {/* Product Name */}
-      <div className="font-semibold text-black text-xl max-md:text-[18px] truncate overflow-hidden whitespace-nowrap">
+      <Link to={`/product/${id}`}>
+      <div className="font-semibold text-black text-lg max-md:text-[18px] truncate overflow-hidden whitespace-nowrap">
         {name}
       </div>
+      </Link>
 
       {/* Product Description */}
       <div className="text-gray-400 text-xs leading-relaxed font-bold truncate overflow-hidden whitespace-nowrap">

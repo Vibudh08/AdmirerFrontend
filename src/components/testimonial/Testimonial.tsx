@@ -21,56 +21,70 @@ const CustomNextArrow = ({ onClick }: { onClick: () => void }) => (
   </button>
 );
 
-const testimonials = [
+const testimonials = [ 
   {
-    name: "Leslie Alexander",
-    role: "Freelance React Developer",
-    avatar:
-      "https://cdn.rareblocks.xyz/collection/clarity/images/testimonial/4/avatar-male-1.png",
+    name: "Anshu Shyanda",
+    rating: 5,
+    avatar: "/home/testimonial/anshu.jpg",
     review:
-      "You made it so simple. My new site is so much faster and easier to work with than my old site.",
-    prodName:"Special Rose Gold Plated Solitaire Ring Corner",
-    prodImg:"https://admirer.in/assets/images/two.jpg"
+      "The ring arrived on time and looked even better than expected. The shine and design are perfect for any occasion!",
+    prodName: "Women Set of Sterling Silver Rose...",
+    prodImg: "/home/testimonial/one.jpg",
+    prodSrc: "product/56"
   },
   {
-    name: "Jacob Jones",
-    role: "Digital Marketer",
-    avatar:
-      "https://cdn.rareblocks.xyz/collection/clarity/images/testimonial/4/avatar-male-2.png",
+    name: "Vibudh Rathore",
+    rating: 5,
+    avatar: "/home/testimonial/vibudh.jpeg",
     review:
-      "Simply the best. Better than all the rest. I’d recommend this product to beginners and advanced users.",
-      prodName:"Special Rose Gold Plated Solitaire Ring Corner",
-    prodImg:"https://admirer.in/assets/images/two.jpg"
+      "Admirer has the best jewelry! The ring I ordered had a beautiful sparkle, and the craftsmanship was outstanding.",
+    prodName: "Special Women Zircon (p) Letter",
+    prodImg: "/home/testimonial/four.jpg",
+    prodSrc: "product/84"
   },
   {
-    name: "Theresa Webb",
-    role: "UX Designer",
-    avatar:
-      "https://cdn.rareblocks.xyz/collection/clarity/images/testimonial/4/avatar-male-3.png",
-    review: "cjnwefowefe fnwe fwelkfjpwe feijfpe fipejfp epfjejfew.",
-    prodName:"Special Rose Gold Plated Solitaire Ring Corner",
-    prodImg:"https://admirer.in/assets/images/two.jpg"
-  },
-  {
-    name: "erthg",
-    role: "UX Designer",
-    avatar:
-      "https://cdn.rareblocks.xyz/collection/clarity/images/testimonial/4/avatar-male-3.png",
+    name: "Abhay Kumar",
+    rating: 4,
+    avatar: "/home/testimonial/Abhay.jpg",
     review:
-      "Must-have tool for designers. A joy to use and beautifully crafted. Nothing else compares.",
-      prodName:"Special Rose Gold Plated Solitaire Ring Corner",
-    prodImg:"https://admirer.in/assets/images/two.jpg"
+      "Ordered a beautiful ring for my girlfriend, and she loved it! Delivery was fast, and the quality was amazing.",
+    prodName: "Special Rose Gold Plated Solitaire...",
+    prodImg: "/home/testimonial/two.jpg",
+    prodSrc: "/product/61"
   },
   {
-    name: "lkjhgfds",
-    role: "UX Designer",
-    avatar:
-      "https://cdn.rareblocks.xyz/collection/clarity/images/testimonial/4/avatar-male-3.png",
-    review: "dwqkrhfnwe fhwnecjgbyersdf ncewijfewi fhcwohdsifjkcw dfcowdlcm.",
-    prodName:"Special Rose Gold Plated Solitaire Ring Corner",
-    prodImg:"https://admirer.in/assets/images/two.jpg"
+    name: "Yash Raj Mishra",
+    rating: 5,
+    avatar: "/home/testimonial/yash.jpeg",
+    review:
+      "The ring I got was even prettier in person! The design is elegant, and the packaging made it feel so premium. ",
+    prodName: "Special Knuckle Trillion Ring...",
+    prodImg: "/home/testimonial/three.jpg",
+    prodSrc: "/product/73"
   },
+  {
+    name: "Mohd Zaid",
+    rating: 4,
+    avatar: "/home/testimonial/zaid.jpg",
+    review:
+      "Bought a necklace and my girlfriend was beyond happy! The set looked so elegant, and the quality was amazing.",
+    prodName: "Silver-Plated American Diamond...",
+    prodImg: "/home/testimonial/five.jpg",
+    prodSrc: "/product/34"
+  },
+  {
+    name: "Dhruv",
+    rating: 5,
+    avatar: "/home/testimonial/dhruv.jpeg",
+    review:
+      "The ring was beautifully designed, and the material feels premium. Perfect for a special gift or personal collection!",
+    prodName: "Special Silver Plated Adjustable...",
+    prodImg: "/home/testimonial/six.jpg",
+    prodSrc: "product/63"
+  }
 ];
+
+
 
 const TestimonialsSection = () => {
   const testimonialsSlider = {

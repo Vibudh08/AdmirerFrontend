@@ -30,14 +30,24 @@ const Checkout: React.FC<IndexProps> = ({
   shippingFee = "Free",
   totalAmount = "0",
 }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selected, setSelected] = useState("online");
+
+  // Loader condition based on props
+  const isLoading =
+    !itemCount || itemCount === 0 ||
+    !totalMRP || totalMRP === "0" ||
+    !totalAmount || totalAmount === "0";
+
+  if (isLoading) {
+    return (
+      <div></div>
+    );
+  }
+
   const priceDetails: PriceDetail[] = [
     { label: "Total MRP", value: `₹${totalMRP}` },
     { label: "Discount on MRP", value: `-₹${discount}`, isDiscount: true },
-    // {
-    //   label: "Coupon Discount",
-    //   value: couponApplied ? "₹500" : "Apply Coupon",
-    //   isLink: !couponApplied,
-    // },
     {
       label: "Platform Fee",
       value: platformFee,
@@ -50,55 +60,13 @@ const Checkout: React.FC<IndexProps> = ({
     },
   ];
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selected, setSelected] = useState("online");
-
   const showModal = () => setIsModalOpen(true);
   const handleCancel = () => setIsModalOpen(false);
 
   return (
     <>
+    
       <div className="w-[35%] max-md:w-[100%] p-5 py-6 border-l bg-white border-[#eaeaec]">
-        {/* Coupon Section */}
-        {/* <div className="mb-4">
-          <h3 className="text-[13px] text-[rgb(83,87,102)] font-semibold mb-4">
-            COUPONS
-          </h3>
-          <div className="flex justify-between items-center">
-            <div className="flex gap-3">
-              <GoTag className="text-[19px] mt-1" />
-              <p className="font-semibold text-[#282c3f] mb-0 mt-1">
-                Apply Coupons
-              </p>
-            </div>
-            <button
-              className="px-3 py-1 border border-[#7B48A5] text-sm font-semibold text-[#7B48A5] hover:bg-[rgb(245,245,245)]"
-              onClick={showModal}
-            >
-              APPLY
-            </button>
-            <Modal
-              open={isModalOpen}
-              onCancel={handleCancel}
-              footer={null}
-              width={550}
-              centered
-              closable={false}
-              className="no-padding-modal"
-              bodyStyle={{
-                padding: 0,
-                background: "transparent",
-                boxShadow: "none",
-                borderRadius: 0,
-              }}
-            >
-              <Coupons_screen onClose={() => setIsModalOpen(false)} />
-            </Modal>
-          </div>
-        </div>
-
-        <hr /> */}
-
         {/* Price Details */}
         <div className="mt-3 mb-4">
           <h3 className="text-[14px] text-[#535766] font-bold mb-4">

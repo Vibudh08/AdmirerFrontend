@@ -1,6 +1,6 @@
 // ProductDetails.tsx
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import axios from "axios"; // or any other HTTP library
 import { useNavigate } from "react-router-dom";
 import { FaUndo, FaShieldAlt, FaCertificate, FaGem } from "react-icons/fa";
@@ -12,6 +12,7 @@ import { FaHeart } from "react-icons/fa";
 import { wishlist_add_remove } from "../components/api/api-end-points";
 import Slider from "react-slick";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
+import { FaRegHeart } from "react-icons/fa";
 
 // Arrows
 const CustomPrevArrow = ({ onClick }: { onClick: () => void }) => (
@@ -114,7 +115,6 @@ const ProductDetails = () => {
 
   const handleAddToCart = async () => {
     try {
-      const token = "Bearer 7|P6gdNwdWbYxXLygVRTwSHAN1qnhK7kH5kdC9A6Zad16cbca7";
 
       const response = await axios.post(
         "http://127.0.0.1:8000/api/add-to-cart",
@@ -330,14 +330,16 @@ const ProductDetails = () => {
                 ADMIRER100
               </span>
             </div> */}
-
-            <div className="mt-4 mb-1 space-x-1 text-[16px] text-gray-600">
-              Hurry Up! Only{" "}
-              <span className="text-purple-600 font-semibold">
-                {product.in_stock} Item(s)
-              </span>{" "}
-              left in stock
-            </div>
+            
+            {product.in_stock < 5 && (
+              <div className="mt-4 mb-1 space-x-1 text-[16px] text-gray-600">
+                Hurry Up! Only{" "}
+                <span className="text-purple-600 font-semibold">
+                  {product.in_stock} Item(s)
+                </span>{" "}
+                left in stock
+              </div>
+            )}
 
             {/* <div>
               <PincodeChecker />
@@ -381,6 +383,7 @@ const ProductDetails = () => {
 
         <ProductAccordion description={product.description} />
       </div>
+
       <div className="mt-10">
         <h2 className="text-3xl max-md:text-2xl font-semibold mb-6   text-center">
           Related Products
@@ -389,50 +392,62 @@ const ProductDetails = () => {
         <div className="grid grid-cols-1 w-[85%] max-md:w-[98%] m-auto !gap-4 ">
           <Slider {...relatedProductsSlider}>
             {relatedProducts.map((item) => (
-              <div
-                key={item.id}
-                className="px-2 max-md:px-1" // Add horizontal spacing here
-              >
-                <div className="w-full font-sans bg-white rounded-xl p-3 max-md:p-1.5 flex flex-col gap-2 max-md:gap-1 border border-gray-200">
-                  <div className="relative group">
-                    <img
-                      src={item.image || "https://via.placeholder.com/100"}
-                      alt={item.title}
-                      className="w-full h-full object-cover rounded-lg"
-                    />
-                    <button
-                      className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity"
-                      onClick={() => toggleWishlist(item.id)}
-                    >
-                      <div
-                        className={`p-2 rounded-full border shadow-md ${
-                          isWishlisted
-                            ? "bg-red-100 border-red-400 text-red-600"
-                            : "bg-white border-red-300 text-red-400 hover:text-red-500"
-                        }`}
+              
+                <div
+                  key={item.id}
+                  className="px-2 max-md:px-1" // Add horizontal spacing here
+                >
+                  <div className="w-full font-sans bg-white rounded-xl p-3 max-md:p-1.5 flex flex-col gap-2 max-md:gap-1 border border-gray-200">
+                    <div className="relative group">
+                    <Link to={`/product/${item.id}`}>
+                      <img
+                        src={item.image || "https://via.placeholder.com/100"}
+                        alt={item.title}
+                        className="w-full h-full object-cover rounded-lg"
+                      />
+                      
+              </Link>
+                      <button
+                        className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity"
+                        onClick={(e) => {
+                          e.stopPropagation(); // Prevents the click from reaching parent div
+                          toggleWishlist(item.id);
+                        }}
                       >
-                        <FaHeart size={20} />
-                      </div>
-                    </button>
-                  </div>
+                        <div
+                          className={`p-1 sm:p-1 rounded-full border shadow-md ${
+                            isWishlisted
+                              ? "bg-red-100 border-red-500 text-red-500"
+                              : "bg-white border-red-500 text-red-500 "
+                          }`}
+                        >
+                          {isWishlisted ? (
+                            <FaHeart size={16} />
+                          ) : (
+                            <FaRegHeart size={16} />
+                          )}
+                        </div>
+                      </button>
+                    </div>
+                    <Link to={`/product/${item.id}`}>
+                    <div className="font-medium text-[16px] max-md:text-[16px] truncate">
+                      {item.title}
+                    </div>
+                    </Link>
 
-                  <div className="font-medium text-lg max-md:text-[16px] truncate">
-                    {item.title}
-                  </div>
-
-                  <div className="flex items-center gap-2 max-md:gap-1.5 text-lg">
-                    <span className="font-semibold text-black max-md:text-[16px]">
-                      ₹{item.discount}
-                    </span>
-                    <span className="line-through text-md text-gray-400 max-md:text-[15px]">
-                      ₹{item.price}
-                    </span>
-                    <span className="bg-red-50 text-red-700 font-bold px-1 py-0.5 rounded text-xs max-md:text-[12px]">
-                      {item.discount_percent}% OFF
-                    </span>
+                    <div className="flex items-center gap-2 max-md:gap-1.5 text-lg">
+                      <span className="font-semibold text-black max-md:text-[16px]">
+                        ₹{item.discount}
+                      </span>
+                      <span className="line-through text-sm text-gray-400 max-md:text-[15px]">
+                        ₹{item.price}
+                      </span>
+                      <span className="bg-red-50 text-red-700 font-bold px-1 py-0.5 rounded text-xs max-md:text-[12px]">
+                        {item.discount_percent}% OFF
+                      </span>
+                    </div>
                   </div>
                 </div>
-              </div>
             ))}
           </Slider>
         </div>

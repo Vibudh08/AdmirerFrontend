@@ -7,38 +7,36 @@ import {
   productPriceCategoryInfo_API,
   getSubCatName_API,
 } from "../components/api/api-end-points";
+
 interface ProductLsitingProps {
   category?: Number;
   subcategory?: Number;
 }
+
 const ProductListing: React.FC<ProductLsitingProps> = ({
   category,
   subcategory,
 }) => {
-  const [cat, setCat] = useState(category);
+  const [cat, setCat] = useState<Number | null>(null);
   const [showMobileFilters, setShowMobileFilters] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [categoryReady, setCategoryReady] = useState(false);
 
-  // Check if mobile view on mount and resize
   useEffect(() => {
     const checkIfMobile = () => {
-      setIsMobile(window.innerWidth < 1024); // lg breakpoint
+      setIsMobile(window.innerWidth < 1024);
     };
 
     checkIfMobile();
     window.addEventListener("resize", checkIfMobile);
-
     return () => window.removeEventListener("resize", checkIfMobile);
   }, []);
 
-  // Close sidebar when switching to desktop view
   useEffect(() => {
     if (!isMobile) {
       setShowMobileFilters(false);
     }
   }, [isMobile]);
-
-  // API and all constants declaration
 
   interface productItemApiProps {
     product_name: string;
@@ -46,11 +44,10 @@ const ProductListing: React.FC<ProductLsitingProps> = ({
     price: string;
     cat_id: string;
     sub_cat_name: string;
-
-    // id: string;
     description: string;
     id: number;
   }
+
   const [productDataArray, setProductDataArray] = useState<
     productItemApiProps[]
   >([]);
@@ -59,11 +56,8 @@ const ProductListing: React.FC<ProductLsitingProps> = ({
   const [dynamicMinVal, setDynamicMinVal] = useState(0);
   const [dynamicMaxVal, setDynamicMaxVal] = useState(0);
   const [loading, setLoading] = useState(false);
-  // subcategory filter constants
   const [subCategory, setSubCategory] = useState("");
-  useEffect(() => {
-    console.log("the new subcategory user selected is - ", subCategory);
-  }, [subCategory]);
+
   useEffect(() => {
     if (subcategory) {
       fetch(getSubCatName_API, {
@@ -77,18 +71,33 @@ const ProductListing: React.FC<ProductLsitingProps> = ({
       })
         .then((response) => response.json())
         .then((value) => {
-          console.log("the value from subcat api is = ", value);
-          setSubCategory(value?.subcatName);
-          if (!category) {
-            console.log("the category it is from is = ", value?.catId);
-            setCat(value?.catId);
-          }
+          console.log("Subcat API response:", value);
+          setSubCategory(value?.subcatName || "");
+          setCat(value?.catId || null);
+          setCategoryReady(true);
         });
-      //setSubCategory(subcategory);
-      console.log("Initial subcategory from props:", subcategory);
+    } else if (category) {
+      setCat(category);
+      setCategoryReady(true);
     }
-  }, [subcategory]);
+  }, [subcategory, category]);
+
   useEffect(() => {
+    fetch(productPriceCategoryInfo_API, {
+      method: "GET",
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setMinVal(Number(data.minPrice));
+        setMaxVal(Number(data.maxPrice));
+        setDynamicMinVal(Number(data.minPrice));
+        setDynamicMaxVal(Number(data.maxPrice));
+      });
+  }, []);
+
+  useEffect(() => {
+    if (!categoryReady || !cat) return;
+
     setLoading(true);
     fetch(product_listing_API, {
       method: "POST",
@@ -103,7 +112,6 @@ const ProductListing: React.FC<ProductLsitingProps> = ({
     })
       .then((response) => response.json())
       .then((data) => {
-        // console.log(data)
         setProductDataArray(data);
       })
       .catch((err) => {
@@ -112,25 +120,10 @@ const ProductListing: React.FC<ProductLsitingProps> = ({
       .finally(() => {
         setLoading(false);
       });
-  }, [minVal, maxVal, cat]);
-  useEffect(() => {
-    fetch(productPriceCategoryInfo_API, {
-      method: "GET",
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setMinVal(Number(data.minPrice));
-        setMaxVal(Number(data.maxPrice));
-        setDynamicMinVal(Number(data.minPrice));
-        setDynamicMaxVal(Number(data.maxPrice));
-      });
-  }, []);
-  useEffect(() => {
-    console.log("the minVal and maxVal is ", minVal, " ", maxVal);
-  }, [minVal, maxVal]);
+  }, [minVal, maxVal, cat, categoryReady]);
+
   return (
     <div className="min-h-screen bg-gray-100 p-2 sm:p-4 relative">
-      {/* Mobile Filter Button - Fixed position for easy access */}
       <button
         aria-label="Open filters"
         className={`lg:hidden fixed bottom-6 right-6 z-20 bg-purple-600 text-white p-3 rounded-full shadow-lg flex items-center justify-center transition-transform hover:scale-105 active:scale-95 ${
@@ -143,13 +136,11 @@ const ProductListing: React.FC<ProductLsitingProps> = ({
       </button>
 
       <div className="flex flex-col lg:flex-row w-full h-full gap-4 sm:gap-8">
-        {/* Left Sidebar - Optimized for mobile and desktop */}
         <div
           className={`fixed lg:sticky top-0 lg:top-4 lg:h-[calc(100vh-2rem)] inset-y-0 left-0 z-[1000] w-[85%] sm:w-3/4 lg:w-[22%] xl:w-[20%] lg:min-w-[280px] bg-white rounded-r-xl lg:rounded-xl shadow-xl border border-gray-200 transform ${
             showMobileFilters ? "translate-x-0" : "-translate-x-full"
           } lg:translate-x-0 transition-transform duration-300 ease-in-out overflow-y-auto max-h-screen`}
         >
-          {/* Close button for mobile */}
           <button
             aria-label="Close filters"
             className="lg:hidden absolute top-4 right-4 p-2 text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500 rounded-full"
@@ -168,7 +159,6 @@ const ProductListing: React.FC<ProductLsitingProps> = ({
           />
         </div>
 
-        {/* Overlay with click outside behavior */}
         {showMobileFilters && (
           <div
             className="fixed inset-0 bg-black bg-opacity-50 z-[999] lg:hidden transition-opacity duration-300"
@@ -177,9 +167,7 @@ const ProductListing: React.FC<ProductLsitingProps> = ({
           />
         )}
 
-        {/* Right Content Area with optimized padding */}
         <div className="flex-grow bg-white rounded-xl shadow-sm border border-gray-200 p-2 sm:p-3 lg:p-4">
-          {/* Optimized Product Grid */}
           <div className="min-h-[200px] flex justify-center items-center">
             {loading ? (
               <div className="animate-spin rounded-full h-10 w-10 border-4 border-purple-500 border-t-transparent"></div>
@@ -187,7 +175,7 @@ const ProductListing: React.FC<ProductLsitingProps> = ({
               <div className="grid grid-cols-2 md:grid-cols-3 gap-2 sm:gap-3 md:gap-4">
                 {productDataArray
                   .filter((item) => {
-                    const discountedPrice = Number(item.discount); // Ensure it's a number
+                    const discountedPrice = Number(item.discount);
                     return (
                       discountedPrice >= dynamicMinVal &&
                       discountedPrice <= dynamicMaxVal &&

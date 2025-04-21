@@ -23,6 +23,8 @@ function Header() {
   const handleClick = () => {
     setShow(!show);
   };
+  const token = localStorage.getItem("token");
+  const isLoggedIn =  !token;
 
   const [cartShow, setCartShow] = useState(false);
   const handleCart = () => {
@@ -132,14 +134,14 @@ function Header() {
             </div>
                 </div>
             <div className="flex gap-5 mt-1 max-md:mt-3">
-              <Link to="/LogIn">
-                <div className="text-center flex mt-1 flex-col items-center">
-                  <FaRegUser className="w-6 h-6 leading-2 text-[#7B48A5] max-md:mb-1" />
-                  <p className="text-lg max-md:hidden tracking-wider text-gray-800">
-                    Login
-                  </p>
-                </div>
-              </Link>
+              <Link to={isLoggedIn ? "/dashboard" : "/LogIn-SignUp"}>
+      <div className="text-center flex mt-1 flex-col items-center">
+        <FaRegUser className="w-6 h-6 leading-2 text-[#7B48A5] max-md:mb-1" />
+        <p className="text-lg max-md:hidden tracking-wider text-gray-800">
+          {isLoggedIn ? "Account" : "Login"}
+        </p>
+      </div>
+    </Link>
               <Link to="/wishlist">
                 <div className="text-center mt-1 flex flex-col items-center">
                   <FaRegHeart className="w-6 h-6 text-[#7B48A5]" />

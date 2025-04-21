@@ -4,7 +4,6 @@ import Header from "./components/Header";
 import Footer from "./components/Footer";
 import Home from "./pages/Home";
 import React, { useState, useEffect } from "react";
-import SignUp from "./components/auth/Signup";
 import Login from "./components/auth/Login";
 import Layout from "./components/Layout";
 import Complete_cart_checkout from "./pages/order-cycle";
@@ -24,9 +23,14 @@ import BlogPage from "./pages/Blogs";
 import BlogDetails from "./pages/BlogDetails";
 import AboutPage from "./pages/About";
 
+
 function App() {
   const [currentRoute, setCurrentRoute] = useState("/");
   const [categoryId, setCategoryId] = useState("");
+  const [subcategoryId, setSubcategoryId] = useState("");
+  const [loading, setLoading] = useState(true);
+
+
   function RouteTracker() {
     const location = useLocation();
 
@@ -37,29 +41,38 @@ function App() {
     return null;
   }
 
+  
+
   return (
     <>
       <BrowserRouter>
         <Layout>
           <RouteTracker />
-          {currentRoute !== "/SignUp" && currentRoute !== "/LogIn" && (
-            <Header />
-          )}
+          {currentRoute !== "/LogIn-SignUp" && <Header />}
           <Routes>
-            <Route path="/" element={<Home setCategoryId={setCategoryId} />} />
-            <Route path="/SignUp" element={<SignUp />} />
-            <Route path="/LogIn" element={<Login />} />
+            <Route
+              path="/"
+              element={
+                <Home
+                  setCategoryId={setCategoryId}
+                  setSubcategoryId={setSubcategoryId}
+                />
+              }
+            />
+
+            <Route path="/LogIn-SignUp" element={<Login />} />
             <Route path="/product/:id" element={<ProductDetails />} />
             <Route path="/dashboard_profile" element={<Dashboard_Profile />} />
             <Route path="/order/:id" element={<OrderDetails />} />
             <Route path="/cart" element={<Complete_cart_checkout />} />
-            {/* <Route
-              path="/listing"
-              element={<ProductListing category={categoryId} />}
-            /> */}
             <Route
-              path="/test3"
-              element={<ProductListing subcategory={11} />}
+              path="/listing"
+              element={
+                <ProductListing
+                  category={Number(categoryId)}
+                  subcategory={Number(subcategoryId)}
+                />
+              }
             />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/wishlist" element={<Wishlist />} />
@@ -73,9 +86,7 @@ function App() {
             <Route path="/blog-details/:id" element={<BlogDetails />} />
             <Route path="/about" element={<AboutPage />} />
           </Routes>
-          {currentRoute !== "/SignUp" && currentRoute !== "/LogIn" && (
-            <Footer />
-          )}
+          {currentRoute !== "/LogIn-SignUp" && <Footer />}
         </Layout>
       </BrowserRouter>
     </>
