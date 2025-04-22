@@ -22,7 +22,9 @@ interface OrderCardProps {
 }
 
 const OrderCard: React.FC<OrderCardProps> = ({ orderedData }) => {
+  
   const navigate = useNavigate();
+  console.log("Ordered Data received in OrderCard:", orderedData);
 
   return (
     <div className="flex flex-col gap-5 max-w-4xl mx-auto mt-6">
@@ -30,10 +32,12 @@ const OrderCard: React.FC<OrderCardProps> = ({ orderedData }) => {
         <div
           key={orderId}
           className="border rounded-md p-4 bg-white flex flex-col gap-4 cursor-pointer hover:shadow transition"
-          onClick={() => navigate(`/order/${orderId}`)}
+          onClick={() =>{console.log("Navigating to order ID:", orderId);
+            navigate(`/order/${orderId}`)}}
         >
+          
           {products.map((product) => (
-            <div key={product.product_id} className="flex gap-4 items-center">
+            <div  className="flex gap-4 items-center">
               <img
                 src={product.product_image}
                 alt="product"

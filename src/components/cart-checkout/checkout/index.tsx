@@ -72,11 +72,11 @@ const Checkout: React.FC<IndexProps> = ({
     return;
   }
 
-  const order_number = "ORD" + new Date().getTime();
+  const order_number = "BTJ" + new Date().getTime();
 
   const payload = {
-    orderId: order_number,
-    paymentType: selected === "cod" ? "COD" : "Prepaid",
+    orderID: order_number,
+    paymentType: selected === "cod" ? "cod" : "prepaid",
     amount: totalAmount,
     city: shippingData.city,
     firstName: shippingData.first_name,
