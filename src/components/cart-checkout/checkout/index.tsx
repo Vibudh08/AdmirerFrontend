@@ -68,26 +68,26 @@ const Checkout: React.FC<IndexProps> = ({
   }
 
   const handlePlaceOrder = async () => {
-    if (!shippingData) {
-      alert("No shipping address");
-      return;
-    }
+    // if (!shippingData) {
+    //   alert("No shipping address");
+    //   return;
+    // }
 
-  const order_number = "BTJ" + new Date().getTime();
+    const order_number = "BTJ" + new Date().getTime();
 
-  const payload = {
-    orderID: order_number,
-    paymentType: selected === "cod" ? "cod" : "prepaid",
-    amount: totalAmount,
-    city: shippingData.city,
-    firstName: shippingData.first_name,
-    lastName: shippingData.flat,
-    shipping_address: shippingData.last_name,
-    locality: shippingData.locality,
-    state: shippingData.state_name,
-    street: shippingData.street,
-    pincode: shippingData.zip_code,
-  };
+    const payload = {
+      orderID: order_number,
+      paymentType: selected === "cod" ? "cod" : "prepaid",
+      amount: "270",
+      city: "DELHI",
+      firstName: "Vibudh",
+      lastName: "Rathore",
+      flat: "B-12",
+      locality: "Rajiv Chowk",
+      state: "DELHI",
+      street: "sector 2",
+      pincode: "110059",
+    };
 
     try {
       const response = await fetch(nimbusDelievery_API, {
