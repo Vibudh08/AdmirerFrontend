@@ -41,6 +41,16 @@ const indianStates = [
   "UTTARAKHAND",
   "WEST BENGAL",
 ];
+const Loader = () => (
+  <div className="   bg-opacity-80 backdrop-blur-sm flex items-center justify-center z-50">
+    {/* Loader content */}
+    <div className="flex flex-col items-center">
+      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mb-4"></div>
+      {/* <p className="text-lg font-bold text-gray-800">Loading your experience, please wait...</p> */}
+    </div>
+  </div>
+);
+
 
 const Dashboard_Profile = () => {
   interface profileDataProps {
@@ -60,8 +70,6 @@ const Dashboard_Profile = () => {
   }
 
   const UPDATE_PROFILE_API = "http://127.0.0.1:8000/api/updateProfile";
-  const AUTH_TOKEN =
-    "Bearer 12|3FP2XTCqlTH9cGQT8gwkaqP9Y5ZXAIt8sBJZI8P80064fd41";
 
   const [profileData, setProfileData] = useState<profileDataProps>();
   const [gender, setGender] = useState("male");
@@ -73,7 +81,7 @@ const Dashboard_Profile = () => {
   const [altNumber, setAltNumber] = useState("");
   const [altError, setAltError] = useState("");
   const [isEditable, setIsEditable] = useState(false);
-
+  const [isLoading, setIsLoading] = useState(true);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
@@ -127,6 +135,7 @@ const Dashboard_Profile = () => {
         setState(data.state || "");
         setCountry(data.country || "");
         setAddressType(data.address_type || "");
+        setIsLoading(false);
       });
   }, []);
 
@@ -149,8 +158,8 @@ const Dashboard_Profile = () => {
       case "city":
         return value.trim() ? "" : "City is required";
       case "zipcode":
-        if (!value) return "Zipcode is required";
-        if (!/^\d{6}$/.test(value)) return "Enter a valid 6-digit zipcode";
+        if (!value) return "Pincode is required";
+        if (!/^\d{6}$/.test(value)) return "Enter a valid 6-digit pincode";
         return "";
       case "state":
         return value.trim() ? "" : "State is required";
@@ -361,11 +370,11 @@ const Dashboard_Profile = () => {
 
     setIsEditable((prev) => !prev);
   };
-
+  if (isLoading) return <Loader />;
   return (
     <div className="m-auto bg-white shadow-md p-8 max-sm:p-4 max-sm:mt-5 w-full">
       <h2 className="text-xl font-semibold mb-6 border-b pb-2">Edit Profile</h2>
-
+      {/* {isLoading &&   <Loader />} */}
       {/* Mobile Number */}
       <div className="mb-4">
         <label className="text-sm font-medium text-gray-700 mb-1 block">
@@ -525,11 +534,11 @@ const Dashboard_Profile = () => {
         </div>
         <div className="w-1/2">
           <label className="text-sm font-medium text-gray-700 mb-1 block">
-            Zipcode*
+            Pincode*
           </label>
           <input
             type="text"
-            placeholder="Zipcode"
+            placeholder="Pincode"
             value={zipcode}
             onChange={(e) => handleInputChange(e, "zipcode")}
             className={`w-full border rounded px-4 py-3 text-sm ${

@@ -8,6 +8,7 @@ interface CartProps {
   setDiscountAmount: (value: number) => void;
   setTotalAmount: (value: number) => void;
   setItemCount: (value: number) => void;
+  setShippingData: (value: any) => void; 
 }
 
 interface ItemProps {
@@ -50,17 +51,35 @@ const Cart: React.FC<CartProps> = ({
   setDiscountAmount,
   setTotalAmount,
   setItemCount,
+  setShippingData,
 }) => {
   const [totalItem, setTotalItem] = useState<ItemProps[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  const handleQuantityChange = (id: number, newQty: number) => {
+  const handleQuantityChange = async (id: number, newQty: number) => {
+    // Update the local state first
     const updatedItems = totalItem.map((item) =>
       item.id === id ? { ...item, qty: newQty.toString() } : item
     );
     setTotalItem(updatedItems);
     recalculateTotals(updatedItems);
+  
+    // Make the API call to update the cart quantity in the backend
+    try {
+      await axios.post(
+        "http://127.0.0.1:8000/api/update-cart-quantity",
+        { productId: id, quantity: newQty },
+        {
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("auth_token"),
+          },
+        }
+      );
+    } catch (error) {
+      console.error("Failed to update cart quantity:", error);
+    }
   };
+  
 
   const recalculateTotals = (items: ItemProps[]) => {
     let original = 0;
@@ -111,6 +130,8 @@ const Cart: React.FC<CartProps> = ({
           },
         });
         const data = response.data.data.products || [];
+        const shipping = response.data.data.user_addresses.shipping_address[0]
+        console.log(shipping)
 
         const transformedData = data.map((item: any) => ({
           id: item.id,
@@ -125,6 +146,8 @@ const Cart: React.FC<CartProps> = ({
           totalQuantity: item.in_stock.toString(),
         }));
 
+        
+        setShippingData(shipping);
         setTotalItem(transformedData);
         setItemCount(transformedData.length);
         recalculateTotals(transformedData);

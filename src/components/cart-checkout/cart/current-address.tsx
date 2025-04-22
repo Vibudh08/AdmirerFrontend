@@ -34,12 +34,12 @@ const DeliveryInfo: React.FC<DeliveryInfoProps> = ({
 
   return (
     <>
-      <div
+      <div className="border"
         style={{
           display: "flex",
           width: "100%",
           margin: "16px 0",
-          border: "1px solid #f0f0f0",
+          // border: "1px solid #f0f0f0",
           borderRadius: "8px",
           padding: "16px",
           backgroundColor: "white",
