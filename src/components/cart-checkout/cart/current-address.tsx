@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Button, Modal } from "antd"; // Added Modal import
 import AddressBar from "./address";
 import { Color } from "antd/es/color-picker";
+import { getAddressInCart_API } from "../../api/api-end-points";
 interface DeliveryInfoProps {
   name: string;
   address: string;
@@ -17,6 +18,15 @@ const DeliveryInfo: React.FC<DeliveryInfoProps> = ({
   state,
   pincode,
 }) => {
+  useEffect(() => {
+    fetch(getAddressInCart_API, {
+      method: "GET",
+      headers: {
+        authorization: "Bearer " + localStorage.getItem("auth_token"),
+        "Content-Type": "application/json",
+      },
+    });
+  });
   // State for controlling modal visibility
   const [isModalVisible, setIsModalVisible] = useState(false);
 
@@ -34,7 +44,8 @@ const DeliveryInfo: React.FC<DeliveryInfoProps> = ({
 
   return (
     <>
-      <div className="border"
+      <div
+        className="border"
         style={{
           display: "flex",
           width: "100%",
@@ -77,19 +88,18 @@ const DeliveryInfo: React.FC<DeliveryInfoProps> = ({
 
       {/* Address Modal */}
       <Modal
-  title="Update Delivery Address"
-  open={isModalVisible}
-  onCancel={() => setIsModalVisible(false)}
-  footer={null}
-  width={700}
-  centered
->
-  <AddressBar
-    setIsModalVisible={setIsModalVisible}
-    onAddressChange={handleAddressChange}
-  />
-</Modal>
-
+        title="Update Delivery Address"
+        open={isModalVisible}
+        onCancel={() => setIsModalVisible(false)}
+        footer={null}
+        width={700}
+        centered
+      >
+        <AddressBar
+          setIsModalVisible={setIsModalVisible}
+          onAddressChange={handleAddressChange}
+        />
+      </Modal>
     </>
   );
 };
