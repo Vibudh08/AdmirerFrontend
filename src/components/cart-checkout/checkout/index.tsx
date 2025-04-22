@@ -81,12 +81,14 @@ const Checkout: React.FC<IndexProps> = ({
     amount: totalAmount,
     city: shippingData.city,
     firstName: shippingData.first_name,
-    lastName: shippingData.flat,
-    shipping_address: shippingData.last_name,
+    flat: shippingData.flat,
+    lastName: shippingData.last_name,
     locality: shippingData.locality,
-    state: shippingData.state_name,
+    // state: shippingData.state_name,
+    state: "DELHI",
     street: shippingData.street,
-    pincode: shippingData.zip_code,
+    // pincode: shippingData.zip_code,
+    pincode: "102201",
   };
 
     try {

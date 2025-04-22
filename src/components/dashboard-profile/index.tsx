@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Modal, Button } from "antd";
 import { CloseOutlined } from "@ant-design/icons";
 import { user_profile_API } from "../api/api-end-points";
+import axios from "axios";
 
 const indianStates = [
   "ANDAMAN AND NICOBAR ISLANDS",
@@ -54,20 +55,21 @@ const Loader = () => (
 
 const Dashboard_Profile = () => {
   interface profileDataProps {
-    first_name: string;
-    last_name: string;
+    first_name?: string;
+    last_name?: string;
     mobile: string;
-    email: string;
-    flat: string;
-    street: string;
-    locality: string;
-    city: string;
-    zipcode: string;
-    state: string;
-    country: string;
-    address_type: string;
-    status: string;
+    email?: string;
+    flat?: string;
+    street?: string;
+    locality?: string;
+    city?: string;
+    zipcode?: string;
+    state?: string;
+    country?: string;
+    address_type?: string;
+    status?: string;
   }
+  
 
   const UPDATE_PROFILE_API = "http://127.0.0.1:8000/api/updateProfile";
 
@@ -79,12 +81,14 @@ const Dashboard_Profile = () => {
   const [mainMobileError, setMainMobileError] = useState("");
   const [modalMobileError, setModalMobileError] = useState("");
   const [altNumber, setAltNumber] = useState("");
-  const [altError, setAltError] = useState("");
+  const [otpError, setOtpError] = useState("");
   const [isEditable, setIsEditable] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
+  const [otpSent, setOtpSent] = useState(false);
+  const [otp, setOtp] = useState("");
 
   const [formErrors, setFormErrors] = useState({
     firstName: "",
@@ -269,7 +273,6 @@ const Dashboard_Profile = () => {
   const isValid =
     editedMobile.length === 10 &&
     mainMobileError === "" &&
-    altError === "" &&
     Object.values(formErrors).every((val) => !val);
 
   const updateProfileAPI = (mobile?: string) => {
@@ -327,11 +330,72 @@ const Dashboard_Profile = () => {
             setCountry(freshData.country || "");
             setAddressType(freshData.address_type || "");
             setIsEditable(false);
+            
           });
       })
       .catch((err) => {
         console.error("❌ Update Failed:", err);
       });
+  };
+
+  const handleSendOtp = async () => {
+    if (newNumber.length !== 10 || modalMobileError) return;
+
+    try {
+      await axios.post(
+        "http://127.0.0.1:8000/api/changeNumberSendOtp",
+        { phone: newNumber },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + localStorage.getItem("auth_token"),
+          },
+        }
+      );
+      setOtpSent(true);
+    } catch (error) {
+      console.error("Send OTP error:", error);
+    }
+  };
+
+  const handleVerifyOtp = async () => {
+    if (!otp) {
+      setOtpError("OTP is required");
+      return;
+    }
+  
+    if (!/^\d{6}$/.test(otp)) {
+      setOtpError("OTP must be exactly 6 digits");
+      return;
+    }
+    try {
+      await axios.post(
+        "http://127.0.0.1:8000/api/changeNumberOtpVerify",
+        {
+          phone: newNumber,
+          otp: otp,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + localStorage.getItem("auth_token"),
+          },
+        }
+      );
+      setProfileData((prevData) => ({
+        ...prevData,
+        mobile: newNumber, // Set the new mobile number
+      }));
+      setEditedMobile(newNumber); // Update the edited mobile state with the new number
+  
+      setIsModalOpen(false);
+      setNewNumber("");
+      setOtp("");
+      setOtpSent(false);
+      setModalMobileError("");
+    } catch (error) {
+      console.error("Verify OTP error:", error);
+    }
   };
 
   const toggleEdit = () => {
@@ -635,75 +699,108 @@ const Dashboard_Profile = () => {
 
       {/* Modal */}
       <Modal
-        open={isModalOpen}
-        footer={null}
-        onCancel={() => {
-          setIsModalOpen(false);
-          setNewNumber("");
-          setModalMobileError("");
-        }}
-        closeIcon={<CloseOutlined />}
-        centered
-        className="!w-[420px]"
-      >
-        <h2 className="text-lg font-semibold text-gray-800 mb-4">
-          Change Mobile Number
-        </h2>
+      open={isModalOpen}
+      footer={null}
+      onCancel={() => {
+        setIsModalOpen(false);
+        setNewNumber("");
+        setModalMobileError("");
+        setOtpSent(false);
+        setOtp("");
+      }}
+      closeIcon={<CloseOutlined />}
+      centered
+      className="!w-[420px]"
+    >
+      <h2 className="text-lg font-semibold text-gray-800 mb-4">
+        Change Mobile Number
+      </h2>
 
-        <div className="mb-3">
+      <div className="mb-3">
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Current Mobile Number
+        </label>
+        <input
+          type="text"
+          value={profileData?.mobile}
+          readOnly
+          className="w-full border px-4 py-3 rounded bg-gray-100 text-sm text-gray-600 cursor-not-allowed"
+        />
+      </div>
+
+      <div className="mb-2">
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          New Mobile Number
+        </label>
+        <input
+          type="tel"
+          value={newNumber}
+          onChange={(e) => {
+            if (otpSent) return;
+            const value = e.target.value;
+            if (!/^\d*$/.test(value)) return;
+            setNewNumber(value);
+
+            if (value.length > 0 && value[0] === "0") {
+              setModalMobileError("Number cannot start with 0");
+            } else if (value.length > 10) {
+              setModalMobileError("Number cannot exceed 10 digits");
+            } else if (value.length === 10) {
+              setModalMobileError("");
+            } else {
+              setModalMobileError("Enter a valid 10-digit number");
+            }
+          }}
+          readOnly={otpSent}
+          className={`w-full border rounded px-4 py-3 text-sm ${
+            otpSent ? "bg-gray-100 text-gray-600 cursor-not-allowed" : ""
+          }`}
+        />
+        {modalMobileError && (
+          <p className="text-red-500 text-sm">{modalMobileError}</p>
+        )}
+      </div>
+
+      {otpSent && (
+        <div className="mb-2">
           <label className="block text-sm font-medium text-gray-700 mb-1">
-            Current Mobile Number
+            Enter OTP
           </label>
           <input
             type="text"
-            value={profileData?.mobile}
-            readOnly
-            className="w-full border px-4 py-3 rounded bg-gray-100 text-sm text-gray-600 cursor-not-allowed"
-          />
-        </div>
-
-        <div className="mb-2">
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            New Mobile Number
-          </label>
-          <input
-            type="tel"
-            value={newNumber}
+            placeholder="Enter 6 digit OTP"
+            value={otp}
             onChange={(e) => {
               const value = e.target.value;
-              if (!/^\d*$/.test(value)) return;
-              setNewNumber(value);
-
-              if (value.length > 0 && value[0] === "0") {
-                setModalMobileError("Number cannot start with 0");
-              } else if (value.length > 10) {
-                setModalMobileError("Number cannot exceed 10 digits");
-              } else if (value.length === 10) {
-                setModalMobileError("");
-              } else {
-                setModalMobileError("Enter a valid 10-digit number");
+              if (/^\d*$/.test(value)) { // only allow digits
+                setOtp(value);
+                if (otpError) setOtpError("");
               }
             }}
             className="w-full border rounded px-4 py-3 text-sm"
+            maxLength={6}
           />
-          {modalMobileError && (
-            <p className="text-red-500 text-sm">{modalMobileError}</p>
-          )}
+          {otpError && <p className="text-red-500 text-sm mt-1">{otpError}</p>}
         </div>
+      )}
 
+      {!otpSent ? (
         <Button
-          className={`w-full !bg-purple-600 hover:!bg-purple-700 h-[45px] mt-2 !text-white !border-none`}
-          onClick={() => {
-            if (newNumber.length === 10 && modalMobileError === "") {
-              updateProfileAPI(newNumber);
-              setIsModalOpen(false);
-              setNewNumber("");
-            }
-          }}
+          className="w-full !bg-purple-600 hover:!bg-purple-700 h-[45px] mt-2 !text-white !border-none"
+          onClick={handleSendOtp}
         >
           SEND OTP
         </Button>
-      </Modal>
+      ) : (
+        <Button
+          className="w-full !bg-purple-600 hover:!bg-purple-700 h-[45px] mt-2 !text-white !border-none"
+          onClick={handleVerifyOtp}
+        >
+          VERIFY OTP
+        </Button>
+      )}
+    </Modal>
+
     </div>
   );
 };
