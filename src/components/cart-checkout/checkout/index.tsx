@@ -3,6 +3,7 @@ import { GoTag } from "react-icons/go";
 import { Modal } from "antd";
 import Coupons_screen from "../../coupons/Coupons_screen";
 import OrderSuccessModal from "../../OrderSuccessModal"; // ✅
+import { nimbusDelievery_API } from "../../api/api-end-points";
 
 interface PriceDetail {
   label: string;
@@ -67,64 +68,63 @@ const Checkout: React.FC<IndexProps> = ({
   }
 
   const handlePlaceOrder = async () => {
-  if (!shippingData) {
-    alert("No shipping address");
-    return;
-  }
+    if (!shippingData) {
+      alert("No shipping address");
+      return;
+    }
 
-  const order_number = "ORD" + new Date().getTime();
+    const order_number = "ORD" + new Date().getTime();
 
-  const payload = {
-    orderId: order_number,
-    paymentType: selected === "cod" ? "COD" : "Prepaid",
-    amount: totalAmount,
-    city: shippingData.city,
-    firstName: shippingData.first_name,
-    lastName: shippingData.flat,
-    shipping_address: shippingData.last_name,
-    locality: shippingData.locality,
-    state: shippingData.state_name,
-    street: shippingData.street,
-    pincode: shippingData.zip_code,
+    const payload = {
+      orderID: order_number,
+      paymentType: selected === "cod" ? "COD" : "Prepaid",
+      amount: totalAmount,
+      city: shippingData.city,
+      firstName: shippingData.first_name,
+      lastName: shippingData.flat,
+      shipping_address: shippingData.last_name,
+      locality: shippingData.locality,
+      state: shippingData.state_name,
+      street: shippingData.street,
+      pincode: shippingData.zip_code,
+    };
+
+    try {
+      const response = await fetch(nimbusDelievery_API, {
+        method: "POST",
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("auth_token"),
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const contentType = response.headers.get("content-type");
+      const status = response.status;
+      console.log("Status:", status);
+
+      let result: any = {};
+      if (contentType && contentType.includes("application/json")) {
+        result = await response.json();
+      } else {
+        const text = await response.text();
+        console.warn("⚠️ Non-JSON response:", text);
+        throw new Error("Server did not return valid JSON");
+      }
+
+      console.log("✅ Response result:", result);
+
+      if (result.success) {
+        setOrderId(order_number);
+        setShowSuccessModal(true);
+      } else {
+        alert(result.message || "Failed to place order.");
+      }
+    } catch (err) {
+      console.error("❌ Error placing order:", err);
+      alert("Something went wrong while placing your order.");
+    }
   };
-
-  try {
-    const response = await fetch("http://127.0.0.1:8000/api/NimbusShippingStart", {
-      method: "POST",
-      headers: {
-        Authorization: "Bearer " + localStorage.getItem("auth_token"),
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
-    });
-
-    const contentType = response.headers.get("content-type");
-    const status = response.status;
-    console.log("Status:", status);
-
-    let result: any = {};
-    if (contentType && contentType.includes("application/json")) {
-      result = await response.json();
-    } else {
-      const text = await response.text();
-      console.warn("⚠️ Non-JSON response:", text);
-      throw new Error("Server did not return valid JSON");
-    }
-
-    console.log("✅ Response result:", result);
-
-    if (result.success) {
-      setOrderId(order_number);
-      setShowSuccessModal(true);
-    } else {
-      alert(result.message || "Failed to place order.");
-    }
-
-  } catch (err) {
-    console.error("❌ Error placing order:", err);
-    alert("Something went wrong while placing your order.");
-  }
-};
 
   const priceDetails: PriceDetail[] = [
     { label: "Total MRP", value: `₹${totalMRP}` },
@@ -219,7 +219,7 @@ const Checkout: React.FC<IndexProps> = ({
             selected === "cod" ? "border-purple-600" : "border-gray-300"
           }`}
         >
-          <input  
+          <input
             type="radio"
             name="payment"
             checked={selected === "cod"}
