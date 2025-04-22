@@ -2,10 +2,15 @@ import React, { useState } from "react";
 import { FaUserAlt } from "react-icons/fa";
 import Dashboard_Profile from "../components/dashboard-profile";
 import OrderPage from "../components/dashboard-orders";
-
+import { useLocation } from "react-router-dom";
 const Dashboard = () => {
-  const [activeSection, setActiveSection] = useState("profile"); // default is profile
+  
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const sectionFromURL = queryParams.get("section");
 
+  const [activeSection, setActiveSection] = useState(sectionFromURL || "profile"); // default is profile
+  
   return (
     <div className="p-6 max-sm:p-0 w-[85%] mt-1 max-sm:mt-5 max-md:w-[100%] m-auto flex max-sm:block gap-5">
       <div className="w-[35%] max-sm:w-[100%] max-sm:m-auto flex flex-col gap-5">

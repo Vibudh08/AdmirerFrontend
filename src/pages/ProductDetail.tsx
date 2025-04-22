@@ -33,6 +33,16 @@ const CustomNextArrow = ({ onClick }: { onClick: () => void }) => (
   </button>
 );
 
+const Loader = () => (
+  <div className="fixed inset-0 bg-white bg-opacity-80 backdrop-blur-sm flex items-center justify-center z-50">
+    <div className="flex flex-col items-center">
+      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mb-4"></div>
+      <p className="text-lg font-bold text-gray-800">Loading your experience, please wait...</p>
+    </div>
+  </div>
+);
+
+
 const ProductDetails = () => {
   const { id } = useParams<{ id: string }>(); // Get the product ID from the URL
   const [product, setProduct] = useState<any>(null); // State for product details
@@ -44,6 +54,7 @@ const ProductDetails = () => {
   const [zoomStyle, setZoomStyle] = useState({});
   const [isInCart, setIsInCart] = useState(false);
   const [isWishlisted, setIsWishlisted] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
 
   const containerRef = React.useRef<HTMLDivElement>(null);
@@ -73,7 +84,7 @@ const ProductDetails = () => {
   };
 
   const handleBuyNow = () => {
-    const token = "Bearer 7|P6gdNwdWbYxXLygVRTwSHAN1qnhK7kH5kdC9A6Zad16cbca7"; // Adjust key if different
+    const token = "Bearer " + localStorage.getItem("auth_token"); // Adjust key if different
     if (token) {
       navigate("/cart");
     } else {
@@ -98,7 +109,6 @@ const ProductDetails = () => {
       });
 
       const result = await response.json();
-
       if (response.ok) {
         setIsWishlisted(!isWishlisted);
         console.log(result.message || "Wishlist updated");
@@ -166,7 +176,8 @@ const ProductDetails = () => {
           setRelatedProducts(relatedData); // Store the related products
           setThumbnails(imageArray);
           setMainImage(imageArray[0]);
-
+          setIsLoading(false);
+          
           // Set inCart status from API
           if (data.in_cart === 1) {
             setIsInCart(true);
@@ -239,9 +250,7 @@ const ProductDetails = () => {
     });
   };
 
-  if (!product) {
-    return <div>Loading...</div>; // Show loading if product data is not fetched yet
-  }
+  if (isLoading) return <Loader />;
 
   return (
     <div className="bg-white py-3">
