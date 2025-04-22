@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Slider from "react-slick";
 import { FaRegHeart } from "react-icons/fa";
 import { Link } from "react-router-dom";
@@ -7,31 +7,61 @@ import { FaRegUser } from "react-icons/fa6";
 import { MdOutlineShoppingBag } from "react-icons/md";
 import { IoClose } from "react-icons/io5";
 import React from "react";
+import { Heart, ShoppingBag } from "lucide-react";
+import SearchBarWithPopup from "./SearchBar";
 
 function Header() {
-  var offerBanner = {
+  const offerBanner = {
     dots: false,
     infinite: true,
     speed: 500,
     slidesToShow: 1,
     slidesToScroll: 1,
-    autoplay: true, // Enable autoplay
+    autoplay: true,
     autoplaySpeed: 2000,
     arrows: false,
   };
-  const [show, setShow] = useState(false);
-  const handleClick = () => {
-    setShow(!show);
-  };
-  const token = localStorage.getItem("token");
-  const isLoggedIn =  !token;
 
+  const [show, setShow] = useState(false);
+  const [searchPopup, setSearchPopup] = useState(false);
   const [cartShow, setCartShow] = useState(false);
-  const handleCart = () => {
-    setCartShow(!cartShow);
-  };
+  const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem("auth_token"));
+
+  const handleClick = () => setShow(!show);
+  const handleCart = () => setCartShow(!cartShow);
+
+  // Listen to storage changes for login/logout state across tabs
+  useEffect(() => {
+    const handleAuthChange = () => {
+      setIsLoggedIn(!!localStorage.getItem("auth_token"));
+    };
+
+    window.addEventListener("storage", handleAuthChange);
+    return () => window.removeEventListener("storage", handleAuthChange);
+  }, []);
+
+  // Check login state on mount (useful for same-tab logout)
+  useEffect(() => {
+    setIsLoggedIn(!!localStorage.getItem("auth_token"));
+  }, []);
+
   return (
     <>
+      {/* Mobile Search Popup */}
+      {searchPopup && (
+        <div className="fixed inset-0 z-[1000] bg-white p-4 md:hidden">
+          <div className="flex justify-between items-center mb-3">
+            <p className="text-lg font-semibold text-[#7B48A5]">Search</p>
+            <IoClose
+              className="text-2xl cursor-pointer text-[#7B48A5]"
+              onClick={() => setSearchPopup(false)}
+            />
+          </div>
+          <SearchBarWithPopup />
+        </div>
+      )}
+
+      {/* Overlay for sidebars */}
       {(show || cartShow) && (
         <div
           className="fixed inset-0 bg-black opacity-50 z-[900]"
@@ -42,10 +72,11 @@ function Header() {
         ></div>
       )}
 
+      {/* Mobile Menu */}
       <div
-        className={`categories fixed z-[1000] bg-white h-[100vh] w-[310px] px-[30px] py-[40px] flex-col 
-        transition-all duration-500 ease-in-out transform border border-white ${show ? "translate-x-0 opacity-100" : "-translate-x-full opacity-0"
-          }`}
+        className={`categories fixed z-[1000] bg-white h-[100%] w-[310px] px-[30px] py-[40px] flex-col transition-all duration-500 ease-in-out transform border border-white ${
+          show ? "translate-x-0 opacity-100" : "-translate-x-full opacity-0"
+        }`}
       >
         <IoClose
           className="text-2xl absolute right-3 top-5"
@@ -55,16 +86,17 @@ function Header() {
           <img
             src="/logo/admirer_logo.png"
             className="w-[110px] h-[72px] cover"
-            alt=""
+            alt="Logo"
           />
         </div>
-        <div>huij</div>
+        <div>Categories here</div>
       </div>
 
+      {/* Cart Sidebar */}
       <div
-        className={`cart fixed z-[1000] bg-white h-[100vh] w-[340px] px-[30px] py-[40px] flex-col 
-        transition-all duration-500 ease-in-out transform right-0 border border-white
-        ${cartShow ? "translate-x-0 opacity-100" : "translate-x-full opacity-0"}`}
+        className={`cart fixed z-[1000] bg-white h-[100vh] w-[340px] px-[30px] py-[40px] flex-col transition-all duration-500 ease-in-out transform right-0 border border-white ${
+          cartShow ? "translate-x-0 opacity-100" : "translate-x-full opacity-0"
+        }`}
       >
         <IoClose
           className="text-2xl absolute right-3 top-5 cursor-pointer"
@@ -73,90 +105,82 @@ function Header() {
         <div>Cart Page</div>
       </div>
 
-      <main className=" w-full relative top-0 left-0 z-50 pb-[1px] bg-white shadow-md ">
+      {/* Header */}
+      <main className="w-full relative top-0 left-0 z-50 pb-[1px] bg-white shadow-md">
+        {/* Offer Slider */}
         <div className="tf-top-bar bg_white line">
           <div className="px_15 lg-px_40">
             <nav className="box-navigation text-center p-2 bg-[#e5d6eb]">
               <Slider {...offerBanner}>
-                <div className="swiper-slide">
-                  <p className="top-bar-text fw-5 text-[#7925bf] text-[14px]">
-                    Summer sale discount off 70%
-                  </p>
-                </div>
-                <div className="swiper-slide">
-                  <p className="top-bar-text fw-5 text-[#7925bf] text-[14px]">
-                    Time to refresh your wardrobe.
-                  </p>
-                </div>
-                <div className="swiper-slide">
-                  <p className="top-bar-text fw-5 text-[#7925bf] text-[14px]">
-                    cvyuijnhbg tbijh
-                  </p>
-                </div>
+                <div><p className="text-[#7925bf] text-[14px]">Summer sale discount off 70%</p></div>
+                <div><p className="text-[#7925bf] text-[14px]">Time to refresh your wardrobe.</p></div>
+                <div><p className="text-[#7925bf] text-[14px]">Limited time offers available now.</p></div>
               </Slider>
             </nav>
           </div>
         </div>
 
-        <div className="w-[95%] m-auto max-md:w-full">
+        {/* Main Navigation */}
+        <div className="m-auto max-md:w-full">
           <div className="flex justify-between items-center mb-1 mt-1 w-[94%] m-auto max-md:w-full px-2">
-            <div className=" gap-[12px]  hidden max-md:flex">
+            {/* Left: Mobile Menu + Search */}
+            <div className="gap-[12px] hidden max-md:flex">
               <div
-                className="w-5 h-[14px] mt-3 flex flex-col justify-between overflow-hidden   cursor-pointer"
+                className="w-5 h-[14px] mt-3 flex flex-col justify-between overflow-hidden cursor-pointer"
                 onClick={handleClick}
               >
                 <span className="w-full h-[2px] bg-black block"></span>
-                <span
-                  className={`w-full h-[2px] bg-black block ${show ? "" : "ml-[-9px]"
-                    }`}
-                ></span>
+                <span className={`w-full h-[2px] bg-black block ${show ? "" : "ml-[-9px]"}`}></span>
                 <span className="w-full h-[2px] bg-black block"></span>
               </div>
-              <Search className="relative top-[20px] transform -translate-y-1/2 text-[#7B48A5] " />
+              <Search
+                className="relative top-[20px] transform -translate-y-1/2 text-[#7B48A5] cursor-pointer"
+                onClick={() => setSearchPopup(true)}
+              />
             </div>
 
-            <div className="flex gap-6 text-center align-center items-center">
-
+            {/* Logo */}
             <Link to="/">
               <img
                 src="/logo/admirer_logo.png"
-                className="w-[105px] h-[70px] cover ml-5"
-                alt=""
-                />
+                className="w-[90px] h-[60px] cover ml-5"
+                alt="Logo"
+              />
             </Link>
-            <div className="relative w-[400px] max-md:hidden ">
-              <Search className="absolute left-1 ml-2.5 w-5 mt-1 h-5 top-6 transform -translate-y-1/2 text-[#7B48A5]" />
-              <input
-                type="text"
-                placeholder="Search for product, category..."
-                className="border rounded-[10px] mt-1 pl-10 pr-2 w-full h-[45px] border-[#7B48A5] pt-1 focus:outline-none focus:ring-2 focus:ring-[#d3b6e9] text-black"
-                />
+
+            {/* Desktop Search */}
+            <div className="hidden md:block">
+              <SearchBarWithPopup />
             </div>
+
+            {/* Right: Icons */}
+            <div className="flex gap-4 mt-1 items-center max-md:mt-3">
+              <Link to={isLoggedIn ? "/dashboard" : "/LogIn"}>
+                <div className="flex items-center gap-2">
+                  <FaRegUser className="w-5 h-5 mb-[2px] text-[#7B48A5]" />
+                  <p className="text-md max-md:hidden tracking-wider text-gray-800">
+                    {isLoggedIn ? "Account" : "Login"}
+                  </p>
                 </div>
-            <div className="flex gap-5 mt-1 max-md:mt-3">
-              <Link to={isLoggedIn ? "/dashboard" : "/LogIn-SignUp"}>
-      <div className="text-center flex mt-1 flex-col items-center">
-        <FaRegUser className="w-6 h-6 leading-2 text-[#7B48A5] max-md:mb-1" />
-        <p className="text-lg max-md:hidden tracking-wider text-gray-800">
-          {isLoggedIn ? "Account" : "Login"}
-        </p>
-      </div>
-    </Link>
+              </Link>
+
+              <div className="max-md:hidden h-5 w-[1px] bg-black" />
+
               <Link to="/wishlist">
-                <div className="text-center mt-1 flex flex-col items-center">
-                  <FaRegHeart className="w-6 h-6 text-[#7B48A5]" />
-                  <p className="text-lg max-md:hidden tracking-wider text-gray-800">
+                <div className="flex items-center gap-2">
+                  <Heart className="w-5 h-5 text-[#7B48A5]" />
+                  <p className="text-md max-md:hidden tracking-wider text-gray-800">
                     Wishlist
                   </p>
                 </div>
               </Link>
+
+              <div className="max-md:hidden h-5 w-[1px] bg-black" />
+
               <Link to="/cart">
-                <div
-                  className="text-center flex flex-col items-center"
-                // onClick={handleCart}
-                >
-                  <MdOutlineShoppingBag className="w-7 h-7 text-[#7B48A5]" />
-                  <p className="text-lg max-md:hidden tracking-wider text-gray-800">
+                <div className="flex items-center gap-2">
+                  <ShoppingBag className="w-5 h-5 text-[#7B48A5]" />
+                  <p className="text-md max-md:hidden tracking-wider text-gray-800">
                     Cart
                   </p>
                 </div>
@@ -164,17 +188,9 @@ function Header() {
             </div>
           </div>
         </div>
-
-        <div className="relative w-[97%] m-auto mt-3 mb-1 hidden  max-md:flex ">
-          <Search className="absolute left-2  top-6 transform -translate-y-1/2 text-[#7B48A5]" />
-          <input
-            type="text"
-            placeholder="Search..."
-            className="border rounded-md pl-10 pr-2 w-full h-[45px] border-[#7B48A5] focus:outline-none focus:ring-2 focus:ring-[#d3b6e9] text-black"
-          />
-        </div>
       </main>
     </>
   );
 }
+
 export default Header;

@@ -48,7 +48,7 @@ function App() {
       <BrowserRouter>
         <Layout>
           <RouteTracker />
-          {currentRoute !== "/LogIn-SignUp" && <Header />}
+          {currentRoute !== "/LogIn" && <Header />}
           <Routes>
             <Route
               path="/"
@@ -60,7 +60,7 @@ function App() {
               }
             />
 
-            <Route path="/LogIn-SignUp" element={<Login />} />
+            <Route path="/LogIn" element={<Login />} />
             <Route path="/product/:id" element={<ProductDetails />} />
             <Route path="/dashboard_profile" element={<Dashboard_Profile />} />
             <Route path="/order/:id" element={<OrderDetails />} />
@@ -86,7 +86,7 @@ function App() {
             <Route path="/blog-details/:id" element={<BlogDetails />} />
             <Route path="/about" element={<AboutPage />} />
           </Routes>
-          {currentRoute !== "/LogIn-SignUp" && <Footer />}
+          {currentRoute !== "/LogIn" && <Footer />}
         </Layout>
       </BrowserRouter>
     </>

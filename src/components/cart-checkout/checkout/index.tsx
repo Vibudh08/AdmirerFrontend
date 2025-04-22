@@ -73,21 +73,21 @@ const Checkout: React.FC<IndexProps> = ({
       return;
     }
 
-    const order_number = "ORD" + new Date().getTime();
+  const order_number = "BTJ" + new Date().getTime();
 
-    const payload = {
-      orderID: order_number,
-      paymentType: selected === "cod" ? "COD" : "Prepaid",
-      amount: totalAmount,
-      city: shippingData.city,
-      firstName: shippingData.first_name,
-      lastName: shippingData.flat,
-      shipping_address: shippingData.last_name,
-      locality: shippingData.locality,
-      state: shippingData.state_name,
-      street: shippingData.street,
-      pincode: shippingData.zip_code,
-    };
+  const payload = {
+    orderID: order_number,
+    paymentType: selected === "cod" ? "cod" : "prepaid",
+    amount: totalAmount,
+    city: shippingData.city,
+    firstName: shippingData.first_name,
+    lastName: shippingData.flat,
+    shipping_address: shippingData.last_name,
+    locality: shippingData.locality,
+    state: shippingData.state_name,
+    street: shippingData.street,
+    pincode: shippingData.zip_code,
+  };
 
     try {
       const response = await fetch(nimbusDelievery_API, {

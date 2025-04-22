@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import WishlistCard from "../components/WishlistCard";
 import { get_wishlist_data } from "../components/api/api-end-points";
+import { useNavigate } from "react-router-dom";
 
 const Loader = () => (
   <div className="fixed inset-0 bg-white bg-opacity-80 backdrop-blur-sm flex items-center justify-center z-50">
@@ -10,8 +11,6 @@ const Loader = () => (
     </div>
   </div>
 );
-
-
 
 const EmptyWishlist = () => (
   <div className="flex flex-col items-center justify-center h-[70vh] py-10 text-center">
@@ -28,6 +27,7 @@ const EmptyWishlist = () => (
 const Wishlist = () => {
   const [wishlistItems, setWishlistItems] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   const fetchWishlist = async () => {
     try {
@@ -43,7 +43,8 @@ const Wishlist = () => {
       if (response.ok) {
         setWishlistItems(result.data);
       } else if (response.status === 401) {
-        alert("Unauthorized user. Please log in.");
+        // alert("Unauthorized user. Please log in.");
+        navigate("/LogIn");
       } else {
         console.error("Error fetching wishlist:", result);
       }
@@ -116,14 +117,14 @@ const Wishlist = () => {
 
   return (
     <div className="bg-white py-5">
-        {wishlistItems.length === 0 ? (
-          <EmptyWishlist />
-        ) : (
-      <div className="p-5 max-md:p-2 w-[90%] max-md:w-full m-auto">
-        <h1 className="mb-6 max-md:mb-4 font-semibold text-lg tracking-wide">
-          My Wishlist{" "}
-          <span className="font-normal">({wishlistItems.length} items)</span>
-        </h1>
+      {wishlistItems.length === 0 ? (
+        <EmptyWishlist />
+      ) : (
+        <div className="p-5 max-md:p-2 w-[90%] max-md:w-full m-auto">
+          <h1 className="mb-6 max-md:mb-4 font-semibold text-lg tracking-wide">
+            My Wishlist{" "}
+            <span className="font-normal">({wishlistItems.length} items)</span>
+          </h1>
 
           <div className="grid grid-cols-4 max-lg:grid-cols-3 max-md:grid-cols-2 gap-10 max-md:gap-2">
             {wishlistItems.map((item) => (
@@ -142,8 +143,8 @@ const Wishlist = () => {
               />
             ))}
           </div>
-      </div>
-        )}
+        </div>
+      )}
     </div>
   );
 };

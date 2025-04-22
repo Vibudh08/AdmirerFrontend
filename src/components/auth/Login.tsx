@@ -120,7 +120,7 @@ const Login = () => {
           <img src="logo/iconn.png" alt="Logo" className="w-16 mx-auto " />
           <h1 className="text-xl font-normal">Welcome to Admirer</h1>
         </div>
-        <div className="text-xl mb-4">Login / SignUp</div>
+        <div className="text-xl mb-4">Login</div>
 
         {error && (
           <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-md">

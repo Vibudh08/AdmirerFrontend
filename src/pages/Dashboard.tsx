@@ -3,6 +3,7 @@ import { FaUserAlt } from "react-icons/fa";
 import Dashboard_Profile from "../components/dashboard-profile";
 import OrderPage from "../components/dashboard-orders";
 import { useLocation } from "react-router-dom";
+import axios from "axios";
 const Dashboard = () => {
   
   const location = useLocation();
@@ -11,6 +12,23 @@ const Dashboard = () => {
 
   const [activeSection, setActiveSection] = useState(sectionFromURL || "profile"); // default is profile
   
+  const handleLogout =async()=>{
+    try{
+
+      const response = await axios.post("http://127.0.0.1:8000/api/logout",
+        {},
+        {
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("auth_token"),
+          },
+        }
+      )
+      console.log(response)
+    } catch (err) {
+      console.error("error in logout:", err);
+    }
+  }
+
   return (
     <div className="p-6 max-sm:p-0 w-[85%] mt-1 max-sm:mt-5 max-md:w-[100%] m-auto flex max-sm:block gap-5">
       <div className="w-[35%] max-sm:w-[100%] max-sm:m-auto flex flex-col gap-5">
@@ -51,7 +69,7 @@ const Dashboard = () => {
           >
             My Orders
           </div>
-          <div className="p-3 pl-12 w-full hover:bg-purple-200 select-none hover:text-purple-700 cursor-pointer">
+          <div onClick={()=>handleLogout()} className="p-3 pl-12 w-full hover:bg-purple-200 select-none hover:text-purple-700 cursor-pointer">
             Logout
           </div>
         </div>
