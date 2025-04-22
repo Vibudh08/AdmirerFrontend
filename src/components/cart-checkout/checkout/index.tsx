@@ -95,7 +95,7 @@ const Checkout: React.FC<IndexProps> = ({
         Authorization: "Bearer " + localStorage.getItem("auth_token"),
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(payload),
+      body: JSON.stringify(payload),  
     });
 
     const contentType = response.headers.get("content-type");
