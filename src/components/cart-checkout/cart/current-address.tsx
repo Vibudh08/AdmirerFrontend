@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Modal } from "antd";
+import React, { useState, useEffect } from "react";
+import { Modal, Select } from "antd";
 import AddressBar from "./address";
 import {
   HomeOutlined,
@@ -7,24 +7,30 @@ import {
   PushpinOutlined,
 } from "@ant-design/icons";
 
-interface DeliveryInfoProps {
-  name: string;
+interface Address {
+  first_name?: string;
+  firstname?: string;
+  last_name?: string;
+  lastname?: string;
   flat: string;
-  locality: string;
   street: string;
+  locality: string;
   city: string;
   state: string;
-  pincode: string;
+  zip_code?: string;
+  zipcode?: string;
+  addr_type: string;
+  email?: string | null;
+}
+
+interface DeliveryInfoProps {
+  billingAddress: Address;
+  shippingAddresses: Address[];
 }
 
 const DeliveryInfo: React.FC<DeliveryInfoProps> = ({
-  name,
-  city,
-  flat,
-  locality,
-  street,
-  state,
-  pincode,
+  billingAddress,
+  shippingAddresses,
 }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [addressData, setAddressData] = useState({
@@ -32,9 +38,35 @@ const DeliveryInfo: React.FC<DeliveryInfoProps> = ({
     city: "",
     state: "",
   });
+  const [selectedAddress, setSelectedAddress] =
+    useState<Address>(billingAddress);
+  const [allAddresses, setAllAddresses] = useState<Address[]>([]);
+
+  useEffect(() => {
+    // Combine billing and shipping addresses, putting billing first
+    const combined = [billingAddress, ...shippingAddresses];
+    setAllAddresses(combined);
+    setSelectedAddress(billingAddress);
+  }, [billingAddress, shippingAddresses]);
 
   const handleAddressChange = (newAddress: any) => {
     setAddressData(newAddress);
+  };
+
+  const handleAddressSelect = (index: number) => {
+    setSelectedAddress(allAddresses[index]);
+  };
+
+  const getName = (address: Address) => {
+    return address.first_name || address.firstname || "";
+  };
+
+  const getLastName = (address: Address) => {
+    return address.last_name || address.lastname || "";
+  };
+
+  const getZipCode = (address: Address) => {
+    return address.zip_code || address.zipcode || "";
   };
 
   return (
@@ -68,7 +100,7 @@ const DeliveryInfo: React.FC<DeliveryInfoProps> = ({
             }}
           >
             <EnvironmentOutlined style={{ color: "#722ed1" }} />
-            Deliver to {name}
+            Deliver to {getName(selectedAddress)} {getLastName(selectedAddress)}
           </div>
 
           <div
@@ -84,10 +116,11 @@ const DeliveryInfo: React.FC<DeliveryInfoProps> = ({
             <HomeOutlined style={{ color: "#722ed1", marginTop: "3px" }} />
             <div>
               <div style={{ fontWeight: "500" }}>
-                {flat}, {street}, {locality}
+                {selectedAddress.flat}, {selectedAddress.street},{" "}
+                {selectedAddress.locality}
               </div>
               <div>
-                {city}, {state}
+                {selectedAddress.city}, {selectedAddress.state}
               </div>
             </div>
           </div>
@@ -102,7 +135,22 @@ const DeliveryInfo: React.FC<DeliveryInfoProps> = ({
             }}
           >
             <PushpinOutlined style={{ color: "#722ed1" }} />
-            {pincode}
+            {getZipCode(selectedAddress)}
+          </div>
+
+          {/* Address Selector Dropdown */}
+          <div style={{ marginTop: "16px" }}>
+            <Select
+              style={{ width: "100%" }}
+              value={allAddresses.indexOf(selectedAddress)}
+              onChange={handleAddressSelect}
+              options={allAddresses.map((address, index) => ({
+                value: index,
+                label: `${address.addr_type}: ${getName(address)} ${getLastName(
+                  address
+                )}, ${address.flat}, ${address.city}`,
+              }))}
+            />
           </div>
         </div>
 

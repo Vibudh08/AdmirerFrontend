@@ -167,6 +167,27 @@ const Cart: React.FC<CartProps> = ({
 
     fetchCartData();
   }, []);
+  interface Address {
+    first_name?: string;
+    firstname?: string;
+    last_name?: string;
+    lastname?: string;
+    flat: string;
+    street: string;
+    locality: string;
+    city: string;
+    state: string;
+    zip_code?: string;
+    zipcode?: string;
+    addr_type: string;
+    email?: string | null;
+  }
+
+  interface AddressData {
+    billingAddress: Address;
+    shippingAddresses: Address[];
+  }
+  const [addressData, setAddressData] = useState<AddressData | null>(null);
   useEffect(() => {
     fetch(getShippingAndBillingAddress, {
       method: "GET",
@@ -177,6 +198,11 @@ const Cart: React.FC<CartProps> = ({
       .then((response) => response.json())
       .then((data) => {
         console.log("the shipping and billing addresses are provided ", data);
+        // Assuming data has billing_address and shipping_address properties
+        setAddressData({
+          billingAddress: data.billing_address[0],
+          shippingAddresses: data.shipping_address,
+        });
       });
   }, []);
 
@@ -185,15 +211,12 @@ const Cart: React.FC<CartProps> = ({
 
   return (
     <div className="flex flex-col w-[65%] max-md:w-[100%] bg-white px-4 py-2">
-      <DeliveryInfo
-        name="yash"
-        pincode="110059"
-        flat="UGF-4"
-        street="Mohan Garden"
-        locality="DK road"
-        city="NEW DELHI"
-        state="DELHI"
-      />
+      {addressData && (
+        <DeliveryInfo
+          billingAddress={addressData.billingAddress}
+          shippingAddresses={addressData.shippingAddresses}
+        />
+      )}
       <div className="flex flex-col">
         {totalItem.map((item, index) => (
           <div key={index}>
