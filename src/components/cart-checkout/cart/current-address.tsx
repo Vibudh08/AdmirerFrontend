@@ -26,11 +26,13 @@ interface Address {
 interface DeliveryInfoProps {
   billingAddress: Address;
   shippingAddresses: Address[];
+  onAddressSelect: (address: Address) => void;
 }
 
 const DeliveryInfo: React.FC<DeliveryInfoProps> = ({
   billingAddress,
   shippingAddresses,
+  onAddressSelect,
 }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [addressData, setAddressData] = useState({
@@ -47,6 +49,7 @@ const DeliveryInfo: React.FC<DeliveryInfoProps> = ({
     const combined = [billingAddress, ...shippingAddresses];
     setAllAddresses(combined);
     setSelectedAddress(billingAddress);
+    onAddressSelect(billingAddress);
   }, [billingAddress, shippingAddresses]);
 
   const handleAddressChange = (newAddress: any) => {
@@ -54,7 +57,10 @@ const DeliveryInfo: React.FC<DeliveryInfoProps> = ({
   };
 
   const handleAddressSelect = (index: number) => {
-    setSelectedAddress(allAddresses[index]);
+    // setSelectedAddress(allAddresses[index]);
+    const selected = allAddresses[index];
+    setSelectedAddress(selected);
+    onAddressSelect(selected);
   };
 
   const getName = (address: Address) => {

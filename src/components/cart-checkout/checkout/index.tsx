@@ -20,7 +20,7 @@ interface ShippingData {
   street: string;
   locality: string;
   country_name: string;
-  state_name: string;
+  state: string;
   city: string;
   zip_code: string;
   phone: string;
@@ -77,16 +77,16 @@ const Checkout: React.FC<IndexProps> = ({
 
     const payload = {
       orderID: order_number,
-      paymentType: selected === "cod" ? "cod" : "prepaid",
-      amount: "270",
-      city: "DELHI",
-      firstName: "Vibudh",
-      lastName: "Rathore",
-      flat: "B-12",
-      locality: "Rajiv Chowk",
-      state: "DELHI",
-      street: "sector 2",
-      pincode: "110059",
+      paymentType: "cod",
+      amount: totalAmount,
+      city: shippingData?.city || "",
+      firstName: shippingData?.first_name || "",
+      lastName: shippingData?.last_name || "",
+      flat: shippingData?.flat || "",
+      locality: shippingData?.locality || "",
+      state: shippingData?.state || "",
+      street: shippingData?.street || "",
+      pincode: shippingData?.zip_code || "",
     };
 
     try {
@@ -104,17 +104,7 @@ const Checkout: React.FC<IndexProps> = ({
       console.log("Status:", status);
 
       let result: any = {};
-      if (contentType && contentType.includes("application/json")) {
-        result = await response.json();
-      } else {
-        const text = await response.text();
-        console.warn("⚠️ Non-JSON response:", text);
-        throw new Error("Server did not return valid JSON");
-      }
-
-      console.log("✅ Response result:", result);
-
-      if (result.success) {
+      if (status == 200) {
         setOrderId(order_number);
         setShowSuccessModal(true);
       } else {

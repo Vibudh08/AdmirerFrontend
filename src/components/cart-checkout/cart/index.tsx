@@ -138,8 +138,6 @@ const Cart: React.FC<CartProps> = ({
           }
         );
         const data = response.data.data.products || [];
-        const shipping = response.data.data.user_addresses.shipping_address[0];
-        console.log(shipping);
 
         const transformedData = data.map((item: any) => ({
           id: item.id,
@@ -153,8 +151,6 @@ const Cart: React.FC<CartProps> = ({
           image: item.image,
           totalQuantity: item.in_stock.toString(),
         }));
-
-        setShippingData(shipping);
         setTotalItem(transformedData);
         setItemCount(transformedData.length);
         recalculateTotals(transformedData);
@@ -188,6 +184,13 @@ const Cart: React.FC<CartProps> = ({
     shippingAddresses: Address[];
   }
   const [addressData, setAddressData] = useState<AddressData | null>(null);
+  const [addressForNimbus, setAddressForNimbus] = useState<Address | null>(
+    null
+  );
+  useEffect(() => {
+    setShippingData(addressForNimbus);
+    console.log("addressForNimbus", addressForNimbus);
+  }, [addressForNimbus]);
   useEffect(() => {
     fetch(getShippingAndBillingAddress, {
       method: "GET",
@@ -215,6 +218,7 @@ const Cart: React.FC<CartProps> = ({
         <DeliveryInfo
           billingAddress={addressData.billingAddress}
           shippingAddresses={addressData.shippingAddresses}
+          onAddressSelect={setAddressForNimbus}
         />
       )}
       <div className="flex flex-col">
