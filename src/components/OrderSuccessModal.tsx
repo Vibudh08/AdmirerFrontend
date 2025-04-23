@@ -7,15 +7,10 @@ interface Props {
   open: boolean;
   orderId?: string;
   onClose: () => void;
-  onViewOrders: () => void;
 }
 
-const OrderSuccessModal: React.FC<Props> = ({
-  open,
-  orderId,
-  onClose,
-  onViewOrders,
-}) => {
+const OrderSuccessModal: React.FC<Props> = ({ open, orderId, onClose }) => {
+  console.log(orderId)
   return (
     <Modal
       open={open}
@@ -38,20 +33,16 @@ const OrderSuccessModal: React.FC<Props> = ({
         )}
 
         <div className="flex gap-3 justify-center mt-5">
-        <Link to="/dashboard?section=orders">
-          <button
-            className="ml-2 px-4 py-2 rounded border text-black border-gray-300 hover:border-purple-600 hover:text-purple-900"
-            >
-            VIEW ORDER
-          </button>
-              </Link>
+          <Link to="/dashboard?section=orders">
+            <button className="ml-2 px-4 py-2 rounded border text-black border-gray-300 hover:border-purple-600 hover:text-purple-900">
+              VIEW ORDER
+            </button>
+          </Link>
           <Link to="/">
-          <button
-            className=" bg-purple-700 text-white px-4 py-2 rounded hover:bg-purple-800"
-          >
-            CONTINUE SHOPPING
-          </button>
-            </Link>
+            <button className=" bg-purple-700 text-white px-4 py-2 rounded hover:bg-purple-800">
+              CONTINUE SHOPPING
+            </button>
+          </Link>
         </div>
       </div>
     </Modal>

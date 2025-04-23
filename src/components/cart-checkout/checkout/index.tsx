@@ -72,61 +72,106 @@ const Checkout: React.FC<IndexProps> = ({
       alert("No shipping address");
       return;
     }
+  
+    const order_number = "BTJ" + new Date().getTime();
+  
+    if (selected === "online") {
+      try {
+        // 1. Create Razorpay Order from backend
+        const razorRes = await fetch("https://yourdomain.com/api/create-razorpay-order", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ amount: totalAmount }),
+        });
+  
+        const orderData = await razorRes.json();
+  
+        const options = {
+          key: "YOUR_RAZORPAY_KEY_ID", // Replace with your Razorpay key
+          amount: orderData.amount,
+          currency: "INR",
+          name: "Your Store",
+          description: "Order Payment",
+          order_id: orderData.id,
 
-  const order_number = "BTJ" + new Date().getTime();
-
-  const payload = {
-    orderID: order_number,
-    paymentType: selected === "cod" ? "cod" : "prepaid",
-    amount: totalAmount,
-    city: shippingData.city,
-    firstName: shippingData.first_name,
-    flat: shippingData.flat,
-    lastName: shippingData.last_name,
-    locality: shippingData.locality,
-    // state: shippingData.state_name,
-    state: "DELHI",
-    street: shippingData.street,
-    // pincode: shippingData.zip_code,
-    pincode: "102201",
-  };
-
-    try {
-      const response = await fetch(nimbusDelievery_API, {
-        method: "POST",
-        headers: {
-          Authorization: "Bearer " + localStorage.getItem("auth_token"),
-          "Content-Type": "application/json",
+          handler: async function (response: any) {
+            const verifyRes = await fetch("http://your-backend-domain/api/verify-payment", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(response),
+            });
+            
+            const verifyData = await verifyRes.json();
+            
+            if (verifyData.success) {
+              setOrderId(order_number);
+              setShowSuccessModal(true);
+              console.log("Payment Success:", response);
+            } else {
+              alert("Payment verification failed.");
+            }
         },
-        body: JSON.stringify(payload),
-      });
-
-      const contentType = response.headers.get("content-type");
-      const status = response.status;
-      console.log("Status:", status);
-
-      let result: any = {};
-      if (contentType && contentType.includes("application/json")) {
-        result = await response.json();
-      } else {
-        const text = await response.text();
-        console.warn("⚠️ Non-JSON response:", text);
-        throw new Error("Server did not return valid JSON");
+          prefill: {
+            name: shippingData.first_name + " " + shippingData.last_name,
+            email: shippingData.email,
+            contact: shippingData.phone,
+          },
+          notes: {
+            address: `${shippingData.flat}, ${shippingData.street}, ${shippingData.locality}`,
+          },
+          theme: { color: "#7B48A5" },
+        };
+  
+        const rzp = new (window as any).Razorpay(options);
+        rzp.open();
+      } catch (error) {
+        console.error("Error initiating Razorpay:", error);
+        alert("Something went wrong with Razorpay payment.");
       }
-
-      console.log("✅ Response result:", result);
-
-      if (result.success) {
-        setOrderId(order_number);
+    } else {
+      // COD order logic (as it already exists)
+      const payload = {
+        orderID: order_number,
+        paymentType: "cod",
+        amount: totalAmount,
+        city: shippingData.city,
+        firstName: shippingData.first_name,
+        flat: shippingData.flat,
+        lastName: shippingData.last_name,
+        locality: shippingData.locality,
+        state: "DELHI",
+        street: shippingData.street,
+        pincode: "102201",
+      };
+  
+      try {
+        const response = await fetch(nimbusDelievery_API, {
+          method: "POST",
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("auth_token"),
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        });
+  
+        const result = await response.json();
+        console.log(result)
+  
+        if (result.success) {
+          setOrderId(order_number);
+        } else {
+          alert(result.message || "Failed to place order.");
+        }
+      } catch (err) {
+        console.error("❌ Error placing order:", err);
+        alert("Something went wrong while placing your order.");
         setShowSuccessModal(true);
-      } else {
-        alert(result.message || "Failed to place order.");
       }
-    } catch (err) {
-      console.error("❌ Error placing order:", err);
-      alert("Something went wrong while placing your order.");
     }
   };
+  
 
   const priceDetails: PriceDetail[] = [
     { label: "Total MRP", value: `₹${totalMRP}` },
@@ -150,10 +195,6 @@ const Checkout: React.FC<IndexProps> = ({
         open={showSuccessModal}
         orderId={orderId}
         onClose={() => setShowSuccessModal(false)}
-        onViewOrders={() => {
-          setShowSuccessModal(false);
-          // window.location.href = "/my-orders"; // or use navigate()
-        }}
       />
 
       <div className="w-[35%] max-md:w-[100%] p-5 py-6 border-l bg-white border-[#eaeaec]">
