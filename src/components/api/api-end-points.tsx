@@ -15,3 +15,4 @@ export const otp_send_API = apiHeader + "send-otp";
 export const verifyLogin_API = apiHeader + "verify-otp";
 export const getSubCatName_API = apiHeader + "getSubCatName";
 export const nimbusDelievery_API = apiHeader + "NimbusShippingStart";
+export const getShippingAndBillingAddress = apiHeader + "get-address-cart";
