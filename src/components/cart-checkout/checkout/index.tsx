@@ -109,7 +109,7 @@ const Checkout: React.FC<IndexProps> = ({
                 lastName: shippingData?.last_name || "",
                 flat: shippingData?.flat || "",
                 locality: shippingData?.locality || "",
-                state: shippingData?.state_name || "",
+                state: shippingData?.state || "",
                 street: shippingData?.street || "",
                 pincode: shippingData?.zip_code || "",
               };
@@ -160,7 +160,7 @@ const Checkout: React.FC<IndexProps> = ({
           lastName: shippingData?.last_name || "",
           flat: shippingData?.flat || "",
           locality: shippingData?.locality || "",
-          state: shippingData?.state_name || "",
+          state: shippingData?.state || "",
           street: shippingData?.street || "",
           pincode: shippingData?.zip_code || "",
         };
