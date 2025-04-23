@@ -20,7 +20,7 @@ interface ShippingData {
   street: string;
   locality: string;
   country_name: string;
-  state_name: string;
+  state: string;
   city: string;
   zip_code: string;
   phone: string;
