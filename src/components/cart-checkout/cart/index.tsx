@@ -2,13 +2,14 @@ import React, { useEffect, useState } from "react";
 import Item from "./order-item";
 import DeliveryInfo from "./current-address";
 import axios from "axios";
+import { getShippingAndBillingAddress } from "../../api/api-end-points";
 
 interface CartProps {
   setTotalMRP: (value: number) => void;
   setDiscountAmount: (value: number) => void;
   setTotalAmount: (value: number) => void;
   setItemCount: (value: number) => void;
-  setShippingData: (value: any) => void; 
+  setShippingData: (value: any) => void;
 }
 
 interface ItemProps {
@@ -28,11 +29,12 @@ const Loader = () => (
   <div className="fixed inset-0 bg-white bg-opacity-80 backdrop-blur-sm flex items-center justify-center z-50">
     <div className="flex flex-col items-center">
       <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mb-4"></div>
-      <p className="text-lg font-bold text-gray-800">Loading your experience, please wait...</p>
+      <p className="text-lg font-bold text-gray-800">
+        Loading your experience, please wait...
+      </p>
     </div>
   </div>
 );
-
 
 const EmptyCart = () => (
   <div className="flex flex-col items-center justify-center !border h-full py-20 bg-white w-full text-center">
@@ -41,8 +43,12 @@ const EmptyCart = () => (
       alt="Empty cart"
       className="w-28 h-28 mb-6"
     />
-    <h2 className="text-2xl font-semibold text-gray-700 mb-2">Your cart is empty</h2>
-    <p className="text-gray-500">Looks like you haven't added anything to your cart yet.</p>
+    <h2 className="text-2xl font-semibold text-gray-700 mb-2">
+      Your cart is empty
+    </h2>
+    <p className="text-gray-500">
+      Looks like you haven't added anything to your cart yet.
+    </p>
   </div>
 );
 
@@ -63,7 +69,7 @@ const Cart: React.FC<CartProps> = ({
     );
     setTotalItem(updatedItems);
     recalculateTotals(updatedItems);
-  
+
     // Make the API call to update the cart quantity in the backend
     try {
       await axios.post(
@@ -79,7 +85,6 @@ const Cart: React.FC<CartProps> = ({
       console.error("Failed to update cart quantity:", error);
     }
   };
-  
 
   const recalculateTotals = (items: ItemProps[]) => {
     let original = 0;
@@ -124,14 +129,17 @@ const Cart: React.FC<CartProps> = ({
   useEffect(() => {
     const fetchCartData = async () => {
       try {
-        const response = await axios.get("http://127.0.0.1:8000/api/cart-products", {
-          headers: {
-            Authorization: "Bearer " + localStorage.getItem("auth_token"),
-          },
-        });
+        const response = await axios.get(
+          "http://127.0.0.1:8000/api/cart-products",
+          {
+            headers: {
+              Authorization: "Bearer " + localStorage.getItem("auth_token"),
+            },
+          }
+        );
         const data = response.data.data.products || [];
-        const shipping = response.data.data.user_addresses.shipping_address[0]
-        console.log(shipping)
+        const shipping = response.data.data.user_addresses.shipping_address[0];
+        console.log(shipping);
 
         const transformedData = data.map((item: any) => ({
           id: item.id,
@@ -146,7 +154,6 @@ const Cart: React.FC<CartProps> = ({
           totalQuantity: item.in_stock.toString(),
         }));
 
-        
         setShippingData(shipping);
         setTotalItem(transformedData);
         setItemCount(transformedData.length);
@@ -160,19 +167,56 @@ const Cart: React.FC<CartProps> = ({
 
     fetchCartData();
   }, []);
+  interface Address {
+    first_name?: string;
+    firstname?: string;
+    last_name?: string;
+    lastname?: string;
+    flat: string;
+    street: string;
+    locality: string;
+    city: string;
+    state: string;
+    zip_code?: string;
+    zipcode?: string;
+    addr_type: string;
+    email?: string | null;
+  }
+
+  interface AddressData {
+    billingAddress: Address;
+    shippingAddresses: Address[];
+  }
+  const [addressData, setAddressData] = useState<AddressData | null>(null);
+  useEffect(() => {
+    fetch(getShippingAndBillingAddress, {
+      method: "GET",
+      headers: {
+        authorization: "Bearer " + localStorage.getItem("auth_token"),
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("the shipping and billing addresses are provided ", data);
+        // Assuming data has billing_address and shipping_address properties
+        setAddressData({
+          billingAddress: data.billing_address[0],
+          shippingAddresses: data.shipping_address,
+        });
+      });
+  }, []);
 
   if (isLoading) return <Loader />;
   if (totalItem.length === 0) return <EmptyCart />;
 
   return (
     <div className="flex flex-col w-[65%] max-md:w-[100%] bg-white px-4 py-2">
-      <DeliveryInfo
-        name="yash"
-        pincode="110059"
-        address="UGF-9"
-        city="NEW DELHI"
-        state="DELHI"
-      />
+      {addressData && (
+        <DeliveryInfo
+          billingAddress={addressData.billingAddress}
+          shippingAddresses={addressData.shippingAddresses}
+        />
+      )}
       <div className="flex flex-col">
         {totalItem.map((item, index) => (
           <div key={index}>
@@ -189,7 +233,8 @@ const Cart: React.FC<CartProps> = ({
               onRemove={handleDelete}
               finalPrice={(
                 (parseFloat(item.price || "0") -
-                  (parseFloat(item.price || "0") * parseFloat(item.discount || "0")) /
+                  (parseFloat(item.price || "0") *
+                    parseFloat(item.discount || "0")) /
                     100) *
                 parseInt(item.qty || "1")
               ).toFixed(2)}
