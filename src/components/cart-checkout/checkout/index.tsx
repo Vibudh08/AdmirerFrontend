@@ -68,63 +68,128 @@ const Checkout: React.FC<IndexProps> = ({
   }
 
   const handlePlaceOrder = async () => {
-    // if (!shippingData) {
-    //   alert("No shipping address");
-    //   return;
-    // }
-
     const order_number = "BTJ" + new Date().getTime();
-
-    const payload = {
-      orderID: order_number,
-      paymentType: selected === "cod" ? "cod" : "prepaid",
-      amount: "270",
-      city: "DELHI",
-      firstName: "Vibudh",
-      lastName: "Rathore",
-      flat: "B-12",
-      locality: "Rajiv Chowk",
-      state: "DELHI",
-      street: "sector 2",
-      pincode: "110059",
-    };
-
-    try {
-      const response = await fetch(nimbusDelievery_API, {
-        method: "POST",
-        headers: {
-          Authorization: "Bearer " + localStorage.getItem("auth_token"),
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
-
-      const contentType = response.headers.get("content-type");
-      const status = response.status;
-      console.log("Status:", status);
-
-      let result: any = {};
-      // if (contentType && contentType.includes("application/json")) {
-      //   result = await response.json();
-      // } else {
-      //   const text = await response.text();
-      //   console.warn("⚠️ Non-JSON response:", text);
-      //   throw new Error("Server did not return valid JSON");
-      // }
-
-      // console.log("✅ Response result:", result);
-
-      if (result.success) {
-        setOrderId(order_number);
-        setShowSuccessModal(true);
-      } else {
-        alert(result.message || "Failed to place order.");
+  
+    if (selected === "online") {
+      try {
+        const createOrderRes = await fetch("http://your-backend-domain/api/create-razorpay-order", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ amount: totalAmount }),
+        });
+  
+        const orderData = await createOrderRes.json();
+  
+        const options = {
+          key: "YOUR_RAZORPAY_KEY", // replace with your Razorpay key
+          amount: orderData.amount,
+          currency: "INR",
+          name: "BTJ Store",
+          description: "Order Payment",
+          order_id: orderData.id,
+          handler: async function (response: any) {
+            const verifyRes = await fetch("http://your-backend-domain/api/verify-payment", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(response),
+            });
+  
+            const verifyData = await verifyRes.json();
+  
+            if (verifyData.success) {
+              // ✅ Razorpay success — now call Nimbus API for delivery
+              const payload = {
+                orderID: order_number,
+                paymentType: "prepaid",
+                amount: totalAmount,
+                city: shippingData?.city || "DELHI",
+                firstName: shippingData?.first_name || "",
+                lastName: shippingData?.last_name || "",
+                flat: shippingData?.flat || "",
+                locality: shippingData?.locality || "",
+                state: shippingData?.state_name || "",
+                street: shippingData?.street || "",
+                pincode: shippingData?.zip_code || "",
+              };
+  
+              const nimbusRes = await fetch(nimbusDelievery_API, {
+                method: "POST",
+                headers: {
+                  Authorization: "Bearer " + localStorage.getItem("auth_token"),
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify(payload),
+              });
+  
+              const status = nimbusRes.status;
+  
+              if (status === 200) {
+                setOrderId(order_number);
+                setShowSuccessModal(true);
+              } else {
+                alert("Order placed but failed to notify delivery service.");
+              }
+            } else {
+              alert("Payment verification failed.");
+            }
+          },
+          prefill: {
+            name: `${shippingData?.first_name || ""} ${shippingData?.last_name || ""}`,
+            email: shippingData?.email || "",
+            contact: shippingData?.phone || "",
+          },
+          theme: { color: "#7B48A5" },
+        };
+  
+        const rzp = new (window as any).Razorpay(options);
+        rzp.open();
+      } catch (err) {
+        console.error("❌ Error:", err);
+        alert("Something went wrong while processing online payment.");
       }
-    } catch (err) {
-      console.error("❌ Error placing order:", err);
-      alert("Something went wrong while placing your order.");
+    } else {
+      try {
+        const payload = {
+          orderID: order_number,
+          paymentType: "cod",
+          amount: totalAmount,
+          city: shippingData?.city || "",
+          firstName: shippingData?.first_name || "",
+          lastName: shippingData?.last_name || "",
+          flat: shippingData?.flat || "",
+          locality: shippingData?.locality || "",
+          state: shippingData?.state_name || "",
+          street: shippingData?.street || "",
+          pincode: shippingData?.zip_code || "",
+        };
+  
+        const response = await fetch(nimbusDelievery_API, {
+          method: "POST",
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("auth_token"),
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        });
+  
+        const status = response.status;
+  
+        if (status === 200) {
+          setOrderId(order_number);
+          setShowSuccessModal(true);
+        } else {
+          alert("Failed to place COD order.");
+        }
+      } catch (err) {
+        console.error("❌ Error placing COD order:", err);
+        alert("Something went wrong while placing your order.");
+      }
     }
   };
+  
+  
 
   const priceDetails: PriceDetail[] = [
     { label: "Total MRP", value: `₹${totalMRP}` },

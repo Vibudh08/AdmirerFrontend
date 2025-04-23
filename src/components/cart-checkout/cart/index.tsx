@@ -138,8 +138,8 @@ const Cart: React.FC<CartProps> = ({
           }
         );
         const data = response.data.data.products || [];
-        const shipping = response.data.data.user_addresses.shipping_address[0];
-        console.log(shipping);
+        // const shipping = response.data.data.user_addresses.shipping_address[0];
+        // console.log(shipping);
 
         const transformedData = data.map((item: any) => ({
           id: item.id,
@@ -154,7 +154,7 @@ const Cart: React.FC<CartProps> = ({
           totalQuantity: item.in_stock.toString(),
         }));
 
-        setShippingData(shipping);
+        // setShippingData(shipping);
         setTotalItem(transformedData);
         setItemCount(transformedData.length);
         recalculateTotals(transformedData);
@@ -188,6 +188,7 @@ const Cart: React.FC<CartProps> = ({
     shippingAddresses: Address[];
   }
   const [addressData, setAddressData] = useState<AddressData | null>(null);
+  const [addressSelected, setAddressSelected] = useState<Address | null>(null);
   useEffect(() => {
     fetch(getShippingAndBillingAddress, {
       method: "GET",
@@ -203,6 +204,9 @@ const Cart: React.FC<CartProps> = ({
           billingAddress: data.billing_address[0],
           shippingAddresses: data.shipping_address,
         });
+        const shipping = addressData;
+        setShippingData(shipping);
+        console.log(shipping)
       });
   }, []);
 
