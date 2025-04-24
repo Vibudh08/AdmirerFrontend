@@ -92,29 +92,48 @@ const AddressBar = ({
     );
   }, [handleGeolocationSuccess]);
 
-  const handleSubmit = (values: AddressData) => {
-    setIsModalVisible(false);
-    console.log(values);
-    fetch(signUp_API, {
-      method: "POST",
-      headers: {
-        authorization: "Bearer " + localStorage.getItem("auth_token"),
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        firstname: values.firstName,
-        lastname: values.lastName,
-        email: values.email?.trim() === "" ? null : values.email,
-        flat: values.flat,
-        street: values.street,
-        locality: values.locality,
-        city: values.city,
-        state: values.state,
-        pincode: values.pincode,
-        addressType: values.addressType,
-      }),
-    });
+  const handleSubmit = async (values: AddressData) => {
+    try {
+      setIsLoading(true);
+      setError(null);
+  
+      const res = await fetch(signUp_API, {
+        method: "POST",
+        headers: {
+          authorization: "Bearer " + localStorage.getItem("auth_token"),
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          firstname: values.firstName,
+          lastname: values.lastName,
+          email: values.email?.trim() === "" ? null : values.email,
+          flat: values.flat,
+          street: values.street,
+          locality: values.locality,
+          city: values.city,
+          state: values.state,
+          pincode: values.pincode,
+          addressType: values.addressType,
+        }),
+      });
+  
+      if (!res.ok) {
+        throw new Error("Failed to save address");
+      }
+  
+      // ✅ Close modal
+      setIsModalVisible(false);
+  
+      // ✅ Trigger parent refresh
+      onAddressChange(values);
+    } catch (err) {
+      console.error("Address submission failed:", err);
+      setError("Failed to save address. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
   };
+  
 
   return (
     <Form

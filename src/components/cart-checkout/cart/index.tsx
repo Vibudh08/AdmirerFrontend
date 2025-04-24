@@ -266,22 +266,27 @@ const Cart: React.FC<CartProps> = ({
     setShippingData(addressForNimbus);
   }, [addressForNimbus]);
 
-  useEffect(() => {
-    fetch(getShippingAndBillingAddress, {
-      method: "GET",
-      headers: {
-        Authorization: "Bearer " + localStorage.getItem("auth_token"),
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setAddressData({
-          billingAddress: data.billing_address[0],
-          shippingAddresses: data.shipping_address,
-        });
-        setShippingData(data.shipping_address[0]);
+  const fetchAddresses = async () => {
+    try {
+      const response = await fetch(getShippingAndBillingAddress, {
+        method: "GET",
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("auth_token"),
+        },
       });
-  }, []);
+      const data = await response.json();
+      setAddressData({
+        billingAddress: data.billing_address[0],
+        shippingAddresses: data.shipping_address,
+      });
+      setShippingData(data.shipping_address[0]);
+    } catch (error) {
+      console.error("❌ Failed to fetch address:", error);
+    }
+  };
+  useEffect(() => {
+    fetchAddresses();
+  }, []);  
 
   if (isLoading) return <Loader />;
   if (totalItem.length === 0) return <EmptyCart />;
@@ -290,10 +295,11 @@ const Cart: React.FC<CartProps> = ({
     <div className="flex flex-col w-[65%] max-md:w-[100%] bg-white px-4 py-2">
       {addressData && (
         <DeliveryInfo
-          billingAddress={addressData.billingAddress}
-          shippingAddresses={addressData.shippingAddresses}
-          onAddressSelect={setAddressForNimbus}
-        />
+        billingAddress={addressData.billingAddress}
+        shippingAddresses={addressData.shippingAddresses}
+        onAddressSelect={setAddressForNimbus}
+        onAddressSaved={fetchAddresses} // ✅ passed here
+      />
       )}
       <div className="flex flex-col">
         {totalItem.map((item, index) => (

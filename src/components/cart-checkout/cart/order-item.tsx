@@ -59,19 +59,18 @@ const Item: React.FC<ItemProps> = ({
           </button>
         </div>
 
-        <div className="w-[40%] relative ">
-<Link to={`/product/${id}`}>
-          <img className="w-full h-full" src={image} alt={brandName} />
-        </Link>
+        <div className="w-[30%] relative flex items-center justify-center">
+          <Link to={`/product/${id}`}>
+            <img className="w-[130px] h-fit" src={image} alt={brandName} />
+          </Link>
         </div>
 
-
-        <div className="w-[60%] p-3 flex flex-col h-fit">
+        <div className="w-[70%] p-3 flex flex-col h-fit">
           <div className="hidden">{id}</div>
           <Link to={`/product/${id}`}>
-          <h2 className="text-[17px] font-[500] text-gray-900 mb-1 w-[95%]">
-            {brandName}
-          </h2>
+            <h2 className="text-[17px] font-[500] text-gray-900 mb-1 w-[95%]">
+              {brandName}
+            </h2>
           </Link>
 
           <p className="text-gray-700 font-medium text-[13px] line-clamp-2 mb-4 leading-snug">
@@ -96,7 +95,9 @@ const Item: React.FC<ItemProps> = ({
           </div>
 
           <div className="flex items-center gap-2 mb-1">
-            <span className="text-black font-semibold">₹{(parseFloat(discount) * qty).toFixed(2)}</span>
+            <span className="text-black font-semibold">
+              ₹{(parseFloat(discount) * qty).toFixed(2)}
+            </span>
             <span className="text-gray-400 line-through text-xs">
               ₹{(parseFloat(price) * qty).toFixed(2)}
             </span>
