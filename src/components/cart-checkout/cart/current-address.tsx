@@ -85,7 +85,7 @@ const DeliveryInfo: React.FC<DeliveryInfoProps> = ({
           borderRadius: "12px",
           padding: "20px",
           backgroundColor: "white",
-          boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+          // boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
           transition: "all 0.3s ease",
           border: "1px solid #e8e8e8",
           position: "relative",

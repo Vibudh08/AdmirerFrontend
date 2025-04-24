@@ -69,84 +69,123 @@ const Checkout: React.FC<IndexProps> = ({
 
   const handlePlaceOrder = async () => {
     const order_number = "BTJ" + new Date().getTime();
-  
+
     if (selected === "online") {
       try {
-        const createOrderRes = await fetch("http://your-backend-domain/api/create-razorpay-order", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ amount: totalAmount }),
-        });
-  
+        const createOrderRes = await fetch(
+          "http://127.0.0.1:8000/api/razorPayCreateOrderApi",
+          {
+            method: "POST",
+            headers: {
+              Authorization: "Bearer " + localStorage.getItem("auth_token"),
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ amount: totalAmount }),
+          }
+        );
+
         const orderData = await createOrderRes.json();
-  
+        console.log(orderData);
+
         const options = {
-          key: "YOUR_RAZORPAY_KEY", // replace with your Razorpay key
+          key: "rzp_live_9dQQZTZXMKwBMJ",
           amount: orderData.amount,
           currency: "INR",
           name: "BTJ Store",
           description: "Order Payment",
-          order_id: orderData.id,
+          order_id: orderData.order_id,
           handler: async function (response: any) {
-            const verifyRes = await fetch("http://your-backend-domain/api/verify-payment", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(response),
-            });
-  
-            const verifyData = await verifyRes.json();
-  
-            if (verifyData.success) {
-              // ✅ Razorpay success — now call Nimbus API for delivery
-              const payload = {
-                orderID: order_number,
-                paymentType: "prepaid",
-                amount: totalAmount,
-                city: shippingData?.city || "DELHI",
-                firstName: shippingData?.first_name || "",
-                lastName: shippingData?.last_name || "",
-                flat: shippingData?.flat || "",
-                locality: shippingData?.locality || "",
-                state: shippingData?.state || "",
-                street: shippingData?.street || "",
-                pincode: shippingData?.zip_code || "",
-              };
-  
-              const nimbusRes = await fetch(nimbusDelievery_API, {
-                method: "POST",
-                headers: {
-                  Authorization: "Bearer " + localStorage.getItem("auth_token"),
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify(payload),
-              });
-  
-              const status = nimbusRes.status;
-  
-              if (status === 200) {
-                setOrderId(order_number);
-                setShowSuccessModal(true);
+            console.log("Payment ID:", response.razorpay_payment_id); // 👈 here
+            console.log("Order ID:", response.razorpay_order_id);
+            console.log("Signature:", response.razorpay_signature);
+
+            try {
+              const verifyRes = await fetch(
+                "http://127.0.0.1:8000/api/razorPayStoreApi",
+                {
+                  method: "POST",
+                  headers: {
+                    Authorization: "Bearer " + localStorage.getItem("auth_token"),
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify({
+                    razorpay_payment_id: response.razorpay_payment_id,
+                    razorpay_order_id: response.razorpay_order_id,
+                    razorpay_signature: response.razorpay_signature,
+                  }),
+                }
+              );
+            
+              if (verifyRes.ok) {
+                const payload = {
+                  orderID: order_number,
+                  paymentType: "prepaid",
+                  amount: totalAmount,
+                  city: shippingData?.city || "",
+                  firstName: shippingData?.first_name || "",
+                  lastName: shippingData?.last_name || "",
+                  flat: shippingData?.flat || "",
+                  locality: shippingData?.locality || "",
+                  state: shippingData?.state || "",
+                  street: shippingData?.street || "",
+                  pincode: shippingData?.zip_code || "",
+                };
+
+                console.log("📦 Sending delivery info to Nimbus:", payload);
+
+                try {
+                  const nimbusRes = await fetch(nimbusDelievery_API, {
+                    method: "POST",
+                    headers: {
+                      Authorization:
+                        "Bearer " + localStorage.getItem("auth_token"),
+                      "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(payload),
+                  });
+
+                  const status = nimbusRes.status;
+                  // const data = await nimbusRes.json();
+                  console.log("📦 Nimbus delivery response:", status);
+
+                  if (status === 200) {
+                    setOrderId(order_number);
+                    setShowSuccessModal(true);
+                  } else {
+                    alert(
+                      "Order placed but failed to notify delivery service."
+                    );
+                  }
+                } catch (nimbusError) {
+                  console.error(
+                    "❌ Error while sending to Nimbus:",
+                    nimbusError
+                  );
+                  alert("Order placed, but delivery service failed.");
+                }
               } else {
-                alert("Order placed but failed to notify delivery service.");
+                console.warn("⚠️ Payment verification failed:", verifyRes);
+                alert("Payment verification failed.");
               }
-            } else {
-              alert("Payment verification failed.");
+            } catch (verifyError) {
+              console.error("❌ Error verifying payment:", verifyError);
+              alert("Error verifying payment. Please try again.");
             }
           },
           prefill: {
-            name: `${shippingData?.first_name || ""} ${shippingData?.last_name || ""}`,
+            name: `${shippingData?.first_name || ""} ${
+              shippingData?.last_name || ""
+            }`,
             email: shippingData?.email || "",
             contact: shippingData?.phone || "",
           },
           theme: { color: "#7B48A5" },
         };
-  
+
         const rzp = new (window as any).Razorpay(options);
         rzp.open();
       } catch (err) {
-        console.error("❌ Error:", err);
+        console.error("❌ Error during payment:", err);
         alert("Something went wrong while processing online payment.");
       }
     } else {
@@ -164,7 +203,7 @@ const Checkout: React.FC<IndexProps> = ({
           street: shippingData?.street || "",
           pincode: shippingData?.zip_code || "",
         };
-  
+
         const response = await fetch(nimbusDelievery_API, {
           method: "POST",
           headers: {
@@ -173,9 +212,10 @@ const Checkout: React.FC<IndexProps> = ({
           },
           body: JSON.stringify(payload),
         });
-  
+
         const status = response.status;
-  
+        console.log("📦 COD Nimbus response:", status);
+
         if (status === 200) {
           setOrderId(order_number);
           setShowSuccessModal(true);
@@ -188,8 +228,6 @@ const Checkout: React.FC<IndexProps> = ({
       }
     }
   };
-  
-  
 
   const priceDetails: PriceDetail[] = [
     { label: "Total MRP", value: `₹${totalMRP}` },

@@ -84,13 +84,15 @@ const ProductDetails = () => {
   };
 
   const handleBuyNow = () => {
-    const token = "Bearer " + localStorage.getItem("auth_token"); // Adjust key if different
-    if (token) {
+    const authToken = localStorage.getItem("auth_token"); // Adjust key if different
+    if (authToken) {
+      handleAddToCart();
       navigate("/cart");
     } else {
-      navigate("/login");
+      navigate("/LogIn");
     }
   };
+  
 
   const toggleWishlist = async (prodId?: string) => {
     const productIdToToggle = prodId || id;
@@ -141,14 +143,14 @@ const ProductDetails = () => {
       );
       console.log(response);
       if (response.data && response.data.status === "success") {
-        alert("✅ Product added to cart successfully!");
+        // alert("✅ Product added to cart successfully!");
         setIsInCart(true);
       } else {
-        alert("⚠️ Could not add product to cart.");
+        // alert("⚠️ Could not add product to cart.");
       }
     } catch (error) {
       console.error("Add to cart error:", error);
-      alert("❌ Something went wrong while adding to cart.");
+      // alert("❌ Something went wrong while adding to cart.");
     }
   };
 

@@ -231,7 +231,52 @@ const AddressBar = ({
           name="state"
           rules={[{ required: true, message: "Please input your state!" }]}
         >
-          <Input allowClear />
+          {/* <Input allowClear /> */}
+          <Select
+          options={ [
+            { value: "ANDAMAN AND NICOBAR ISLANDS", label: "ANDAMAN AND NICOBAR ISLANDS" },
+            { value: "ANDHRA PRADESH", label: "ANDHRA PRADESH" },
+            { value: "ARUNACHAL PRADESH", label: "ARUNACHAL PRADESH" },
+            { value: "ASSAM", label: "ASSAM" },
+            { value: "BIHAR", label: "BIHAR" },
+            { value: "CHANDIGARH", label: "CHANDIGARH" },
+            { value: "CHHATTISGARH", label: "CHHATTISGARH" },
+            { value: "DADRA AND NAGAR HAVELI AND DAMAN AND DIU", label: "DADRA AND NAGAR HAVELI AND DAMAN AND DIU" },
+            { value: "DELHI", label: "DELHI" },
+            { value: "GOA", label: "GOA" },
+            { value: "GUJARAT", label: "GUJARAT" },
+            { value: "HARYANA", label: "HARYANA" },
+            { value: "HIMACHAL PRADESH", label: "HIMACHAL PRADESH" },
+            { value: "JAMMU AND KASHMIR", label: "JAMMU AND KASHMIR" },
+            { value: "JHARKHAND", label: "JHARKHAND" },
+            { value: "KARNATAKA", label: "KARNATAKA" },
+            { value: "KERALA", label: "KERALA" },
+            { value: "LADAKH", label: "LADAKH" },
+            { value: "LAKSHADWEEP", label: "LAKSHADWEEP" },
+            { value: "MADHYA PRADESH", label: "MADHYA PRADESH" },
+            { value: "MAHARASHTRA", label: "MAHARASHTRA" },
+            { value: "MANIPUR", label: "MANIPUR" },
+            { value: "MEGHALAYA", label: "MEGHALAYA" },
+            { value: "MIZORAM", label: "MIZORAM" },
+            { value: "NAGALAND", label: "NAGALAND" },
+            { value: "ODISHA", label: "ODISHA" },
+            { value: "PUDUCHERRY", label: "PUDUCHERRY" },
+            { value: "PUNJAB", label: "PUNJAB" },
+            { value: "RAJASTHAN", label: "RAJASTHAN" },
+            { value: "SIKKIM", label: "SIKKIM" },
+            { value: "TAMIL NADU", label: "TAMIL NADU" },
+            { value: "TELANGANA", label: "TELANGANA" },
+            { value: "TRIPURA", label: "TRIPURA" },
+            { value: "UTTAR PRADESH", label: "UTTAR PRADESH" },
+            { value: "UTTARAKHAND", label: "UTTARAKHAND" },
+            { value: "WEST BENGAL", label: "WEST BENGAL" }
+          ]}
+          optionRender={(option) => (
+            <div>
+               {option.data.label}
+            </div>
+          )}
+        />
         </Form.Item>
       </div>
 

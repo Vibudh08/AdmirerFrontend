@@ -49,7 +49,7 @@ function Header() {
                 onClick={() => setSearchPopup(false)}
               />
             </div>
-            <SearchBarWithPopup />
+            <SearchBarWithPopup onSelectProduct={() => setSearchPopup(false)}/>
           </div>
         )}
       </div>
@@ -165,13 +165,15 @@ function Header() {
             <div className="flex gap-4 mt-1 items-center max-md:mt-3">
               {isLoggedIn ? (
                 <div className="group relative">
+                  <Link to="/dashboard">
                   <div className="flex items-center gap-2 cursor-pointer">
                     <FaRegUser className="w-5 h-5 mb-[2px] text-[#7B48A5]" />
                     <p className="text-md max-md:hidden tracking-wider text-gray-800">
                       Account
                     </p>
                   </div>
-                  <div className="absolute hidden  group-hover:block bg-white shadow-md rounded  p-2 w-32 left-0 z-10">
+                  </Link>
+                  <div className="absolute hidden max-md:hover:hidden group-hover:block bg-white shadow-md rounded  p-2 w-32 left-0 z-10">
                     <Link to="/dashboard" className="block py-1 hover:text-[#7B48A5]">
                       Dashboard
                     </Link>
