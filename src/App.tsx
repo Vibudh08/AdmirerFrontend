@@ -22,6 +22,9 @@ import HelpContact from "./pages/Help_Faqs";
 import BlogPage from "./pages/Blogs";
 import BlogDetails from "./pages/BlogDetails";
 import AboutPage from "./pages/About";
+import ScrollToTop from "./components/ScrollToTop";
+import PrivateRoute from "./components/auth/PrivateRoute";
+
 
 
 function App() {
@@ -46,6 +49,7 @@ function App() {
   return (
     <>
       <BrowserRouter>
+      <ScrollToTop />
         <Layout>
           <RouteTracker />
           {currentRoute !== "/LogIn" && <Header />}
@@ -62,8 +66,8 @@ function App() {
 
             <Route path="/LogIn" element={<Login />} />
             <Route path="/product/:id" element={<ProductDetails />} />
-            <Route path="/dashboard_profile" element={<Dashboard_Profile />} />
-            <Route path="/order/:id" element={<OrderDetails />} />
+            <Route path="/dashboard_profile" element={<PrivateRoute><Dashboard_Profile /></PrivateRoute>} />
+            <Route path="/order/:id" element={<PrivateRoute><OrderDetails /></PrivateRoute>} />
             <Route path="/cart" element={<Complete_cart_checkout />} />
             <Route
               path="/listing"
@@ -74,7 +78,7 @@ function App() {
                 />
               }
             />
-            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
             <Route path="/wishlist" element={<Wishlist />} />
             <Route path="/privacy" element={<PrivacyPolicy />} />
             <Route path="/terms" element={<TermsConditions />} />

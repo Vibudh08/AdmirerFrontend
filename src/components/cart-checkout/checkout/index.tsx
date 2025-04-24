@@ -1,8 +1,9 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom"; // 👈 import navigate
 import { GoTag } from "react-icons/go";
 import { Modal } from "antd";
 import Coupons_screen from "../../coupons/Coupons_screen";
-import OrderSuccessModal from "../../OrderSuccessModal"; // ✅
+import OrderSuccessModal from "../../OrderSuccessModal";
 import { nimbusDelievery_API } from "../../api/api-end-points";
 
 interface PriceDetail {
@@ -52,8 +53,10 @@ const Checkout: React.FC<IndexProps> = ({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selected, setSelected] = useState("online");
 
-  const [showSuccessModal, setShowSuccessModal] = useState(false); // ✅
-  const [orderId, setOrderId] = useState(""); // ✅
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [orderId, setOrderId] = useState("");
+
+  const navigate = useNavigate(); // 👈 initialize navigate
 
   const isLoading =
     !itemCount ||
@@ -63,56 +66,146 @@ const Checkout: React.FC<IndexProps> = ({
     !totalAmount ||
     totalAmount === "0";
 
-  if (isLoading) {
-    return <div></div>;
-  }
+  if (isLoading) return <div></div>;
 
   const handlePlaceOrder = async () => {
-    // if (!shippingData) {
-    //   alert("No shipping address");
-    //   return;
-    // }
+    const authToken = localStorage.getItem("auth_token");
+
+    if (!authToken) {
+      navigate("/LogIn"); // 👈 redirect if not logged in
+      return;
+    }
 
     const order_number = "BTJ" + new Date().getTime();
 
-    const payload = {
-      orderID: order_number,
-      paymentType: "cod",
-      amount: totalAmount,
-      city: shippingData?.city || "",
-      firstName: shippingData?.first_name || "",
-      lastName: shippingData?.last_name || "",
-      flat: shippingData?.flat || "",
-      locality: shippingData?.locality || "",
-      state: shippingData?.state || "",
-      street: shippingData?.street || "",
-      pincode: shippingData?.zip_code || "",
-    };
+    if (selected === "online") {
+      try {
+        const createOrderRes = await fetch(
+          "http://127.0.0.1:8000/api/razorPayCreateOrderApi",
+          {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${authToken}`,
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ amount: totalAmount }),
+          }
+        );
 
-    try {
-      const response = await fetch(nimbusDelievery_API, {
-        method: "POST",
-        headers: {
-          Authorization: "Bearer " + localStorage.getItem("auth_token"),
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
+        const orderData = await createOrderRes.json();
 
-      const contentType = response.headers.get("content-type");
-      const status = response.status;
-      console.log("Status:", status);
+        const options = {
+          key: "rzp_live_9dQQZTZXMKwBMJ",
+          amount: orderData.amount,
+          currency: "INR",
+          name: "BTJ Store",
+          description: "Order Payment",
+          order_id: orderData.order_id,
+          handler: async function (response: any) {
+            try {
+              const verifyRes = await fetch(
+                "http://127.0.0.1:8000/api/razorPayStoreApi",
+                {
+                  method: "POST",
+                  headers: {
+                    Authorization: `Bearer ${authToken}`,
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify({
+                    razorpay_payment_id: response.razorpay_payment_id,
+                    razorpay_order_id: response.razorpay_order_id,
+                    razorpay_signature: response.razorpay_signature,
+                  }),
+                }
+              );
 
-      let result: any = {};
-      if (status == 200) {
-        setOrderId(order_number);
-        setShowSuccessModal(true);
-      } else {
-        alert(result.message || "Failed to place order.");
+              if (verifyRes.ok) {
+                const payload = {
+                  orderID: order_number,
+                  paymentType: "prepaid",
+                  amount: totalAmount,
+                  city: shippingData?.city || "",
+                  firstName: shippingData?.first_name || "",
+                  lastName: shippingData?.last_name || "",
+                  flat: shippingData?.flat || "",
+                  locality: shippingData?.locality || "",
+                  state: shippingData?.state || "",
+                  street: shippingData?.street || "",
+                  pincode: shippingData?.zip_code || "",
+                };
+
+                const nimbusRes = await fetch(nimbusDelievery_API, {
+                  method: "POST",
+                  headers: {
+                    Authorization: `Bearer ${authToken}`,
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify(payload),
+                });
+
+                if (nimbusRes.status === 200) {
+                  setOrderId(order_number);
+                  setShowSuccessModal(true);
+                } else {
+                  alert("Order placed but failed to notify delivery service.");
+                }
+              } else {
+                alert("Payment verification failed.");
+              }
+            } catch (err) {
+              console.error("❌ Error verifying payment:", err);
+              alert("Error verifying payment. Please try again.");
+            }
+          },
+          prefill: {
+            name: `${shippingData?.first_name || ""} ${shippingData?.last_name || ""}`,
+            email: shippingData?.email || "",
+            contact: shippingData?.phone || "",
+          },
+          theme: { color: "#7B48A5" },
+        };
+
+        const rzp = new (window as any).Razorpay(options);
+        rzp.open();
+      } catch (err) {
+        console.error("❌ Error during payment:", err);
+        alert("Something went wrong while processing online payment.");
       }
-    } catch (err) {
-      console.error("❌ Error placing order:", err);
-      alert("Something went wrong while placing your order.");
+    } else {
+      try {
+        const payload = {
+          orderID: order_number,
+          paymentType: "cod",
+          amount: totalAmount,
+          city: shippingData?.city || "",
+          firstName: shippingData?.first_name || "",
+          lastName: shippingData?.last_name || "",
+          flat: shippingData?.flat || "",
+          locality: shippingData?.locality || "",
+          state: shippingData?.state || "",
+          street: shippingData?.street || "",
+          pincode: shippingData?.zip_code || "",
+        };
+
+        const response = await fetch(nimbusDelievery_API, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        });
+
+        if (response.status === 200) {
+          setOrderId(order_number);
+          setShowSuccessModal(true);
+        } else {
+          alert("Failed to place COD order.");
+        }
+      } catch (err) {
+        console.error("❌ Error placing COD order:", err);
+        alert("Something went wrong while placing your order.");
+      }
     }
   };
 
@@ -133,15 +226,10 @@ const Checkout: React.FC<IndexProps> = ({
 
   return (
     <>
-      {/* ✅ Success Modal */}
       <OrderSuccessModal
         open={showSuccessModal}
         orderId={orderId}
         onClose={() => setShowSuccessModal(false)}
-        onViewOrders={() => {
-          setShowSuccessModal(false);
-          // window.location.href = "/my-orders"; // or use navigate()
-        }}
       />
 
       <div className="w-[35%] max-md:w-[100%] p-5 py-6 border-l bg-white border-[#eaeaec]">

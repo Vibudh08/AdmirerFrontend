@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import ProductItem from "../components/product-listing/product-item";
 import LeftSideBar from "../components/product-listing/left-side-bar";
 import { FiFilter, FiX } from "react-icons/fi";
+import { useNavigate } from "react-router-dom";
 import {
   product_listing_API,
   productPriceCategoryInfo_API,
@@ -17,11 +18,16 @@ const ProductListing: React.FC<ProductLsitingProps> = ({
   category,
   subcategory,
 }) => {
+  const navigate = useNavigate();
   const [cat, setCat] = useState<Number | null>(null);
   const [showMobileFilters, setShowMobileFilters] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [categoryReady, setCategoryReady] = useState(false);
-
+  useEffect(() => {
+    if (!category && !subcategory) {
+      navigate("/"); // 👈 send to home page
+    }
+  }, [category, subcategory, navigate]);
   useEffect(() => {
     const checkIfMobile = () => {
       setIsMobile(window.innerWidth < 1024);

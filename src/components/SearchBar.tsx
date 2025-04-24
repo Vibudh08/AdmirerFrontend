@@ -1,43 +1,49 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Search } from "lucide-react";
+import { useNavigate } from "react-router-dom"; // for navigating to /product/id
 
 interface Product {
   id: number;
-  name: string;
+  product_name: string;
 }
 
-const SearchBarWithPopup: React.FC = () => {
+interface SearchBarWithPopupProps {
+  onSelectProduct?: () => void; // optional callback for external control
+}
+
+const SearchBarWithPopup: React.FC<SearchBarWithPopupProps> = ({ onSelectProduct }) => {
   const [query, setQuery] = useState<string>("");
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [showDropdown, setShowDropdown] = useState<boolean>(false);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
-
-  // Replace this with your API data
-  const products: Product[] = [
-    { id: 1, name: "Gold Ring" },
-    { id: 2, name: "Silver Necklace" },
-    { id: 3, name: "Couple Band" },
-    { id: 4, name: "Diamond Earrings" },
-    { id: 4, name: "Diamond Earrings" },
-    { id: 4, name: "Diamond Earrings" },
-    { id: 4, name: "Diamond Earrings" },
-    { id: 4, name: "Diamond Earrings" },
-    { id: 4, name: "Diamond Earrings" },
-    { id: 4, name: "Diamond Earrings" },
-    { id: 4, name: "Diamond Earrings" },
-    { id: 4, name: "Diamond Earrings" },
-  ];
+  const navigate = useNavigate();
 
   useEffect(() => {
-    if (query.trim()) {
-      const results = products.filter((p) =>
-        p.name.toLowerCase().includes(query.toLowerCase())
-      );
-      setFilteredProducts(results);
-      setShowDropdown(true);
-    } else {
-      setShowDropdown(false);
-    }
+    const fetchProducts = async () => {
+      if (query.trim()) {
+        try {
+          const response = await fetch(`http://127.0.0.1:8000/api/search?q=${query}`);
+          const data = await response.json();
+
+          if (Array.isArray(data)) {
+            setFilteredProducts(data);
+            setShowDropdown(true);
+          } else {
+            console.warn("Unexpected response format:", data);
+            setFilteredProducts([]);
+          }
+        } catch (error) {
+          console.error("Error fetching search results:", error);
+          setFilteredProducts([]);
+        }
+      } else {
+        setFilteredProducts([]);
+        setShowDropdown(false);
+      }
+    };
+
+    const debounce = setTimeout(fetchProducts, 300);
+    return () => clearTimeout(debounce);
   }, [query]);
 
   useEffect(() => {
@@ -64,28 +70,29 @@ const SearchBarWithPopup: React.FC = () => {
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         placeholder="Search for products..."
-        className=" mt-1 pl-10 pr-2 w-full h-[40px] max-md:h-[45px] rounded-md border border-[#7B48A5] pt-1 outline-none ring-2 ring-[#d3b6e9] text-gray"
+        className="mt-1 pl-10 pr-2 w-full h-[40px] max-md:h-[45px] rounded-md border border-[#7B48A5] pt-1 outline-none ring-2 ring-[#d3b6e9] text-gray"
         onFocus={() => query && setShowDropdown(true)}
       />
 
       {showDropdown && (
-        <div className="absolute z-50 mt-1 bg-white shadow-2xl max-md:shadow-none rounded-xl w-full max-h-[200px] overflow-y-auto">
+        <div className="absolute z-50 mt-1 bg-white shadow-2xl max-md:shadow-none rounded-xl w-full max-h-[250px] max-md:max-h-[400px] overflow-y-auto">
           {filteredProducts.length > 0 ? (
             filteredProducts.map((product) => (
               <div
                 key={product.id}
                 className="px-4 py-2 hover:bg-[#f5e8ff] cursor-pointer text-sm text-gray-700"
                 onClick={() => {
-                  console.log("Selected:", product);
-                  setQuery(product.name);
+                  navigate(`/product/${product.id}`);
                   setShowDropdown(false);
+                  setQuery("");
+                  onSelectProduct?.(); 
                 }}
               >
-                {product.name}
+                {product.product_name}
               </div>
             ))
           ) : (
-            <div className="px-4 py-2 text-gray-500 text-sm">No results found</div>
+            <div className="px-4 py-2 text-gray-500 text-sm">No products found</div>
           )}
         </div>
       )}

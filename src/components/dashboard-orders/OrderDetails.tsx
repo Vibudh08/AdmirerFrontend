@@ -21,6 +21,7 @@ const OrderDetails: React.FC = () => {
   const [status, setStatus] = useState("");
   const [totalPrice, setTotalPrice] = useState(0);
   const [productNames, setProductNames] = useState<string[]>([]);
+  const [payment_type, setPayment_type] = useState();
 
   useEffect(() => {
     fetch(order_detail_API, {
@@ -42,6 +43,8 @@ const OrderDetails: React.FC = () => {
         );
         setOrderData(data?.data);
         setStatus(data?.tracking_status);
+        setPayment_type(data.data[0].payment_type);
+        console.log(data)
       })
       .catch((error) => {
         console.error("Error fetching order details:", error);
@@ -104,6 +107,7 @@ const OrderDetails: React.FC = () => {
         <div className="flex-1 space-y-4">
           {orderData.map((order, index) => (
             <div
+            
               key={index}
               className="bg-white border rounded shadow-sm p-6 pb-8"
             >
@@ -118,6 +122,7 @@ const OrderDetails: React.FC = () => {
                   <p className="text-lg font-semibold text-gray-800 mt-2">
                     ₹{order.price}
                   </p>
+                  <p className="text-sm text-gray-500 mt-0.5 font-semibold">Qty: {order.quantity}</p>
                 </div>
               </div>
 
@@ -142,7 +147,7 @@ const OrderDetails: React.FC = () => {
                           </svg>
                         </span>
                         <span className="text-[13px]">
-                          Order Confirmed, May 22, 2022
+                          Order Confirmed
                         </span>
                       </div>
 
@@ -249,7 +254,7 @@ const OrderDetails: React.FC = () => {
                 <span className="font-semibold text-black">₹{totalPrice}</span>
               </div>
               <div className="pt-1">
-                <span className="text-gray-700">•</span> Cash On Delivery: ₹
+                <span className="text-gray-700">•{" "}</span> {payment_type}: ₹
                 {totalPrice}
               </div>
             </div>

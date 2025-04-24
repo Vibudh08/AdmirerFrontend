@@ -85,13 +85,24 @@ const ProductDetails = () => {
   };
 
   const handleBuyNow = () => {
-    const token = "Bearer " + localStorage.getItem("auth_token"); // Adjust key if different
-    if (token) {
+    const authToken = localStorage.getItem("auth_token");
+  
+    if (authToken) {
+      handleAddToCart(); // API-based
       navigate("/cart");
     } else {
-      navigate("/login");
+      // Guest cart logic
+      const cartItems = JSON.parse(localStorage.getItem("guest_cart") || "[]");
+      const isAlreadyAdded = cartItems.find((item: any) => item.id === product.id);
+      if (!isAlreadyAdded) {
+        cartItems.push(product);
+        localStorage.setItem("guest_cart", JSON.stringify(cartItems));
+      }
+      navigate("/cart"); // Still go to cart for guest users
     }
   };
+  
+  
 
   const toggleWishlist = async (prodId?: string) => {
     const productIdToToggle = prodId || id;
@@ -125,6 +136,23 @@ const ProductDetails = () => {
   };
 
   const handleAddToCart = async () => {
+    const authToken = localStorage.getItem("auth_token");
+  
+    if (!authToken) {
+      // User not logged in - Store product locally
+      const cartItems = JSON.parse(localStorage.getItem("guest_cart") || "[]");
+      const isAlreadyAdded = cartItems.find((item: any) => item.id === product.id);
+      if (!isAlreadyAdded) {
+        cartItems.push(product);
+        localStorage.setItem("guest_cart", JSON.stringify(cartItems));
+        alert("✅ Product added to cart (Guest Mode)");
+      } else {
+        alert("⚠️ Product already in cart (Guest Mode)");
+      }
+      return;
+    }
+  
+    // User is logged in - Proceed with API call
     try {
       const response = await axios.post(
         "http://127.0.0.1:8000/api/add-to-cart",
@@ -135,22 +163,19 @@ const ProductDetails = () => {
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: "Bearer " + localStorage.getItem("auth_token"),
+            Authorization: "Bearer " + authToken,
           },
         }
       );
-      console.log(response);
+  
       if (response.data && response.data.status === "success") {
-        alert("✅ Product added to cart successfully!");
         setIsInCart(true);
-      } else {
-        alert("⚠️ Could not add product to cart.");
       }
     } catch (error) {
       console.error("Add to cart error:", error);
-      alert("❌ Something went wrong while adding to cart.");
     }
   };
+  
 
   useEffect(() => {
     if (id) {
