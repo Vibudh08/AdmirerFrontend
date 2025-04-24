@@ -15,6 +15,7 @@ const OrderDetails: React.FC = () => {
     time: string;
     product_name: string;
     description: string;
+    image: string;
   }
 
   const [orderData, setOrderData] = useState<OrderDetail[]>([]);
