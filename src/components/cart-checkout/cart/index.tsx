@@ -16,13 +16,14 @@ interface ItemProps {
   id: number;
   brandName: string;
   brandId: string;
-  size: string;
+  size?: string;
   description: string;
   qty: string;
   price: string;
   discount: string;
   return_days: string;
   image: string;
+  totalQuantity: string;
 }
 
 const Loader = () => (
@@ -52,6 +53,50 @@ const EmptyCart = () => (
   </div>
 );
 
+interface RawCartItem {
+  id: number;
+  product_name?: string;
+  quantity: string;
+  price: string;
+  description?: string;
+  discount: string;
+  image: string;
+  in_stock: number;
+}
+
+interface GuestCartItem {
+  id: number;
+  product_name?: string;
+  name?: string;
+  description?: string;
+  qty?: string;
+  price?: string;
+  discount?: string;
+  return_days?: string;
+  image: string;
+}
+
+interface Address {
+  first_name?: string;
+  firstname?: string;
+  last_name?: string;
+  lastname?: string;
+  flat: string;
+  street: string;
+  locality: string;
+  city: string;
+  state: string;
+  zip_code?: string;
+  zipcode?: string;
+  addr_type: string;
+  email?: string | null;
+}
+
+interface AddressData {
+  billingAddress: Address;
+  shippingAddresses: Address[];
+}
+
 const Cart: React.FC<CartProps> = ({
   setTotalMRP,
   setDiscountAmount,
@@ -61,30 +106,8 @@ const Cart: React.FC<CartProps> = ({
 }) => {
   const [totalItem, setTotalItem] = useState<ItemProps[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-
-  const handleQuantityChange = async (id: number, newQty: number) => {
-    // Update the local state first
-    const updatedItems = totalItem.map((item) =>
-      item.id === id ? { ...item, qty: newQty.toString() } : item
-    );
-    setTotalItem(updatedItems);
-    recalculateTotals(updatedItems);
-
-    // Make the API call to update the cart quantity in the backend
-    try {
-      await axios.post(
-        "http://127.0.0.1:8000/api/update-cart-quantity",
-        { productId: id, quantity: newQty },
-        {
-          headers: {
-            Authorization: "Bearer " + localStorage.getItem("auth_token"),
-          },
-        }
-      );
-    } catch (error) {
-      console.error("Failed to update cart quantity:", error);
-    }
-  };
+  const [addressData, setAddressData] = useState<AddressData | null>(null);
+  const [addressForNimbus, setAddressForNimbus] = useState<Address | null>(null);
 
   const recalculateTotals = (items: ItemProps[]) => {
     let original = 0;
@@ -103,6 +126,28 @@ const Cart: React.FC<CartProps> = ({
     setTotalMRP(original);
     setDiscountAmount(discounted);
     setTotalAmount(original - discounted);
+  };
+
+  const handleQuantityChange = async (id: number, newQty: number) => {
+    const updatedItems = totalItem.map((item) =>
+      item.id === id ? { ...item, qty: newQty.toString() } : item
+    );
+    setTotalItem(updatedItems);
+    recalculateTotals(updatedItems);
+
+    try {
+      await axios.post(
+        "http://127.0.0.1:8000/api/update-cart-quantity",
+        { productId: id, quantity: newQty },
+        {
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("auth_token"),
+          },
+        }
+      );
+    } catch (error) {
+      console.error("Failed to update cart quantity:", error);
+    }
   };
 
   const handleDelete = async (id: number) => {
@@ -126,89 +171,115 @@ const Cart: React.FC<CartProps> = ({
     }
   };
 
-  useEffect(() => {
-    const fetchCartData = async () => {
+  const fetchCartData = async () => {
+    setIsLoading(true);
+  
+    const authToken = localStorage.getItem("auth_token");
+    let apiCart: RawCartItem[] = [];
+    const guestCart: GuestCartItem[] = JSON.parse(localStorage.getItem("guest_cart") || "[]");
+  
+    // ✅ Sync guest cart to backend
+    if (authToken && guestCart.length > 0) {
       try {
-        const response = await axios.get(
-          "http://127.0.0.1:8000/api/cart-products",
-          {
-            headers: {
-              Authorization: "Bearer " + localStorage.getItem("auth_token"),
-            },
-          }
+        await Promise.all(
+          guestCart.map((item) =>
+            axios.post(
+              "http://127.0.0.1:8000/api/add-to-cart",
+              {
+                product_id: item.id,
+                cart: 1,
+              },
+              {
+                headers: {
+                  Authorization: `Bearer ${authToken}`,
+                },
+              }
+            )
+          )
         );
-        const data = response.data.data.products || [];
-
-        const transformedData = data.map((item: any) => ({
-          id: item.id,
-          brandName: item.product_name,
-          brandId: item.id.toString(),
-          description: "No description available",
-          qty: item.quantity,
-          price: item.price,
-          discount: item.discount,
-          return_days: "7",
-          image: item.image,
-          totalQuantity: item.in_stock.toString(),
-        }));
-        setTotalItem(transformedData);
-        setItemCount(transformedData.length);
-        recalculateTotals(transformedData);
+        localStorage.removeItem("guest_cart");
+        console.log("✅ Guest cart synced to backend and cleared.");
       } catch (error) {
-        console.error("Failed to fetch cart data", error);
-      } finally {
-        setIsLoading(false);
+        console.error("❌ Error syncing guest cart to backend:", error);
       }
-    };
-
+    }
+  
+    // 🛒 Fetch user cart from backend
+    if (authToken) {
+      try {
+        const response = await axios.get("http://127.0.0.1:8000/api/cart-products", {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+        });
+        apiCart = response.data.data.products || [];
+      } catch (error) {
+        console.error("❌ Failed to fetch cart data from API:", error);
+      }
+    }
+  
+    // 🔁 Transform backend cart
+    const transformedApiCart: ItemProps[] = apiCart.map((item) => ({
+      id: item.id,
+      brandName: item.product_name || "Unknown",
+      brandId: item.id.toString(),
+      description: "No description available",
+      qty: item.quantity,
+      price: item.price,
+      discount: item.discount,
+      return_days: "7",
+      image: item.image,
+      totalQuantity: item.in_stock.toString(),
+    }));
+  
+    // 🧾 Merge guest cart items if needed (though usually empty after sync)
+    const transformedGuestCart: ItemProps[] = guestCart.map((item) => ({
+      id: item.id,
+      brandName: item.product_name || "Unknown",
+      brandId: item.id.toString(),
+      description: item.description || "No description available",
+      qty: item.qty || "1",
+      price: item.price || "0",
+      discount: item.discount || "0",
+      return_days: item.return_days || "7",
+      image: item.image,
+      totalQuantity: "10",
+    }));
+  
+    const mergedCart: ItemProps[] = [...transformedApiCart];
+    transformedGuestCart.forEach((guestItem) => {
+      const exists = transformedApiCart.some((apiItem) => apiItem.id === guestItem.id);
+      if (!exists) mergedCart.push(guestItem);
+    });
+  
+    setTotalItem(mergedCart);
+    setItemCount(mergedCart.length);
+    recalculateTotals(mergedCart);
+    setIsLoading(false);
+  };
+  
+  useEffect(() => {
     fetchCartData();
   }, []);
-  interface Address {
-    first_name?: string;
-    firstname?: string;
-    last_name?: string;
-    lastname?: string;
-    flat: string;
-    street: string;
-    locality: string;
-    city: string;
-    state: string;
-    zip_code?: string;
-    zipcode?: string;
-    addr_type: string;
-    email?: string | null;
-  }
 
-  interface AddressData {
-    billingAddress: Address;
-    shippingAddresses: Address[];
-  }
-  const [addressData, setAddressData] = useState<AddressData | null>(null);
-  const [addressForNimbus, setAddressForNimbus] = useState<Address | null>(
-    null
-  );
   useEffect(() => {
     setShippingData(addressForNimbus);
-    console.log("addressForNimbus", addressForNimbus);
   }, [addressForNimbus]);
+
   useEffect(() => {
     fetch(getShippingAndBillingAddress, {
       method: "GET",
       headers: {
-        authorization: "Bearer " + localStorage.getItem("auth_token"),
+        Authorization: "Bearer " + localStorage.getItem("auth_token"),
       },
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log("the shipping and billing addresses are provided ", data);
-        // Assuming data has billing_address and shipping_address properties
         setAddressData({
           billingAddress: data.billing_address[0],
           shippingAddresses: data.shipping_address,
         });
-        const shipping = addressData;
-        setShippingData(shipping);
-        console.log(shipping)
+        setShippingData(data.shipping_address[0]);
       });
   }, []);
 
@@ -240,12 +311,10 @@ const Cart: React.FC<CartProps> = ({
               onRemove={handleDelete}
               finalPrice={(
                 (parseFloat(item.price || "0") -
-                  (parseFloat(item.price || "0") *
-                    parseFloat(item.discount || "0")) /
-                    100) *
+                  (parseFloat(item.price || "0") * parseFloat(item.discount || "0")) / 100) *
                 parseInt(item.qty || "1")
               ).toFixed(2)}
-              totalQuantity="3"
+              totalQuantity={item.totalQuantity}
               onQuantityChange={handleQuantityChange}
             />
           </div>
