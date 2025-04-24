@@ -28,18 +28,16 @@ const ProductItem: React.FC<productItemProps> = ({
   onMoveToCart,
 }) => {
   return (
-    
     <div className="max-w-[300px] font-sans bg-white rounded-[5px] p-4 max-md:p-2 pb-2 flex flex-col gap-1 max-md:gap-1 border  border-gray-300">
       {/* Product Image with Hover Button */}
       <div className="relative group">
-      <Link to={`/product/${id}`}>
-        <img
-          src={imageUrl}
-          alt="product"
-          className="w-full h-auto rounded-lg"
-        />
-        
-    </Link>
+        <Link to={`/product/${id}`}>
+          <img
+            src={imageUrl}
+            alt="product"
+            className="w-full h-auto rounded-lg"
+          />
+        </Link>
 
         {/* Heart Button at Top Right (Hidden initially, shows on hover) */}
         <button
@@ -58,9 +56,9 @@ const ProductItem: React.FC<productItemProps> = ({
 
       {/* Product Name */}
       <Link to={`/product/${id}`}>
-      <div className="font-semibold text-black text-lg max-md:text-[18px] truncate overflow-hidden whitespace-nowrap">
-        {name}
-      </div>
+        <div className="font-semibold text-black text-lg max-md:text-[18px] truncate overflow-hidden whitespace-nowrap">
+          {name}
+        </div>
       </Link>
 
       {/* Product Description */}
