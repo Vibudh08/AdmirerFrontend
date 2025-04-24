@@ -28,18 +28,16 @@ const ProductItem: React.FC<productItemProps> = ({
   onMoveToCart,
 }) => {
   return (
-    
-    <div className="max-w-[300px] font-sans bg-white rounded-[5px] p-4 max-md:p-2 pb-2 flex flex-col gap-1 max-md:gap-1 border  border-gray-300">
+    <div className="max-w-[300px] font-sans bg-white rounded-[5px] p-4 max-md:p-2 pb-2 flex flex-col gap-1 max-md:gap-1 items-center text-center border  border-gray-300">
       {/* Product Image with Hover Button */}
       <div className="relative group">
-      <Link to={`/product/${id}`}>
-        <img
-          src={imageUrl}
-          alt="product"
-          className="w-full h-auto rounded-lg"
-        />
-        
-    </Link>
+        <Link to={`/product/${id}`}>
+          <img
+            src={imageUrl}
+            alt="product"
+            className="w-full h-auto rounded-lg"
+          />
+        </Link>
 
         {/* Heart Button at Top Right (Hidden initially, shows on hover) */}
         <button
@@ -58,18 +56,18 @@ const ProductItem: React.FC<productItemProps> = ({
 
       {/* Product Name */}
       <Link to={`/product/${id}`}>
-      <div className="font-semibold text-black text-lg max-md:text-[18px] truncate overflow-hidden whitespace-nowrap">
-        {name}
-      </div>
+        <div className="font-semibold text-black text-lg max-md:text-[18px] truncate overflow-hidden whitespace-nowrap w-full max-w-[250px] px-2">
+          {name}
+        </div>
       </Link>
 
       {/* Product Description */}
-      <div className="text-gray-400 text-xs leading-relaxed font-bold truncate overflow-hidden whitespace-nowrap">
+      <div className="text-gray-400 text-xs leading-relaxed font-bold truncate overflow-hidden whitespace-nowrap w-full max-w-[250px] px-2">
         {description}
       </div>
 
       {/* Price Section */}
-      <div className="flex items-center gap-2.5 max-md:gap-1.5 mb-2 max-md:mb-1 flex-wrap">
+      <div className="flex items-center justify-center gap-2.5 max-md:gap-1.5 mb-2 max-md:mb-1 flex-wrap w-full">
         <span className="font-semibold text-black text-lg max-md:text-[14px]">
           Rs {price}
         </span>
@@ -82,7 +80,7 @@ const ProductItem: React.FC<productItemProps> = ({
       </div>
       <hr className="p-0 w-full" />
       <div
-        className="p-1 text-center font-semibold select-none text-purple-700 text-md max-md:text-sm leading-6 tracking-tight cursor-pointer"
+        className="p-1 text-center font-semibold select-none text-purple-700 text-md max-md:text-sm leading-6 tracking-tight cursor-pointer w-full"
         onClick={() => onMoveToCart(id)}
       >
         MOVE TO CART
