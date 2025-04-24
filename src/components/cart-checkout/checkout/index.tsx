@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom"; // 👈 import navigate
 import { GoTag } from "react-icons/go";
 import { Modal } from "antd";
@@ -15,8 +15,8 @@ interface PriceDetail {
 }
 
 interface ShippingData {
-  first_name: string;
-  last_name: string;
+  firstname: string;
+  lastname: string;
   flat: string;
   street: string;
   locality: string;
@@ -50,6 +50,9 @@ const Checkout: React.FC<IndexProps> = ({
   totalAmount = "0",
   shippingData,
 }) => {
+  useEffect(() => {
+    console.log("the shipping data in checkout is = ", shippingData);
+  }, [shippingData]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selected, setSelected] = useState("online");
 
@@ -125,8 +128,8 @@ const Checkout: React.FC<IndexProps> = ({
                   paymentType: "prepaid",
                   amount: totalAmount,
                   city: shippingData?.city || "",
-                  firstName: shippingData?.first_name || "",
-                  lastName: shippingData?.last_name || "",
+                  firstName: shippingData?.firstname || "",
+                  lastName: shippingData?.lastname || "",
                   flat: shippingData?.flat || "",
                   locality: shippingData?.locality || "",
                   state: shippingData?.state || "",
@@ -158,7 +161,9 @@ const Checkout: React.FC<IndexProps> = ({
             }
           },
           prefill: {
-            name: `${shippingData?.first_name || ""} ${shippingData?.last_name || ""}`,
+            name: `${shippingData?.firstname || ""} ${
+              shippingData?.lastname || ""
+            }`,
             email: shippingData?.email || "",
             contact: shippingData?.phone || "",
           },
@@ -178,8 +183,8 @@ const Checkout: React.FC<IndexProps> = ({
           paymentType: "cod",
           amount: totalAmount,
           city: shippingData?.city || "",
-          firstName: shippingData?.first_name || "",
-          lastName: shippingData?.last_name || "",
+          firstName: shippingData?.firstname || "",
+          lastName: shippingData?.lastname || "",
           flat: shippingData?.flat || "",
           locality: shippingData?.locality || "",
           state: shippingData?.state || "",
