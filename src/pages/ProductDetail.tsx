@@ -37,11 +37,12 @@ const Loader = () => (
   <div className="fixed inset-0 bg-white bg-opacity-80 backdrop-blur-sm flex items-center justify-center z-50">
     <div className="flex flex-col items-center">
       <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mb-4"></div>
-      <p className="text-lg font-bold text-gray-800">Loading your experience, please wait...</p>
+      <p className="text-lg font-bold text-gray-800">
+        Loading your experience, please wait...
+      </p>
     </div>
   </div>
 );
-
 
 const ProductDetails = () => {
   const { id } = useParams<{ id: string }>(); // Get the product ID from the URL
@@ -54,7 +55,7 @@ const ProductDetails = () => {
   const [zoomStyle, setZoomStyle] = useState({});
   const [isInCart, setIsInCart] = useState(false);
   const [isWishlisted, setIsWishlisted] = useState(false);
-    const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
 
   const containerRef = React.useRef<HTMLDivElement>(null);
@@ -125,7 +126,6 @@ const ProductDetails = () => {
 
   const handleAddToCart = async () => {
     try {
-
       const response = await axios.post(
         "http://127.0.0.1:8000/api/add-to-cart",
         {
@@ -165,19 +165,20 @@ const ProductDetails = () => {
           const data = response.data.data;
           const relatedData = response.data.related_products;
 
-          // console.log("Fetched product data:", response.data.data);
-          console.log(
-            "Fetched related product data:",
-            response.data.related_products
+          // Construct full image URLs
+          const imageArray = data.images.map(
+            (img: any) => `https://admirer.in/asset/image/product/${img.image}`
           );
 
-          const imageArray = data.images.map((img: any) => img.image);
           setProduct(data);
           setRelatedProducts(relatedData); // Store the related products
           setThumbnails(imageArray);
           setMainImage(imageArray[0]);
           setIsLoading(false);
-          
+
+          // Set wishlist status from API
+          setIsWishlisted(data.wishlist === 1);
+
           // Set inCart status from API
           if (data.in_cart === 1) {
             setIsInCart(true);
@@ -188,8 +189,6 @@ const ProductDetails = () => {
         });
     }
   }, [id]);
-
-  // Re-fetch if the ID changes (in case of page navigation)
 
   const handleImageClick = (clickedImg: string) => {
     setMainImage(clickedImg); // Set clicked image as the main image
@@ -286,12 +285,12 @@ const ProductDetails = () => {
             </div>
 
             {/* Thumbnails Section */}
-            <div className="flex mt-4 flex-wrap">
+            <div className="flex mt-4 flex-wrap gap-2">
               {thumbnails && thumbnails.length > 0 ? (
                 thumbnails.map((src, idx) => (
                   <img
                     key={idx}
-                    src={product.images.image}
+                    src={src}
                     alt={`Thumbnail ${idx + 1}`}
                     onClick={() => handleImageClick(src)} // Click to update main image
                     onMouseEnter={() => setHoverImage(src)} // Hover to show image in main container
@@ -329,17 +328,6 @@ const ProductDetails = () => {
             </div>
             <div className="text-sm text-gray-500 mb-1">Incl. of all taxes</div>
 
-            {/* <div className="w-full bg-gradient-to-r tracking-wide from-purple-200 to-white text-md mt-3 text-purple-800 p-3 rounded-md">
-              Get it for{" "}
-              <span className="font-semibold tracking-wide">
-                ₹{product.discounted_price}
-              </span>{" "}
-              with coupon{" "}
-              <span className="font-semibold text-pink-600 tracking-wider">
-                ADMIRER100
-              </span>
-            </div> */}
-            
             {product.in_stock < 5 && (
               <div className="mt-4 mb-1 space-x-1 text-[16px] text-gray-600">
                 Hurry Up! Only{" "}
@@ -349,10 +337,6 @@ const ProductDetails = () => {
                 left in stock
               </div>
             )}
-
-            {/* <div>
-              <PincodeChecker />
-            </div> */}
 
             <div className="grid grid-cols-2 gap-2 text-sm text-gray-600 mt-5">
               <div className="flex items-center gap-3 text-[15px] font-medium">
@@ -401,62 +385,63 @@ const ProductDetails = () => {
         <div className="grid grid-cols-1 w-[85%] max-md:w-[98%] m-auto !gap-4 ">
           <Slider {...relatedProductsSlider}>
             {relatedProducts.map((item) => (
-              
-                <div
-                  key={item.id}
-                  className="px-2 max-md:px-1" // Add horizontal spacing here
-                >
-                  <div className="w-full font-sans bg-white rounded-xl p-3 max-md:p-1.5 flex flex-col gap-2 max-md:gap-1 border border-gray-200">
-                    <div className="relative group">
+              <div
+                key={item.id}
+                className="px-2 max-md:px-1" // Add horizontal spacing here
+              >
+                <div className="w-full font-sans bg-white rounded-xl p-3 max-md:p-1.5 flex flex-col gap-2 max-md:gap-1 border border-gray-200">
+                  <div className="relative group">
                     <Link to={`/product/${item.id}`}>
                       <img
-                        src={item.image || "https://via.placeholder.com/100"}
+                        src={
+                          `https://admirer.in/asset/image/product/${item.image}` ||
+                          "https://via.placeholder.com/100"
+                        }
                         alt={item.title}
                         className="w-full h-full object-cover rounded-lg"
                       />
-                      
-              </Link>
-                      <button
-                        className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity"
-                        onClick={(e) => {
-                          e.stopPropagation(); // Prevents the click from reaching parent div
-                          toggleWishlist(item.id);
-                        }}
+                    </Link>
+                    <button
+                      className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity"
+                      onClick={(e) => {
+                        e.stopPropagation(); // Prevents the click from reaching parent div
+                        toggleWishlist(item.id);
+                      }}
+                    >
+                      <div
+                        className={`p-1 sm:p-1 rounded-full border shadow-md ${
+                          item.wishlist === 1
+                            ? "bg-red-100 border-red-500 text-red-500"
+                            : "bg-white border-red-500 text-red-500 "
+                        }`}
                       >
-                        <div
-                          className={`p-1 sm:p-1 rounded-full border shadow-md ${
-                            isWishlisted
-                              ? "bg-red-100 border-red-500 text-red-500"
-                              : "bg-white border-red-500 text-red-500 "
-                          }`}
-                        >
-                          {isWishlisted ? (
-                            <FaHeart size={16} />
-                          ) : (
-                            <FaRegHeart size={16} />
-                          )}
-                        </div>
-                      </button>
-                    </div>
-                    <Link to={`/product/${item.id}`}>
+                        {item.wishlist === 1 ? (
+                          <FaHeart size={16} />
+                        ) : (
+                          <FaRegHeart size={16} />
+                        )}
+                      </div>
+                    </button>
+                  </div>
+                  <Link to={`/product/${item.id}`}>
                     <div className="font-medium text-[16px] max-md:text-[16px] truncate">
                       {item.title}
                     </div>
-                    </Link>
+                  </Link>
 
-                    <div className="flex items-center gap-2 max-md:gap-1.5 text-lg">
-                      <span className="font-semibold text-black max-md:text-[16px]">
-                        ₹{item.discount}
-                      </span>
-                      <span className="line-through text-sm text-gray-400 max-md:text-[15px]">
-                        ₹{item.price}
-                      </span>
-                      <span className="bg-red-50 text-red-700 font-bold px-1 py-0.5 rounded text-xs max-md:text-[12px]">
-                        {item.discount_percent}% OFF
-                      </span>
-                    </div>
+                  <div className="flex items-center gap-2 max-md:gap-1.5 text-lg">
+                    <span className="font-semibold text-black max-md:text-[16px]">
+                      ₹{item.discount}
+                    </span>
+                    <span className="line-through text-sm text-gray-400 max-md:text-[15px]">
+                      ₹{item.price}
+                    </span>
+                    <span className="bg-red-50 text-red-700 font-bold px-1 py-0.5 rounded text-xs max-md:text-[12px]">
+                      {item.discount_percent}% OFF
+                    </span>
                   </div>
                 </div>
+              </div>
             ))}
           </Slider>
         </div>
