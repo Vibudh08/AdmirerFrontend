@@ -23,7 +23,7 @@ interface ShippingData {
   country_name: string;
   state: string;
   city: string;
-  zip_code: string;
+  zipcode: string;
   phone: string;
   email: string;
   addr_type: string;
@@ -134,7 +134,7 @@ const Checkout: React.FC<IndexProps> = ({
                   locality: shippingData?.locality || "",
                   state: shippingData?.state || "",
                   street: shippingData?.street || "",
-                  pincode: shippingData?.zip_code || "",
+                  pincode: shippingData?.zipcode || "",
                 };
 
                 const nimbusRes = await fetch(nimbusDelievery_API, {
@@ -189,7 +189,7 @@ const Checkout: React.FC<IndexProps> = ({
           locality: shippingData?.locality || "",
           state: shippingData?.state || "",
           street: shippingData?.street || "",
-          pincode: shippingData?.zip_code || "",
+          pincode: shippingData?.zipcode || "",
         };
 
         const response = await fetch(nimbusDelievery_API, {
