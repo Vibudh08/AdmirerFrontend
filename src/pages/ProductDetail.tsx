@@ -285,7 +285,7 @@ const ProductDetails = () => {
             </div>
 
             {/* Thumbnails Section */}
-            <div className="flex mt-4 flex-wrap gap-2">
+            <div className="flex mt-4 flex-wrap">
               {thumbnails && thumbnails.length > 0 ? (
                 thumbnails.map((src, idx) => (
                   <img
@@ -295,7 +295,7 @@ const ProductDetails = () => {
                     onClick={() => handleImageClick(src)} // Click to update main image
                     onMouseEnter={() => setHoverImage(src)} // Hover to show image in main container
                     onMouseLeave={() => setHoverImage(null)} // Remove hover effect when mouse leaves
-                    className="w-20 h-20 rounded border p-1 border-gray-300 object-cover cursor-pointer hover:scale-105 transition-transform"
+                    className="w-20 h-20 rounded border p-2 border-gray-300 object-cover cursor-pointer hover:scale-105 transition-transform"
                   />
                 ))
               ) : (
