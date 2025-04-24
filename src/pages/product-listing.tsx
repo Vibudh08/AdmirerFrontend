@@ -45,6 +45,7 @@ const ProductListing: React.FC<ProductLsitingProps> = ({
     cat_id: string;
     sub_cat_name: string;
     description: string;
+    image: string;
     id: number;
   }
 
@@ -190,6 +191,7 @@ const ProductListing: React.FC<ProductLsitingProps> = ({
                       price={item.discount}
                       description={item.description}
                       originalPrice={item.price}
+                      imageUrl={item.image}
                       discount={`${Math.round(
                         ((Number(item.price) - Number(item.discount)) /
                           Number(item.price)) *

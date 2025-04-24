@@ -12,7 +12,7 @@ const ProductItem: React.FC<productItemProps> = ({
   description,
   originalPrice,
   discount,
-  imageUrl = "http://ww1.prweb.com/prfiles/2012/10/31/10079702/emily_qtrbnd_5.jpg",
+  imageUrl,
   compactView = false,
 }) => {
   const [isWishlisted, setIsWishlisted] = useState(false);
@@ -62,31 +62,31 @@ const ProductItem: React.FC<productItemProps> = ({
       {/* Product Image with Wishlist Button */}
       <div className="relative group aspect-square">
         <img
-          src={imageUrl}
+          src={"https://admirer.in/asset/image/product/" + imageUrl}
           alt="product"
           className="w-full h-full object-cover rounded-lg"
         />
-
-<button
-  className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity"
-  onClick={(e) => {
-    e.stopPropagation(); // Prevents the click from reaching parent div
-    toggleWishlist();
-  }}
->
-  <div
-    className={`p-1 sm:p-2 rounded-full border shadow-md ${
-      isWishlisted
-        ? "bg-red-100 border-red-500 text-red-500"
-        : "bg-white border-red-500 text-red-500 "
-    }`}
-  >
-    {isWishlisted ? <FaHeart size={compactView ? 16 : 20} /> : <FaRegHeart size={compactView ? 16 : 20}/>}
-    
-    
-  </div>
-</button>
-
+        <button
+          className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity"
+          onClick={(e) => {
+            e.stopPropagation(); // Prevents the click from reaching parent div
+            toggleWishlist();
+          }}
+        >
+          <div
+            className={`p-1 sm:p-2 rounded-full border shadow-md ${
+              isWishlisted
+                ? "bg-red-100 border-red-500 text-red-500"
+                : "bg-white border-red-500 text-red-500 "
+            }`}
+          >
+            {isWishlisted ? (
+              <FaHeart size={compactView ? 16 : 20} />
+            ) : (
+              <FaRegHeart size={compactView ? 16 : 20} />
+            )}
+          </div>
+        </button>
       </div>
 
       <div className="hidden">{id}</div>
