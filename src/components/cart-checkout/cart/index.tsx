@@ -107,7 +107,9 @@ const Cart: React.FC<CartProps> = ({
   const [totalItem, setTotalItem] = useState<ItemProps[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [addressData, setAddressData] = useState<AddressData | null>(null);
-  const [addressForNimbus, setAddressForNimbus] = useState<Address | null>(null);
+  const [addressForNimbus, setAddressForNimbus] = useState<Address | null>(
+    null
+  );
 
   const recalculateTotals = (items: ItemProps[]) => {
     let original = 0;
@@ -173,11 +175,13 @@ const Cart: React.FC<CartProps> = ({
 
   const fetchCartData = async () => {
     setIsLoading(true);
-  
+
     const authToken = localStorage.getItem("auth_token");
     let apiCart: RawCartItem[] = [];
-    const guestCart: GuestCartItem[] = JSON.parse(localStorage.getItem("guest_cart") || "[]");
-  
+    const guestCart: GuestCartItem[] = JSON.parse(
+      localStorage.getItem("guest_cart") || "[]"
+    );
+
     // ✅ Sync guest cart to backend
     if (authToken && guestCart.length > 0) {
       try {
@@ -203,21 +207,24 @@ const Cart: React.FC<CartProps> = ({
         console.error("❌ Error syncing guest cart to backend:", error);
       }
     }
-  
+
     // 🛒 Fetch user cart from backend
     if (authToken) {
       try {
-        const response = await axios.get("http://127.0.0.1:8000/api/cart-products", {
-          headers: {
-            Authorization: `Bearer ${authToken}`,
-          },
-        });
+        const response = await axios.get(
+          "http://127.0.0.1:8000/api/cart-products",
+          {
+            headers: {
+              Authorization: `Bearer ${authToken}`,
+            },
+          }
+        );
         apiCart = response.data.data.products || [];
       } catch (error) {
         console.error("❌ Failed to fetch cart data from API:", error);
       }
     }
-  
+
     // 🔁 Transform backend cart
     const transformedApiCart: ItemProps[] = apiCart.map((item) => ({
       id: item.id,
@@ -231,7 +238,7 @@ const Cart: React.FC<CartProps> = ({
       image: item.image,
       totalQuantity: item.in_stock.toString(),
     }));
-  
+
     // 🧾 Merge guest cart items if needed (though usually empty after sync)
     const transformedGuestCart: ItemProps[] = guestCart.map((item) => ({
       id: item.id,
@@ -245,24 +252,27 @@ const Cart: React.FC<CartProps> = ({
       image: item.image,
       totalQuantity: "10",
     }));
-  
+
     const mergedCart: ItemProps[] = [...transformedApiCart];
     transformedGuestCart.forEach((guestItem) => {
-      const exists = transformedApiCart.some((apiItem) => apiItem.id === guestItem.id);
+      const exists = transformedApiCart.some(
+        (apiItem) => apiItem.id === guestItem.id
+      );
       if (!exists) mergedCart.push(guestItem);
     });
-  
+
     setTotalItem(mergedCart);
     setItemCount(mergedCart.length);
     recalculateTotals(mergedCart);
     setIsLoading(false);
   };
-  
+
   useEffect(() => {
     fetchCartData();
   }, []);
 
   useEffect(() => {
+    console.log("the address for nimbus is = ", addressForNimbus);
     setShippingData(addressForNimbus);
   }, [addressForNimbus]);
 
@@ -317,7 +327,9 @@ const Cart: React.FC<CartProps> = ({
               onRemove={handleDelete}
               finalPrice={(
                 (parseFloat(item.price || "0") -
-                  (parseFloat(item.price || "0") * parseFloat(item.discount || "0")) / 100) *
+                  (parseFloat(item.price || "0") *
+                    parseFloat(item.discount || "0")) /
+                    100) *
                 parseInt(item.qty || "1")
               ).toFixed(2)}
               totalQuantity={item.totalQuantity}

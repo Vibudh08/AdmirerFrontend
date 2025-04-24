@@ -44,7 +44,7 @@ const OrderDetails: React.FC = () => {
         setOrderData(data?.data);
         setStatus(data?.tracking_status);
         setPayment_type(data.data[0].payment_type);
-        console.log(data)
+        console.log(data);
       })
       .catch((error) => {
         console.error("Error fetching order details:", error);
@@ -86,7 +86,8 @@ const OrderDetails: React.FC = () => {
 
       orderData.forEach((item) => {
         if (item.product_name) names.push(item.product_name);
-        if (item.price) total += parseFloat(item.price);
+        if (item.price)
+          total += parseFloat(item.price) * parseFloat(item.quantity);
       });
 
       setProductNames(names);
@@ -107,7 +108,6 @@ const OrderDetails: React.FC = () => {
         <div className="flex-1 space-y-4">
           {orderData.map((order, index) => (
             <div
-            
               key={index}
               className="bg-white border rounded shadow-sm p-6 pb-8"
             >
@@ -122,7 +122,9 @@ const OrderDetails: React.FC = () => {
                   <p className="text-lg font-semibold text-gray-800 mt-2">
                     ₹{order.price}
                   </p>
-                  <p className="text-sm text-gray-500 mt-0.5 font-semibold">Qty: {order.quantity}</p>
+                  <p className="text-sm text-gray-500 mt-0.5 font-semibold">
+                    Qty: {order.quantity}
+                  </p>
                 </div>
               </div>
 
@@ -146,9 +148,7 @@ const OrderDetails: React.FC = () => {
                             />
                           </svg>
                         </span>
-                        <span className="text-[13px]">
-                          Order Confirmed
-                        </span>
+                        <span className="text-[13px]">Order Confirmed</span>
                       </div>
 
                       <div className="flex items-center gap-2 mb-[-2px]">
@@ -254,7 +254,7 @@ const OrderDetails: React.FC = () => {
                 <span className="font-semibold text-black">₹{totalPrice}</span>
               </div>
               <div className="pt-1">
-                <span className="text-gray-700">•{" "}</span> {payment_type}: ₹
+                <span className="text-gray-700">• </span> {payment_type}: ₹
                 {totalPrice}
               </div>
             </div>
