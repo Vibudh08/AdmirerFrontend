@@ -3,6 +3,18 @@ import { useParams } from "react-router-dom";
 import { FaFileInvoice } from "react-icons/fa";
 import { order_detail_API, getAddress_API } from "../api/api-end-points";
 
+// Loader component
+const Loader = () => (
+  <div className="fixed inset-0 bg-white bg-opacity-80 backdrop-blur-sm flex items-center justify-center z-50">
+    <div className="flex flex-col items-center">
+      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mb-4"></div>
+      <p className="text-lg font-bold text-gray-800">
+        Loading your experience, please wait...
+      </p>
+    </div>
+  </div>
+);
+
 const OrderDetails: React.FC = () => {
   const { id } = useParams();
 
@@ -21,36 +33,10 @@ const OrderDetails: React.FC = () => {
   const [status, setStatus] = useState("");
   const [totalPrice, setTotalPrice] = useState(0);
   const [productNames, setProductNames] = useState<string[]>([]);
-  const [payment_type, setPayment_type] = useState();
+  const [payment_type, setPayment_type] = useState<string>();
+  const [loading, setLoading] = useState(true); // NEW
 
-  useEffect(() => {
-    fetch(order_detail_API, {
-      method: "post",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        id: id,
-      }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(
-          "Order detail data: ",
-          data?.data,
-          "status = ",
-          data?.tracking_status
-        );
-        setOrderData(data?.data);
-        setStatus(data?.tracking_status);
-        setPayment_type(data.data[0].payment_type);
-        console.log(data);
-      })
-      .catch((error) => {
-        console.error("Error fetching order details:", error);
-      });
-  }, []);
-  //Address handling
+  // Address interface and state
   interface Address {
     first_name: string;
     last_name: string;
@@ -64,21 +50,56 @@ const OrderDetails: React.FC = () => {
     addr_type: string;
   }
   const [address, setAddress] = useState<Address>();
+
   useEffect(() => {
+    let orderFetched = false;
+    let addressFetched = false;
+
+    const checkIfDone = () => {
+      if (orderFetched && addressFetched) setLoading(false);
+    };
+
+    fetch(order_detail_API, {
+      method: "post",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ id }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setOrderData(data?.data);
+        setStatus(data?.tracking_status);
+        setPayment_type(data?.data?.[0]?.payment_type);
+        orderFetched = true;
+        checkIfDone();
+      })
+      .catch((err) => {
+        console.error("Order fetch error", err);
+        orderFetched = true;
+        checkIfDone();
+      });
+
     fetch(getAddress_API, {
       method: "post",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        id: id,
-      }),
+      body: JSON.stringify({ id }),
     })
-      .then((response) => response.json())
+      .then((res) => res.json())
       .then((data) => {
         setAddress(data.data);
+        addressFetched = true;
+        checkIfDone();
+      })
+      .catch((err) => {
+        console.error("Address fetch error", err);
+        addressFetched = true;
+        checkIfDone();
       });
-  }, []);
+  }, [id]);
+
   useEffect(() => {
     if (orderData && Array.isArray(orderData)) {
       const names: string[] = [];
@@ -95,12 +116,16 @@ const OrderDetails: React.FC = () => {
     }
   }, [orderData]);
 
-  if (!orderData) {
+  // Show loader while data is loading
+  if (loading) return <Loader />;
+
+  if (!orderData || orderData.length === 0) {
     return (
       <div className="text-center mt-10 text-red-600">Order not found</div>
     );
   }
 
+  // (Your full JSX below remains unchanged)
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
       <div className="flex flex-col md:flex-row gap-6">

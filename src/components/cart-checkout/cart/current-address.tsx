@@ -155,7 +155,7 @@ const DeliveryInfo: React.FC<DeliveryInfoProps> = ({
                   {selectedAddress?.locality}
                 </div>
                 <div>
-                  {selectedAddress?.city}, {selectedAddress?.state}
+                  
                 </div>
               </div>
             </div>
@@ -170,12 +170,12 @@ const DeliveryInfo: React.FC<DeliveryInfoProps> = ({
               }}
             >
               <PushpinOutlined style={{ color: "#722ed1" }} />
-              {getZipCode(selectedAddress!)}
+              {selectedAddress?.city}, {selectedAddress?.state}, {getZipCode(selectedAddress!)}
             </div>
 
             <div style={{ marginTop: "16px" }}>
               <Select
-                style={{ width: "100%" }}
+                style={{ width: "100%", height: "35px" }}
                 value={allAddresses.indexOf(selectedAddress!)}
                 onChange={handleAddressSelect}
                 options={allAddresses.map((address, index) => ({
@@ -200,7 +200,7 @@ const DeliveryInfo: React.FC<DeliveryInfoProps> = ({
                 width: "100px",
                 border: "none",
                 borderRadius: "6px",
-                height: "40px",
+                height: "35px",
                 fontSize: "14px",
                 fontWeight: "500",
                 textTransform: "uppercase",
