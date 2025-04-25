@@ -15,15 +15,15 @@ interface PriceDetail {
 }
 
 interface ShippingData {
-  firstname: string;
-  lastname: string;
+  first_name: string;
+  last_name: string;
   flat: string;
   street: string;
   locality: string;
   country_name: string;
   state: string;
   city: string;
-  zipcode: string;
+  zip_code: string;
   phone: string;
   email: string;
   addr_type: string;
@@ -128,13 +128,13 @@ const Checkout: React.FC<IndexProps> = ({
                   paymentType: "prepaid",
                   amount: totalAmount,
                   city: shippingData?.city || "",
-                  firstName: shippingData?.firstname || "",
-                  lastName: shippingData?.lastname || "",
+                  firstName: shippingData?.first_name || "",
+                  lastName: shippingData?.last_name || "",
                   flat: shippingData?.flat || "",
                   locality: shippingData?.locality || "",
                   state: shippingData?.state || "",
                   street: shippingData?.street || "",
-                  pincode: shippingData?.zipcode || "",
+                  pincode: shippingData?.zip_code || "",
                 };
 
                 const nimbusRes = await fetch(nimbusDelievery_API, {
@@ -161,8 +161,8 @@ const Checkout: React.FC<IndexProps> = ({
             }
           },
           prefill: {
-            name: `${shippingData?.firstname || ""} ${
-              shippingData?.lastname || ""
+            name: `${shippingData?.first_name || ""} ${
+              shippingData?.last_name || ""
             }`,
             email: shippingData?.email || "",
             contact: shippingData?.phone || "",
@@ -183,13 +183,13 @@ const Checkout: React.FC<IndexProps> = ({
           paymentType: "cod",
           amount: totalAmount,
           city: shippingData?.city || "",
-          firstName: shippingData?.firstname || "",
-          lastName: shippingData?.lastname || "",
+          firstName: shippingData?.first_name || "",
+          lastName: shippingData?.last_name || "",
           flat: shippingData?.flat || "",
           locality: shippingData?.locality || "",
           state: shippingData?.state || "",
           street: shippingData?.street || "",
-          pincode: shippingData?.zipcode || "",
+          pincode: shippingData?.zip_code || "",
         };
 
         const response = await fetch(nimbusDelievery_API, {
