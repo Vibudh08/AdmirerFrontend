@@ -9,16 +9,16 @@ import {
 
 interface Address {
   first_name?: string;
-  firstname?: string;
+  // firstname?: string;
   last_name?: string;
-  lastname?: string;
+  // lastname?: string;
   flat: string;
   street: string;
   locality: string;
   city: string;
   state: string;
   zip_code?: string;
-  zipcode?: string;
+  // zipcode?: string;
   addr_type: string;
   email?: string | null;
 }
@@ -64,15 +64,15 @@ const DeliveryInfo: React.FC<DeliveryInfoProps> = ({
   };
 
   const getName = (address: Address) => {
-    return address.first_name || address.firstname || "";
+    return address.first_name || "";
   };
 
   const getLastName = (address: Address) => {
-    return address.last_name || address.lastname || "";
+    return address.last_name || "";
   };
 
   const getZipCode = (address: Address) => {
-    return address.zip_code || address.zipcode || "";
+    return address.zip_code || "";
   };
 
   return (
