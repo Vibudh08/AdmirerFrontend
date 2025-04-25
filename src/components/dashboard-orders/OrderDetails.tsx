@@ -113,18 +113,30 @@ const OrderDetails: React.FC = () => {
               className="bg-white border rounded shadow-sm p-6 pb-8"
             >
               <div className="flex gap-6">
-                <div>
+                {order.image && (
+                  <div className="w-[30%] h-full flex items-center justify-center">
+                    <img
+                      src={
+                        "https://admirer.in/asset/image/product/" + order.image
+                      }
+                      alt={order.product_name}
+                      className="w-full h-full object-contain"
+                      style={{ maxHeight: "100%" }}
+                    />
+                  </div>
+                )}
+                <div className="flex-1">
                   <h2 className="font-semibold text-gray-800 text-[15px] leading-snug">
                     {order.product_name}
                   </h2>
-                  <p className="text-xs text-gray-500 mt-0.5">
+                  {/* <p className="text-xs text-gray-500 mt-0.5">
                     Seller: LogicDevices
-                  </p>
+                  </p> */}
                   <p className="text-lg font-semibold text-gray-800 mt-2">
                     ₹{order.price}
                   </p>
                   <p className="text-sm text-gray-500 mt-0.5 font-semibold">
-                    Qty: {order.quantity}
+                    Quantity: {order.quantity}
                   </p>
                 </div>
               </div>
