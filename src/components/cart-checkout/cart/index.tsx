@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Item from "./order-item";
 import DeliveryInfo from "./current-address";
 import axios from "axios";
-import { getShippingAndBillingAddress } from "../../api/api-end-points";
+import { addToCart, cartProductData, cartRemove, getShippingAndBillingAddress, updateCartQuantity } from "../../api/api-end-points";
 
 interface CartProps {
   setTotalMRP: (value: number) => void;
@@ -140,7 +140,7 @@ const Cart: React.FC<CartProps> = ({
 
     try {
       await axios.post(
-        "http://127.0.0.1:8000/api/update-cart-quantity",
+        updateCartQuantity,
         { productId: id, quantity: newQty },
         {
           headers: {
@@ -161,7 +161,7 @@ const Cart: React.FC<CartProps> = ({
 
     try {
       await axios.post(
-        "http://127.0.0.1:8000/api/cart-remove",
+        cartRemove,
         { pid: id },
         {
           headers: {
@@ -189,7 +189,7 @@ const Cart: React.FC<CartProps> = ({
         await Promise.all(
           guestCart.map((item) =>
             axios.post(
-              "http://127.0.0.1:8000/api/add-to-cart",
+              addToCart,
               {
                 product_id: item.id,
                 cart: 1,
@@ -213,7 +213,7 @@ const Cart: React.FC<CartProps> = ({
     if (authToken) {
       try {
         const response = await axios.get(
-          "http://127.0.0.1:8000/api/cart-products",
+          cartProductData,
           {
             headers: {
               Authorization: `Bearer ${authToken}`,

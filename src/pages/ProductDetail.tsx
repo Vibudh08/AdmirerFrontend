@@ -1,7 +1,7 @@
 // ProductDetails.tsx
 import React, { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
-import axios from "axios"; // or any other HTTP library
+import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { FaUndo, FaShieldAlt, FaCertificate, FaGem } from "react-icons/fa";
 import ProductActions from "../components/product-detail/ShareWishlist";
@@ -9,7 +9,7 @@ import PincodeChecker from "../components/product-detail/pincodeChecker";
 import OfferBanner from "../components/product-detail/OfferBanner";
 import ProductAccordion from "../components/product-detail/ProductDescription";
 import { FaHeart } from "react-icons/fa";
-import { wishlist_add_remove } from "../components/api/api-end-points";
+import { addToCart, productDetails, wishlist_add_remove } from "../components/api/api-end-points";
 import Slider from "react-slick";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { FaRegHeart } from "react-icons/fa";
@@ -160,8 +160,8 @@ const ProductDetails = () => {
   
     // User is logged in - Proceed with API call
     try {
-      const response = await axios.post(
-        "http://127.0.0.1:8000/api/add-to-cart",
+      const response = await axios.post( 
+        addToCart,
         {
           product_id: product.id,
           cart: 1,
@@ -187,7 +187,7 @@ const ProductDetails = () => {
   useEffect(() => {
     if (id) {
       axios
-        .get(`http://127.0.0.1:8000/api/product-details/${id}`, {
+        .get(`${productDetails}/${id}`, {
           headers: {
             "Content-Type": "application/json",
             Authorization: "Bearer " + localStorage.getItem("auth_token"),

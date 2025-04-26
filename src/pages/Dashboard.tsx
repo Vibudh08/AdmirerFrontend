@@ -4,6 +4,7 @@ import Dashboard_Profile from "../components/dashboard-profile";
 import OrderPage from "../components/dashboard-orders";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
+import { logout } from "../components/api/api-end-points";
 const Dashboard = () => {
   
   const location = useLocation();
@@ -14,7 +15,7 @@ const Dashboard = () => {
   
   const handleLogout = async () => {
     try {
-      await axios.post("http://127.0.0.1:8000/api/logout", {}, {
+      await axios.post(logout, {}, {
         headers: {
           Authorization: "Bearer " + localStorage.getItem("auth_token"),
         },

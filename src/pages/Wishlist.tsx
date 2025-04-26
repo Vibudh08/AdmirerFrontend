@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import WishlistCard from "../components/WishlistCard";
-import { get_wishlist_data } from "../components/api/api-end-points";
+import { get_wishlist_data, movecart, remove } from "../components/api/api-end-points";
 import { useNavigate } from "react-router-dom";
 import { toast } from 'react-toastify';
 
@@ -60,7 +60,7 @@ const Wishlist = () => {
   const handleMoveToCart = async (product_id: number) => {
     try {
       const res = await fetch(
-        "http://127.0.0.1:8000/api/user/wishlist/movecart",
+        movecart,
         {
           method: "POST",
           headers: {
@@ -90,7 +90,7 @@ const Wishlist = () => {
   const handleRemove = async (wishlist_id: number) => {
     try {
       const res = await fetch(
-        "http://127.0.0.1:8000/api/user/wishlist/remove",
+        remove,
         {
           method: "POST",
           headers: {

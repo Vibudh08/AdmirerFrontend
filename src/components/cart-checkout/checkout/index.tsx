@@ -4,7 +4,7 @@ import { GoTag } from "react-icons/go";
 import { Modal } from "antd";
 import Coupons_screen from "../../coupons/Coupons_screen";
 import OrderSuccessModal from "../../OrderSuccessModal";
-import { nimbusDelievery_API } from "../../api/api-end-points";
+import { nimbusDelievery_API, razorPayCreateOrderApi, razorPayStoreApi } from "../../api/api-end-points";
 
 interface PriceDetail {
   label: string;
@@ -81,7 +81,7 @@ const Checkout: React.FC<IndexProps> = ({
     }
 
     if (!shippingData) {
-      setShowAddressError(true); // ⛔ show error box
+      setShowAddressError(true); 
       return;
     }
     setShowAddressError(false);
@@ -92,7 +92,7 @@ const Checkout: React.FC<IndexProps> = ({
     if (selected === "online") {
       try {
         const createOrderRes = await fetch(
-          "http://127.0.0.1:8000/api/razorPayCreateOrderApi",
+          razorPayCreateOrderApi,
           {
             method: "POST",
             headers: {
@@ -116,7 +116,7 @@ const Checkout: React.FC<IndexProps> = ({
             try {
               setLoading(true);
               const verifyRes = await fetch(
-                "http://127.0.0.1:8000/api/razorPayStoreApi",
+                razorPayStoreApi,
                 {
                   method: "POST",
                   headers: {

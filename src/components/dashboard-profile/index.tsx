@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Button } from "antd";
 import { CloseOutlined } from "@ant-design/icons";
-import { user_profile_API } from "../api/api-end-points";
+import { changeNumberOtpVerify, changeNumberSendOtp, UPDATE_PROFILE_API, user_profile_API } from "../api/api-end-points";
 import axios from "axios";
 
 const indianStates = [
@@ -71,7 +71,6 @@ const Dashboard_Profile = () => {
   }
   
 
-  const UPDATE_PROFILE_API = "http://127.0.0.1:8000/api/updateProfile";
 
   const [profileData, setProfileData] = useState<profileDataProps>();
   const [gender, setGender] = useState("male");
@@ -343,7 +342,7 @@ const Dashboard_Profile = () => {
 
     try {
       await axios.post(
-        "http://127.0.0.1:8000/api/changeNumberSendOtp",
+        changeNumberSendOtp,
         { phone: newNumber },
         {
           headers: {
@@ -370,7 +369,7 @@ const Dashboard_Profile = () => {
     }
     try {
       await axios.post(
-        "http://127.0.0.1:8000/api/changeNumberOtpVerify",
+        changeNumberOtpVerify,
         {
           phone: newNumber,
           otp: otp,
