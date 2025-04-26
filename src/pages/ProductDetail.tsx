@@ -13,6 +13,7 @@ import { wishlist_add_remove } from "../components/api/api-end-points";
 import Slider from "react-slick";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { FaRegHeart } from "react-icons/fa";
+import { toast } from 'react-toastify'; 
 
 // Arrows
 const CustomPrevArrow = ({ onClick }: { onClick: () => void }) => (
@@ -106,7 +107,7 @@ const ProductDetails = () => {
 
   const toggleWishlist = async (prodId?: string) => {
     const productIdToToggle = prodId || id;
-
+  
     try {
       const response = await fetch(wishlist_add_remove, {
         method: "POST",
@@ -119,21 +120,26 @@ const ProductDetails = () => {
           wishlist: isWishlisted ? 0 : 1,
         }),
       });
-
+  
       const result = await response.json();
+  
       if (response.ok) {
+        const action = isWishlisted ? "Removed from" : "Added to";
         setIsWishlisted(!isWishlisted);
+        toast.success(`${action} wishlist`);
         console.log(result.message || "Wishlist updated");
       } else if (response.status === 401) {
-        alert("Unauthorized user. Please log in.");
+        toast.error("Please log in to add items to your wishlist.");
       } else {
-        alert("Something went wrong.");
         console.error(result);
+        toast.error("Something went wrong while updating wishlist.");
       }
     } catch (err) {
       console.error("Error toggling wishlist:", err);
+      toast.error("Something went wrong. Please try again.");
     }
   };
+  
 
   const handleAddToCart = async () => {
     const authToken = localStorage.getItem("auth_token");
@@ -145,9 +151,9 @@ const ProductDetails = () => {
       if (!isAlreadyAdded) {
         cartItems.push(product);
         localStorage.setItem("guest_cart", JSON.stringify(cartItems));
-        alert("✅ Product added to cart (Guest Mode)");
+        toast.success("Product added to cart");
       } else {
-        alert("⚠️ Product already in cart (Guest Mode)");
+        toast.success("Product already to cart");
       }
       return;
     }
@@ -169,6 +175,7 @@ const ProductDetails = () => {
       );
   
       if (response.data && response.data.status === "success") {
+        toast.success("Product added to cart");
         setIsInCart(true);
       }
     } catch (error) {
@@ -298,7 +305,7 @@ const ProductDetails = () => {
                 className="w-full object-cover"
                 ref={imageRef}
                 style={{ cursor: "none" }}
-              />
+              />  
               <div
                 style={{
                   ...zoomStyle,
@@ -429,14 +436,14 @@ const ProductDetails = () => {
                     <button
                       className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity"
                       onClick={(e) => {
-                        e.stopPropagation(); // Prevents the click from reaching parent div
+                        // e.stopPropagation(); // Prevents the click from reaching parent div
                         toggleWishlist(item.id);
                       }}
                     >
                       <div
-                        className={`p-1 sm:p-1 rounded-full border shadow-md ${
+                        className={`p-2 sm:p-1 rounded-full border shadow-md ${
                           item.wishlist === 1
-                            ? "bg-red-100 border-red-500 text-red-500"
+                            ? "bg-red-900 border-red-500 text-red-500"
                             : "bg-white border-red-500 text-red-500 "
                         }`}
                       >

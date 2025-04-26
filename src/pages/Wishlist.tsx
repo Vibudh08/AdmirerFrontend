@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import WishlistCard from "../components/WishlistCard";
 import { get_wishlist_data } from "../components/api/api-end-points";
 import { useNavigate } from "react-router-dom";
+import { toast } from 'react-toastify';
 
 const Loader = () => (
   <div className="fixed inset-0 bg-white bg-opacity-80 backdrop-blur-sm flex items-center justify-center z-50">
@@ -44,6 +45,7 @@ const Wishlist = () => {
         setWishlistItems(result.data);
       } else if (response.status === 401) {
         // alert("Unauthorized user. Please log in.");
+        toast.info("Please log in first to see your wishlist.");
         navigate("/LogIn");
       } else {
         console.error("Error fetching wishlist:", result);
@@ -73,11 +75,12 @@ const Wishlist = () => {
       console.log("Moved to cart:", data);
 
       if (res.ok) {
+        toast.success("Added to cart");
         setWishlistItems((prev) =>
           prev.filter((item) => item.product_id !== product_id)
         );
       } else {
-        alert("Failed to move to cart");
+        toast.error("Failed to move to cart");
       }
     } catch (error) {
       console.error("Error moving to cart:", error);

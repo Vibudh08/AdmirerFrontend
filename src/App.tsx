@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation, matchPath } from "react-router-dom";
 import "./App.css";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
@@ -24,76 +24,107 @@ import BlogDetails from "./pages/BlogDetails";
 import AboutPage from "./pages/About";
 import ScrollToTop from "./components/ScrollToTop";
 import PrivateRoute from "./components/auth/PrivateRoute";
+import NotFound from "./pages/NotFound";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
-
+// List of all valid route patterns
+const routePatterns = [
+  '/',
+  '/LogIn',
+  '/product/:id',
+  '/dashboard_profile',
+  '/order/:id',
+  '/cart',
+  '/listing',
+  '/dashboard',
+  '/wishlist',
+  '/privacy',
+  '/terms',
+  '/return',
+  '/exchange',
+  '/shipping',
+  '/help_faq',
+  '/blogs',
+  '/blog-details/:id',
+  '/about',
+  '/404'
+];
 
 function App() {
-  const [currentRoute, setCurrentRoute] = useState("/");
   const [categoryId, setCategoryId] = useState("");
   const [subcategoryId, setSubcategoryId] = useState("");
-  const [loading, setLoading] = useState(true);
+  const [showHeaderFooter, setShowHeaderFooter] = useState(true);
 
-
-  function RouteTracker() {
+  const RouteTracker = () => {
     const location = useLocation();
 
     useEffect(() => {
-      setCurrentRoute(location.pathname);
+      // Check if current path matches any valid route
+      const isMatched = routePatterns.some(pattern => 
+        matchPath({ path: pattern, end: true }, location.pathname)
+      );  
+
+      // Special case for dynamic profile route
+      const isDashboardProfile = location.pathname.startsWith('/dashboard_profile');
+      
+      // Hide header/footer for Login or unmatched routes
+      const shouldHide = location.pathname === '/LogIn' || (!isMatched && !isDashboardProfile);
+      
+      setShowHeaderFooter(!shouldHide);
     }, [location]);
 
     return null;
-  }
-
-  
+  };
 
   return (
-    <>
-      <BrowserRouter>
+    <BrowserRouter>
       <ScrollToTop />
-        <Layout>
-          <RouteTracker />
-          {currentRoute !== "/LogIn" && <Header />}
-          <Routes>
-            <Route
-              path="/"
-              element={
-                <Home
-                  setCategoryId={setCategoryId}
-                  setSubcategoryId={setSubcategoryId}
-                />
-              }
-            />
-
-            <Route path="/LogIn" element={<Login />} />
-            <Route path="/product/:id" element={<ProductDetails />} />
-            <Route path="/dashboard_profile" element={<PrivateRoute><Dashboard_Profile /></PrivateRoute>} />
-            <Route path="/order/:id" element={<PrivateRoute><OrderDetails /></PrivateRoute>} />
-            <Route path="/cart" element={<Complete_cart_checkout />} />
-            <Route
-              path="/listing"
-              element={
-                <ProductListing
-                  category={Number(categoryId)}
-                  subcategory={Number(subcategoryId)}
-                />
-              }
-            />
-            <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
-            <Route path="/wishlist" element={<Wishlist />} />
-            <Route path="/privacy" element={<PrivacyPolicy />} />
-            <Route path="/terms" element={<TermsConditions />} />
-            <Route path="/return" element={<ReturnRefund />} />
-            <Route path="/exchange" element={<ExchangePolicy />} />
-            <Route path="/shipping" element={<ShippingPolicy />} />
-            <Route path="/help_faq" element={<HelpContact />} />
-            <Route path="/blogs" element={<BlogPage />} />
-            <Route path="/blog-details/:id" element={<BlogDetails />} />
-            <Route path="/about" element={<AboutPage />} />
-          </Routes>
-          {currentRoute !== "/LogIn" && <Footer />}
-        </Layout>
-      </BrowserRouter>
-    </>
+      <Layout>
+        <RouteTracker />
+        {showHeaderFooter && <Header />}
+        <ToastContainer position="top-center" autoClose={2500} hideProgressBar />
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <Home
+                setCategoryId={setCategoryId}
+                setSubcategoryId={setSubcategoryId}
+              />
+            }
+          />
+          <Route path="/LogIn" element={<Login />} />
+          <Route path="/product/:id" element={<ProductDetails />} />
+          <Route path="/dashboard_profile" element={<PrivateRoute><Dashboard_Profile /></PrivateRoute>} />
+          <Route path="/order/:id" element={<PrivateRoute><OrderDetails /></PrivateRoute>} />
+          <Route path="/cart" element={<Complete_cart_checkout />} />
+          <Route
+            path="/listing"
+            element={
+              <ProductListing
+                category={Number(categoryId)}
+                subcategory={Number(subcategoryId)}
+              />
+            }
+          />
+          <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
+          <Route path="/wishlist" element={<Wishlist />} />
+          <Route path="/privacy" element={<PrivacyPolicy />} />
+          <Route path="/terms" element={<TermsConditions />} />
+          <Route path="/return" element={<ReturnRefund />} />
+          <Route path="/exchange" element={<ExchangePolicy />} />
+          <Route path="/shipping" element={<ShippingPolicy />} />
+          <Route path="/help_faq" element={<HelpContact />} />
+          <Route path="/blogs" element={<BlogPage />} />
+          <Route path="/blog-details/:id" element={<BlogDetails />} />
+          <Route path="/about" element={<AboutPage />} />
+          <Route path="/404" element={<NotFound />} />
+          <Route path="/*" element={<NotFound />} />
+        </Routes>
+        {showHeaderFooter && <Footer />}
+      </Layout>
+    </BrowserRouter>
   );
 }
 

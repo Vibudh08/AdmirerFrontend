@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { IoShareSocialOutline } from "react-icons/io5";
 import { wishlist_add_remove } from "../api/api-end-points";
+import { toast } from 'react-toastify';
 import {
   FaHeart,
   FaRegHeart,
@@ -43,9 +44,10 @@ const ProductActions: React.FC<ProductActionsProps> = ({
         setInWishlist(!inWishlist);
         console.log(result.message || "Wishlist updated");
       } else if (response.status === 401) {
-        alert("Unauthorized user. Please log in.");
+        toast.error("Please log in to add items to your wishlist.");
+
       } else {
-        alert("Something went wrong.");
+        // alert("Something went wrong.");
         console.error(result);
       }
     } catch (err) {

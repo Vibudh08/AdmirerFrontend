@@ -4,6 +4,7 @@ import { FaRegHeart } from "react-icons/fa";
 import productItemProps from "./product-item-interface";
 import { wishlist_add_remove } from "../api/api-end-points";
 import { useNavigate } from "react-router-dom";
+import { toast } from 'react-toastify';
 
 const ProductItem: React.FC<productItemProps> = ({
   name,
@@ -40,9 +41,14 @@ const ProductItem: React.FC<productItemProps> = ({
 
       if (response.ok) {
         setIsWishlisted(!isWishlisted);
+        const message = isWishlisted
+          ? "Removed from wishlist"
+          : "Added to wishlist";
+        toast.success(message);
         console.log(result.message || "Wishlist updated");
       } else if (response.status === 401) {
-        alert("Unauthorized user. Please log in.");
+        toast.error("Please log in to add items to your wishlist.");
+        // navigate("/")
       } else {
         alert("Something went wrong.");
         console.error(result);

@@ -145,7 +145,6 @@ const Checkout: React.FC<IndexProps> = ({
                   street: shippingData?.street || "",
                   pincode: shippingData?.zip_code || "",
                 };
-
                 const nimbusRes = await fetch(nimbusDelievery_API, {
                   method: "POST",
                   headers: {
@@ -202,7 +201,7 @@ const Checkout: React.FC<IndexProps> = ({
           street: shippingData?.street || "",
           pincode: shippingData?.zip_code || "",
         };
-
+        console.log("payload is ",payload)
         const response = await fetch(nimbusDelievery_API, {
           method: "POST",
           headers: {

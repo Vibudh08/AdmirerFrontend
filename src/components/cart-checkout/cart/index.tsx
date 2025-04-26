@@ -74,6 +74,7 @@ interface GuestCartItem {
   discount?: string;
   return_days?: string;
   image: string;
+  in_stock: number;
 }
 
 interface Address {
@@ -230,14 +231,15 @@ const Cart: React.FC<CartProps> = ({
       id: item.id,
       brandName: item.product_name || "Unknown",
       brandId: item.id.toString(),
-      description: "No description available",
+      description: item.description || "No description available",
       qty: item.quantity,
       price: item.price,
       discount: item.discount,
       return_days: "7",
       image: item.image,
-      totalQuantity: item.in_stock.toString(),
+      totalQuantity: item.in_stock < 3 ? item.in_stock.toString() : "3",
     }));
+    
 
     // 🧾 Merge guest cart items if needed (though usually empty after sync)
     const transformedGuestCart: ItemProps[] = guestCart.map((item) => ({
@@ -250,7 +252,7 @@ const Cart: React.FC<CartProps> = ({
       discount: item.discount || "0",
       return_days: item.return_days || "7",
       image: item.image,
-      totalQuantity: "10",
+      totalQuantity: item.in_stock < 3 ? item.in_stock.toString() : "3",
     }));
 
     const mergedCart: ItemProps[] = [...transformedApiCart];
