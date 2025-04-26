@@ -1,8 +1,10 @@
 // ✅ Only change: adding `onQuantityChange` prop and updating quantity via dropdown
 
 import React from "react";
-import { FaTimes } from "react-icons/fa";
+import { FaTimes, FaHeart } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import { addToWishlist_API } from "../../api/api-end-points";
+import { response } from "express";
 
 interface ItemProps {
   id: number;
@@ -43,6 +45,24 @@ const Item: React.FC<ItemProps> = ({
   }
 
   const quantityOptions = Array.from({ length: totalQty }, (_, i) => i + 1);
+  const handleAddToWishlist = () => {
+    fetch(addToWishlist_API, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: "Bearer " + localStorage.getItem("auth_token"),
+      },
+      body: JSON.stringify({
+        id: { id },
+      }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        console.log("the id we are getting is ", id);
+      });
+    //onRemove(id);
+  };
 
   return (
     <div className="bg-white relative mt-1 mb-2">
@@ -60,18 +80,17 @@ const Item: React.FC<ItemProps> = ({
         </div>
 
         <div className="w-[40%] relative ">
-<Link to={`/product/${id}`}>
-          <img className="w-full h-full" src={image} alt={brandName} />
-        </Link>
+          <Link to={`/product/${id}`}>
+            <img className="w-full h-full" src={image} alt={brandName} />
+          </Link>
         </div>
-
 
         <div className="w-[60%] p-3 flex flex-col h-fit">
           <div className="hidden">{id}</div>
           <Link to={`/product/${id}`}>
-          <h2 className="text-[17px] font-[500] text-gray-900 mb-1 w-[95%]">
-            {brandName}
-          </h2>
+            <h2 className="text-[17px] font-[500] text-gray-900 mb-1 w-[95%]">
+              {brandName}
+            </h2>
           </Link>
 
           <p className="text-gray-700 font-medium text-[13px] line-clamp-2 mb-4 leading-snug">
@@ -96,7 +115,9 @@ const Item: React.FC<ItemProps> = ({
           </div>
 
           <div className="flex items-center gap-2 mb-1">
-            <span className="text-black font-semibold">₹{(parseFloat(discount) * qty).toFixed(2)}</span>
+            <span className="text-black font-semibold">
+              ₹{(parseFloat(discount) * qty).toFixed(2)}
+            </span>
             <span className="text-gray-400 line-through text-xs">
               ₹{(parseFloat(price) * qty).toFixed(2)}
             </span>
@@ -108,6 +129,16 @@ const Item: React.FC<ItemProps> = ({
               )}
               % off
             </span>
+          </div>
+          {/* Add to Wishlist Button */}
+          <div className="flex justify-end mt-2">
+            <button
+              onClick={handleAddToWishlist}
+              className="flex items-center gap-1 bg-purple-100 hover:bg-purple-200 text-purple-800 px-3 py-1 rounded-full text-sm font-medium transition-colors duration-200"
+            >
+              <FaHeart className="text-purple-600" />
+              Add to Wishlist
+            </button>
           </div>
         </div>
       </div>

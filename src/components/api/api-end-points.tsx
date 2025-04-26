@@ -16,3 +16,4 @@ export const verifyLogin_API = apiHeader + "verify-otp";
 export const getSubCatName_API = apiHeader + "getSubCatName";
 export const nimbusDelievery_API = apiHeader + "NimbusShippingStart";
 export const getShippingAndBillingAddress = apiHeader + "get-address-cart";
+export const addToWishlist_API = apiHeader + "add-to-wishlist";
