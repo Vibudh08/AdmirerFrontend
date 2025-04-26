@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { FaTimes } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import { toast } from 'react-toastify';
 import { otp_send_API, verifyLogin_API } from "../api/api-end-points";
 interface FormProps {
   phoneNumber: string;
@@ -62,8 +63,10 @@ const Login = () => {
 
       setOtpSent(true);
       setTimer(60); // Start 60-second timer
+      toast.success("OTP sent successfully!");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to send OTP");
+      toast.error("Failed to send OTP. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -96,6 +99,7 @@ const Login = () => {
       localStorage.setItem("auth_token", result.token);
       localStorage.setItem("user", JSON.stringify(result.user));
 
+      toast.success("Login successful!");
       // Redirect to dashboard
       navigate("/");
     } catch (err) {

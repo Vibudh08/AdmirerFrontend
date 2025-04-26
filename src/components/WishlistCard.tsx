@@ -28,14 +28,14 @@ const ProductItem: React.FC<productItemProps> = ({
   onMoveToCart,
 }) => {
   return (
-    <div className="max-w-[300px] font-sans bg-white rounded-[5px] p-4 max-md:p-2 pb-2 flex flex-col gap-1 max-md:gap-1 items-center text-center border  border-gray-300">
+    <div className="max-w-[300px] font-sans bg-white rounded-[5px]  max-md:p-2 pb-2 flex flex-col gap-1 max-md:gap-1 items-center text-center border  border-gray-300">
       {/* Product Image with Hover Button */}
       <div className="relative group">
         <Link to={`/product/${id}`}>
           <img
             src={imageUrl}
             alt="product"
-            className="w-full h-auto rounded-lg"
+            className="w-full h-auto "
           />
         </Link>
 
@@ -44,7 +44,7 @@ const ProductItem: React.FC<productItemProps> = ({
           className="absolute top-0 right-0 transition-opacity"
           onClick={() => onRemove(wishlist_id)} // <== call onRemove with ID
         >
-          <div className="p-1 max-md:p-0 rounded-full border bg-gray-50 border-gray-100 text-gray-500 hover:text-black">
+          <div className="p-1 m-2 max-md:p-0 rounded-full border bg-gray-50 border-gray-100 text-gray-500 hover:text-black">
             <IoClose className="text-xl max-md:text-lg" />
           </div>
         </button>
@@ -55,11 +55,12 @@ const ProductItem: React.FC<productItemProps> = ({
       <div className="hidden">{id}</div>
 
       {/* Product Name */}
+  <div className="font-semibold text-black text-md max-md:text-[16px] !truncate whitespace-nowrap overflow-hidden w-full px-2 max-md:px-0 mt-2 ">
       <Link to={`/product/${id}`}>
-        <div className="font-semibold text-black text-lg max-md:text-[18px] truncate overflow-hidden whitespace-nowrap w-full max-w-[250px] px-2">
-          {name}
-        </div>
-      </Link>
+    {name}
+</Link>
+  </div>
+
 
       {/* Product Description */}
       <div className="text-gray-400 text-xs leading-relaxed font-bold truncate overflow-hidden whitespace-nowrap w-full max-w-[250px] px-2">

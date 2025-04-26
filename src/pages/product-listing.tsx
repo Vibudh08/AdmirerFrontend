@@ -9,6 +9,17 @@ import {
   getSubCatName_API,
 } from "../components/api/api-end-points";
 
+const Loader = () => (
+  <div className="fixed inset-0 bg-white bg-opacity-80 backdrop-blur-sm flex items-center justify-center z-50">
+    <div className="flex flex-col items-center">
+      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mb-4"></div>
+      <p className="text-lg font-bold text-gray-800">
+        Loading your experience, please wait...
+      </p>
+    </div>
+  </div>
+);
+
 interface ProductLsitingProps {
   category?: Number;
   subcategory?: Number;
@@ -23,11 +34,18 @@ const ProductListing: React.FC<ProductLsitingProps> = ({
   const [showMobileFilters, setShowMobileFilters] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [categoryReady, setCategoryReady] = useState(false);
+  const [productDataArray, setProductDataArray] = useState<any[]>([]);
+  const [minVal, setMinVal] = useState(0);
+  const [maxVal, setMaxVal] = useState(0);
+  const [dynamicMinVal, setDynamicMinVal] = useState(0);
+  const [dynamicMaxVal, setDynamicMaxVal] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [subCategory, setSubCategory] = useState("");
+
   useEffect(() => {
-    if (!category && !subcategory) {
-      navigate("/"); // 👈 send to home page
-    }
+    if (!category && !subcategory) navigate("/");
   }, [category, subcategory, navigate]);
+
   useEffect(() => {
     const checkIfMobile = () => {
       setIsMobile(window.innerWidth < 1024);
@@ -44,41 +62,15 @@ const ProductListing: React.FC<ProductLsitingProps> = ({
     }
   }, [isMobile]);
 
-  interface productItemApiProps {
-    product_name: string;
-    discount: string;
-    price: string;
-    cat_id: string;
-    sub_cat_name: string;
-    description: string;
-    image: string;
-    id: number;
-  }
-
-  const [productDataArray, setProductDataArray] = useState<
-    productItemApiProps[]
-  >([]);
-  const [minVal, setMinVal] = useState(0);
-  const [maxVal, setMaxVal] = useState(0);
-  const [dynamicMinVal, setDynamicMinVal] = useState(0);
-  const [dynamicMaxVal, setDynamicMaxVal] = useState(0);
-  const [loading, setLoading] = useState(false);
-  const [subCategory, setSubCategory] = useState("");
-
   useEffect(() => {
     if (subcategory) {
       fetch(getSubCatName_API, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          subcatId: Number(subcategory),
-        }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ subcatId: Number(subcategory) }),
       })
-        .then((response) => response.json())
+        .then((res) => res.json())
         .then((value) => {
-          console.log("Subcat API response:", value);
           setSubCategory(value?.subcatName || "");
           setCat(value?.catId || null);
           setCategoryReady(true);
@@ -90,10 +82,8 @@ const ProductListing: React.FC<ProductLsitingProps> = ({
   }, [subcategory, category]);
 
   useEffect(() => {
-    fetch(productPriceCategoryInfo_API, {
-      method: "GET",
-    })
-      .then((response) => response.json())
+    fetch(productPriceCategoryInfo_API)
+      .then((res) => res.json())
       .then((data) => {
         setMinVal(Number(data.minPrice));
         setMaxVal(Number(data.maxPrice));
@@ -104,33 +94,26 @@ const ProductListing: React.FC<ProductLsitingProps> = ({
 
   useEffect(() => {
     if (!categoryReady || !cat) return;
-
     setLoading(true);
     fetch(product_listing_API, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         maxPrice: maxVal,
         minPrice: minVal,
         category: Number(cat),
       }),
     })
-      .then((response) => response.json())
-      .then((data) => {
-        setProductDataArray(data);
-      })
-      .catch((err) => {
-        console.error("Failed to fetch products:", err);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+      .then((res) => res.json())
+      .then((data) => setProductDataArray(data))
+      .catch((err) => console.error("Failed to fetch products:", err))
+      .finally(() => setLoading(false));
   }, [minVal, maxVal, cat, categoryReady]);
-
+  if (loading) return <Loader />;
   return (
     <div className="min-h-screen bg-gray-100 p-2 sm:p-4 relative">
+      {/* {loading && <Loader />} */}
+
       <button
         aria-label="Open filters"
         className={`lg:hidden fixed bottom-6 right-6 z-20 bg-purple-600 text-white p-3 rounded-full shadow-lg flex items-center justify-center transition-transform hover:scale-105 active:scale-95 ${
@@ -163,6 +146,7 @@ const ProductListing: React.FC<ProductLsitingProps> = ({
             setDynamicMax={setDynamicMaxVal}
             category={Number(cat)}
             setSubCategory={setSubCategory}
+            
           />
         </div>
 
@@ -175,39 +159,33 @@ const ProductListing: React.FC<ProductLsitingProps> = ({
         )}
 
         <div className="flex-grow bg-white rounded-xl shadow-sm border border-gray-200 p-2 sm:p-3 lg:p-4">
-          <div className="min-h-[200px] flex justify-center items-center">
-            {loading ? (
-              <div className="animate-spin rounded-full h-10 w-10 border-4 border-purple-500 border-t-transparent"></div>
-            ) : (
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-2 sm:gap-3 md:gap-4">
-                {productDataArray
-                  .filter((item) => {
-                    const discountedPrice = Number(item.discount);
-                    return (
-                      discountedPrice >= dynamicMinVal &&
-                      discountedPrice <= dynamicMaxVal &&
-                      (subCategory === item.sub_cat_name || subCategory === "")
-                    );
-                  })
-                  .map((item, index) => (
-                    <ProductItem
-                      key={index}
-                      id={item.id}
-                      name={item.product_name}
-                      price={item.discount}
-                      description={item.description}
-                      originalPrice={item.price}
-                      imageUrl={item.image}
-                      discount={`${Math.round(
-                        ((Number(item.price) - Number(item.discount)) /
-                          Number(item.price)) *
-                          100
-                      )}%`}
-                      compactView={isMobile}
-                    />
-                  ))}
-              </div>
-            )}
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-2 sm:gap-3 md:gap-4">
+            {productDataArray
+              .filter((item) => {
+                const discountedPrice = Number(item.discount);
+                return (
+                  discountedPrice >= dynamicMinVal &&
+                  discountedPrice <= dynamicMaxVal &&
+                  (subCategory === item.sub_cat_name || subCategory === "")
+                );
+              })
+              .map((item, index) => (
+                <ProductItem
+                  key={index}
+                  id={item.id}
+                  name={item.product_name}
+                  price={item.discount}
+                  description={item.description}
+                  originalPrice={item.price}
+                  imageUrl={item.image}
+                  discount={`${Math.round(
+                    ((Number(item.price) - Number(item.discount)) /
+                      Number(item.price)) *
+                      100
+                  )}%`}
+                  compactView={isMobile}
+                />
+              ))}
           </div>
         </div>
       </div>

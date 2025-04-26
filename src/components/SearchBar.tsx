@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Search } from "lucide-react";
 import { useNavigate } from "react-router-dom"; // for navigating to /product/id
+import { search } from "./api/api-end-points";
 
 interface Product {
   id: number;
@@ -22,7 +23,7 @@ const SearchBarWithPopup: React.FC<SearchBarWithPopupProps> = ({ onSelectProduct
     const fetchProducts = async () => {
       if (query.trim()) {
         try {
-          const response = await fetch(`http://127.0.0.1:8000/api/search?q=${query}`);
+          const response = await fetch(`${search}?q=${query}`);
           const data = await response.json();
 
           if (Array.isArray(data)) {

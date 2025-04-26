@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import TestimonialsSection from "../components/testimonial/Testimonial";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { homePageData } from "../components/api/api-end-points";
 
 // ✅ Move this outside the component
 interface HomePageProps {
@@ -108,7 +109,7 @@ const Home: React.FC<HomePageProps> = ({ setCategoryId, setSubcategoryId }) => {
 
   useEffect(() => {
     axios
-      .get("http://127.0.0.1:8000/api/homepage-data")
+      .get(homePageData)
       .then((response) => {
         const data = response.data.data;
         setBanners(data.banners);

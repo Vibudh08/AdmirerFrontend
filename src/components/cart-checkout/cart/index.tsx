@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Item from "./order-item";
 import DeliveryInfo from "./current-address";
 import axios from "axios";
-import { getShippingAndBillingAddress } from "../../api/api-end-points";
+import { addToCart, cartProductData, cartRemove, getShippingAndBillingAddress, updateCartQuantity } from "../../api/api-end-points";
 
 interface CartProps {
   setTotalMRP: (value: number) => void;
@@ -74,6 +74,7 @@ interface GuestCartItem {
   discount?: string;
   return_days?: string;
   image: string;
+  in_stock: number;
 }
 
 interface Address {
@@ -139,7 +140,7 @@ const Cart: React.FC<CartProps> = ({
 
     try {
       await axios.post(
-        "http://127.0.0.1:8000/api/update-cart-quantity",
+        updateCartQuantity,
         { productId: id, quantity: newQty },
         {
           headers: {
@@ -160,7 +161,7 @@ const Cart: React.FC<CartProps> = ({
 
     try {
       await axios.post(
-        "http://127.0.0.1:8000/api/cart-remove",
+        cartRemove,
         { pid: id },
         {
           headers: {
@@ -188,7 +189,7 @@ const Cart: React.FC<CartProps> = ({
         await Promise.all(
           guestCart.map((item) =>
             axios.post(
-              "http://127.0.0.1:8000/api/add-to-cart",
+              addToCart,
               {
                 product_id: item.id,
                 cart: 1,
@@ -212,7 +213,7 @@ const Cart: React.FC<CartProps> = ({
     if (authToken) {
       try {
         const response = await axios.get(
-          "http://127.0.0.1:8000/api/cart-products",
+          cartProductData,
           {
             headers: {
               Authorization: `Bearer ${authToken}`,
@@ -230,14 +231,15 @@ const Cart: React.FC<CartProps> = ({
       id: item.id,
       brandName: item.product_name || "Unknown",
       brandId: item.id.toString(),
-      description: "No description available",
+      description: item.description || "No description available",
       qty: item.quantity,
       price: item.price,
       discount: item.discount,
       return_days: "7",
       image: item.image,
-      totalQuantity: item.in_stock.toString(),
+      totalQuantity: item.in_stock < 3 ? item.in_stock.toString() : "3",
     }));
+    
 
     // 🧾 Merge guest cart items if needed (though usually empty after sync)
     const transformedGuestCart: ItemProps[] = guestCart.map((item) => ({
@@ -250,7 +252,7 @@ const Cart: React.FC<CartProps> = ({
       discount: item.discount || "0",
       return_days: item.return_days || "7",
       image: item.image,
-      totalQuantity: "10",
+      totalQuantity: item.in_stock < 3 ? item.in_stock.toString() : "3",
     }));
 
     const mergedCart: ItemProps[] = [...transformedApiCart];
@@ -276,22 +278,27 @@ const Cart: React.FC<CartProps> = ({
     setShippingData(addressForNimbus);
   }, [addressForNimbus]);
 
-  useEffect(() => {
-    fetch(getShippingAndBillingAddress, {
-      method: "GET",
-      headers: {
-        Authorization: "Bearer " + localStorage.getItem("auth_token"),
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setAddressData({
-          billingAddress: data.billing_address[0],
-          shippingAddresses: data.shipping_address,
-        });
-        setShippingData(data.shipping_address[0]);
+  const fetchAddresses = async () => {
+    try {
+      const response = await fetch(getShippingAndBillingAddress, {
+        method: "GET",
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("auth_token"),
+        },
       });
-  }, []);
+      const data = await response.json();
+      setAddressData({
+        billingAddress: data.billing_address[0],
+        shippingAddresses: data.shipping_address,
+      });
+      setShippingData(data.shipping_address[0]);
+    } catch (error) {
+      console.error("❌ Failed to fetch address:", error);
+    }
+  };
+  useEffect(() => {
+    fetchAddresses();
+  }, []);  
 
   if (isLoading) return <Loader />;
   if (totalItem.length === 0) return <EmptyCart />;
@@ -300,10 +307,11 @@ const Cart: React.FC<CartProps> = ({
     <div className="flex flex-col w-[65%] max-md:w-[100%] bg-white px-4 py-2">
       {addressData && (
         <DeliveryInfo
-          billingAddress={addressData.billingAddress}
-          shippingAddresses={addressData.shippingAddresses}
-          onAddressSelect={setAddressForNimbus}
-        />
+        billingAddress={addressData.billingAddress}
+        shippingAddresses={addressData.shippingAddresses}
+        onAddressSelect={setAddressForNimbus}
+        onAddressSaved={fetchAddresses} // ✅ passed here
+      />
       )}
       <div className="flex flex-col">
         {totalItem.map((item, index) => (

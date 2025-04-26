@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import WishlistCard from "../components/WishlistCard";
-import { get_wishlist_data } from "../components/api/api-end-points";
+import { get_wishlist_data, movecart, remove } from "../components/api/api-end-points";
 import { useNavigate } from "react-router-dom";
+import { toast } from 'react-toastify';
 
 const Loader = () => (
   <div className="fixed inset-0 bg-white bg-opacity-80 backdrop-blur-sm flex items-center justify-center z-50">
@@ -44,6 +45,7 @@ const Wishlist = () => {
         setWishlistItems(result.data);
       } else if (response.status === 401) {
         // alert("Unauthorized user. Please log in.");
+        toast.info("Please log in first to see your wishlist.");
         navigate("/LogIn");
       } else {
         console.error("Error fetching wishlist:", result);
@@ -58,7 +60,7 @@ const Wishlist = () => {
   const handleMoveToCart = async (product_id: number) => {
     try {
       const res = await fetch(
-        "http://127.0.0.1:8000/api/user/wishlist/movecart",
+        movecart,
         {
           method: "POST",
           headers: {
@@ -73,11 +75,12 @@ const Wishlist = () => {
       console.log("Moved to cart:", data);
 
       if (res.ok) {
+        toast.success("Added to cart");
         setWishlistItems((prev) =>
           prev.filter((item) => item.product_id !== product_id)
         );
       } else {
-        alert("Failed to move to cart");
+        toast.error("Failed to move to cart");
       }
     } catch (error) {
       console.error("Error moving to cart:", error);
@@ -87,7 +90,7 @@ const Wishlist = () => {
   const handleRemove = async (wishlist_id: number) => {
     try {
       const res = await fetch(
-        "http://127.0.0.1:8000/api/user/wishlist/remove",
+        remove,
         {
           method: "POST",
           headers: {
