@@ -1,2 +1,2 @@
-const apiHeader = "http://127.0.0.1:8000/api/";
+const apiHeader = "https://backend-in-laravel.admirer.in/api/";
 export default apiHeader;
