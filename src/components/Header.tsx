@@ -110,17 +110,17 @@ function Header() {
               <Slider {...offerBanner}>
                 <div className="swiper-slide">
                   <p className="top-bar-text fw-5 text-[#7925bf] text-[14px]">
-                    Summer sale discount off 70%
+                    Upto 60% off on all products.
                   </p>
                 </div>
                 <div className="swiper-slide">
                   <p className="top-bar-text fw-5 text-[#7925bf] text-[14px]">
-                    Time to refresh your wardrobe.
+                    Trending Jewellery.
                   </p>
                 </div>
                 <div className="swiper-slide">
                   <p className="top-bar-text fw-5 text-[#7925bf] text-[14px]">
-                    cvyuijnhbg tbijh
+                    Fast Delivery
                   </p>
                 </div>
               </Slider>

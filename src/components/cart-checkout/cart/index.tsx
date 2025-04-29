@@ -65,6 +65,7 @@ interface RawCartItem {
 }
 
 interface GuestCartItem {
+  images: any;
   id: number;
   product_name?: string;
   name?: string;
@@ -182,6 +183,8 @@ const Cart: React.FC<CartProps> = ({
     const guestCart: GuestCartItem[] = JSON.parse(
       localStorage.getItem("guest_cart") || "[]"
     );
+    console.log("🛒 Guest Cart from LocalStorage:", guestCart);
+    console.log("🛒 API Cart from Backend:", apiCart);
 
     // ✅ Sync guest cart to backend
     if (authToken && guestCart.length > 0) {
@@ -251,7 +254,7 @@ const Cart: React.FC<CartProps> = ({
       price: item.price || "0",
       discount: item.discount || "0",
       return_days: item.return_days || "7",
-      image: item.image,
+      image: `https://admirer.in/asset/image/product/${item.images[0]?.image}`,
       totalQuantity: item.in_stock < 3 ? item.in_stock.toString() : "3",
     }));
 
