@@ -195,6 +195,7 @@ const ProductDetails = () => {
         })
         .then((response) => {
           const data = response.data.data;
+          console.log(data)
           const relatedData = response.data.related_products;
 
           // Construct full image URLs

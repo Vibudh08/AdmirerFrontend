@@ -166,10 +166,10 @@ const Dashboard_Profile = () => {
         return "";
       case "state":
         return value.trim() ? "" : "State is required";
-      case "country":
-        return value.trim() ? "" : "Country is required";
-      case "addressType":
-        return value.trim() ? "" : "Address type is required";
+      // case "country":
+      //   return value.trim() ? "" : "Country is required";
+      // case "addressType":
+        // return value.trim() ? "" : "Address type is required";
       default:
         return "";
     }
@@ -254,12 +254,12 @@ const Dashboard_Profile = () => {
         ...prev,
         state: validateField(field, value),
       }));
-    } else if (field === "country") {
-      setCountry(value);
-      setFormErrors((prev) => ({
-        ...prev,
-        country: validateField(field, value),
-      }));
+    // } else if (field === "country") {
+    //   setCountry(value);
+    //   setFormErrors((prev) => ({
+    //     ...prev,
+    //     country: validateField(field, value),
+    //   }));
     } else if (field === "addressType") {
       setAddressType(value);
       setFormErrors((prev) => ({
@@ -650,10 +650,9 @@ const Dashboard_Profile = () => {
             type="text"
             placeholder="Country"
             value="INDIA"
-            onChange={(e) => handleInputChange(e, "country")}
-            className={`w-full border rounded px-4 py-3 text-sm ${
-              isEditable ? "text-black" : "text-gray-400 cursor-not-allowed"
-            }`}
+            className={`w-full border rounded px-4 py-3 text-gray-400 text-sm
+               cursor-not-allowed
+            `}
             disabled
           />
           {formErrors.country && (
@@ -761,27 +760,45 @@ const Dashboard_Profile = () => {
       </div>
 
       {otpSent && (
-        <div className="mb-2">
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Enter OTP
-          </label>
-          <input
-            type="text"
-            placeholder="Enter 6 digit OTP"
-            value={otp}
-            onChange={(e) => {
-              const value = e.target.value;
-              if (/^\d*$/.test(value)) { // only allow digits
-                setOtp(value);
-                if (otpError) setOtpError("");
-              }
-            }}
-            className="w-full border rounded px-4 py-3 text-sm"
-            maxLength={6}
-          />
-          {otpError && <p className="text-red-500 text-sm mt-1">{otpError}</p>}
-        </div>
-      )}
+  <div className="mb-4">
+    <label className="block text-sm font-medium text-gray-700 mb-1">
+      Enter OTP
+    </label>
+
+    <div className="flex gap-3 justify-center">
+      {[...Array(6)].map((_, index) => (
+        <input
+          key={index}
+          type="text"
+          maxLength={1}
+          className="w-10 h-12 text-center border-b border-gray-600  text-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+          id={`otp-${index}`}
+          value={otp[index] || ""}
+          onChange={(e) => {
+            const val = e.target.value.replace(/[^0-9]/g, "");
+            const otpArr = otp.split("");
+            otpArr[index] = val;
+            const newOtp = otpArr.join("").padEnd(6, "");
+            setOtp(newOtp);
+            if (otpError) setOtpError("");
+
+            if (val && index < 5) {
+              document.getElementById(`otp-${index + 1}`)?.focus();
+            }
+          }}
+          onKeyDown={(e) => {
+            if (e.key === "Backspace" && !otp[index] && index > 0) {
+              document.getElementById(`otp-${index - 1}`)?.focus();
+            }
+          }}
+        />
+      ))}
+    </div>
+
+    {otpError && <p className="text-red-500 text-sm mt-1">{otpError}</p>}
+  </div>
+)}
+
 
       {!otpSent ? (
         <Button

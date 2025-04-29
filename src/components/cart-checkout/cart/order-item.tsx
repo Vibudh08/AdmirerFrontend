@@ -3,6 +3,8 @@
 import React from "react";
 import { FaTimes } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import DOMPurify from 'dompurify';
+
 
 interface ItemProps {
   id: number;
@@ -44,6 +46,12 @@ const Item: React.FC<ItemProps> = ({
 
   const quantityOptions = Array.from({ length: totalQty }, (_, i) => i + 1);
 
+  const sanitizedDescription = DOMPurify.sanitize(description);
+  
+  const cleanedDescription = sanitizedDescription.replace(/Product description/i, '');
+// Remove the 'Product description' phrase (case-insensitive) from the description
+
+
   return (
     <div className="bg-white relative mt-1 mb-2">
       <div className="flex border border-gray-200 rounded-lg overflow-hidden hover:shadow-sm transition-shadow duration-200">
@@ -61,7 +69,7 @@ const Item: React.FC<ItemProps> = ({
 
         <div className="w-[30%] relative flex items-center justify-center">
           <Link to={`/product/${id}`}>
-            <img className="w-[130px] h-fit" src={image} alt={brandName} />
+            <img className="w-[120px] h-fit" src={image} alt={brandName} />
           </Link>
         </div>
 
@@ -73,9 +81,11 @@ const Item: React.FC<ItemProps> = ({
             </h2>
           </Link>
 
-          <p className="text-gray-700 font-medium text-[13px] line-clamp-2 mb-4 leading-snug">
-            {description}
-          </p>
+          {/* <p
+  className="text-gray-700 font-medium text-[13px] line-clamp-2 mb-4 leading-snug"
+  dangerouslySetInnerHTML={{ __html: cleanedDescription }}
+/> */}
+
 
           <div className="flex items-center mb-3 mt-2">
             <span className="font-semibold text-sm mr-2  text-gray-700">
