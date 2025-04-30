@@ -11,6 +11,9 @@ const Complete_cart_checkout = () => {
   useEffect(() => {
     console.log("shipping id at main page is = ", shippingData);
   }, [shippingData]);
+  useEffect(() => {
+    localStorage.setItem("itemCount", itemCount.toString());
+  }, [itemCount]);
   return (
     <div className="bg-white p-8 max-md:p-0">
       <div className="flex w-[85%] m-auto max-md:flex-col max-md:w-full border">

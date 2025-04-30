@@ -4,8 +4,8 @@ import { FaRegHeart } from "react-icons/fa";
 import productItemProps from "./product-item-interface";
 import { wishlist_add_remove } from "../api/api-end-points";
 import { useNavigate } from "react-router-dom";
-import { toast } from 'react-toastify';
-import DOMPurify from 'dompurify';
+import { toast } from "react-toastify";
+import DOMPurify from "dompurify";
 
 const ProductItem: React.FC<productItemProps> = ({
   name,
@@ -20,9 +20,12 @@ const ProductItem: React.FC<productItemProps> = ({
   const [isWishlisted, setIsWishlisted] = useState(false);
   const navigate = useNavigate();
 
-    const sanitizedDescription = DOMPurify.sanitize(description);
-    
-    const cleanedDescription = sanitizedDescription.replace(/Product description/i, '');
+  const sanitizedDescription = DOMPurify.sanitize(description);
+
+  const cleanedDescription = sanitizedDescription.replace(
+    /Product description/i,
+    ""
+  );
 
   const handleClick = () => {
     navigate(`/product/${id}`);
@@ -53,7 +56,7 @@ const ProductItem: React.FC<productItemProps> = ({
         console.log(result.message || "Wishlist updated");
       } else if (response.status === 401) {
         toast.error("Please log in to add items to your wishlist.");
-        navigate("/LogIn")
+        navigate("/LogIn");
       } else {
         alert("Something went wrong.");
         console.error(result);
@@ -65,7 +68,7 @@ const ProductItem: React.FC<productItemProps> = ({
 
   return (
     <div
-      className={`w-full font-sans bg-white rounded-xl p-2 sm:p-3 cursor-pointer flex flex-col gap-1.5 sm:gap-2.5 border border-gray-200 ${
+      className={`w-full font-sans bg-white rounded-xl p-2 sm:p-3 cursor-pointer flex flex-col gap-1.5  border border-gray-200 ${
         compactView ? "text-xs" : "text-sm"
       }`}
       onClick={handleClick}
@@ -103,26 +106,24 @@ const ProductItem: React.FC<productItemProps> = ({
       <div className="hidden">{id}</div>
 
       <div
-        className={`font-semibold text-black ${
-          compactView ? "text-sm line-clamp-1" : "text-lg line-clamp-1"
-        }`}
+        className={`font-semibold text-lg max-md:text-sm w-full truncate text-black`}
       >
         {name}
       </div>
 
-      <div
+      {/* <div
         className={`text-gray-500  ${
           compactView ? "line-clamp-1" : "line-clamp-2"
         }`}
-        dangerouslySetInnerHTML={{ __html: cleanedDescription }}/>
-
+        dangerouslySetInnerHTML={{ __html: cleanedDescription }}
+      /> */}
 
       <div className="flex items-center gap-1.5 sm:gap-2.5 flex-wrap">
-        <span className="font-semibold text-black text-lg">Rs {price}</span>
-        <span className="line-through text-gray-400 text-sm">
+        <span className="font-semibold text-black text-lg max-md:text-sm">Rs {price}</span>
+        <span className="line-through text-gray-400 text-sm max-md:text-xs">
           Rs {originalPrice}
         </span>
-        <span className="bg-red-50 text-red-700 font-bold px-1.5 py-0.5 sm:px-2 sm:py-1 rounded text-xs">
+        <span className="bg-red-50 text-red-700 font-bold max-md:text-[11px] px-1.5 py-0.5 sm:px-2 sm:py-1 rounded text-xs">
           {discount} OFF
         </span>
       </div>

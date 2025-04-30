@@ -146,7 +146,6 @@ const ProductListing: React.FC<ProductLsitingProps> = ({
             setDynamicMax={setDynamicMaxVal}
             category={Number(cat)}
             setSubCategory={setSubCategory}
-            
           />
         </div>
 
@@ -160,32 +159,45 @@ const ProductListing: React.FC<ProductLsitingProps> = ({
 
         <div className="flex-grow bg-white rounded-xl shadow-sm border border-gray-200 p-2 sm:p-3 lg:p-4">
           <div className="grid grid-cols-2 md:grid-cols-3 gap-2 sm:gap-3 md:gap-4">
-            {productDataArray
-              .filter((item) => {
-                const discountedPrice = Number(item.discount);
-                return (
-                  discountedPrice >= dynamicMinVal &&
-                  discountedPrice <= dynamicMaxVal &&
-                  (subCategory === item.sub_cat_name || subCategory === "")
-                );
-              })
-              .map((item, index) => (
-                <ProductItem
-                  key={index}
-                  id={item.id}
-                  name={item.product_name}
-                  price={item.discount}
-                  description={item.description}
-                  originalPrice={item.price}
-                  imageUrl={item.image}
-                  discount={`${Math.round(
-                    ((Number(item.price) - Number(item.discount)) /
-                      Number(item.price)) *
-                      100
-                  )}%`}
-                  compactView={isMobile}
-                />
-              ))}
+            {productDataArray.filter((item) => {
+              const discountedPrice = Number(item.discount);
+              return (
+                discountedPrice >= dynamicMinVal &&
+                discountedPrice <= dynamicMaxVal &&
+                (subCategory === item.sub_cat_name || subCategory === "")
+              );
+            }).length === 0 ? (
+              <div className="col-span-full text-center text-gray-500 font-medium text-lg py-10">
+                No products found.
+              </div>
+            ) : (
+              productDataArray
+                .filter((item) => {
+                  const discountedPrice = Number(item.discount);
+                  return (
+                    discountedPrice >= dynamicMinVal &&
+                    discountedPrice <= dynamicMaxVal &&
+                    (subCategory === item.sub_cat_name || subCategory === "")
+                  );
+                })
+                .map((item, index) => (
+                  <ProductItem
+                    key={index}
+                    id={item.id}
+                    name={item.product_name}
+                    price={item.discount}
+                    description={item.description}
+                    originalPrice={item.price}
+                    imageUrl={item.image}
+                    discount={`${Math.round(
+                      ((Number(item.price) - Number(item.discount)) /
+                        Number(item.price)) *
+                        100
+                    )}%`}
+                    compactView={isMobile}
+                  />
+                ))
+            )}
           </div>
         </div>
       </div>

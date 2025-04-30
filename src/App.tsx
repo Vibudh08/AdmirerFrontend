@@ -82,7 +82,7 @@ function App() {
       <ScrollToTop />
       <Layout>
         <RouteTracker />
-        {showHeaderFooter && <Header />}
+        {showHeaderFooter && <Header  />}
         <ToastContainer position="top-center" autoClose={2500} hideProgressBar />
         <Routes>
           <Route

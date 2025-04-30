@@ -34,6 +34,15 @@ const AddressBar = ({
   const [form] = Form.useForm();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [pincode, setPincode] = useState("");
+
+  const handlePincodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    const numericValue = value.replace(/\D/g, ""); // Remove non-digits
+    if (numericValue.length <= 6) {
+      setPincode(numericValue);
+    }
+  };
 
   const handleGeolocationSuccess = useCallback(
     async (position: GeolocationPosition) => {
@@ -301,19 +310,26 @@ const AddressBar = ({
 
       {/* Pincode Field */}
       <Form.Item
-        label="Pincode/Zip Code"
-        name="pincode"
-        rules={[
-          { required: true, message: "Please input your pincode!" },
-          { pattern: /^[0-9]+$/, message: "Pincode must contain only numbers" },
-        ]}
-      >
-        <Input
-          placeholder="6 digits [0-9] PIN code"
-          allowClear
-          prefix={<EnvironmentOutlined className="text-gray-400" />}
-        />
-      </Form.Item>
+  label="Pincode/Zip Code"
+  name="pincode"
+  normalize={(value: string) => {
+    const digitsOnly = value.replace(/\D/g, ""); // Remove non-numeric chars
+    return digitsOnly.slice(0, 6); // Limit to 6 digits
+  }}
+  rules={[
+    { required: true, message: "Please input your pincode!" },
+    { pattern: /^[0-9]{6}$/, message: "Pincode must be exactly 6 digits" },
+  ]}
+>
+  <Input
+    placeholder="6 digits [0-9] PIN code"
+    allowClear
+    maxLength={6}
+    prefix={<EnvironmentOutlined className="text-gray-400" />}
+  />
+</Form.Item>
+
+
 
       <Form.Item>
         <div style={{ display: "flex", gap: "8px" }}>

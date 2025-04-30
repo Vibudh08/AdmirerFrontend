@@ -4,7 +4,11 @@ import { GoTag } from "react-icons/go";
 import { Modal } from "antd";
 import Coupons_screen from "../../coupons/Coupons_screen";
 import OrderSuccessModal from "../../OrderSuccessModal";
-import { nimbusDelievery_API, razorPayCreateOrderApi, razorPayStoreApi } from "../../api/api-end-points";
+import {
+  nimbusDelievery_API,
+  razorPayCreateOrderApi,
+  razorPayStoreApi,
+} from "../../api/api-end-points";
 
 interface PriceDetail {
   label: string;
@@ -81,7 +85,7 @@ const Checkout: React.FC<IndexProps> = ({
     }
 
     if (!shippingData) {
-      setShowAddressError(true); 
+      setShowAddressError(true);
       return;
     }
     setShowAddressError(false);
@@ -91,17 +95,14 @@ const Checkout: React.FC<IndexProps> = ({
 
     if (selected === "online") {
       try {
-        const createOrderRes = await fetch(
-          razorPayCreateOrderApi,
-          {
-            method: "POST",
-            headers: {
-              Authorization: `Bearer ${authToken}`,
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ amount: "1" }),
-          }
-        );
+        const createOrderRes = await fetch(razorPayCreateOrderApi, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ amount: totalAmount }),
+        });
 
         const orderData = await createOrderRes.json();
 
@@ -109,27 +110,24 @@ const Checkout: React.FC<IndexProps> = ({
           key: "rzp_live_9dQQZTZXMKwBMJ",
           amount: orderData.amount,
           currency: "INR",
-          name: "BTJ Store",
+          name: "BTJ Admirer",
           description: "Order Payment",
           order_id: orderData.order_id,
           handler: async function (response: any) {
             try {
               setLoading(true);
-              const verifyRes = await fetch(
-                razorPayStoreApi,
-                {
-                  method: "POST",
-                  headers: {
-                    Authorization: `Bearer ${authToken}`,
-                    "Content-Type": "application/json",
-                  },
-                  body: JSON.stringify({
-                    razorpay_payment_id: response.razorpay_payment_id,
-                    razorpay_order_id: response.razorpay_order_id,
-                    razorpay_signature: response.razorpay_signature,
-                  }),
-                }
-              );
+              const verifyRes = await fetch(razorPayStoreApi, {
+                method: "POST",
+                headers: {
+                  Authorization: `Bearer ${authToken}`,
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  razorpay_payment_id: response.razorpay_payment_id,
+                  razorpay_order_id: response.razorpay_order_id,
+                  razorpay_signature: response.razorpay_signature,
+                }),
+              });
 
               if (verifyRes.ok) {
                 const payload = {
@@ -201,7 +199,7 @@ const Checkout: React.FC<IndexProps> = ({
           street: shippingData?.street || "",
           pincode: shippingData?.zip_code || "",
         };
-        console.log("payload is ",payload)
+        console.log("payload is ", payload);
         const response = await fetch(nimbusDelievery_API, {
           method: "POST",
           headers: {
@@ -289,78 +287,83 @@ const Checkout: React.FC<IndexProps> = ({
           PAYMENT METHOD
         </h2>
 
-        <div
-          onClick={() => setSelected("online")}
-          className={`flex items-center p-2 border rounded cursor-pointer ${
-            selected === "online" ? "border-purple-600" : "border-gray-300"
-          }`}
-        >
-          <input
-            type="radio"
-            name="payment"
-            checked={selected === "online"}
-            onChange={() => setSelected("online")}
-            className="form-radio text-purple-700 mr-3"
-          />
-          <label className="text-[14px] select-none cursor-pointer">
-            Online
-          </label>
-        </div>
+        <div className="border mb-5 rounded-lg">
+          <div
+            onClick={() => setSelected("online")}
+            className={`flex items-center p-3 border-b rounded-t-lg  cursor-pointer ${
+              selected === "online" ? "bg-purple-100" : "bg-white"
+            }`}
+          >
+            <input
+              type="radio"
+              name="payment"
+              checked={selected === "online"}
+              onChange={() => setSelected("online")}
+              className="form-radio hidden text-purple-700 mr-3"
+            />
+            <img src="/icons/online.svg" className="w-6 h-6 mr-2" alt="" />
+            <label className="text-[14px] select-none  cursor-pointer">
+              Online
+            </label>
+          </div>
 
-        <div
-          onClick={() => setSelected("cod")}
-          className={`flex items-center p-2 border rounded mt-2.5 cursor-pointer mb-5 ${
-            selected === "cod" ? "border-purple-600" : "border-gray-300"
-          }`}
-        >
-          <input
-            type="radio"
-            name="payment"
-            checked={selected === "cod"}
-            onChange={() => setSelected("cod")}
-            className="form-radio text-purple-700 mr-3"
-          />
-          <label className="text-[14px] select-none cursor-pointer">
-            Cash On Delivery
-          </label>
+          <div
+            onClick={() => setSelected("cod")}
+            className={`flex items-center p-3 rounded-b-lg   cursor-pointer  ${
+              selected === "cod" ? "bg-purple-100" : "bg-white"
+            }`}
+          >
+            <input
+              type="radio"
+              name="payment"
+              checked={selected === "cod"}
+              onChange={() => setSelected("cod")}
+              className="form-radio hidden text-purple-700 mr-3"
+            />
+            <img src="/icons/cash-icon.svg" className="w-6 h-6 mr-2" alt="" />
+            <label className="text-[14px] select-none cursor-pointer">
+              Cash On Delivery
+            </label>
+          </div>
         </div>
         <button
-  onClick={handlePlaceOrder}
-  disabled={loading}
-  className={`w-full border rounded h-[44px] py-2 text-sm font-semibold text-white ${
-    loading ? "bg-purple-400 cursor-not-allowed" : "hover:bg-purple-700 bg-purple-600"
-  }`}
->
-  {loading ? (
-    <div className="flex items-center justify-center text-sm text-white">
-      <svg
-        className="animate-spin h-5 w-5 mr-2 text-white"
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-      >
-        <circle
-          className="opacity-25"
-          cx="12"
-          cy="12"
-          r="10"
-          stroke="currentColor"
-          strokeWidth="4"
-        />
-        <path
-          className="opacity-75"
-          fill="currentColor"
-          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-        />
-      </svg>
-      Confirming your order...
-    </div>
-  ) : (
-    "PLACE ORDER"
-  )}
-</button>
+          onClick={handlePlaceOrder}
+          disabled={loading}
+          className={`w-full border rounded h-[44px] py-2 text-sm font-semibold text-white ${
+            loading
+              ? "bg-purple-400 cursor-not-allowed"
+              : "hover:bg-purple-700 bg-purple-600"
+          }`}
+        >
+          {loading ? (
+            <div className="flex items-center justify-center text-sm text-white">
+              <svg
+                className="animate-spin h-5 w-5 mr-2 text-white"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                />
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                />
+              </svg>
+              Confirming your order...
+            </div>
+          ) : (
+            "PLACE ORDER"
+          )}
+        </button>
 
-        
         {showAddressError && (
           <div className="mt-3 bg-red-100 text-red-700 border border-red-300 px-4 py-2 rounded text-sm">
             Please select or enter a delivery address before placing the order.

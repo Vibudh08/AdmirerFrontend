@@ -63,6 +63,7 @@ const ProductDetails = () => {
   const imageRef = React.useRef<HTMLImageElement>(null);
   const lensRef = React.useRef<HTMLDivElement>(null);
 
+
   const relatedProductsSlider = {
     dots: false,
     infinite: true,
@@ -181,6 +182,10 @@ const ProductDetails = () => {
     } catch (error) {
       console.error("Add to cart error:", error);
     }
+    
+  const currentCount = parseInt(localStorage.getItem("itemCount") || "0", 10);
+  localStorage.setItem("itemCount", (currentCount + 1).toString());
+  window.dispatchEvent(new Event("itemCountUpdated"));
   };
   
 

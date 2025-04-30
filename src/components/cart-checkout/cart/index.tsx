@@ -113,6 +113,11 @@ const Cart: React.FC<CartProps> = ({
     null
   );
 
+  const syncCartCountToHeader = (count: number) => {
+    localStorage.setItem("itemCount", count.toString());
+    window.dispatchEvent(new Event("itemCountUpdated"));
+  };
+  
   const recalculateTotals = (items: ItemProps[]) => {
     let original = 0;
     let discounted = 0;
@@ -158,6 +163,8 @@ const Cart: React.FC<CartProps> = ({
     const updatedItems = totalItem.filter((item) => item.id !== id);
     setTotalItem(updatedItems);
     setItemCount(updatedItems.length);
+    
+syncCartCountToHeader(updatedItems.length);
     recalculateTotals(updatedItems);
 
     try {
@@ -268,6 +275,8 @@ const Cart: React.FC<CartProps> = ({
 
     setTotalItem(mergedCart);
     setItemCount(mergedCart.length);
+    
+syncCartCountToHeader(mergedCart.length);
     recalculateTotals(mergedCart);
     setIsLoading(false);
   };
