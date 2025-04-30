@@ -103,7 +103,9 @@ const Home: React.FC<HomePageProps> = ({ setCategoryId, setSubcategoryId }) => {
     const subcategoryId = subcatIdMatch ? subcatIdMatch[1] : "";
 
     setCategoryId(categoryId);
+    console.log("category id" ,categoryId)
     setSubcategoryId(subcategoryId);
+    console.log("subcategory id" ,subcategoryId)
     navigate("/listing");
   };
 

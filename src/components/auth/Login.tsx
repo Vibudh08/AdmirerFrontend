@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { FaTimes } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { otp_send_API, verifyLogin_API } from "../api/api-end-points";
 
@@ -266,13 +266,13 @@ const Login = () => {
 
           <p className="text-center text-[13px] mt-6">
             By continuing, I agree to the{" "}
-            <a href="/terms.php" className="text-purple-700 font-bold">
+            <Link to="/terms" className="text-purple-700 font-bold">
               Terms of Use
-            </a>{" "}
+            </Link>{" "}
             &{" "}
-            <a href="/privacy.php" className="text-purple-700 font-bold">
+            <Link to="/privacy" className="text-purple-700 font-bold">
               Privacy Policy
-            </a>
+            </Link>
           </p>
         </form>
       </div>

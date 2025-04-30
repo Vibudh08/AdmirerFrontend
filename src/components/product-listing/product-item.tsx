@@ -5,6 +5,7 @@ import productItemProps from "./product-item-interface";
 import { wishlist_add_remove } from "../api/api-end-points";
 import { useNavigate } from "react-router-dom";
 import { toast } from 'react-toastify';
+import DOMPurify from 'dompurify';
 
 const ProductItem: React.FC<productItemProps> = ({
   name,
@@ -18,6 +19,10 @@ const ProductItem: React.FC<productItemProps> = ({
 }) => {
   const [isWishlisted, setIsWishlisted] = useState(false);
   const navigate = useNavigate();
+
+    const sanitizedDescription = DOMPurify.sanitize(description);
+    
+    const cleanedDescription = sanitizedDescription.replace(/Product description/i, '');
 
   const handleClick = () => {
     navigate(`/product/${id}`);
@@ -48,7 +53,7 @@ const ProductItem: React.FC<productItemProps> = ({
         console.log(result.message || "Wishlist updated");
       } else if (response.status === 401) {
         toast.error("Please log in to add items to your wishlist.");
-        // navigate("/")
+        navigate("/LogIn")
       } else {
         alert("Something went wrong.");
         console.error(result);
@@ -106,12 +111,11 @@ const ProductItem: React.FC<productItemProps> = ({
       </div>
 
       <div
-        className={`text-gray-500 ${
+        className={`text-gray-500  ${
           compactView ? "line-clamp-1" : "line-clamp-2"
         }`}
-      >
-        {description}
-      </div>
+        dangerouslySetInnerHTML={{ __html: cleanedDescription }}/>
+
 
       <div className="flex items-center gap-1.5 sm:gap-2.5 flex-wrap">
         <span className="font-semibold text-black text-lg">Rs {price}</span>
