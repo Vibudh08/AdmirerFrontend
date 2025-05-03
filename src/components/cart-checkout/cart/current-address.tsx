@@ -39,6 +39,7 @@ const DeliveryInfo: React.FC<DeliveryInfoProps> = ({
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState<Address | null>(null);
   const [allAddresses, setAllAddresses] = useState<Address[]>([]);
+  const reversedAddresses = [...allAddresses].reverse();
 
   useEffect(() => {
     const combined = [billingAddress, ...shippingAddresses].filter(
@@ -46,8 +47,9 @@ const DeliveryInfo: React.FC<DeliveryInfoProps> = ({
     );
     setAllAddresses(combined);
     if (combined.length > 0) {
-      setSelectedAddress(combined[0]);
-      onAddressSelect(combined[0]);
+      const latestAddress = combined[combined.length - 1]; // select last added
+      setSelectedAddress(latestAddress);
+      onAddressSelect(latestAddress);
     } else {
       setSelectedAddress(null);
     }
@@ -143,7 +145,8 @@ const DeliveryInfo: React.FC<DeliveryInfoProps> = ({
               }}
             >
               <EnvironmentOutlined style={{ color: "#722ed1" }} />
-              Deliver to {getName(selectedAddress!)} {getLastName(selectedAddress!)}
+              Deliver to {getName(selectedAddress!)}{" "}
+              {getLastName(selectedAddress!)}
             </div>
 
             <div
@@ -162,9 +165,7 @@ const DeliveryInfo: React.FC<DeliveryInfoProps> = ({
                   {selectedAddress?.flat}, {selectedAddress?.street},{" "}
                   {selectedAddress?.locality}
                 </div>
-                <div>
-                  
-                </div>
+                <div></div>
               </div>
             </div>
 
@@ -178,19 +179,24 @@ const DeliveryInfo: React.FC<DeliveryInfoProps> = ({
               }}
             >
               <PushpinOutlined style={{ color: "#722ed1" }} />
-              {selectedAddress?.city}, {selectedAddress?.state}, {getZipCode(selectedAddress!)}
+              {selectedAddress?.city}, {selectedAddress?.state},{" "}
+              {getZipCode(selectedAddress!)}
             </div>
 
             <div style={{ marginTop: "16px" }}>
               <Select
                 style={{ width: "100%", height: "35px" }}
-                value={allAddresses.indexOf(selectedAddress!)}
-                onChange={handleAddressSelect}
-                options={allAddresses.map((address, index) => ({
-                  value: index,
-                  label: `${address.addr_type}: ${getName(address)} ${getLastName(
+                value={JSON.stringify(selectedAddress)}
+                onChange={(value) => {
+                  const selected = JSON.parse(value) as Address;
+                  setSelectedAddress(selected);
+                  onAddressSelect(selected);
+                }}
+                options={reversedAddresses.map((address) => ({
+                  value: JSON.stringify(address),
+                  label: `${address.addr_type}: ${getName(
                     address
-                  )}, ${address.flat}, ${address.city}`,
+                  )} ${getLastName(address)}, ${address.flat}, ${address.city}`,
                 }))}
               />
             </div>
@@ -227,7 +233,9 @@ const DeliveryInfo: React.FC<DeliveryInfoProps> = ({
       )}
 
       <Modal
-        title={<span style={{ color: "#722ed1" }}>Update Delivery Address</span>}
+        title={
+          <span style={{ color: "#722ed1" }}>Update Delivery Address</span>
+        }
         open={isModalVisible}
         onCancel={() => setIsModalVisible(false)}
         footer={null}

@@ -34,15 +34,6 @@ const AddressBar = ({
   const [form] = Form.useForm();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [pincode, setPincode] = useState("");
-
-  const handlePincodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    const numericValue = value.replace(/\D/g, ""); // Remove non-digits
-    if (numericValue.length <= 6) {
-      setPincode(numericValue);
-    }
-  };
 
   const handleGeolocationSuccess = useCallback(
     async (position: GeolocationPosition) => {
