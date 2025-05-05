@@ -128,9 +128,7 @@ const Login = () => {
           <img src="logo/iconn.png" alt="Logo" className="w-16 mx-auto " />
           <h1 className="text-xl font-normal mt-1">Welcome to Admirer</h1>
         </div>
-        {!otpSent && (
-        <div className="text-xl mb-4">Login</div>
-        )}
+        {!otpSent && <div className="text-xl mb-4">Login</div>}
 
         {error && (
           <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-md">
@@ -144,6 +142,7 @@ const Login = () => {
             <div className="mb-4">
               <input
                 id="mobileNumber"
+                maxLength={10}
                 type="tel"
                 {...register("phoneNumber", {
                   required: "Mobile number is required",
@@ -155,7 +154,12 @@ const Login = () => {
                 placeholder="Mobile number"
                 className="mt-1 block w-full border h-[50px] border-gray-300 rounded-md shadow-sm py-2 px-5 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                 disabled={otpSent || isLoading}
+                onInput={(e) => {
+                  const input = e.target as HTMLInputElement;
+                  input.value = input.value.replace(/[^0-9]/g, "");
+                }}
               />
+
               {errors.phoneNumber && (
                 <p className="mt-2 text-sm text-red-600">
                   {errors.phoneNumber.message}
@@ -168,7 +172,8 @@ const Login = () => {
           {otpSent && (
             <>
               <p className="text-sm text-gray-700 mb-2 text-center">
-                Enter the OTP sent to <span className="font-semibold">{phoneNumber}</span>
+                Enter the OTP sent to{" "}
+                <span className="font-semibold">{phoneNumber}</span>
               </p>
               <div className="mb-4 mt-1">
                 <div className="flex gap-3 justify-center m-auto w-full">
@@ -190,13 +195,20 @@ const Login = () => {
                         const otp = Array.from(
                           { length: 6 },
                           (_, i) =>
-                            (document.getElementById(`otp-${i}`) as HTMLInputElement)
-                              ?.value || ""
+                            (
+                              document.getElementById(
+                                `otp-${i}`
+                              ) as HTMLInputElement
+                            )?.value || ""
                         ).join("");
                         setValue("otp", otp);
                       }}
                       onKeyDown={(e) => {
-                        if (e.key === "Backspace" && !e.currentTarget.value && index > 0) {
+                        if (
+                          e.key === "Backspace" &&
+                          !e.currentTarget.value &&
+                          index > 0
+                        ) {
                           document.getElementById(`otp-${index - 1}`)?.focus();
                         }
                       }}
