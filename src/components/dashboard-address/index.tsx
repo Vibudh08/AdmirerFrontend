@@ -432,7 +432,7 @@ const Dashboard_Address = () => {
         </div>
       </div>
 
-      {/* <div className="mb-4">
+      <div className="mb-4">
         <label className="text-sm font-medium text-gray-700 mb-1 block">
           Address Type*
         </label>
@@ -449,7 +449,7 @@ const Dashboard_Address = () => {
         {formErrors.addressType && (
           <p className="text-red-500 text-sm">{formErrors.addressType}</p>
         )}
-      </div> */}
+      </div>
 
       {/* Save / Edit Button */}
       <button

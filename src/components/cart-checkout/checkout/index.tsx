@@ -247,7 +247,20 @@ const Checkout: React.FC<IndexProps> = ({
       />
 
       <div className="w-[35%] max-md:w-[100%] p-5 py-6 border-l bg-white border-[#eaeaec]">
-        <div className="mt-3 mb-4">
+          <div className="mb-3 flex justify-center items-center mt-[-10px] text-center">
+            <img
+              src="https://constant.myntassets.com/checkout/assets/img/footer-bank-visa.png"
+              className="w-12 h-10 mr-2"
+              alt="100% Secure"
+            />
+            <p className="text-[#535766] text-md tracking-wider font-semibold">
+              100% SECURE
+            </p>
+          </div>
+          <hr />
+        <div className="mt-5 mb-4 ">
+
+          <div className="clear-both"></div>
           <h3 className="text-[14px] text-[#535766] font-bold mb-4">
             PRICE DETAILS ({itemCount} item{itemCount > 1 ? "s" : ""})
           </h3>
