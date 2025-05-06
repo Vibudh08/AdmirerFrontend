@@ -1,3 +1,3 @@
-const apiHeader = "https://backend-in-laravel.admirer.in/api/";
+const apiHeader = "https://admirer.in/api/";
 export default apiHeader;
     
