@@ -338,7 +338,7 @@ const AddressBar = ({
             {isLoading ? "Detecting Location..." : "Use Current Location"}
           </Button> */}
           <Button
-            className="w-[100px] border rounded hover:!border-none h-[40px] py-2 text-sm text-white hover:!bg-purple-700 hover:!text-white bg-purple-600"
+            className="w-[130px] border rounded hover:!border-none h-[40px] py-2 text-sm text-white hover:!bg-purple-700 hover:!text-white bg-purple-600"
             htmlType="submit"
             style={{ marginLeft: "auto" }}
           >

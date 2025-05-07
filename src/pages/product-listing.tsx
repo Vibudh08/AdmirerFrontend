@@ -112,7 +112,7 @@ const ProductListing: React.FC<ProductLsitingProps> = ({
   if (loading) return <Loader />;
   return (
     <div className="min-h-screen bg-gray-100 p-2 sm:p-4 relative">
-      {/* {loading && <Loader />} */}
+      {loading && <Loader />}
 
       <button
         aria-label="Open filters"

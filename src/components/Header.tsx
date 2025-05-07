@@ -83,7 +83,7 @@ const Header = ({}) => {
       )}
 
       {/* Mobile Menu */}
-      <div
+      {/* <div
         className={`categories fixed z-[1000] bg-white h-[100%] w-[310px] px-[30px] py-[40px] flex-col 
         transition-all duration-500 ease-in-out transform border border-white ${
           show ? "translate-x-0 opacity-100" : "-translate-x-full opacity-0"
@@ -101,7 +101,7 @@ const Header = ({}) => {
           />
         </div>
         <div>huij</div>
-      </div>
+      </div> */}
 
       {/* Cart Sidebar */}
       <div
@@ -121,7 +121,7 @@ const Header = ({}) => {
       {/* Main Header */}
       <main className="w-full relative top-0 left-0 z-50 pb-[1px] bg-white shadow-md">
         {/* Top Banner */}
-        <div className="tf-top-bar bg_white line">
+        {/* <div className="tf-top-bar bg_white line">
           <div className="px_15 lg-px_40">
             <nav className="box-navigation text-center p-2 bg-[#e5d6eb]">
               <Slider {...offerBanner}>
@@ -143,14 +143,14 @@ const Header = ({}) => {
               </Slider>
             </nav>
           </div>
-        </div>
+        </div> */}
 
         {/* Main Header Content */}
         <div className="m-auto max-md:w-full">
-          <div className="flex justify-between items-center mb-1 mt-1 w-[94%] m-auto max-md:w-full px-2">
+          <div className="flex justify-between items-center mb-1 w-[94%] m-auto max-md:w-full px-2">
             {/* Mobile Menu and Search */}
             <div className="gap-[12px] hidden max-md:flex">
-              <div
+              {/* <div
                 className="w-5 h-[14px] mt-3 flex flex-col justify-between overflow-hidden cursor-pointer"
                 onClick={handleClick}
               >
@@ -161,7 +161,7 @@ const Header = ({}) => {
                   }`}
                 ></span>
                 <span className="w-full h-[2px] bg-black block"></span>
-              </div>
+              </div> */}
               <Search
                 className="relative top-[20px] transform -translate-y-1/2 text-[#7B48A5] cursor-pointer"
                 onClick={() => setSearchPopup(true)}

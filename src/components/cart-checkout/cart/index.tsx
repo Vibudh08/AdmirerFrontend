@@ -2,7 +2,13 @@ import React, { useEffect, useState } from "react";
 import Item from "./order-item";
 import DeliveryInfo from "./current-address";
 import axios from "axios";
-import { addToCart, cartProductData, cartRemove, getShippingAndBillingAddress, updateCartQuantity } from "../../api/api-end-points";
+import {
+  addToCart,
+  cartProductData,
+  cartRemove,
+  getShippingAndBillingAddress,
+  updateCartQuantity,
+} from "../../api/api-end-points";
 
 interface CartProps {
   setTotalMRP: (value: number) => void;
@@ -10,6 +16,7 @@ interface CartProps {
   setTotalAmount: (value: number) => void;
   setItemCount: (value: number) => void;
   setShippingData: (value: any) => void;
+  openAddressModal?: boolean; 
 }
 
 interface ItemProps {
@@ -105,6 +112,7 @@ const Cart: React.FC<CartProps> = ({
   setTotalAmount,
   setItemCount,
   setShippingData,
+  openAddressModal,
 }) => {
   const [totalItem, setTotalItem] = useState<ItemProps[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -117,7 +125,7 @@ const Cart: React.FC<CartProps> = ({
     localStorage.setItem("itemCount", count.toString());
     window.dispatchEvent(new Event("itemCountUpdated"));
   };
-  
+
   const recalculateTotals = (items: ItemProps[]) => {
     let original = 0;
     let discounted = 0;
@@ -163,8 +171,8 @@ const Cart: React.FC<CartProps> = ({
     const updatedItems = totalItem.filter((item) => item.id !== id);
     setTotalItem(updatedItems);
     setItemCount(updatedItems.length);
-    
-syncCartCountToHeader(updatedItems.length);
+
+    syncCartCountToHeader(updatedItems.length);
     recalculateTotals(updatedItems);
 
     try {
@@ -222,14 +230,11 @@ syncCartCountToHeader(updatedItems.length);
     // 🛒 Fetch user cart from backend
     if (authToken) {
       try {
-        const response = await axios.get(
-          cartProductData,
-          {
-            headers: {
-              Authorization: `Bearer ${authToken}`,
-            },
-          }
-        );
+        const response = await axios.get(cartProductData, {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+        });
         apiCart = response.data.data.products || [];
       } catch (error) {
         console.error("❌ Failed to fetch cart data from API:", error);
@@ -249,7 +254,6 @@ syncCartCountToHeader(updatedItems.length);
       image: item.image,
       totalQuantity: item.in_stock < 3 ? item.in_stock.toString() : "3",
     }));
-    
 
     // 🧾 Merge guest cart items if needed (though usually empty after sync)
     const transformedGuestCart: ItemProps[] = guestCart.map((item) => ({
@@ -275,8 +279,8 @@ syncCartCountToHeader(updatedItems.length);
 
     setTotalItem(mergedCart);
     setItemCount(mergedCart.length);
-    
-syncCartCountToHeader(mergedCart.length);
+
+    syncCartCountToHeader(mergedCart.length);
     recalculateTotals(mergedCart);
     setIsLoading(false);
   };
@@ -310,7 +314,7 @@ syncCartCountToHeader(mergedCart.length);
   };
   useEffect(() => {
     fetchAddresses();
-  }, []);  
+  }, []);
 
   if (isLoading) return <Loader />;
   if (totalItem.length === 0) return <EmptyCart />;
@@ -318,13 +322,14 @@ syncCartCountToHeader(mergedCart.length);
   return (
     <div className="flex flex-col w-[65%] max-md:w-[100%] bg-white px-4 py-2">
       {addressData && (
-        <DeliveryInfo
-        billingAddress={addressData.billingAddress}
-        shippingAddresses={addressData.shippingAddresses}
-        onAddressSelect={setAddressForNimbus}
-        onAddressSaved={fetchAddresses} // ✅ passed here
-      />
-      )}
+  <DeliveryInfo
+    billingAddress={addressData.billingAddress}
+    shippingAddresses={addressData.shippingAddresses}
+    onAddressSelect={setAddressForNimbus}
+    onAddressSaved={fetchAddresses}
+    externalTriggerOpen={openAddressModal} // 👈 add this
+  />
+)}
       <div className="flex flex-col">
         {totalItem.map((item, index) => (
           <div key={index}>

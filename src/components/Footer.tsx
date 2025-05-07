@@ -136,12 +136,13 @@ const Footer = () => {
           <h3 className="font-semibold mb-3 text-black">
             REGISTERED OFFICE ADDRESS
           </h3>
-          <p className="!mb-1">B-26, Sector-2,</p>
-          <p className="!mb-1">Noida, Gautam Buddha Nagar,</p>
-          <p className="!mb-1">201301, Uttar Pradesh, India</p>
+          <p className="!mb-1">B-26, Sector-2, Noida</p>
+          <p className="!mb-1">Gautam Buddha Nagar</p>
+          <p className="!mb-1">Uttar Pradesh, 201301</p>
+          <p className="!mb-1">India</p>
         </div>
-        <div className="mt-8 max-sm:mt-2 text-gray-600">
-          <p className="!mb-1">BTJ Alpha Technology Private Limited company</p>
+        <div className="mt-8 max-sm:mt-2 space-y-2 text-gray-600">
+          <p className="!mb-1"><strong>BTJ Alpha Technology Private Limited company</strong></p>
           <p className="!mb-1"><strong>CIN:</strong> U62099UP2025PTC215855</p>
           <p className="!mb-1"><strong>GSTIN:</strong> 09AANCB2020R1ZB</p>
         </div>

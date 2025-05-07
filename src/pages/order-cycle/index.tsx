@@ -9,12 +9,15 @@ const Complete_cart_checkout = () => {
   const [totalAmount, setTotalAmount] = useState(0);
   const [itemCount, setItemCount] = useState(0);
   const [shippingData, setShippingData] = useState();
+  const [openAddressModal, setOpenAddressModal] = useState(false);
+
   useEffect(() => {
     console.log("shipping id at main page is = ", shippingData);
   }, [shippingData]);
   useEffect(() => {
     localStorage.setItem("itemCount", itemCount.toString());
   }, [itemCount]);
+
   return (
     <div className="bg-white p-8 max-md:p-0">
       <div className="flex w-[85%] m-auto max-md:flex-col max-md:w-full border">
@@ -24,6 +27,7 @@ const Complete_cart_checkout = () => {
           setTotalAmount={setTotalAmount}
           setItemCount={setItemCount}
           setShippingData={setShippingData}
+          openAddressModal={openAddressModal}
         />
         <Checkout
           totalMRP={totalMRP.toFixed(2)}
@@ -31,59 +35,34 @@ const Complete_cart_checkout = () => {
           totalAmount={totalAmount.toFixed(2)}
           itemCount={itemCount}
           shippingData={shippingData}
+          onRequestAddressModal={() => setOpenAddressModal(true)} // 👈
         />
       </div>
-      <div className="mt-8 border-t flex max-md:flex-col justify-between w-[90%] m-auto items-center">
-        <div className="mt-5 flex gap-2 flex-wrap">
-          <div className="w-16 h-fit">
-            <img 
-              src="/icons/footer-bank-visa.png"
-              alt=""
-            />
+
+      {itemCount > 0 && (
+        <div className="mt-8 border-t flex max-md:flex-col justify-between w-[90%] m-auto items-center">
+          <div className="mt-5 flex gap-2 flex-wrap">
+            {[
+              { src: "/icons/footer-bank-visa.png" },
+              { src: "/icons/footer-bank-mc.png" },
+              { src: "/icons/footer-bank-ae.png" },
+              { src: "/icons/footer-bank-cod.png", className: "h-[38px]" },
+              { src: "/icons/footer-bank-nb.png", className: "h-[38px]" },
+              { src: "/icons/footer-bank-rupay.png" },
+              { src: "/icons/footer-bank-bhim.png" },
+            ].map((icon, index) => (
+              <div key={index} className="w-16 h-fit">
+                <img src={icon.src} alt="" className={icon.className || ""} />
+              </div>
+            ))}
           </div>
-          <div className="w-16 h-fit">
-            <img
-              src="/icons/footer-bank-mc.png"
-              alt=""
-            />
-          </div>
-          <div className="w-16 h-fit">
-            <img
-              src="/icons/footer-bank-ae.png"
-              alt=""
-            />
-          </div>
-          <div className="w-16 h-fit">
-            <img
-            className="h-[38px]"
-              src="/icons/footer-bank-cod.png"
-              alt=""
-            />
-          </div>
-          <div className="w-16 h-fit">
-            <img
-            className="h-[38px]"
-              src="/icons/footer-bank-nb.png"
-              alt=""
-            />
-          </div>
-          <div className="w-16 h-fit">
-            <img
-              src="/icons/footer-bank-rupay.png"
-              alt=""
-            />
-          </div>
-          <div className="w-16 h-fit">
-            <img
-              src="/icons/footer-bank-bhim.png"
-              alt=""
-            />
+          <div className="mt-5 text-[#1f295c] text-sm cursor-pointer font-[500]">
+            <Link to="/help_faq">
+              <strong>Need Help? Contact Us</strong>
+            </Link>
           </div>
         </div>
-        <div className="mt-5 text-[#1f295c] text-sm cursor-pointer font-[500]">
-        <Link to="/help_faq"> <strong> Need Help? Contact Us</strong></Link>
-        </div>
-      </div>
+      )}
     </div>
   );
 };

@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom"; // 👈 import navigate
-import { GoTag } from "react-icons/go";
-import { Modal } from "antd";
 import Coupons_screen from "../../coupons/Coupons_screen";
 import OrderSuccessModal from "../../OrderSuccessModal";
+import { toast } from "react-toastify";
 import {
   nimbusDelievery_API,
   razorPayCreateOrderApi,
@@ -42,6 +41,7 @@ interface IndexProps {
   shippingFee?: string;
   totalAmount?: string;
   shippingData?: ShippingData;
+  onRequestAddressModal?: () => void;
 }
 
 const Checkout: React.FC<IndexProps> = ({
@@ -53,13 +53,13 @@ const Checkout: React.FC<IndexProps> = ({
   shippingFee = "Free",
   totalAmount = "0",
   shippingData,
+  onRequestAddressModal,
 }) => {
   useEffect(() => {
     console.log("the shipping data in checkout is = ", shippingData);
   }, [shippingData]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selected, setSelected] = useState("online");
-  const [showAddressError, setShowAddressError] = useState(false);
+  const [selected, setSelected] = useState("cod");
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [orderId, setOrderId] = useState("");
   const [loading, setLoading] = useState(false);
@@ -85,10 +85,11 @@ const Checkout: React.FC<IndexProps> = ({
     }
 
     if (!shippingData) {
-      setShowAddressError(true);
+      onRequestAddressModal?.();
+      toast.error("Please fill in your address before placing the order.");
+
       return;
     }
-    setShowAddressError(false);
     setLoading(true);
 
     const order_number = "BTJ" + new Date().getTime();
@@ -247,19 +248,18 @@ const Checkout: React.FC<IndexProps> = ({
       />
 
       <div className="w-[35%] max-md:w-[100%] p-5 py-6 border-l bg-white border-[#eaeaec]">
-          <div className="mb-3 flex justify-center items-center mt-[-10px] text-center">
-            <img
-              src="https://constant.myntassets.com/checkout/assets/img/footer-bank-visa.png"
-              className="w-12 h-10 mr-2"
-              alt="100% Secure"
-            />
-            <p className="text-[#535766] text-md tracking-wider font-semibold">
-              100% SECURE
-            </p>
-          </div>
-          <hr />
+        <div className="mb-3 max-md:hidden flex justify-center items-center mt-[-10px] text-center">
+          <img
+            src="https://constant.myntassets.com/checkout/assets/img/sprite-secure.png"
+            className="w-8 h-8 mr-3"
+            alt="100% Secure"
+          />
+          <p className="text-[#535766] text-md tracking-wider font-semibold">
+            100% SECURE
+          </p>
+        </div>
+        <hr />
         <div className="mt-5 mb-4 ">
-
           <div className="clear-both"></div>
           <h3 className="text-[14px] text-[#535766] font-bold mb-4">
             PRICE DETAILS ({itemCount} item{itemCount > 1 ? "s" : ""})
@@ -301,29 +301,13 @@ const Checkout: React.FC<IndexProps> = ({
         </h2>
 
         <div className="border mb-5 rounded-lg">
-          <div
-            onClick={() => setSelected("online")}
-            className={`flex items-center p-3 border-b rounded-t-lg  cursor-pointer ${
-              selected === "online" ? "bg-purple-100" : "bg-white"
-            }`}
-          >
-            <input
-              type="radio"
-              name="payment"
-              checked={selected === "online"}
-              onChange={() => setSelected("online")}
-              className="form-radio hidden text-purple-700 mr-3"
-            />
-            <img src="/icons/online.svg" className="w-6 h-6 mr-2" alt="" />
-            <label className="text-[14px] select-none  cursor-pointer">
-              Online
-            </label>
-          </div>
-
+          {/* COD First */}
           <div
             onClick={() => setSelected("cod")}
-            className={`flex items-center p-3 rounded-b-lg   cursor-pointer  ${
-              selected === "cod" ? "bg-purple-100" : "bg-white"
+            className={`flex items-center p-4 bg-purple-100 rounded-t-lg cursor-pointer ${
+              selected === "cod"
+                ? "bg-purple-100 border-l-4 border-purple-900"
+                : "bg-white"
             }`}
           >
             <input
@@ -333,12 +317,47 @@ const Checkout: React.FC<IndexProps> = ({
               onChange={() => setSelected("cod")}
               className="form-radio hidden text-purple-700 mr-3"
             />
-            <img src="/icons/cash-icon.svg" className="w-6 h-6 mr-2" alt="" />
-            <label className="text-[14px] select-none cursor-pointer">
-              Cash On Delivery
-            </label>
+            <div
+              className={`flex items-center ${
+                selected === "cod" ? "font-semibold text-purple-800" : "ml-1"
+              }`}
+            >
+              <img src="/icons/cash-icon.svg" className="w-6 h-6 mr-2" alt="" />
+              <label className="text-[15px] select-none cursor-pointer">
+                Cash On Delivery
+              </label>
+            </div>
+          </div>
+
+          {/* Online Second */}
+          <div
+            onClick={() => setSelected("online")}
+            className={`flex items-center p-4 rounded-b-lg cursor-pointer ${
+              selected === "online"
+                ? "bg-purple-100 border-l-4 border-purple-800"
+                : "bg-white"
+            }`}
+          >
+            <input
+              type="radio"
+              name="payment"
+              checked={selected === "online"}
+              onChange={() => setSelected("online")}
+              className="form-radio hidden text-purple-700 mr-3"
+            />
+            <div
+              className={`flex items-center ${
+                selected === "online" ? "font-semibold text-purple-800" : "ml-1"
+              }`}
+            >
+              <img src="/icons/online.svg" className="w-6 h-6 mr-2" alt="" />
+              <label className="text-[15px] select-none cursor-pointer">
+                Online
+              </label>
+            </div>
           </div>
         </div>
+
         <button
           onClick={handlePlaceOrder}
           disabled={loading}
@@ -376,13 +395,17 @@ const Checkout: React.FC<IndexProps> = ({
             "PLACE ORDER"
           )}
         </button>
-
-        {showAddressError && (
-          <div className="mt-3 bg-red-100 text-red-700 border border-red-300 px-4 py-2 rounded text-sm">
-            Please select or enter a delivery address before placing the order.
-          </div>
-        )}
       </div>
+        <div className="mb-3 hidden max-md:flex justify-center items-center mt-[-10px] text-center">
+          <img
+            src="https://constant.myntassets.com/checkout/assets/img/sprite-secure.png"
+            className="w-6 h-6 mr-2"
+            alt="100% Secure"
+          />
+          <p className="text-[#535766] text-sm tracking-wider font-semibold">
+            100% SECURE
+          </p>
+        </div>
     </>
   );
 };

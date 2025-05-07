@@ -27,7 +27,8 @@ interface DeliveryInfoProps {
   billingAddress: Address;
   shippingAddresses: Address[];
   onAddressSelect: (address: Address) => void;
-  onAddressSaved: () => void; // ✅ added prop
+  onAddressSaved: () => void;
+  externalTriggerOpen?: boolean; // 👈 Add this new prop
 }
 
 const DeliveryInfo: React.FC<DeliveryInfoProps> = ({
@@ -35,6 +36,7 @@ const DeliveryInfo: React.FC<DeliveryInfoProps> = ({
   shippingAddresses,
   onAddressSelect,
   onAddressSaved, // ✅ extract it
+  externalTriggerOpen,
 }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState<Address | null>(null);
@@ -55,6 +57,12 @@ const DeliveryInfo: React.FC<DeliveryInfoProps> = ({
     }
   }, [billingAddress, shippingAddresses]);
 
+  useEffect(() => {
+    if (externalTriggerOpen) {
+      setIsModalVisible(true);
+    }
+  }, [externalTriggerOpen]);
+
   const handleAddressSelect = (index: number) => {
     const selected = allAddresses[index];
     setSelectedAddress(selected);
@@ -72,6 +80,10 @@ const DeliveryInfo: React.FC<DeliveryInfoProps> = ({
   const getZipCode = (address: Address) => {
     return address.zip_code || "";
   };
+
+  function onModalClose() {
+    throw new Error("Function not implemented.");
+  }
 
   return (
     <>
@@ -237,7 +249,10 @@ const DeliveryInfo: React.FC<DeliveryInfoProps> = ({
           <span style={{ color: "#722ed1" }}>Update Delivery Address</span>
         }
         open={isModalVisible}
-        onCancel={() => setIsModalVisible(false)}
+        onCancel={() => {
+          setIsModalVisible(false);
+          onModalClose?.(); // ✅ parent ko bhi bol do
+        }}
         footer={null}
         width={700}
         centered
