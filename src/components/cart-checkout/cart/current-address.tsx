@@ -132,19 +132,19 @@ const DeliveryInfo: React.FC<DeliveryInfoProps> = ({
         </div>
       ) : (
         <div
+          className="p-6 max-md:p-4"
           style={{
             display: "flex",
             width: "100%",
             margin: "16px 0",
             borderRadius: "12px",
-            padding: "20px",
             backgroundColor: "white",
             border: "1px solid #e8e8e8",
             position: "relative",
             minHeight: "150px",
           }}
         >
-          <div style={{ width: "100%", paddingRight: "120px" }}>
+          <div style={{ width: "100%" }}>
             <div
               style={{
                 fontWeight: "600",
@@ -195,7 +195,7 @@ const DeliveryInfo: React.FC<DeliveryInfoProps> = ({
               {getZipCode(selectedAddress!)}
             </div>
 
-            <div style={{ marginTop: "16px" }}>
+            <div className="flex justify-between gap-3" style={{ marginTop: "16px" }}>
               <Select
                 style={{ width: "100%", height: "35px" }}
                 value={JSON.stringify(selectedAddress)}
@@ -211,35 +211,34 @@ const DeliveryInfo: React.FC<DeliveryInfoProps> = ({
                   )} ${getLastName(address)}, ${address.flat}, ${address.city}`,
                 }))}
               />
+              {/* <div
+                style={{
+                  position: "absolute",
+                  right: "20px",
+                  bottom: "17px",
+                }}
+              > */}
+                <button
+                  style={{
+                    width: "100px",
+                    border: "none",
+                    borderRadius: "6px",
+                    height: "34px",
+                    fontSize: "14px",
+                    fontWeight: "500",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.5px",
+                    color: "white",
+                    backgroundColor: "#722ed1",
+                    cursor: "pointer",
+                    boxShadow: "0 2px 4px rgba(114, 46, 209, 0.3)",
+                  }}
+                  onClick={() => setIsModalVisible(true)}
+                >
+                  Change
+                </button>
+              {/* </div> */}
             </div>
-          </div>
-
-          <div
-            style={{
-              position: "absolute",
-              right: "20px",
-              bottom: "20px",
-            }}
-          >
-            <button
-              style={{
-                width: "100px",
-                border: "none",
-                borderRadius: "6px",
-                height: "35px",
-                fontSize: "14px",
-                fontWeight: "500",
-                textTransform: "uppercase",
-                letterSpacing: "0.5px",
-                color: "white",
-                backgroundColor: "#722ed1",
-                cursor: "pointer",
-                boxShadow: "0 2px 4px rgba(114, 46, 209, 0.3)",
-              }}
-              onClick={() => setIsModalVisible(true)}
-            >
-              Change
-            </button>
           </div>
         </div>
       )}

@@ -7,6 +7,8 @@ import { IoClose } from "react-icons/io5";
 import React from "react";
 import { Heart, ShoppingBag } from "lucide-react";
 import SearchBarWithPopup from "./SearchBar";
+import axios from "axios";
+import { logout } from "./api/api-end-points";
 
 const Header = ({}) => {
   // function Header() {
@@ -48,9 +50,30 @@ const Header = ({}) => {
   const handleClick = () => setShow(!show);
   const handleCart = () => setCartShow(!cartShow);
 
-  const handleLogout = () => {
-    localStorage.removeItem("auth_token");
-    window.location.reload();
+  const handleLogout = async () => {
+    try {
+      await axios.post(
+        logout,
+        {},
+        {
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("auth_token"),
+          },
+        }
+      );
+  
+      // Clear token and cart count
+      localStorage.removeItem("auth_token");
+      localStorage.removeItem("itemCount");
+  
+      // Optional: dispatch a custom event to update header state (if you're not reloading)
+      window.dispatchEvent(new Event("itemCountUpdated"));
+  
+      // Reload the page or redirect
+      window.location.href = "/";
+    } catch (err) {
+      console.error("Error in logout:", err);
+    }
   };
 
   return (

@@ -63,6 +63,7 @@ const ProductDetails = () => {
   const imageRef = React.useRef<HTMLImageElement>(null);
   const lensRef = React.useRef<HTMLDivElement>(null);
 
+  
 
   const relatedProductsSlider = {
     dots: false,
@@ -85,6 +86,8 @@ const ProductDetails = () => {
       },
     ],
   };
+
+  
 
   const handleBuyNow = () => {
     const authToken = localStorage.getItem("auth_token");
@@ -146,22 +149,28 @@ const ProductDetails = () => {
     const authToken = localStorage.getItem("auth_token");
   
     if (!authToken) {
-      // User not logged in - Store product locally
+      // Guest user
       const cartItems = JSON.parse(localStorage.getItem("guest_cart") || "[]");
       const isAlreadyAdded = cartItems.find((item: any) => item.id === product.id);
       if (!isAlreadyAdded) {
         cartItems.push(product);
         localStorage.setItem("guest_cart", JSON.stringify(cartItems));
+  
+        // ✅ Update itemCount
+        const newCount = parseInt(localStorage.getItem("itemCount") || "0", 10) + 1;
+        localStorage.setItem("itemCount", newCount.toString());
+        window.dispatchEvent(new Event("itemCountUpdated"));
+        setIsInCart(true);
         toast.success("Product added to cart");
       } else {
-        toast.success("Product already to cart");
+        toast.success("Product already in cart");
       }
       return;
     }
   
-    // User is logged in - Proceed with API call
+    // Logged-in user
     try {
-      const response = await axios.post( 
+      const response = await axios.post(
         addToCart,
         {
           product_id: product.id,
@@ -178,15 +187,17 @@ const ProductDetails = () => {
       if (response.data && response.data.status === "success") {
         toast.success("Product added to cart");
         setIsInCart(true);
+  
+        // ✅ Update itemCount only if added successfully
+        const newCount = parseInt(localStorage.getItem("itemCount") || "0", 10) + 1;
+        localStorage.setItem("itemCount", newCount.toString());
+        window.dispatchEvent(new Event("itemCountUpdated"));
       }
     } catch (error) {
       console.error("Add to cart error:", error);
     }
-    
-  const currentCount = parseInt(localStorage.getItem("itemCount") || "0", 10);
-  localStorage.setItem("itemCount", (currentCount + 1).toString());
-  window.dispatchEvent(new Event("itemCountUpdated"));
   };
+  
   
 
   useEffect(() => {
@@ -393,7 +404,7 @@ const ProductDetails = () => {
             <div className="mt-5 flex gap-3 w-full ">
               <button
                 onClick={handleBuyNow}
-                className="bg-purple-600 text-white py-2 px-6 rounded-md h-[50px] w-1/2 hover:bg-purple-700 transition font-semibold"
+                className="bg-[#7B48A5] text-white py-2 px-6 rounded-md h-[50px] w-1/2 hover:bg-purple-700 transition font-semibold"
               >
                 Buy Now
               </button>
@@ -401,8 +412,8 @@ const ProductDetails = () => {
                 onClick={isInCart ? () => navigate("/cart") : handleAddToCart}
                 className={`${
                   isInCart
-                    ? "border border-purple-700 bg-purple-600 text-white hover:bg-purple-700"
-                    : "border border-purple-700 bg-purple-600 text-white hover:bg-purple-700"
+                    ? "border border-purple-700 bg-[#7B48A5] text-white hover:bg-purple-700"
+                    : "border border-purple-700 bg-[#7B48A5] text-white hover:bg-purple-700"
                 } py-2 px-6 rounded-md h-[50px] w-1/2 transition font-semibold`}
               >
                 {isInCart ? "View Cart" : "Add To Cart"}

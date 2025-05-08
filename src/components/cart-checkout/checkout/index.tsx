@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom"; // 👈 import navigate
 import Coupons_screen from "../../coupons/Coupons_screen";
 import OrderSuccessModal from "../../OrderSuccessModal";
 import { toast } from "react-toastify";
+import { useNavigate, useLocation } from "react-router-dom";
 import {
   nimbusDelievery_API,
   razorPayCreateOrderApi,
@@ -80,13 +80,15 @@ const Checkout: React.FC<IndexProps> = ({
     const authToken = localStorage.getItem("auth_token");
 
     if (!authToken) {
-      navigate("/LogIn"); // 👈 redirect if not logged in
+      // 👉 Redirect to login with state only on button click
+      navigate("/login", { state: { fromCheckout: true } });
+      toast.error("Please LogIn before placing your order.");
       return;
     }
 
     if (!shippingData) {
       onRequestAddressModal?.();
-      toast.error("Please fill in your address before placing the order.");
+      toast.error("Please fill in your address before placing your order.");
 
       return;
     }

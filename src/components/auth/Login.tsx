@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { FaTimes } from "react-icons/fa";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 import { otp_send_API, verifyLogin_API } from "../api/api-end-points";
+
 
 interface FormProps {
   phoneNumber: string;
@@ -17,6 +18,7 @@ const Login = () => {
   const [error, setError] = useState("");
   const [phoneNumber, setPhoneNumber] = useState(""); // To store phone number
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleClose = () => {
     navigate("/");
@@ -105,7 +107,11 @@ const Login = () => {
 
       toast.success("Login successful!");
       // Redirect to dashboard
-      navigate("/");
+      if (location.state?.fromCheckout) {
+        navigate("/cart");
+      } else {
+        navigate("/"); // Default redirect
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : "OTP verification failed");
     } finally {
@@ -180,7 +186,7 @@ const Login = () => {
                   {[...Array(6)].map((_, index) => (
                     <input
                       key={index}
-                      type="text"
+                      type="tel"
                       maxLength={1}
                       className="w-8 h-12 text-center border-b border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                       id={`otp-${index}`}

@@ -28,7 +28,7 @@ const ProductItem: React.FC<productItemProps> = ({
   onMoveToCart,
 }) => {
   return (
-    <div className="max-w-[300px] font-sans bg-white rounded-[5px]  max-md:p-2 pb-2 flex flex-col gap-1 max-md:gap-1 items-center text-center border  border-gray-300">
+    <div className="max-w-[300px] font-sans bg-white rounded-[5px]  max-md:p-0 pb-2 flex flex-col gap-1 max-md:gap-1 items-center text-center border  border-gray-300">
       {/* Product Image with Hover Button */}
       <div className="relative group">
         <Link to={`/product/${id}`}>
@@ -55,7 +55,7 @@ const ProductItem: React.FC<productItemProps> = ({
       <div className="hidden">{id}</div>
 
       {/* Product Name */}
-  <div className="font-semibold text-black text-md max-md:text-[16px] !truncate whitespace-nowrap overflow-hidden w-full px-2 max-md:px-0 mt-2 ">
+  <div className="font-semibold text-black text-md max-md:text-[16px] !truncate whitespace-nowrap overflow-hidden w-full px-2 max-md:px-1 mt-2 ">
       <Link to={`/product/${id}`}>
     {name}
 </Link>
@@ -63,12 +63,12 @@ const ProductItem: React.FC<productItemProps> = ({
 
 
       {/* Product Description */}
-      <div className="text-gray-400 text-xs leading-relaxed font-bold truncate overflow-hidden whitespace-nowrap w-full max-w-[250px] px-2">
+      {/* <div className="text-gray-400 text-xs leading-relaxed font-bold truncate overflow-hidden whitespace-nowrap w-full max-w-[250px] px-2">
         {description}
-      </div>
+      </div> */}
 
       {/* Price Section */}
-      <div className="flex items-center justify-center gap-2.5 max-md:gap-1.5 mb-2 max-md:mb-1 flex-wrap w-full">
+      <div className="flex items-center justify-center gap-2.5 max-md:gap-1 mb-2 max-md:mb-1 max-md:p-1 flex-wrap w-full">
         <span className="font-semibold text-black text-lg max-md:text-[14px]">
           Rs {price}
         </span>

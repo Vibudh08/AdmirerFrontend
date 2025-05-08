@@ -320,7 +320,7 @@ const Cart: React.FC<CartProps> = ({
   if (totalItem.length === 0) return <EmptyCart />;
 
   return (
-    <div className="flex flex-col w-[65%] max-md:w-[100%] bg-white px-4 py-2">
+    <div className="flex flex-col w-[65%] max-md:w-[100%] bg-white px-4 max-md:px-2 py-2">
       {addressData && (
   <DeliveryInfo
     billingAddress={addressData.billingAddress}

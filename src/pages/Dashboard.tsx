@@ -28,16 +28,21 @@ const Dashboard = () => {
           },
         }
       );
-
-      // 1. Clear the token
+  
+      // Clear token and cart count
       localStorage.removeItem("auth_token");
-
-      // 2. Force full page reload
-      window.location.href = "/"; // or window.location.reload()
+      localStorage.removeItem("itemCount");
+  
+      // Optional: dispatch a custom event to update header state (if you're not reloading)
+      window.dispatchEvent(new Event("itemCountUpdated"));
+  
+      // Reload the page or redirect
+      window.location.href = "/";
     } catch (err) {
       console.error("Error in logout:", err);
     }
   };
+  
 
   return (
     <div className="p-6 max-sm:p-0 w-[85%] mt-1 max-sm:mt-5 max-md:w-[100%] m-auto flex max-sm:block gap-5">

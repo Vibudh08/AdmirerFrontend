@@ -114,7 +114,7 @@ const HelpContact: React.FC = () => {
           <div className="flex gap-8 max-md:gap-3 w-[75%] max-md:w-[100%] m-auto justify-around px-4 max-md:px-2">
             {/* Chat with Us */}
             <a
-              href="https://wa.me/919999999999" // replace with your actual WhatsApp number
+              href="https://wa.me/919717072701"
               target="_blank"
               rel="noopener noreferrer"
               className="flex flex-col items-center gap-2 self-center mt-[-27px] hover:opacity-90 transition"
@@ -133,7 +133,7 @@ const HelpContact: React.FC = () => {
 
             {/* Call Us At */}
             <a
-              href="tel:18002660123"
+              href="tel:01204525483"
               className="flex flex-col items-center gap-2 self-center  hover:opacity-90 transition"
             >
               <PhoneCall
@@ -143,7 +143,7 @@ const HelpContact: React.FC = () => {
               <p className="text-purple-700 text-xl max-md:text-sm font-semibold">
                 Call Us At
               </p>
-              <p className="text-sm text-gray-700">1800-266-0123</p>
+              <p className="text-sm text-gray-700">0120-452-5483</p>
             </a>
 
             {/* Divider */}

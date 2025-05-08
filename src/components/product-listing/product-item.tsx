@@ -81,7 +81,7 @@ const ProductItem: React.FC<productItemProps> = ({
           className="w-full h-full object-cover rounded-lg"
         />
         <button
-          className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity"
+          className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 max-md:opacity-100 transition-opacity"
           onClick={(e) => {
             e.stopPropagation(); // Prevents the click from reaching parent div
             toggleWishlist();
@@ -95,9 +95,9 @@ const ProductItem: React.FC<productItemProps> = ({
             }`}
           >
             {isWishlisted ? (
-              <FaHeart size={compactView ? 16 : 20} />
+              <FaHeart size={compactView ? 14 : 20} />
             ) : (
-              <FaRegHeart size={compactView ? 16 : 20} />
+              <FaRegHeart size={compactView ? 14 : 20} />
             )}
           </div>
         </button>
