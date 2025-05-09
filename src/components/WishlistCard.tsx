@@ -32,11 +32,7 @@ const ProductItem: React.FC<productItemProps> = ({
       {/* Product Image with Hover Button */}
       <div className="relative group">
         <Link to={`/product/${id}`}>
-          <img
-            src={imageUrl}
-            alt="product"
-            className="w-full h-auto "
-          />
+          <img src={imageUrl} alt="product" className="w-full h-auto rounded " />
         </Link>
 
         {/* Heart Button at Top Right (Hidden initially, shows on hover) */}
@@ -55,12 +51,9 @@ const ProductItem: React.FC<productItemProps> = ({
       <div className="hidden">{id}</div>
 
       {/* Product Name */}
-  <div className="font-semibold text-black text-md max-md:text-[16px] !truncate whitespace-nowrap overflow-hidden w-full px-2 max-md:px-1 mt-2 ">
-      <Link to={`/product/${id}`}>
-    {name}
-</Link>
-  </div>
-
+      <div className="font-semibold text-black text-md max-md:text-[16px] !truncate whitespace-nowrap overflow-hidden w-full px-2 max-md:px-1 mt-2 ">
+        <Link to={`/product/${id}`}>{name}</Link>
+      </div>
 
       {/* Product Description */}
       {/* <div className="text-gray-400 text-xs leading-relaxed font-bold truncate overflow-hidden whitespace-nowrap w-full max-w-[250px] px-2">
@@ -81,7 +74,7 @@ const ProductItem: React.FC<productItemProps> = ({
       </div>
       <hr className="p-0 w-full" />
       <div
-        className="p-1 text-center font-semibold select-none text-purple-700 text-md max-md:text-sm leading-6 tracking-tight cursor-pointer w-full"
+        className="p-1 text-center font-semibold select-none text-[#7B48A5] text-md max-md:text-sm leading-6 tracking-tight cursor-pointer w-full"
         onClick={() => onMoveToCart(id)}
       >
         MOVE TO CART

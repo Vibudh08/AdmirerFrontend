@@ -37,6 +37,10 @@ const OrderDetails: React.FC = () => {
   const [payment_type, setPayment_type] = useState<string>();
   const [loading, setLoading] = useState(true); // NEW
 
+  const cleanedTotal = Number(totalPrice);
+  const gstAmount = Math.ceil(Number((cleanedTotal * 0.05).toFixed(2)));
+  const totalWithGST = Number((cleanedTotal + gstAmount).toFixed(2));
+
   // Address interface and state
   interface Address {
     first_name: string;
@@ -163,23 +167,25 @@ const OrderDetails: React.FC = () => {
                     Quantity: {order.quantity}
                   </p>
                   <div className="flex items-center gap-2 mt-3">
-                        <span className="w-4 h-4 bg-green-600 rounded-full flex items-center justify-center z-10">
-                          <svg
-                            className="w-3 h-3 text-white"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={3}
-                              d="M5 13l4 4L19 7"
-                            />
-                          </svg>
-                        </span>
-                        <span className="text-[13px]">Order Confirmed, {order.date}</span>
-                      </div>
+                    <span className="w-4 h-4 bg-green-600 rounded-full flex items-center justify-center z-10">
+                      <svg
+                        className="w-3 h-3 text-white"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={3}
+                          d="M5 13l4 4L19 7"
+                        />
+                      </svg>
+                    </span>
+                    <span className="text-[13px]">
+                      Order Confirmed, {order.date}
+                    </span>
+                  </div>
                 </div>
               </div>
 
@@ -187,8 +193,6 @@ const OrderDetails: React.FC = () => {
                 <div className="flex flex-col gap-3 text-gray-800">
                   <div className="relative pl-4 ml-1 border-l-2 border-green-600 space-y-4">
                     <div className="ml-[-25px] gap-[15px] flex flex-col">
-                      
-
                       {/* <div className="flex items-center gap-2 mb-[-2px]">
                         <span className="w-4 h-4 rounded-full flex items-center justify-center z-10">
                           <svg
@@ -255,26 +259,31 @@ const OrderDetails: React.FC = () => {
           </div> */}
 
           <div className="bg-white border rounded shadow-sm p-5">
-            <h4 className="text-xs mb-3 font-semibold text-gray-600 ">Shipping details</h4>
+            <h4 className="text-xs mb-3 font-semibold text-gray-600 ">
+              Shipping details
+            </h4>
             <hr />
             <p className="mt-2 text-gray-700  leading-5">
-  <strong className="text-md mb-1 capitalize block">
-    {address?.first_name} {address?.last_name}
-  </strong>
-  <div className="text-sm">
-    {address?.flat}, {address?.street}, {address?.locality}
-  </div>
-  <div className="text-sm">
-    {address?.city}, {address?.state} - {address?.zip_code}, {address?.addr_type}
-  </div>
-  {/* <div >
+              <strong className="text-md mb-1 capitalize block">
+                {address?.first_name} {address?.last_name}
+              </strong>
+              <div className="text-sm">
+                {address?.flat}, {address?.street}, {address?.locality}
+              </div>
+              <div className="text-sm">
+                {address?.city}, {address?.state} - {address?.zip_code},{" "}
+                {address?.addr_type}
+              </div>
+              {/* <div >
     <strong>Phone number:</strong> 8736977153
   </div> */}
-</p>
+            </p>
           </div>
 
           <div className="bg-white border rounded shadow-sm p-5">
-            <h4 className="text-xs mb-3 font-semibold text-gray-600">Price Details</h4>
+            <h4 className="text-xs mb-3 font-semibold text-gray-600">
+              Price Details
+            </h4>
             <hr />
             <div className="text-xs mt-3 text-gray-700 space-y-2">
               {/* <div className="flex justify-between">
@@ -285,17 +294,29 @@ const OrderDetails: React.FC = () => {
                 <span className="!text-[14px]  capitalize ">Selling price</span>
                 <span className="text-[14px]  capitalize ">₹{totalPrice}</span>
               </div>
+              <div className="flex justify-between ">
+                <span className="!text-[14px]  capitalize ">GST</span>
+                <span className="text-[14px]  capitalize ">₹{gstAmount}</span>
+              </div>
               <div className="flex justify-between">
-                <span className="!text-[14px] mt-1 capitalize ">Delivery Charge</span>
-                <span className="text-[14px] text-green-600 font-medium">Free</span>
+                <span className="!text-[14px] capitalize ">
+                  Delivery Charge
+                </span>
+                <span className="text-[14px] text-green-600 font-medium">
+                  Free
+                </span>
               </div>
               <div className="border-t pt-2 flex justify-between font-semibold">
-                <span className="font-semibold mt-1 text-[14px] text-black">Total Amount</span>
-                <span className="font-semibold mt-1 text-[14px] text-black">₹{totalPrice}</span>
+                <span className="font-semibold mt-1 text-[14px] text-black">
+                  Total Amount
+                </span>
+                <span className="font-semibold mt-1 text-[14px] text-black">
+                  ₹{totalWithGST}
+                </span>
               </div>
               <div className="pt-1">
                 <span className="text-gray-700 ">• </span> {payment_type}: ₹
-                {totalPrice}
+                {totalWithGST}
               </div>
             </div>
           </div>

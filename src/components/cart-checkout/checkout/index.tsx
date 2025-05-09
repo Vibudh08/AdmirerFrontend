@@ -64,6 +64,12 @@ const Checkout: React.FC<IndexProps> = ({
   const [orderId, setOrderId] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const cleanedTotal = Number((totalAmount ).replace(/,/g, ""));
+  const gstAmount = Math.ceil(Number((cleanedTotal * 0.05).toFixed(2)));
+  const totalWithGST = Number((cleanedTotal + gstAmount).toFixed(2));
+  // const finalAmount = Math.round(totalWithGST * 100 ); // ✅ Send to Razorpay
+  // console.log("totalAmount:", finalAmount, "type:", typeof finalAmount);
+
   const navigate = useNavigate(); // 👈 initialize navigate
 
   const isLoading =
@@ -104,7 +110,7 @@ const Checkout: React.FC<IndexProps> = ({
             Authorization: `Bearer ${authToken}`,
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ amount: totalAmount }),
+          body: JSON.stringify({ amount: totalWithGST}),
         });
 
         const orderData = await createOrderRes.json();
@@ -136,7 +142,7 @@ const Checkout: React.FC<IndexProps> = ({
                 const payload = {
                   orderID: order_number,
                   paymentType: "prepaid",
-                  amount: totalAmount,
+                  amount: totalWithGST,
                   city: shippingData?.city || "",
                   firstName: shippingData?.first_name || "",
                   lastName: shippingData?.last_name || "",
@@ -192,7 +198,7 @@ const Checkout: React.FC<IndexProps> = ({
         const payload = {
           orderID: order_number,
           paymentType: "cod",
-          amount: totalAmount,
+          amount: totalWithGST,
           city: shippingData?.city || "",
           firstName: shippingData?.first_name || "",
           lastName: shippingData?.last_name || "",
@@ -229,10 +235,10 @@ const Checkout: React.FC<IndexProps> = ({
   const priceDetails: PriceDetail[] = [
     { label: "Total MRP", value: `₹${totalMRP}` },
     { label: "Discount on MRP", value: `-₹${discount}`, isDiscount: true },
+    { label: "Discounted Price", value: `₹${totalAmount}` },
     {
-      label: "Platform Fee",
-      value: platformFee,
-      isFree: platformFee === "Free",
+      label: "GST",
+      value: `₹${gstAmount.toFixed(2)}`, // ✅ fixed this line
     },
     {
       label: "Shipping Fee",
@@ -240,6 +246,7 @@ const Checkout: React.FC<IndexProps> = ({
       isFree: shippingFee === "Free",
     },
   ];
+  
 
   return (
     <>
@@ -293,7 +300,7 @@ const Checkout: React.FC<IndexProps> = ({
         <div className="mb-5">
           <div className="flex justify-between mt-4 mb-4 text-[15px] font-bold text-[#3e4152]">
             <div>Total Amount</div>
-            <div>₹{totalAmount}</div>
+            <div>₹{totalWithGST.toFixed(2)}</div>
           </div>
         </div>
         <hr />

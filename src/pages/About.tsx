@@ -1,5 +1,6 @@
 import React from 'react';
 import { Truck, RefreshCw, ShieldCheck, Headphones } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const features= [
     {
@@ -28,7 +29,7 @@ const AboutPage = () => {
         {/* Left Side - Image */}
         <div>
           <img
-            src="https://admirer.in/assets/images/about%20us1.jpg"
+            src="/aboutus.jpg"
             alt="Jewelry Promo"
             className="w-full h-auto rounded p-6 max-md:p-0"
           />
@@ -53,9 +54,11 @@ const AboutPage = () => {
             As part of our growth, Roman has launched a new range of shoes and handbags.
           </p>
 
+<Link to="/">
           <button className="bg-purple-700 text-white !mt-8 font-semibold px-6  py-3 rounded hover:bg-purple-800 transition">
             Explore Products
           </button>
+          </Link>
         </div>
       </div>
     </section>

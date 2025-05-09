@@ -63,7 +63,7 @@ const ProductActions: React.FC<ProductActionsProps> = ({
     <div className="flex items-start pt-1.5 gap-2 relative">
       <button
         onClick={toggleWishlist}
-        className="text-xl text-purple-500 hover:scale-110 transition-transform"
+        className="text-xl text-[#7B48A5] hover:scale-110 transition-transform"
         aria-label="Add to wishlist"
       >
         {inWishlist ? <FaHeart /> : <FaRegHeart />}

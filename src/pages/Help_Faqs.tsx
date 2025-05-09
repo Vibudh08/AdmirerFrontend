@@ -166,8 +166,7 @@ const HelpContact: React.FC = () => {
 
           <p className="text-md tracking-wide leading-normal text-gray-600 mt-8 w-[78%] max-md:w-full m-auto px-6 max-md:px-1">
             The toll free number is only applicable for domestic orders within
-            India. For international customers or deliveries, please reach us
-            out through WhatsApp, Live chat, or email.
+            India.
           </p>
         </div>
       </div>

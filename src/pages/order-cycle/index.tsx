@@ -44,8 +44,8 @@ const Complete_cart_checkout = () => {
           <div className="mt-5 flex gap-2 flex-wrap">
             {[
               { src: "/icons/footer-bank-visa.png" },
-              { src: "/icons/footer-bank-mc.png" },
-              { src: "/icons/footer-bank-ae.png" },
+              { src: "/icons/footer-bank-card.png" },
+              { src: "/icons/footer-bank-american-express.png" },
               { src: "/icons/footer-bank-cod.png", className: "h-[38px]" },
               { src: "/icons/footer-bank-nb.png", className: "h-[38px]" },
               { src: "/icons/footer-bank-rupay.png" },

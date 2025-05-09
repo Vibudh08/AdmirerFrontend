@@ -340,7 +340,7 @@ const Dashboard_Profile = () => {
       </div>
 
       {/* First & Last Name */}
-      <div className="flex gap-4 mb-4">
+      <div className="flex gap-4 ">
       <div className="w-1/2 mb-4">
         <label className="text-sm font-medium text-gray-700 mb-1 block">
           First Name

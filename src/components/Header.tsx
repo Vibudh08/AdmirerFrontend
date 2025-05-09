@@ -265,7 +265,7 @@ const Header = ({}) => {
 
                     {/* Badge above the icon */}
                     {itemCount! > 0 && (
-                      <div className="absolute -top-2 -right-2 bg-purple-700 text-white w-4 h-4 text-[11px] flex items-center justify-center rounded-full">
+                      <div className="absolute -top-2 -right-2 bg-[#7B48A5] text-white w-4 h-4 text-[11px] flex items-center justify-center rounded-full">
                         {itemCount}
                       </div>
                     )}

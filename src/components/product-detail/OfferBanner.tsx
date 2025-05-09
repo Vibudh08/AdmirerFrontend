@@ -16,7 +16,7 @@ const OfferBanner: React.FC<OfferBannerProps> = ({ percentageDiscount }) => {
         />
         <div className="text-sm text-gray-800 font-medium">
           Biggest sale of the season! Get up to{" "}
-          <span className="text-purple-600 font-bold">
+          <span className="text-[#7B48A5] font-bold">
             {percentageDiscount ?? 0}% off
           </span>{" "}
           on the hottest trends. Shop now before it's over!
