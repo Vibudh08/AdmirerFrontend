@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import WishlistCard from "../components/WishlistCard";
-import { get_wishlist_data, movecart, remove } from "../components/api/api-end-points";
+import { addToCart, get_wishlist_data, movecart, remove } from "../components/api/api-end-points";
 import { useNavigate } from "react-router-dom";
 import { toast } from 'react-toastify';
+import axios from "axios";
 
 const Loader = () => (
   <div className="fixed inset-0 bg-white bg-opacity-80 backdrop-blur-sm flex items-center justify-center z-50">
@@ -57,35 +58,39 @@ const Wishlist = () => {
     }
   };
 
-  const handleMoveToCart = async (product_id: number) => {
+  const handleMoveToCart = async (product_id: number, wishlist_id: number) => {
+    const authToken = localStorage.getItem("auth_token");
+  
     try {
-      const res = await fetch(
-        movecart,
+      const res = await axios.post(
+        addToCart,
         {
-          method: "POST",
+          product_id,
+          cart: 1,
+        },
+        {
           headers: {
             "Content-Type": "application/json",
-            Authorization: "Bearer " + localStorage.getItem("auth_token"),
+            Authorization: "Bearer " + authToken,
           },
-          body: JSON.stringify({ product_id }),
         }
       );
-
-      const data = await res.json();
-      console.log("Moved to cart:", data);
-
-      if (res.ok) {
+  
+      if (res.data?.status === "success") {
         toast.success("Added to cart");
-        setWishlistItems((prev) =>
-          prev.filter((item) => item.product_id !== product_id)
-        );
+  
+        // ✅ Immediately re-fetch wishlist after successful move
+        handleRemove(wishlist_id);
       } else {
         toast.error("Failed to move to cart");
       }
-    } catch (error) {
-      console.error("Error moving to cart:", error);
+    } catch (error: any) {
+      console.error("Failed to move to cart:", error);
+      toast.error(error?.response?.data?.message || "Failed to move to cart");
     }
   };
+  
+  
 
   const handleRemove = async (wishlist_id: number) => {
     try {
@@ -142,7 +147,7 @@ const Wishlist = () => {
                 imageUrl={item.image_url}
                 id={item.id}
                 onRemove={handleRemove}
-                onMoveToCart={handleMoveToCart}
+                onMoveToCart={(product_id: number) => handleMoveToCart(product_id, item.wishlist_id)} 
               />
             ))}
           </div>

@@ -5,6 +5,10 @@
 p{
   margin-bottom: 0px !important;
 }
+
+.custom-modal .ant-modal-content {
+  border-radius: 4px !important; /* Or 6px, depending on your preference */
+}
 /* Neutralize modal content styles */
 .no-padding-modal .ant-modal-content {
   padding: 0 !important;

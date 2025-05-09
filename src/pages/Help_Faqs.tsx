@@ -143,7 +143,7 @@ const HelpContact: React.FC = () => {
               <p className="text-purple-700 text-xl max-md:text-sm font-semibold">
                 Call Us At
               </p>
-              <p className="text-sm text-gray-700">0120-452-5483</p>
+              <p className="text-sm text-gray-700">0120-4525483</p>
             </a>
 
             {/* Divider */}

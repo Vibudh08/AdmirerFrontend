@@ -126,6 +126,10 @@ const Home: React.FC<HomePageProps> = ({ setCategoryId, setSubcategoryId }) => {
       })
   }, []);
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   if (isLoading) return <Loader />;
 
   return (
