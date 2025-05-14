@@ -61,9 +61,9 @@ const RemoveFromBag: React.FC<RemoveFromBagProps> = ({
             />
             <div className="flex items-start  w-full">
               <div className="">
-                <p className="font-semibold">Move from Bag</p>
+                <p className="font-semibold text-[16px] !mb-1">Move from Cart</p>
                 <p className="text-sm text-gray-500 ">
-                  Are you sure you want to move this item from bag?
+                  Are you sure you want to move this item from cart?
                 </p>
               </div>
               <button

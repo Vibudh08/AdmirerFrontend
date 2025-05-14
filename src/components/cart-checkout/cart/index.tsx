@@ -16,7 +16,7 @@ interface CartProps {
   setTotalAmount: (value: number) => void;
   setItemCount: (value: number) => void;
   setShippingData: (value: any) => void;
-  openAddressModal?: boolean; 
+  openAddressModal?: boolean;
 }
 
 interface ItemProps {
@@ -201,7 +201,7 @@ const Cart: React.FC<CartProps> = ({
     console.log("🛒 Guest Cart from LocalStorage:", guestCart);
     console.log("🛒 API Cart from Backend:", apiCart);
 
-    // ✅ Sync guest cart to backend
+    // Sync guest cart to backend
     if (authToken && guestCart.length > 0) {
       try {
         await Promise.all(
@@ -223,7 +223,7 @@ const Cart: React.FC<CartProps> = ({
         localStorage.removeItem("guest_cart");
         console.log("✅ Guest cart synced to backend and cleared.");
       } catch (error) {
-        console.error("❌ Error syncing guest cart to backend:", error);
+        console.error("Error syncing guest cart to backend:", error);
       }
     }
 
@@ -237,11 +237,11 @@ const Cart: React.FC<CartProps> = ({
         });
         apiCart = response.data.data.products || [];
       } catch (error) {
-        console.error("❌ Failed to fetch cart data from API:", error);
+        console.error("Failed to fetch cart data from API:", error);
       }
     }
 
-    // 🔁 Transform backend cart
+    // Transform backend cart
     const transformedApiCart: ItemProps[] = apiCart.map((item) => ({
       id: item.id,
       brandName: item.product_name || "Unknown",
@@ -255,7 +255,7 @@ const Cart: React.FC<CartProps> = ({
       totalQuantity: item.in_stock < 3 ? item.in_stock.toString() : "3",
     }));
 
-    // 🧾 Merge guest cart items if needed (though usually empty after sync)
+    // Merge guest cart items if needed (though usually empty after sync)
     const transformedGuestCart: ItemProps[] = guestCart.map((item) => ({
       id: item.id,
       brandName: item.product_name || "Unknown",
@@ -309,7 +309,7 @@ const Cart: React.FC<CartProps> = ({
       });
       setShippingData(data.shipping_address[0]);
     } catch (error) {
-      console.error("❌ Failed to fetch address:", error);
+      console.error("Failed to fetch address:", error);
     }
   };
   useEffect(() => {
@@ -322,14 +322,14 @@ const Cart: React.FC<CartProps> = ({
   return (
     <div className="flex flex-col w-[65%] max-md:w-[100%] bg-white px-4 max-md:px-2 py-2">
       {addressData && (
-  <DeliveryInfo
-    billingAddress={addressData.billingAddress}
-    shippingAddresses={addressData.shippingAddresses}
-    onAddressSelect={setAddressForNimbus}
-    onAddressSaved={fetchAddresses}
-    externalTriggerOpen={openAddressModal} // 👈 add this
-  />
-)}
+        <DeliveryInfo
+          billingAddress={addressData.billingAddress}
+          shippingAddresses={addressData.shippingAddresses}
+          onAddressSelect={setAddressForNimbus}
+          onAddressSaved={fetchAddresses}
+          externalTriggerOpen={openAddressModal}
+        />
+      )}
       <div className="flex flex-col">
         {totalItem.map((item, index) => (
           <div key={index}>

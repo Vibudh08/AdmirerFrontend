@@ -78,12 +78,17 @@ const Wishlist = () => {
   
       if (res.data?.status === "success") {
         toast.success("Added to cart");
-  
-        // ✅ Immediately re-fetch wishlist after successful move
+      
+        const currentCount = parseInt(localStorage.getItem("itemCount") || "0", 10);
+        localStorage.setItem("itemCount", (currentCount + 1).toString());
+      
+        window.dispatchEvent(new Event("itemCountUpdated"));
+      
         handleRemove(wishlist_id);
       } else {
         toast.error("Failed to move to cart");
       }
+      
     } catch (error: any) {
       console.error("Failed to move to cart:", error);
       toast.error(error?.response?.data?.message || "Failed to move to cart");

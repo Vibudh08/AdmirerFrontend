@@ -3,6 +3,7 @@ import Coupons_screen from "../../coupons/Coupons_screen";
 import OrderSuccessModal from "../../OrderSuccessModal";
 import { toast } from "react-toastify";
 import { useNavigate, useLocation } from "react-router-dom";
+import { Modal } from "antd";
 import {
   nimbusDelievery_API,
   razorPayCreateOrderApi,
@@ -15,6 +16,8 @@ interface PriceDetail {
   isFree?: boolean;
   isDiscount?: boolean;
   isLink?: boolean;
+  hasMoreInfo?: boolean;
+  moreInfoContent?: string;
 }
 
 interface ShippingData {
@@ -64,7 +67,9 @@ const Checkout: React.FC<IndexProps> = ({
   const [orderId, setOrderId] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const cleanedTotal = Number((totalAmount ).replace(/,/g, ""));
+  const [modalContent, setModalContent] = useState("");
+
+  const cleanedTotal = Number(totalAmount.replace(/,/g, ""));
   const gstAmount = Math.ceil(Number((cleanedTotal * 0.05).toFixed(2)));
   const totalWithGST = Number((cleanedTotal + gstAmount).toFixed(2));
   // const finalAmount = Math.round(totalWithGST * 100 ); // ✅ Send to Razorpay
@@ -110,7 +115,7 @@ const Checkout: React.FC<IndexProps> = ({
             Authorization: `Bearer ${authToken}`,
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ amount: totalWithGST}),
+          body: JSON.stringify({ amount: totalWithGST }),
         });
 
         const orderData = await createOrderRes.json();
@@ -234,19 +239,31 @@ const Checkout: React.FC<IndexProps> = ({
 
   const priceDetails: PriceDetail[] = [
     { label: "Total MRP", value: `₹${totalMRP}` },
-    { label: "Discount on MRP", value: `-₹${discount}`, isDiscount: true },
-    { label: "Discounted Price", value: `₹${totalAmount}` },
+    {
+      label: "Discount on MRP",
+      value: `-₹${discount}`,
+      isDiscount: true,
+      hasMoreInfo: true,
+      moreInfoContent: "This is a discount based on ongoing offers and sales.",
+    },
+    {
+      label: "Discounted Price",
+      value: `₹${totalAmount}`,
+    },
     {
       label: "GST",
-      value: `₹${gstAmount.toFixed(2)}`, // ✅ fixed this line
+      value: `₹${gstAmount.toFixed(2)}`,
+      hasMoreInfo: true,
+      moreInfoContent: "A GST of 5% is applied to the total product value.",
     },
     {
       label: "Shipping Fee",
       value: shippingFee,
       isFree: shippingFee === "Free",
+      hasMoreInfo: true,
+      moreInfoContent: "There is no shipping cost on this order.",
     },
   ];
-  
 
   return (
     <>
@@ -256,7 +273,7 @@ const Checkout: React.FC<IndexProps> = ({
         onClose={() => setShowSuccessModal(false)}
       />
 
-      <div className="w-[35%] max-md:w-[100%] p-5 py-6 border-l bg-white border-[#eaeaec]">
+      <div className="w-[35%] max-md:w-[100%] p-5 max-md:p-3 py-6 border-l bg-white border-[#eaeaec]">
         <div className="mb-3 max-md:hidden flex justify-center items-center mt-[-10px] text-center">
           <img
             src="https://constant.myntassets.com/checkout/assets/img/sprite-secure.png"
@@ -267,24 +284,35 @@ const Checkout: React.FC<IndexProps> = ({
             100% SECURE
           </p>
         </div>
-        <hr />
+        <hr className="max-md:hidden" />
         <div className="mt-5 mb-4 ">
           <div className="clear-both"></div>
           <h3 className="text-[14px] text-[#535766] font-bold mb-4">
             PRICE DETAILS ({itemCount} item{itemCount > 1 ? "s" : ""})
           </h3>
-          <div className="leading-[28px]">
+          <hr className="hidden max-md:block" />
+
+          <div className="leading-[28px] max-md:mt-4">
             {priceDetails.map((detail, index) => (
               <div key={index} className="flex justify-between text-[14px]">
-                <div className="text-[#282c3f] tracking-normal">
+                <div className="text-[#282c3f] tracking-normal flex gap-1">
                   {detail.label}
+                  {detail.hasMoreInfo && (
+                    <span
+                      onClick={() => {
+                        setModalContent(detail.moreInfoContent || "");
+                        setIsModalOpen(true);
+                      }}
+                      className="text-purple-800 ml-1 font-bold cursor-pointer"
+                    >
+                      Know More
+                    </span>
+                  )}
                 </div>
                 <div
                   className={`${
                     detail.isDiscount
                       ? "text-[#03a685]"
-                      : detail.isLink
-                      ? "text-[#7B48A5]"
                       : detail.isFree
                       ? "text-[#03a685]"
                       : "text-[#282c3f]"
@@ -296,16 +324,16 @@ const Checkout: React.FC<IndexProps> = ({
             ))}
           </div>
         </div>
-
+        <hr className="hidden max-md:block" />
         <div className="mb-5">
           <div className="flex justify-between mt-4 mb-4 text-[15px] font-bold text-[#3e4152]">
             <div>Total Amount</div>
             <div>₹{totalWithGST.toFixed(2)}</div>
           </div>
         </div>
-        <hr />
+        <hr className="max-md:hidden" />
 
-        <h2 className="text-[14px] text-[#535766] font-bold mb-4 mt-5">
+        <h2 className="text-[14px] text-[#535766] font-bold mb-4 mt-5 max-md:mt-8">
           PAYMENT METHOD
         </h2>
 
@@ -405,16 +433,25 @@ const Checkout: React.FC<IndexProps> = ({
           )}
         </button>
       </div>
-        <div className="mb-3 hidden max-md:flex justify-center items-center mt-[-10px] text-center">
-          <img
-            src="https://constant.myntassets.com/checkout/assets/img/sprite-secure.png"
-            className="w-6 h-6 mr-2"
-            alt="100% Secure"
-          />
-          <p className="text-[#535766] text-sm tracking-wider font-semibold">
-            100% SECURE
-          </p>
-        </div>
+      <div className="mb-3 hidden max-md:flex justify-center items-center mt-[0px] text-center">
+        <img
+          src="https://constant.myntassets.com/checkout/assets/img/sprite-secure.png"
+          className="w-6 h-6 mr-2"
+          alt="100% Secure"
+        />
+        <p className="text-[#535766] text-sm tracking-wider font-semibold">
+          100% SECURE
+        </p>
+      </div>
+      <Modal
+        title="More Information"
+        open={isModalOpen}
+        onCancel={() => setIsModalOpen(false)}
+        footer={null}
+        width={"350px"}
+      >
+        <p>{modalContent}</p>
+      </Modal>
     </>
   );
 };

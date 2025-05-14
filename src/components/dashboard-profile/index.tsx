@@ -8,6 +8,7 @@ import {
   user_profile_API,
 } from "../api/api-end-points";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 const indianStates = [
   "ANDAMAN AND NICOBAR ISLANDS",
@@ -48,7 +49,7 @@ const indianStates = [
   "WEST BENGAL",
 ];
 const Loader = () => (
-  <div className="   bg-opacity-80 backdrop-blur-sm flex items-center justify-center z-50">
+  <div className=" max-md:mt-5  bg-opacity-80 backdrop-blur-sm flex items-center justify-center z-50">
     {/* Loader content */}
     <div className="flex flex-col items-center">
       <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mb-4"></div>
@@ -241,6 +242,7 @@ const Dashboard_Profile = () => {
         }
       );
       setOtpSent(true);
+      toast.success(`OTP sent on ${newNumber}`)
     } catch (error) {
       console.error("Send OTP error:", error);
     }
@@ -276,6 +278,7 @@ const Dashboard_Profile = () => {
       }));
       setEditedMobile(newNumber); // Update the edited mobile state with the new number
 
+      toast.success("Mobile number updated successfully.")
       setIsModalOpen(false);
       setNewNumber("");
       setOtp("");
@@ -316,7 +319,7 @@ const Dashboard_Profile = () => {
   };
   if (isLoading) return <Loader />;
   return (
-    <div className="m-auto bg-white shadow-md p-8 max-sm:p-4 max-sm:mt-5 w-full">
+    <div className="m-auto bg-white shadow-md p-8 max-sm:p-4 max-sm:mt-3 w-full">
       <h2 className="text-xl font-semibold mb-6 border-b pb-2">Edit Profile</h2>
       {/* {isLoading &&   <Loader />} */}
       {/* Mobile Number */}
@@ -404,9 +407,9 @@ const Dashboard_Profile = () => {
         className={`w-full mt-2 py-3 rounded text-white ${
           isEditable
             ? isValid
-              ? "bg-purple-600 hover:bg-purple-700"
+              ? "bg-[#7b48a5] hover:bg-purple-700"
               : "bg-gray-400 cursor-not-allowed"
-            : "bg-purple-600 hover:bg-purple-700"
+            : "bg-[#7b48a5] hover:bg-purple-700"
         }`}
         onClick={toggleEdit}
         disabled={isEditable && !isValid}
@@ -522,14 +525,14 @@ const Dashboard_Profile = () => {
 
         {!otpSent ? (
           <Button
-            className="w-full !bg-purple-600 hover:!bg-purple-700 h-[45px] mt-2 !text-white !border-none"
+            className="w-full !bg-[#7b48a5] hover:!bg-purple-700 h-[45px] mt-2 !text-white !border-none"
             onClick={handleSendOtp}
           >
             SEND OTP
           </Button>
         ) : (
           <Button
-            className="w-full !bg-purple-600 hover:!bg-purple-700 h-[45px] mt-2 !text-white !border-none"
+            className="w-full !bg-[#7b48a5] hover:!bg-purple-700 h-[45px] mt-2 !text-white !border-none"
             onClick={handleVerifyOtp}
           >
             VERIFY OTP

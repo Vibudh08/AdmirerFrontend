@@ -41,7 +41,7 @@ const indianStates = [
   "WEST BENGAL",
 ];
 const Loader = () => (
-  <div className="   bg-opacity-80 backdrop-blur-sm flex items-center justify-center z-50">
+  <div className=" max-md:mt-5  bg-opacity-80 backdrop-blur-sm flex items-center justify-center z-50">
     {/* Loader content */}
     <div className="flex flex-col items-center">
       <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mb-4"></div>
@@ -284,7 +284,7 @@ const Dashboard_Address = () => {
   };
   if (isLoading) return <Loader />;
   return (
-    <div className="m-auto bg-white shadow-md p-8 max-sm:p-4 max-sm:mt-5 w-full">
+    <div className="m-auto bg-white shadow-md p-8 max-sm:p-4 max-sm:mt-3 w-full">
       <h2 className="text-xl font-semibold mb-6 border-b pb-2">Edit Address</h2>
       {/* {isLoading &&   <Loader />} */}
     
@@ -456,9 +456,9 @@ const Dashboard_Address = () => {
         className={`w-full mt-2 py-3 rounded text-white ${
           isEditable
             ? isValid
-              ? "bg-purple-600 hover:bg-purple-700"
+              ? "bg-[#7b48a5] hover:bg-purple-700"
               : "bg-gray-400 cursor-not-allowed"
-            : "bg-purple-600 hover:bg-purple-700"
+            : "bg-[#7b48a5] hover:bg-purple-700"
         }`}
         onClick={toggleEdit}
         disabled={isEditable && !isValid}

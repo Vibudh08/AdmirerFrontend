@@ -64,8 +64,8 @@ const SingleProductCard = ({ item, }: { item: any }) => {
           <div
             className={`absolute top-2 right-2 p-2 sm:p-1 rounded-full border shadow-md cursor-pointer ${
               wishlistStatus
-                ? "bg-red-700 border-red-500 text-white"
-                : "bg-white border-red-500 text-red-500"
+                ?  "bg-purple-100 border-[#7B48A5] text-[#7B48A5]"
+                : "bg-white border-[#7B48A5] text-[#7B48A5] "
             }`}
             onClick={()=>toggleWishlist(item.id)}
           >

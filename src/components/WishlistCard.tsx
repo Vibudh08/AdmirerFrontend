@@ -51,7 +51,7 @@ const ProductItem: React.FC<productItemProps> = ({
       <div className="hidden">{id}</div>
 
       {/* Product Name */}
-      <div className="font-semibold text-black text-md max-md:text-[16px] !truncate whitespace-nowrap overflow-hidden w-full px-2 max-md:px-1 mt-2 ">
+      <div className="font-semibold text-black text-[18px] max-md:text-[16px] !truncate whitespace-nowrap overflow-hidden w-full px-3 max-md:px-1 mt-2 ">
         <Link to={`/product/${id}`}>{name}</Link>
       </div>
 
@@ -62,13 +62,13 @@ const ProductItem: React.FC<productItemProps> = ({
 
       {/* Price Section */}
       <div className="flex items-center justify-center gap-2.5 max-md:gap-1 mb-2 max-md:mb-1 max-md:p-1 flex-wrap w-full">
-        <span className="font-semibold text-black text-lg max-md:text-[14px]">
+        <span className="font-semibold text-black text-xl max-md:text-[14px]">
           Rs {price}
         </span>
-        <span className="line-through text-gray-400 text-xs">
+        <span className="line-through text-gray-400 text-lg max-md:text-xs">
           Rs {originalPrice}
         </span>
-        <span className="bg-red-50 text-red-700 font-bold  px-2 max-md:px-1 py-0.5 rounded text-xs">
+        <span className="bg-red-50 text-red-700 font-bold  px-2 max-md:px-1 py-0.5 rounded text-sm max-md:text-xs">
           {discount}% OFF
         </span>
       </div>

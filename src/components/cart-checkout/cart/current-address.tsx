@@ -88,12 +88,12 @@ const DeliveryInfo: React.FC<DeliveryInfoProps> = ({
   return (
     <>
       {allAddresses.length === 0 ? (
-        <div className="flex items-center justify-center mb-2">
+        <div className="flex items-center justify-center mb-2 p-6 !max-md:p-4">
           <div
             className="justify-between"
             style={{
               width: "100%",
-              padding: "24px",
+              // padding: "24px",
               backgroundColor: "white",
               borderRadius: "12px",
               border: "1px solid #e8e8e8",

@@ -11,17 +11,6 @@ import axios from "axios";
 import { logout } from "./api/api-end-points";
 
 const Header = ({}) => {
-  // function Header() {
-  const offerBanner = {
-    dots: false,
-    infinite: true,
-    speed: 500,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-    autoplay: true,
-    autoplaySpeed: 2000,
-    arrows: false,
-  };
 
   const [show, setShow] = useState(false);
   const [searchPopup, setSearchPopup] = useState(false);
@@ -61,14 +50,14 @@ const Header = ({}) => {
           },
         }
       );
-  
+
       // Clear token and cart count
       localStorage.removeItem("auth_token");
       localStorage.removeItem("itemCount");
-  
+
       // Optional: dispatch a custom event to update header state (if you're not reloading)
       window.dispatchEvent(new Event("itemCountUpdated"));
-  
+
       // Reload the page or redirect
       window.location.href = "/";
     } catch (err) {
@@ -142,7 +131,7 @@ const Header = ({}) => {
       </div>
 
       {/* Main Header */}
-      <main className="w-full relative top-0 left-0 z-50 pb-[1px] bg-white shadow-md">
+      <main className="w-full relative top-0 left-0 z-50 pb-[1px] pt-[1px] bg-white shadow-md">
         {/* Top Banner */}
         {/* <div className="tf-top-bar bg_white line">
           <div className="px_15 lg-px_40">
@@ -170,7 +159,7 @@ const Header = ({}) => {
 
         {/* Main Header Content */}
         <div className="m-auto max-md:w-full">
-          <div className="flex justify-between items-center mb-1 w-[94%] m-auto max-md:w-full px-2">
+          <div className="flex justify-between items-center pt-1 w-[94%] m-auto max-md:w-full px-2">
             {/* Mobile Menu and Search */}
             <div className="gap-[12px] hidden max-md:flex">
               {/* <div
@@ -186,7 +175,7 @@ const Header = ({}) => {
                 <span className="w-full h-[2px] bg-black block"></span>
               </div> */}
               <Search
-                className="relative top-[20px] transform -translate-y-1/2 text-[#7B48A5] cursor-pointer"
+                className="relative top-[15px] transform -translate-y-1/2 text-[#7B48A5] cursor-pointer"
                 onClick={() => setSearchPopup(true)}
               />
             </div>
@@ -194,8 +183,8 @@ const Header = ({}) => {
             {/* Logo */}
             <Link to="/">
               <img
-                src="/logo/admirer_logo.png"
-                className="w-[90px] h-[60px] cover ml-5"
+                src="/logo/admirer_logo.jpeg"
+                className="w-[120px] h-[60px] cover ml-5"
                 alt=""
               />
             </Link>
@@ -206,7 +195,7 @@ const Header = ({}) => {
             </div>
 
             {/* Right Side Icons */}
-            <div className="flex gap-4 mt-1 items-center max-md:mt-3">
+            <div className="flex gap-4 items-center max-md:mt-1 max-md:mr-1">
               {isLoggedIn ? (
                 <div className="group relative">
                   <Link to="/dashboard">
@@ -217,19 +206,21 @@ const Header = ({}) => {
                       </p>
                     </div>
                   </Link>
-                  <div className="absolute hidden max-md:hover:hidden group-hover:block bg-white shadow-md rounded  p-2 w-32 left-0 z-10">
-                    <Link
-                      to="/dashboard"
-                      className="block py-1 hover:text-[#7B48A5]"
-                    >
-                      Dashboard
-                    </Link>
-                    <button
-                      onClick={handleLogout}
-                      className="block py-1 hover:text-[#7B48A5] w-full text-left"
-                    >
-                      Logout
-                    </button>
+                  <div className="max-md:hidden">
+                    <div className="absolute hidden max-md:hover:hidden group-hover:block bg-white shadow-md rounded  p-2 w-32 left-0 z-10">
+                      <Link
+                        to="/dashboard"
+                        className="block py-1 hover:text-[#7B48A5]"
+                      >
+                        Dashboard
+                      </Link>
+                      <button
+                        onClick={handleLogout}
+                        className="block py-1 hover:text-[#7B48A5] w-full text-left"
+                      >
+                        Logout
+                      </button>
+                    </div>
                   </div>
                 </div>
               ) : (
