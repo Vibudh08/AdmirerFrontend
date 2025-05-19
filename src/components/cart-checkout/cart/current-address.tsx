@@ -27,7 +27,8 @@ interface DeliveryInfoProps {
   billingAddress: Address;
   shippingAddresses: Address[];
   onAddressSelect: (address: Address) => void;
-  onAddressSaved: () => void; // ✅ added prop
+  onAddressSaved: () => void;
+  externalTriggerOpen?: boolean; // 👈 Add this new prop
 }
 
 const DeliveryInfo: React.FC<DeliveryInfoProps> = ({
@@ -35,10 +36,12 @@ const DeliveryInfo: React.FC<DeliveryInfoProps> = ({
   shippingAddresses,
   onAddressSelect,
   onAddressSaved, // ✅ extract it
+  externalTriggerOpen,
 }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState<Address | null>(null);
   const [allAddresses, setAllAddresses] = useState<Address[]>([]);
+  const reversedAddresses = [...allAddresses].reverse();
 
   useEffect(() => {
     const combined = [billingAddress, ...shippingAddresses].filter(
@@ -46,12 +49,19 @@ const DeliveryInfo: React.FC<DeliveryInfoProps> = ({
     );
     setAllAddresses(combined);
     if (combined.length > 0) {
-      setSelectedAddress(combined[0]);
-      onAddressSelect(combined[0]);
+      const latestAddress = combined[combined.length - 1]; // select last added
+      setSelectedAddress(latestAddress);
+      onAddressSelect(latestAddress);
     } else {
       setSelectedAddress(null);
     }
   }, [billingAddress, shippingAddresses]);
+
+  useEffect(() => {
+    if (externalTriggerOpen) {
+      setIsModalVisible(true);
+    }
+  }, [externalTriggerOpen]);
 
   const handleAddressSelect = (index: number) => {
     const selected = allAddresses[index];
@@ -71,15 +81,19 @@ const DeliveryInfo: React.FC<DeliveryInfoProps> = ({
     return address.zip_code || "";
   };
 
+  function onModalClose() {
+    throw new Error("Function not implemented.");
+  }
+
   return (
     <>
       {allAddresses.length === 0 ? (
-        <div className="flex items-center justify-center mb-2">
+        <div className="flex items-center justify-center mb-2 p-6 !max-md:p-4">
           <div
             className="justify-between"
             style={{
               width: "100%",
-              padding: "24px",
+              // padding: "24px",
               backgroundColor: "white",
               borderRadius: "12px",
               border: "1px solid #e8e8e8",
@@ -118,19 +132,19 @@ const DeliveryInfo: React.FC<DeliveryInfoProps> = ({
         </div>
       ) : (
         <div
+          className="p-6 max-md:p-3"
           style={{
             display: "flex",
             width: "100%",
             margin: "16px 0",
             borderRadius: "12px",
-            padding: "20px",
             backgroundColor: "white",
             border: "1px solid #e8e8e8",
             position: "relative",
             minHeight: "150px",
           }}
         >
-          <div style={{ width: "100%", paddingRight: "120px" }}>
+          <div style={{ width: "100%" }}>
             <div
               style={{
                 fontWeight: "600",
@@ -143,7 +157,8 @@ const DeliveryInfo: React.FC<DeliveryInfoProps> = ({
               }}
             >
               <EnvironmentOutlined style={{ color: "#722ed1" }} />
-              Deliver to {getName(selectedAddress!)} {getLastName(selectedAddress!)}
+              Deliver to {getName(selectedAddress!)}{" "}
+              {getLastName(selectedAddress!)}
             </div>
 
             <div
@@ -162,9 +177,7 @@ const DeliveryInfo: React.FC<DeliveryInfoProps> = ({
                   {selectedAddress?.flat}, {selectedAddress?.street},{" "}
                   {selectedAddress?.locality}
                 </div>
-                <div>
-                  
-                </div>
+                <div></div>
               </div>
             </div>
 
@@ -178,58 +191,66 @@ const DeliveryInfo: React.FC<DeliveryInfoProps> = ({
               }}
             >
               <PushpinOutlined style={{ color: "#722ed1" }} />
-              {selectedAddress?.city}, {selectedAddress?.state}, {getZipCode(selectedAddress!)}
+              {selectedAddress?.city}, {selectedAddress?.state},{" "}
+              {getZipCode(selectedAddress!)}
             </div>
 
-            <div style={{ marginTop: "16px" }}>
+            <div className="flex justify-between gap-3 max-md:gap-2" style={{ marginTop: "16px" }}>
               <Select
                 style={{ width: "100%", height: "35px" }}
-                value={allAddresses.indexOf(selectedAddress!)}
-                onChange={handleAddressSelect}
-                options={allAddresses.map((address, index) => ({
-                  value: index,
-                  label: `${address.addr_type}: ${getName(address)} ${getLastName(
+                value={JSON.stringify(selectedAddress)}
+                onChange={(value) => {
+                  const selected = JSON.parse(value) as Address;
+                  setSelectedAddress(selected);
+                  onAddressSelect(selected);
+                }}
+                options={reversedAddresses.map((address) => ({
+                  value: JSON.stringify(address),
+                  label: `${address.addr_type}: ${getName(
                     address
-                  )}, ${address.flat}, ${address.city}`,
+                  )} ${getLastName(address)}, ${address.flat}, ${address.city}`,
                 }))}
               />
+              {/* <div
+                style={{
+                  position: "absolute",
+                  right: "20px",
+                  bottom: "17px",
+                }}
+              > */}
+                <button className="text-[14px] max-md:text-[12px] p-1"
+                  style={{
+                    width: "100px",
+                    border: "none",
+                    borderRadius: "6px",
+                    height: "34px",
+                    fontWeight: "500",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.5px",
+                    color: "white",
+                    backgroundColor: "#722ed1",
+                    cursor: "pointer",
+                    boxShadow: "0 2px 4px rgba(114, 46, 209, 0.3)",
+                  }}
+                  onClick={() => setIsModalVisible(true)}
+                >
+                  Change
+                </button>
+              {/* </div> */}
             </div>
-          </div>
-
-          <div
-            style={{
-              position: "absolute",
-              right: "20px",
-              bottom: "20px",
-            }}
-          >
-            <button
-              style={{
-                width: "100px",
-                border: "none",
-                borderRadius: "6px",
-                height: "35px",
-                fontSize: "14px",
-                fontWeight: "500",
-                textTransform: "uppercase",
-                letterSpacing: "0.5px",
-                color: "white",
-                backgroundColor: "#722ed1",
-                cursor: "pointer",
-                boxShadow: "0 2px 4px rgba(114, 46, 209, 0.3)",
-              }}
-              onClick={() => setIsModalVisible(true)}
-            >
-              Change
-            </button>
           </div>
         </div>
       )}
 
       <Modal
-        title={<span style={{ color: "#722ed1" }}>Update Delivery Address</span>}
+        title={
+          <span style={{ color: "#722ed1" }}>Update Delivery Address</span>
+        }
         open={isModalVisible}
-        onCancel={() => setIsModalVisible(false)}
+        onCancel={() => {
+          setIsModalVisible(false);
+          onModalClose?.(); // ✅ parent ko bhi bol do
+        }}
         footer={null}
         width={700}
         centered

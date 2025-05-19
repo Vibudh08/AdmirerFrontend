@@ -1,10 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom"; // 👈 import navigate
-import { GoTag } from "react-icons/go";
-import { Modal } from "antd";
 import Coupons_screen from "../../coupons/Coupons_screen";
 import OrderSuccessModal from "../../OrderSuccessModal";
-import { nimbusDelievery_API, razorPayCreateOrderApi, razorPayStoreApi } from "../../api/api-end-points";
+import { toast } from "react-toastify";
+import { useNavigate, useLocation } from "react-router-dom";
+import { Modal } from "antd";
+import {
+  nimbusDelievery_API,
+  razorPayCreateOrderApi,
+  razorPayStoreApi,
+} from "../../api/api-end-points";
 
 interface PriceDetail {
   label: string;
@@ -12,6 +16,8 @@ interface PriceDetail {
   isFree?: boolean;
   isDiscount?: boolean;
   isLink?: boolean;
+  hasMoreInfo?: boolean;
+  moreInfoContent?: string;
 }
 
 interface ShippingData {
@@ -38,6 +44,7 @@ interface IndexProps {
   shippingFee?: string;
   totalAmount?: string;
   shippingData?: ShippingData;
+  onRequestAddressModal?: () => void;
 }
 
 const Checkout: React.FC<IndexProps> = ({
@@ -49,16 +56,33 @@ const Checkout: React.FC<IndexProps> = ({
   shippingFee = "Free",
   totalAmount = "0",
   shippingData,
+  onRequestAddressModal,
 }) => {
   useEffect(() => {
     console.log("the shipping data in checkout is = ", shippingData);
   }, [shippingData]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selected, setSelected] = useState("online");
-  const [showAddressError, setShowAddressError] = useState(false);
+  const [selected, setSelected] = useState("cod");
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [orderId, setOrderId] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const [modalContent, setModalContent] = useState("");
+
+  const cleanedTotal = Number(totalAmount.replace(/,/g, ""));
+  const gstAmount = Math.ceil(Number((cleanedTotal * 0.05).toFixed(2)));
+
+  let totalWithGST;
+
+  if (itemCount === 3) {
+    totalWithGST = 999;
+  } else if (itemCount === 2) {
+    totalWithGST = 699;
+  } else {
+    totalWithGST = Number((cleanedTotal + gstAmount).toFixed(2));
+  }
+  // const finalAmount = Math.round(totalWithGST * 100 ); // ✅ Send to Razorpay
+  // console.log("totalAmount:", finalAmount, "type:", typeof finalAmount);
 
   const navigate = useNavigate(); // 👈 initialize navigate
 
@@ -76,32 +100,32 @@ const Checkout: React.FC<IndexProps> = ({
     const authToken = localStorage.getItem("auth_token");
 
     if (!authToken) {
-      navigate("/LogIn"); // 👈 redirect if not logged in
+      // 👉 Redirect to login with state only on button click
+      navigate("/login", { state: { fromCheckout: true } });
+      toast.error("Please LogIn before placing your order.");
       return;
     }
 
     if (!shippingData) {
-      setShowAddressError(true); 
+      onRequestAddressModal?.();
+      toast.error("Please fill in your address before placing your order.");
+
       return;
     }
-    setShowAddressError(false);
     setLoading(true);
 
     const order_number = "BTJ" + new Date().getTime();
 
     if (selected === "online") {
       try {
-        const createOrderRes = await fetch(
-          razorPayCreateOrderApi,
-          {
-            method: "POST",
-            headers: {
-              Authorization: `Bearer ${authToken}`,
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ amount: "1" }),
-          }
-        );
+        const createOrderRes = await fetch(razorPayCreateOrderApi, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ amount: totalWithGST }),
+        });
 
         const orderData = await createOrderRes.json();
 
@@ -109,33 +133,30 @@ const Checkout: React.FC<IndexProps> = ({
           key: "rzp_live_9dQQZTZXMKwBMJ",
           amount: orderData.amount,
           currency: "INR",
-          name: "BTJ Store",
+          name: "BTJ Admirer",
           description: "Order Payment",
           order_id: orderData.order_id,
           handler: async function (response: any) {
             try {
               setLoading(true);
-              const verifyRes = await fetch(
-                razorPayStoreApi,
-                {
-                  method: "POST",
-                  headers: {
-                    Authorization: `Bearer ${authToken}`,
-                    "Content-Type": "application/json",
-                  },
-                  body: JSON.stringify({
-                    razorpay_payment_id: response.razorpay_payment_id,
-                    razorpay_order_id: response.razorpay_order_id,
-                    razorpay_signature: response.razorpay_signature,
-                  }),
-                }
-              );
+              const verifyRes = await fetch(razorPayStoreApi, {
+                method: "POST",
+                headers: {
+                  Authorization: `Bearer ${authToken}`,
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  razorpay_payment_id: response.razorpay_payment_id,
+                  razorpay_order_id: response.razorpay_order_id,
+                  razorpay_signature: response.razorpay_signature,
+                }),
+              });
 
               if (verifyRes.ok) {
                 const payload = {
                   orderID: order_number,
                   paymentType: "prepaid",
-                  amount: totalAmount,
+                  amount: totalWithGST,
                   city: shippingData?.city || "",
                   firstName: shippingData?.first_name || "",
                   lastName: shippingData?.last_name || "",
@@ -191,7 +212,7 @@ const Checkout: React.FC<IndexProps> = ({
         const payload = {
           orderID: order_number,
           paymentType: "cod",
-          amount: totalAmount,
+          amount: totalWithGST,
           city: shippingData?.city || "",
           firstName: shippingData?.first_name || "",
           lastName: shippingData?.last_name || "",
@@ -201,7 +222,7 @@ const Checkout: React.FC<IndexProps> = ({
           street: shippingData?.street || "",
           pincode: shippingData?.zip_code || "",
         };
-        console.log("payload is ",payload)
+        console.log("payload is ", payload);
         const response = await fetch(nimbusDelievery_API, {
           method: "POST",
           headers: {
@@ -227,16 +248,29 @@ const Checkout: React.FC<IndexProps> = ({
 
   const priceDetails: PriceDetail[] = [
     { label: "Total MRP", value: `₹${totalMRP}` },
-    { label: "Discount on MRP", value: `-₹${discount}`, isDiscount: true },
     {
-      label: "Platform Fee",
-      value: platformFee,
-      isFree: platformFee === "Free",
+      label: "Discount on MRP",
+      value: `-₹${discount}`,
+      isDiscount: true,
+      hasMoreInfo: true,
+      moreInfoContent: "This is a discount based on ongoing offers and sales.",
+    },
+    {
+      label: "Discounted Price",
+      value: `₹${totalAmount}`,
+    },
+    {
+      label: "GST",
+      value: `₹${gstAmount.toFixed(2)}`,
+      hasMoreInfo: true,
+      moreInfoContent: "A GST of 5% is applied to the total product value.",
     },
     {
       label: "Shipping Fee",
       value: shippingFee,
       isFree: shippingFee === "Free",
+      hasMoreInfo: true,
+      moreInfoContent: "There is no shipping cost on this order.",
     },
   ];
 
@@ -248,23 +282,46 @@ const Checkout: React.FC<IndexProps> = ({
         onClose={() => setShowSuccessModal(false)}
       />
 
-      <div className="w-[35%] max-md:w-[100%] p-5 py-6 border-l bg-white border-[#eaeaec]">
-        <div className="mt-3 mb-4">
+      <div className="w-[35%] max-md:w-[100%] p-5 max-md:p-3 py-6 border-l bg-white border-[#eaeaec]">
+        <div className="mb-3 max-md:hidden flex justify-center items-center mt-[-10px] text-center">
+          <img
+            src="https://constant.myntassets.com/checkout/assets/img/sprite-secure.png"
+            className="w-8 h-8 mr-3"
+            alt="100% Secure"
+          />
+          <p className="text-[#535766] text-md tracking-wider font-semibold">
+            100% SECURE
+          </p>
+        </div>
+        <hr className="max-md:hidden" />
+        <div className="mt-5 mb-4 ">
+          <div className="clear-both"></div>
           <h3 className="text-[14px] text-[#535766] font-bold mb-4">
             PRICE DETAILS ({itemCount} item{itemCount > 1 ? "s" : ""})
           </h3>
-          <div className="leading-[28px]">
+          <hr className="hidden max-md:block" />
+
+          <div className="leading-[28px] max-md:mt-4">
             {priceDetails.map((detail, index) => (
               <div key={index} className="flex justify-between text-[14px]">
-                <div className="text-[#282c3f] tracking-normal">
+                <div className="text-[#282c3f] tracking-normal flex gap-1">
                   {detail.label}
+                  {detail.hasMoreInfo && (
+                    <span
+                      onClick={() => {
+                        setModalContent(detail.moreInfoContent || "");
+                        setIsModalOpen(true);
+                      }}
+                      className="text-purple-800 ml-1 font-bold cursor-pointer"
+                    >
+                      Know More
+                    </span>
+                  )}
                 </div>
                 <div
                   className={`${
                     detail.isDiscount
                       ? "text-[#03a685]"
-                      : detail.isLink
-                      ? "text-[#7B48A5]"
                       : detail.isFree
                       ? "text-[#03a685]"
                       : "text-[#282c3f]"
@@ -276,97 +333,139 @@ const Checkout: React.FC<IndexProps> = ({
             ))}
           </div>
         </div>
-
+        <hr className="hidden max-md:block" />
         <div className="mb-5">
           <div className="flex justify-between mt-4 mb-4 text-[15px] font-bold text-[#3e4152]">
-            <div>Total Amount</div>
-            <div>₹{totalAmount}</div>
+            {totalWithGST === 999 || totalWithGST === 699 ? (
+              <div>Offer Amount</div>
+            ) : (
+              <div>Total Amount</div>
+            )}
+
+            <div>₹{totalWithGST.toFixed(2)}</div>
           </div>
         </div>
-        <hr />
+        <hr className="max-md:hidden" />
 
-        <h2 className="text-[14px] text-[#535766] font-bold mb-4 mt-5">
+        <h2 className="text-[14px] text-[#535766] font-bold mb-4 mt-5 max-md:mt-8">
           PAYMENT METHOD
         </h2>
 
-        <div
-          onClick={() => setSelected("online")}
-          className={`flex items-center p-2 border rounded cursor-pointer ${
-            selected === "online" ? "border-purple-600" : "border-gray-300"
-          }`}
-        >
-          <input
-            type="radio"
-            name="payment"
-            checked={selected === "online"}
-            onChange={() => setSelected("online")}
-            className="form-radio text-purple-700 mr-3"
-          />
-          <label className="text-[14px] select-none cursor-pointer">
-            Online
-          </label>
-        </div>
-
-        <div
-          onClick={() => setSelected("cod")}
-          className={`flex items-center p-2 border rounded mt-2.5 cursor-pointer mb-5 ${
-            selected === "cod" ? "border-purple-600" : "border-gray-300"
-          }`}
-        >
-          <input
-            type="radio"
-            name="payment"
-            checked={selected === "cod"}
-            onChange={() => setSelected("cod")}
-            className="form-radio text-purple-700 mr-3"
-          />
-          <label className="text-[14px] select-none cursor-pointer">
-            Cash On Delivery
-          </label>
-        </div>
-        <button
-  onClick={handlePlaceOrder}
-  disabled={loading}
-  className={`w-full border rounded h-[44px] py-2 text-sm font-semibold text-white ${
-    loading ? "bg-purple-400 cursor-not-allowed" : "hover:bg-purple-700 bg-purple-600"
-  }`}
->
-  {loading ? (
-    <div className="flex items-center justify-center text-sm text-white">
-      <svg
-        className="animate-spin h-5 w-5 mr-2 text-white"
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-      >
-        <circle
-          className="opacity-25"
-          cx="12"
-          cy="12"
-          r="10"
-          stroke="currentColor"
-          strokeWidth="4"
-        />
-        <path
-          className="opacity-75"
-          fill="currentColor"
-          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-        />
-      </svg>
-      Confirming your order...
-    </div>
-  ) : (
-    "PLACE ORDER"
-  )}
-</button>
-
-        
-        {showAddressError && (
-          <div className="mt-3 bg-red-100 text-red-700 border border-red-300 px-4 py-2 rounded text-sm">
-            Please select or enter a delivery address before placing the order.
+        <div className="border mb-5 rounded-lg">
+          {/* COD First */}
+          <div
+            onClick={() => setSelected("cod")}
+            className={`flex items-center p-4 bg-purple-100 rounded-t-lg cursor-pointer ${
+              selected === "cod"
+                ? "bg-purple-100 border-l-4 border-purple-900"
+                : "bg-white"
+            }`}
+          >
+            <input
+              type="radio"
+              name="payment"
+              checked={selected === "cod"}
+              onChange={() => setSelected("cod")}
+              className="form-radio hidden text-purple-700 mr-3"
+            />
+            <div
+              className={`flex items-center ${
+                selected === "cod" ? "font-semibold text-purple-800" : "ml-1"
+              }`}
+            >
+              <img src="/icons/cash-icon.svg" className="w-6 h-6 mr-2" alt="" />
+              <label className="text-[15px] select-none cursor-pointer">
+                Cash On Delivery (No extra charges)
+              </label>
+            </div>
           </div>
-        )}
+
+          {/* Online Second */}
+          <div
+            onClick={() => setSelected("online")}
+            className={`flex items-center p-4 rounded-b-lg cursor-pointer ${
+              selected === "online"
+                ? "bg-purple-100 border-l-4 border-purple-800"
+                : "bg-white"
+            }`}
+          >
+            <input
+              type="radio"
+              name="payment"
+              checked={selected === "online"}
+              onChange={() => setSelected("online")}
+              className="form-radio hidden text-purple-700 mr-3"
+            />
+            <div
+              className={`flex items-center ${
+                selected === "online" ? "font-semibold text-purple-800" : "ml-1"
+              }`}
+            >
+              <img src="/icons/online.svg" className="w-6 h-6 mr-2" alt="" />
+              <label className="text-[15px] select-none cursor-pointer">
+                Online (UPI / Card)
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <button
+          onClick={handlePlaceOrder}
+          disabled={loading}
+          className={`w-full border rounded h-[44px] py-2 text-sm font-semibold text-white ${
+            loading
+              ? "bg-purple-400 cursor-not-allowed"
+              : "hover:bg-purple-700 bg-purple-600"
+          }`}
+        >
+          {loading ? (
+            <div className="flex items-center justify-center text-sm text-white">
+              <svg
+                className="animate-spin h-5 w-5 mr-2 text-white"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                />
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                />
+              </svg>
+              Confirming your order...
+            </div>
+          ) : (
+            "PLACE ORDER"
+          )}
+        </button>
       </div>
+      <div className="mb-3 hidden max-md:flex justify-center items-center mt-[0px] text-center">
+        <img
+          src="https://constant.myntassets.com/checkout/assets/img/sprite-secure.png"
+          className="w-6 h-6 mr-2"
+          alt="100% Secure"
+        />
+        <p className="text-[#535766] text-sm tracking-wider font-semibold">
+          100% SECURE
+        </p>
+      </div>
+      <Modal
+        title="More Information"
+        open={isModalOpen}
+        onCancel={() => setIsModalOpen(false)}
+        footer={null}
+        width={"350px"}
+      >
+        <p>{modalContent}</p>
+      </Modal>
     </>
   );
 };

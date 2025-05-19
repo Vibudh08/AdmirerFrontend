@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { FaTimes } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 import { otp_send_API, verifyLogin_API } from "../api/api-end-points";
+
 
 interface FormProps {
   phoneNumber: string;
@@ -17,6 +18,7 @@ const Login = () => {
   const [error, setError] = useState("");
   const [phoneNumber, setPhoneNumber] = useState(""); // To store phone number
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleClose = () => {
     navigate("/");
@@ -105,7 +107,11 @@ const Login = () => {
 
       toast.success("Login successful!");
       // Redirect to dashboard
-      navigate("/");
+      if (location.state?.fromCheckout) {
+        navigate("/cart");
+      } else {
+        navigate("/"); // Default redirect
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : "OTP verification failed");
     } finally {
@@ -128,9 +134,7 @@ const Login = () => {
           <img src="logo/iconn.png" alt="Logo" className="w-16 mx-auto " />
           <h1 className="text-xl font-normal mt-1">Welcome to Admirer</h1>
         </div>
-        {!otpSent && (
-        <div className="text-xl mb-4">Login</div>
-        )}
+        {!otpSent && <div className="text-xl mb-4">Login</div>}
 
         {error && (
           <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-md">
@@ -144,6 +148,7 @@ const Login = () => {
             <div className="mb-4">
               <input
                 id="mobileNumber"
+                maxLength={10}
                 type="tel"
                 {...register("phoneNumber", {
                   required: "Mobile number is required",
@@ -155,7 +160,12 @@ const Login = () => {
                 placeholder="Mobile number"
                 className="mt-1 block w-full border h-[50px] border-gray-300 rounded-md shadow-sm py-2 px-5 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                 disabled={otpSent || isLoading}
+                onInput={(e) => {
+                  const input = e.target as HTMLInputElement;
+                  input.value = input.value.replace(/[^0-9]/g, "");
+                }}
               />
+
               {errors.phoneNumber && (
                 <p className="mt-2 text-sm text-red-600">
                   {errors.phoneNumber.message}
@@ -168,14 +178,15 @@ const Login = () => {
           {otpSent && (
             <>
               <p className="text-sm text-gray-700 mb-2 text-center">
-                Enter the OTP sent to <span className="font-semibold">{phoneNumber}</span>
+                Enter the OTP sent to{" "}
+                <span className="font-semibold">{phoneNumber}</span>
               </p>
               <div className="mb-4 mt-1">
                 <div className="flex gap-3 justify-center m-auto w-full">
                   {[...Array(6)].map((_, index) => (
                     <input
                       key={index}
-                      type="text"
+                      type="tel"
                       maxLength={1}
                       className="w-8 h-12 text-center border-b border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                       id={`otp-${index}`}
@@ -190,13 +201,20 @@ const Login = () => {
                         const otp = Array.from(
                           { length: 6 },
                           (_, i) =>
-                            (document.getElementById(`otp-${i}`) as HTMLInputElement)
-                              ?.value || ""
+                            (
+                              document.getElementById(
+                                `otp-${i}`
+                              ) as HTMLInputElement
+                            )?.value || ""
                         ).join("");
                         setValue("otp", otp);
                       }}
                       onKeyDown={(e) => {
-                        if (e.key === "Backspace" && !e.currentTarget.value && index > 0) {
+                        if (
+                          e.key === "Backspace" &&
+                          !e.currentTarget.value &&
+                          index > 0
+                        ) {
                           document.getElementById(`otp-${index - 1}`)?.focus();
                         }
                       }}
@@ -266,13 +284,13 @@ const Login = () => {
 
           <p className="text-center text-[13px] mt-6">
             By continuing, I agree to the{" "}
-            <a href="/terms.php" className="text-purple-700 font-bold">
+            <Link to="/terms" className="text-purple-700 font-bold">
               Terms of Use
-            </a>{" "}
+            </Link>{" "}
             &{" "}
-            <a href="/privacy.php" className="text-purple-700 font-bold">
+            <Link to="/privacy" className="text-purple-700 font-bold">
               Privacy Policy
-            </a>
+            </Link>
           </p>
         </form>
       </div>

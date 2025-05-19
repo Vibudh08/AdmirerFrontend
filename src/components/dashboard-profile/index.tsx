@@ -1,8 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Button } from "antd";
 import { CloseOutlined } from "@ant-design/icons";
-import { changeNumberOtpVerify, changeNumberSendOtp, UPDATE_PROFILE_API, user_profile_API } from "../api/api-end-points";
+import {
+  changeNumberOtpVerify,
+  changeNumberSendOtp,
+  UPDATE_PROFILE_API,
+  user_profile_API,
+} from "../api/api-end-points";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 const indianStates = [
   "ANDAMAN AND NICOBAR ISLANDS",
@@ -43,15 +49,14 @@ const indianStates = [
   "WEST BENGAL",
 ];
 const Loader = () => (
-  <div className="   bg-opacity-80 backdrop-blur-sm flex items-center justify-center z-50">
+  <div className=" max-md:mt-5  bg-opacity-80 backdrop-blur-sm flex items-center justify-center z-50">
     {/* Loader content */}
     <div className="flex flex-col items-center">
-      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mb-4"></div>
+      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#7b48a5] mb-4"></div>
       {/* <p className="text-lg font-bold text-gray-800">Loading your experience, please wait...</p> */}
     </div>
   </div>
 );
-
 
 const Dashboard_Profile = () => {
   interface profileDataProps {
@@ -69,8 +74,6 @@ const Dashboard_Profile = () => {
     address_type?: string;
     status?: string;
   }
-  
-
 
   const [profileData, setProfileData] = useState<profileDataProps>();
   const [gender, setGender] = useState("male");
@@ -93,25 +96,7 @@ const Dashboard_Profile = () => {
     firstName: "",
     lastName: "",
     email: "",
-    flat: "",
-    street: "",
-    locality: "",
-    city: "",
-    zipcode: "",
-    state: "",
-    country: "",
-    addressType: "",
   });
-
-  // New address fields
-  const [flat, setFlat] = useState("");
-  const [street, setStreet] = useState("");
-  const [locality, setLocality] = useState("");
-  const [city, setCity] = useState("");
-  const [zipcode, setZipcode] = useState("");
-  const [state, setState] = useState("");
-  const [country, setCountry] = useState("");
-  const [addressType, setAddressType] = useState("");
 
   useEffect(() => {
     fetch(user_profile_API, {
@@ -129,15 +114,6 @@ const Dashboard_Profile = () => {
         setEmail(data.email || "");
         setGender(data.gender || "male");
 
-        // Set new address fields
-        setFlat(data.flat || "");
-        setStreet(data.street || "");
-        setLocality(data.locality || "");
-        setCity(data.city || "");
-        setZipcode(data.zipcode || "");
-        setState(data.state || "");
-        setCountry(data.country || "");
-        setAddressType(data.address_type || "");
         setIsLoading(false);
       });
   }, []);
@@ -152,24 +128,6 @@ const Dashboard_Profile = () => {
         return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)
           ? ""
           : "Enter a valid email address";
-      case "flat":
-        return value.trim() ? "" : "Flat/House number is required";
-      case "street":
-        return value.trim() ? "" : "Street is required";
-      case "locality":
-        return value.trim() ? "" : "Locality is required";
-      case "city":
-        return value.trim() ? "" : "City is required";
-      case "zipcode":
-        if (!value) return "Pincode is required";
-        if (!/^\d{6}$/.test(value)) return "Enter a valid 6-digit pincode";
-        return "";
-      case "state":
-        return value.trim() ? "" : "State is required";
-      // case "country":
-      //   return value.trim() ? "" : "Country is required";
-      // case "addressType":
-        // return value.trim() ? "" : "Address type is required";
       default:
         return "";
     }
@@ -215,57 +173,6 @@ const Dashboard_Profile = () => {
         ...prev,
         email: validateField(field, value),
       }));
-    } else if (field === "flat") {
-      setFlat(value);
-      setFormErrors((prev) => ({
-        ...prev,
-        flat: validateField(field, value),
-      }));
-    } else if (field === "street") {
-      setStreet(value);
-      setFormErrors((prev) => ({
-        ...prev,
-        street: validateField(field, value),
-      }));
-    } else if (field === "locality") {
-      setLocality(value);
-      setFormErrors((prev) => ({
-        ...prev,
-        locality: validateField(field, value),
-      }));
-    } else if (field === "city") {
-      setCity(value);
-      setFormErrors((prev) => ({
-        ...prev,
-        city: validateField(field, value),
-      }));
-    } else if (field === "zipcode") {
-      // Allow only digits and limit to 6 characters
-      if (/^\d{0,6}$/.test(value)) {
-        setZipcode(value);
-        setFormErrors((prev) => ({
-          ...prev,
-          zipcode: validateField(field, value),
-        }));
-      }
-    } else if (field === "state") {
-      setState(value);
-      setFormErrors((prev) => ({
-        ...prev,
-        state: validateField(field, value),
-      }));
-    // } else if (field === "country") {
-    //   setCountry(value);
-    //   setFormErrors((prev) => ({
-    //     ...prev,
-    //     country: validateField(field, value),
-    //   }));
-    } else if (field === "addressType") {
-      setAddressType(value);
-      setFormErrors((prev) => ({
-        ...prev,
-        addressType: validateField(field, value),
-      }));
     }
   };
 
@@ -281,14 +188,6 @@ const Dashboard_Profile = () => {
       email,
       gender,
       mobile: mobile ?? profileData?.mobile ?? "",
-      flat,
-      street,
-      locality,
-      city,
-      zipcode,
-      state,
-      country,
-      address_type: addressType,
     };
 
     console.log("🔄 Sending update payload:", payload);
@@ -320,16 +219,7 @@ const Dashboard_Profile = () => {
             setLastName(freshData.last_name || "");
             setEmail(freshData.email || "");
             setGender(freshData.gender || "male");
-            setFlat(freshData.flat || "");
-            setStreet(freshData.street || "");
-            setLocality(freshData.locality || "");
-            setCity(freshData.city || "");
-            setZipcode(freshData.zipcode || "");
-            setState(freshData.state || "");
-            setCountry(freshData.country || "");
-            setAddressType(freshData.address_type || "");
             setIsEditable(false);
-            
           });
       })
       .catch((err) => {
@@ -352,6 +242,7 @@ const Dashboard_Profile = () => {
         }
       );
       setOtpSent(true);
+      toast.success(`OTP sent on ${newNumber}`)
     } catch (error) {
       console.error("Send OTP error:", error);
     }
@@ -362,7 +253,7 @@ const Dashboard_Profile = () => {
       setOtpError("OTP is required");
       return;
     }
-  
+
     if (!/^\d{6}$/.test(otp)) {
       setOtpError("OTP must be exactly 6 digits");
       return;
@@ -386,7 +277,8 @@ const Dashboard_Profile = () => {
         mobile: newNumber, // Set the new mobile number
       }));
       setEditedMobile(newNumber); // Update the edited mobile state with the new number
-  
+
+      toast.success("Mobile number updated successfully.")
       setIsModalOpen(false);
       setNewNumber("");
       setOtp("");
@@ -404,14 +296,6 @@ const Dashboard_Profile = () => {
         firstName: validateField("firstName", firstName),
         lastName: validateField("lastName", lastName),
         email: validateField("email", email),
-        flat: validateField("flat", flat),
-        street: validateField("street", street),
-        locality: validateField("locality", locality),
-        city: validateField("city", city),
-        zipcode: validateField("zipcode", zipcode),
-        state: validateField("state", state),
-        country: validateField("country", country),
-        addressType: validateField("addressType", addressType),
       };
 
       setFormErrors(newErrors);
@@ -435,7 +319,7 @@ const Dashboard_Profile = () => {
   };
   if (isLoading) return <Loader />;
   return (
-    <div className="m-auto bg-white shadow-md p-8 max-sm:p-4 max-sm:mt-5 w-full">
+    <div className="m-auto bg-white shadow-md p-8 max-sm:p-4 max-sm:mt-3 w-full">
       <h2 className="text-xl font-semibold mb-6 border-b pb-2">Edit Profile</h2>
       {/* {isLoading &&   <Loader />} */}
       {/* Mobile Number */}
@@ -459,43 +343,43 @@ const Dashboard_Profile = () => {
       </div>
 
       {/* First & Last Name */}
-      <div className="flex gap-4 mb-4">
-        <div className="w-1/2">
-          <label className="text-sm font-medium text-gray-700 mb-1 block">
-            First Name
-          </label>
-          <input
-            type="text"
-            placeholder="First Name"
-            value={firstName}
-            onChange={(e) => handleInputChange(e, "firstName")}
-            className={`w-full border rounded px-4 py-3 text-sm ${
-              isEditable ? "text-black" : "text-gray-400 cursor-not-allowed"
-            }`}
-            disabled={!isEditable}
-          />
-          {formErrors.firstName && (
-            <p className="text-red-500 text-sm">{formErrors.firstName}</p>
-          )}
-        </div>
-        <div className="w-1/2">
-          <label className="text-sm font-medium text-gray-700 mb-1 block">
-            Last Name
-          </label>
-          <input
-            type="text"
-            placeholder="Last Name"
-            value={lastName}
-            onChange={(e) => handleInputChange(e, "lastName")}
-            className={`w-full border rounded px-4 py-3 text-sm ${
-              isEditable ? "text-black" : "text-gray-400 cursor-not-allowed"
-            }`}
-            disabled={!isEditable}
-          />
-          {formErrors.lastName && (
-            <p className="text-red-500 text-sm">{formErrors.lastName}</p>
-          )}
-        </div>
+      <div className="flex gap-4 ">
+      <div className="w-1/2 mb-4">
+        <label className="text-sm font-medium text-gray-700 mb-1 block">
+          First Name
+        </label>
+        <input
+          type="text"
+          placeholder="First Name"
+          value={firstName}
+          onChange={(e) => handleInputChange(e, "firstName")}
+          className={`w-full border rounded px-4 py-3 text-sm ${
+            isEditable ? "text-black" : "text-gray-400 cursor-not-allowed"
+          }`}
+          disabled={!isEditable}
+        />
+        {formErrors.firstName && (
+          <p className="text-red-500 text-sm">{formErrors.firstName}</p>
+        )}
+      </div>
+      <div className="w-1/2 mb-4">
+        <label className="text-sm font-medium text-gray-700 mb-1 block">
+          Last Name
+        </label>
+        <input
+          type="text"
+          placeholder="Last Name"
+          value={lastName}
+          onChange={(e) => handleInputChange(e, "lastName")}
+          className={`w-full border rounded px-4 py-3 text-sm ${
+            isEditable ? "text-black" : "text-gray-400 cursor-not-allowed"
+          }`}
+          disabled={!isEditable}
+        />
+        {formErrors.lastName && (
+          <p className="text-red-500 text-sm">{formErrors.lastName}</p>
+        )}
+      </div>
       </div>
 
       {/* Email */}
@@ -518,176 +402,14 @@ const Dashboard_Profile = () => {
         )}
       </div>
 
-      <div className="flex gap-4 mb-4">
-        <div className="w-1/2">
-          <label className="text-sm font-medium text-gray-700 mb-1 block">
-            Flat/House No.*
-          </label>
-          <input
-            type="text"
-            placeholder="Flat/House No."
-            value={flat}
-            onChange={(e) => handleInputChange(e, "flat")}
-            className={`w-full border rounded px-4 py-3 text-sm ${
-              isEditable ? "text-black" : "text-gray-400 cursor-not-allowed"
-            }`}
-            disabled={!isEditable}
-          />
-          {formErrors.flat && (
-            <p className="text-red-500 text-sm">{formErrors.flat}</p>
-          )}
-        </div>
-        <div className="w-1/2">
-          <label className="text-sm font-medium text-gray-700 mb-1 block">
-            Street*
-          </label>
-          <input
-            type="text"
-            placeholder="Street"
-            value={street}
-            onChange={(e) => handleInputChange(e, "street")}
-            className={`w-full border rounded px-4 py-3 text-sm ${
-              isEditable ? "text-black" : "text-gray-400 cursor-not-allowed"
-            }`}
-            disabled={!isEditable}
-          />
-          {formErrors.street && (
-            <p className="text-red-500 text-sm">{formErrors.street}</p>
-          )}
-        </div>
-      </div>
-
-      <div className="mb-4">
-        <label className="text-sm font-medium text-gray-700 mb-1 block">
-          Locality*
-        </label>
-        <input
-          type="text"
-          placeholder="Locality"
-          value={locality}
-          onChange={(e) => handleInputChange(e, "locality")}
-          className={`w-full border rounded px-4 py-3 text-sm ${
-            isEditable ? "text-black" : "text-gray-400 cursor-not-allowed"
-          }`}
-          disabled={!isEditable}
-        />
-        {formErrors.locality && (
-          <p className="text-red-500 text-sm">{formErrors.locality}</p>
-        )}
-      </div>
-
-      <div className="flex gap-4 mb-4">
-        <div className="w-1/2">
-          <label className="text-sm font-medium text-gray-700 mb-1 block">
-            City*
-          </label>
-          <input
-            type="text"
-            placeholder="City"
-            value={city}
-            onChange={(e) => handleInputChange(e, "city")}
-            className={`w-full border rounded px-4 py-3 text-sm ${
-              isEditable ? "text-black" : "text-gray-400 cursor-not-allowed"
-            }`}
-            disabled={!isEditable}
-          />
-          {formErrors.city && (
-            <p className="text-red-500 text-sm">{formErrors.city}</p>
-          )}
-        </div>
-        <div className="w-1/2">
-          <label className="text-sm font-medium text-gray-700 mb-1 block">
-            Pincode*
-          </label>
-          <input
-            type="text"
-            placeholder="Pincode"
-            value={zipcode}
-            onChange={(e) => handleInputChange(e, "zipcode")}
-            className={`w-full border rounded px-4 py-3 text-sm ${
-              isEditable ? "text-black" : "text-gray-400 cursor-not-allowed"
-            }`}
-            disabled={!isEditable}
-            maxLength={6}
-          />
-          {formErrors.zipcode && (
-            <p className="text-red-500 text-sm">{formErrors.zipcode}</p>
-          )}
-        </div>
-      </div>
-
-      <div className="flex gap-4 mb-4">
-        <div className="w-1/2">
-          <label className="text-sm font-medium text-gray-700 mb-1 block">
-            State*
-          </label>
-          <select
-            value={state}
-            onChange={(e) => handleInputChange(e, "state")}
-            className={`w-full border rounded px-4 py-3 text-sm appearance-none ${
-              isEditable
-                ? "text-black"
-                : "text-gray-400 cursor-not-allowed bg-gray-100"
-            }`}
-            disabled={!isEditable}
-          >
-            <option value="">Select a state</option>
-            {indianStates.map((st) => (
-              <option key={st} value={st}>
-                {st}
-              </option>
-            ))}
-          </select>
-          {formErrors.state && (
-            <p className="text-red-500 text-sm">{formErrors.state}</p>
-          )}
-        </div>
-        <div className="w-1/2">
-          <label className="text-sm font-medium text-gray-700 mb-1 block">
-            Country*
-          </label>
-          <input
-            type="text"
-            placeholder="Country"
-            value="INDIA"
-            className={`w-full border rounded px-4 py-3 text-gray-400 text-sm
-               cursor-not-allowed
-            `}
-            disabled
-          />
-          {formErrors.country && (
-            <p className="text-red-500 text-sm">{formErrors.country}</p>
-          )}
-        </div>
-      </div>
-
-      {/* <div className="mb-4">
-        <label className="text-sm font-medium text-gray-700 mb-1 block">
-          Address Type*
-        </label>
-        <input
-          type="text"
-          placeholder="Address Type (e.g., Home, Office)"
-          value={addressType}
-          onChange={(e) => handleInputChange(e, "addressType")}
-          className={`w-full border rounded px-4 py-3 text-sm ${
-            isEditable ? "text-black" : "text-gray-400 cursor-not-allowed"
-          }`}
-          disabled={!isEditable}
-        />
-        {formErrors.addressType && (
-          <p className="text-red-500 text-sm">{formErrors.addressType}</p>
-        )}
-      </div> */}
-
       {/* Save / Edit Button */}
       <button
         className={`w-full mt-2 py-3 rounded text-white ${
           isEditable
             ? isValid
-              ? "bg-purple-600 hover:bg-purple-700"
+              ? "bg-[#7b48a5] hover:bg-purple-700"
               : "bg-gray-400 cursor-not-allowed"
-            : "bg-purple-600 hover:bg-purple-700"
+            : "bg-[#7b48a5] hover:bg-purple-700"
         }`}
         onClick={toggleEdit}
         disabled={isEditable && !isValid}
@@ -697,126 +419,126 @@ const Dashboard_Profile = () => {
 
       {/* Modal */}
       <Modal
-      open={isModalOpen}
-      footer={null}
-      onCancel={() => {
-        setIsModalOpen(false);
-        setNewNumber("");
-        setModalMobileError("");
-        setOtpSent(false);
-        setOtp("");
-      }}
-      closeIcon={<CloseOutlined />}
-      centered
-      className="!w-[420px]"
-    >
-      <h2 className="text-lg font-semibold text-gray-800 mb-4">
-        Change Mobile Number
-      </h2>
+        open={isModalOpen}
+        footer={null}
+        onCancel={() => {
+          setIsModalOpen(false);
+          setNewNumber("");
+          setModalMobileError("");
+          setOtpSent(false);
+          setOtp("");
+        }}
+        closeIcon={<CloseOutlined />}
+        centered
+        className="!w-[420px]"
+      >
+        <h2 className="text-lg font-semibold text-gray-800 mb-4">
+          Change Mobile Number
+        </h2>
 
-      <div className="mb-3">
-        <label className="block text-sm font-medium text-gray-700 mb-1">
-          Current Mobile Number
-        </label>
-        <input
-          type="text"
-          value={profileData?.mobile}
-          readOnly
-          className="w-full border px-4 py-3 rounded bg-gray-100 text-sm text-gray-600 cursor-not-allowed"
-        />
-      </div>
+        <div className="mb-3">
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Current Mobile Number
+          </label>
+          <input
+            type="text"
+            value={profileData?.mobile}
+            readOnly
+            className="w-full border px-4 py-3 rounded bg-gray-100 text-sm text-gray-600 cursor-not-allowed"
+          />
+        </div>
 
-      <div className="mb-2">
-        <label className="block text-sm font-medium text-gray-700 mb-1">
-          New Mobile Number
-        </label>
-        <input
-          type="tel"
-          value={newNumber}
-          onChange={(e) => {
-            if (otpSent) return;
-            const value = e.target.value;
-            if (!/^\d*$/.test(value)) return;
-            setNewNumber(value);
+        <div className="mb-2">
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            New Mobile Number
+          </label>
+          <input
+            type="tel"
+            value={newNumber}
+            onChange={(e) => {
+              if (otpSent) return;
+              const value = e.target.value;
+              if (!/^\d*$/.test(value)) return;
+              setNewNumber(value);
 
-            if (value.length > 0 && value[0] === "0") {
-              setModalMobileError("Number cannot start with 0");
-            } else if (value.length > 10) {
-              setModalMobileError("Number cannot exceed 10 digits");
-            } else if (value.length === 10) {
-              setModalMobileError("");
-            } else {
-              setModalMobileError("Enter a valid 10-digit number");
-            }
-          }}
-          readOnly={otpSent}
-          className={`w-full border rounded px-4 py-3 text-sm ${
-            otpSent ? "bg-gray-100 text-gray-600 cursor-not-allowed" : ""
-          }`}
-        />
-        {modalMobileError && (
-          <p className="text-red-500 text-sm">{modalMobileError}</p>
+              if (value.length > 0 && value[0] === "0") {
+                setModalMobileError("Number cannot start with 0");
+              } else if (value.length > 10) {
+                setModalMobileError("Number cannot exceed 10 digits");
+              } else if (value.length === 10) {
+                setModalMobileError("");
+              } else {
+                setModalMobileError("Enter a valid 10-digit number");
+              }
+            }}
+            readOnly={otpSent}
+            className={`w-full border rounded px-4 py-3 text-sm ${
+              otpSent ? "bg-gray-100 text-gray-600 cursor-not-allowed" : ""
+            }`}
+          />
+          {modalMobileError && (
+            <p className="text-red-500 text-sm">{modalMobileError}</p>
+          )}
+        </div>
+
+        {otpSent && (
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Enter OTP
+            </label>
+
+            <div className="flex gap-3 justify-center">
+              {[...Array(6)].map((_, index) => (
+                <input
+                  key={index}
+                  type="text"
+                  maxLength={1}
+                  className="w-10 h-12 text-center border-b border-gray-600  text-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  id={`otp-${index}`}
+                  value={otp[index] || ""}
+                  onChange={(e) => {
+                    const val = e.target.value.replace(/[^0-9]/g, "");
+                    const otpArr = otp.split("");
+                    otpArr[index] = val;
+                    const newOtp = otpArr.join("").padEnd(6, "");
+                    setOtp(newOtp);
+                    if (otpError) setOtpError("");
+
+                    if (val && index < 5) {
+                      document.getElementById(`otp-${index + 1}`)?.focus();
+                    }
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === "Backspace" && !otp[index] && index > 0) {
+                      document.getElementById(`otp-${index - 1}`)?.focus();
+                    }
+                  }}
+                />
+              ))}
+            </div>
+
+            {otpError && (
+              <p className="text-red-500 text-sm mt-1">{otpError}</p>
+            )}
+          </div>
         )}
-      </div>
 
-      {otpSent && (
-  <div className="mb-4">
-    <label className="block text-sm font-medium text-gray-700 mb-1">
-      Enter OTP
-    </label>
-
-    <div className="flex gap-3 justify-center">
-      {[...Array(6)].map((_, index) => (
-        <input
-          key={index}
-          type="text"
-          maxLength={1}
-          className="w-10 h-12 text-center border-b border-gray-600  text-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
-          id={`otp-${index}`}
-          value={otp[index] || ""}
-          onChange={(e) => {
-            const val = e.target.value.replace(/[^0-9]/g, "");
-            const otpArr = otp.split("");
-            otpArr[index] = val;
-            const newOtp = otpArr.join("").padEnd(6, "");
-            setOtp(newOtp);
-            if (otpError) setOtpError("");
-
-            if (val && index < 5) {
-              document.getElementById(`otp-${index + 1}`)?.focus();
-            }
-          }}
-          onKeyDown={(e) => {
-            if (e.key === "Backspace" && !otp[index] && index > 0) {
-              document.getElementById(`otp-${index - 1}`)?.focus();
-            }
-          }}
-        />
-      ))}
-    </div>
-
-    {otpError && <p className="text-red-500 text-sm mt-1">{otpError}</p>}
-  </div>
-)}
-
-
-      {!otpSent ? (
-        <Button
-          className="w-full !bg-purple-600 hover:!bg-purple-700 h-[45px] mt-2 !text-white !border-none"
-          onClick={handleSendOtp}
-        >
-          SEND OTP
-        </Button>
-      ) : (
-        <Button
-          className="w-full !bg-purple-600 hover:!bg-purple-700 h-[45px] mt-2 !text-white !border-none"
-          onClick={handleVerifyOtp}
-        >
-          VERIFY OTP
-        </Button>
-      )}
-    </Modal>
-
+        {!otpSent ? (
+          <Button
+            className="w-full !bg-[#7b48a5] hover:!bg-purple-700 h-[45px] mt-2 !text-white !border-none"
+            onClick={handleSendOtp}
+          >
+            SEND OTP
+          </Button>
+        ) : (
+          <Button
+            className="w-full !bg-[#7b48a5] hover:!bg-purple-700 h-[45px] mt-2 !text-white !border-none"
+            onClick={handleVerifyOtp}
+          >
+            VERIFY OTP
+          </Button>
+        )}
+      </Modal>
     </div>
   );
 };

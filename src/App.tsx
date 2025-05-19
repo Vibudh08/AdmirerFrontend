@@ -54,35 +54,46 @@ const routePatterns = [
 function App() {
   const [categoryId, setCategoryId] = useState("");
   const [subcategoryId, setSubcategoryId] = useState("");
-  const [showHeaderFooter, setShowHeaderFooter] = useState(true);
+  const [showHeader, setShowHeader] = useState(true);
+  const [showFooter, setShowFooter] = useState(true);
+  
 
   const RouteTracker = () => {
     const location = useLocation();
-
+  
     useEffect(() => {
-      // Check if current path matches any valid route
-      const isMatched = routePatterns.some(pattern => 
+      const isMatched = routePatterns.some(pattern =>
         matchPath({ path: pattern, end: true }, location.pathname)
-      );  
-
-      // Special case for dynamic profile route
+      );
+  
       const isDashboardProfile = location.pathname.startsWith('/dashboard_profile');
-      
-      // Hide header/footer for Login or unmatched routes
-      const shouldHide = location.pathname === '/LogIn' || (!isMatched && !isDashboardProfile);
-      
-      setShowHeaderFooter(!shouldHide);
+  
+      // Routes where header and footer should be completely hidden (e.g., login, 404)
+      const fullHiddenRoutes = ['/LogIn'];
+  
+      // Routes where only the footer should be hidden
+      const footerHiddenRoutes = ['/cart', '/order/:id'];
+  
+      const shouldHideHeader = fullHiddenRoutes.includes(location.pathname) || (!isMatched && !isDashboardProfile);
+      const shouldHideFooter = footerHiddenRoutes.some(pattern =>
+        matchPath({ path: pattern, end: true }, location.pathname)
+      );
+  
+      setShowHeader(!shouldHideHeader);
+      setShowFooter(!shouldHideHeader && !shouldHideFooter);
     }, [location]);
-
+  
     return null;
   };
+  
+  
 
   return (
     <BrowserRouter>
       <ScrollToTop />
       <Layout>
         <RouteTracker />
-        {showHeaderFooter && <Header />}
+        {showHeader  && <Header  />}
         <ToastContainer position="top-center" autoClose={2500} hideProgressBar />
         <Routes>
           <Route
@@ -95,7 +106,7 @@ function App() {
             }
           />
           <Route path="/LogIn" element={<Login />} />
-          <Route path="/product/:id" element={<ProductDetails />} />
+          <Route path="/product/:id" element={<ProductDetails wishlist={0} />} />
           <Route path="/dashboard_profile" element={<PrivateRoute><Dashboard_Profile /></PrivateRoute>} />
           <Route path="/order/:id" element={<PrivateRoute><OrderDetails /></PrivateRoute>} />
           <Route path="/cart" element={<Complete_cart_checkout />} />
@@ -122,7 +133,7 @@ function App() {
           <Route path="/404" element={<NotFound />} />
           <Route path="/*" element={<NotFound />} />
         </Routes>
-        {showHeaderFooter && <Footer />}
+        {showFooter  && <Footer />}
       </Layout>
     </BrowserRouter>
   );

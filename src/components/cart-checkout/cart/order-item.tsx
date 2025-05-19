@@ -1,10 +1,8 @@
-// ✅ Only change: adding `onQuantityChange` prop and updating quantity via dropdown
-
 import React from "react";
 import { FaTimes } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import DOMPurify from 'dompurify';
-
+import RemoveFromBag from "./RemoveFromBag";
+import { wishlist_add_remove } from "../../api/api-end-points";
 
 interface ItemProps {
   id: number;
@@ -20,6 +18,7 @@ interface ItemProps {
   image: string;
   onRemove: (id: number) => void;
   onQuantityChange: (id: number, newQty: number) => void; // ✅ Added this
+  totalItem: number;
 }
 
 const Item: React.FC<ItemProps> = ({
@@ -34,6 +33,7 @@ const Item: React.FC<ItemProps> = ({
   return_day,
   finalPrice,
   totalQuantity,
+  totalItem,
   onRemove,
   onQuantityChange,
 }) => {
@@ -43,65 +43,81 @@ const Item: React.FC<ItemProps> = ({
   if (qty > totalQty) {
     qty = totalQty;
   }
-
+  console.log("totalitem", totalItem);
   const quantityOptions = Array.from({ length: totalQty }, (_, i) => i + 1);
 
-  const sanitizedDescription = DOMPurify.sanitize(description);
-  
-  const cleanedDescription = sanitizedDescription.replace(/Product description/i, '');
-// Remove the 'Product description' phrase (case-insensitive) from the description
+  async function onMoveToWishlist(id: string | number): Promise<void> {
+    try {
+      const response = await fetch(wishlist_add_remove, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + localStorage.getItem("auth_token"),
+        },
+        body: JSON.stringify({
+          product_id: id,
+          wishlist: 1,
+        }),
+      });
 
+      const result = await response.json();
+
+      if (response.ok) {
+        console.log(result.message || "Wishlist updated");
+      } else if (response.status === 401) {
+      } else {
+        // alert("Something went wrong.");
+        console.error(result);
+      }
+    } catch (err) {
+      console.error("Error toggling wishlist:", err);
+    }
+  }
 
   return (
     <div className="bg-white relative mt-1 mb-2">
       <div className="flex border border-gray-200 rounded-lg overflow-hidden hover:shadow-sm transition-shadow duration-200">
         <div className="absolute right-2 top-2 z-10">
-          <button
-            onClick={() => {
-              onRemove(id);
-            }}
-            className="text-gray-500 hover:text-gray-700 focus:outline-none"
-            aria-label="Remove item"
-          >
-            <FaTimes className="w-4 h-4" />
-          </button>
+          <RemoveFromBag
+            id={id}
+            productImage={image}
+            onRemove={onRemove}
+            onMoveToWishlist={onMoveToWishlist}
+          />
         </div>
 
-        <div className="w-[30%] relative flex items-center justify-center">
+        <div className="w-[25%] relative flex  items-center justify-center">
           <Link to={`/product/${id}`}>
             <img className="w-[120px] h-fit" src={image} alt={brandName} />
           </Link>
         </div>
 
-        <div className="w-[70%] p-3 flex flex-col h-fit">
+        <div className="w-[75%] p-3  flex flex-col h-fit">
           <div className="hidden">{id}</div>
           <Link to={`/product/${id}`}>
-            <h2 className="text-[17px] font-[500] text-gray-900 mb-1 w-[95%]">
+            <h2 className="text-[17px] font-[500] text-gray-900 mb-1 w-[95%] truncate">
               {brandName}
             </h2>
           </Link>
 
-          {/* <p
-  className="text-gray-700 font-medium text-[13px] line-clamp-2 mb-4 leading-snug"
-  dangerouslySetInnerHTML={{ __html: cleanedDescription }}
-/> */}
-
-
           <div className="flex items-center mb-3 mt-2">
-            <span className="font-semibold text-sm mr-2  text-gray-700">
-              Qty:
-            </span>
-            <select
-              className="border border-gray-300 cursor-pointer rounded px-2 py-1 text-sm font-medium bg-gray-50 focus:outline-none focus:ring-1 focus:ring-gray-400 w-16"
-              value={qty}
-              onChange={(e) => onQuantityChange(id, parseInt(e.target.value))} // ✅ Trigger on change
-            >
-              {quantityOptions.map((num) => (
-                <option key={num} value={num}>
-                  {num}
-                </option>
-              ))}
-            </select>
+            <span className="font-semibold text-sm mr-2  text-black">Qty:</span>
+            
+            {totalItem == 2 || totalItem == 3 ? (
+              <span className="font-semibold">1</span>
+            ) : (
+              <select
+                className="border border-gray-300 cursor-pointer rounded px-2 py-1 text-sm font-medium bg-gray-50 focus:outline-none focus:ring-1 focus:ring-gray-400 w-16"
+                value={qty}
+                onChange={(e) => onQuantityChange(id, parseInt(e.target.value))}
+              >
+                {quantityOptions.map((num) => (
+                  <option key={num} value={num}>
+                    {num}
+                  </option>
+                ))}
+              </select>
+            )}
           </div>
 
           <div className="flex items-center gap-2 mb-1">

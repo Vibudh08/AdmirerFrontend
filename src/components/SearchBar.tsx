@@ -62,16 +62,16 @@ const SearchBarWithPopup: React.FC<SearchBarWithPopupProps> = ({ onSelectProduct
 
   return (
     <div
-      className="relative w-[400px] ml-[170px] max-md:ml-0 max-md:w-full"
+      className="relative w-[400px] ml-[110px] max-md:ml-0 max-md:w-full"
       ref={dropdownRef}
     >
-      <Search className="absolute left-1 ml-2.5 w-5 h-5 top-6 max-md:top-7 transform -translate-y-1/2 text-[#7B48A5]" />
+      <Search className="absolute  ml-2 mt-[-2px] w-5 h-5 top-6 max-md:top-7 transform -translate-y-1/2 text-[#7B48A5]" />
       <input
         type="text"
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         placeholder="Search for products..."
-        className="mt-1 pl-10 pr-2 w-full h-[40px] max-md:h-[45px] rounded-md border border-[#7B48A5] pt-1 outline-none ring-2 ring-[#d3b6e9] text-gray"
+        className=" pl-8 pr-2 w-full h-[40px] max-md:h-[45px] rounded-md border border-[#7B48A5]  outline-none ring-2 ring-[#d3b6e9] text-gray"
         onFocus={() => query && setShowDropdown(true)}
       />
 

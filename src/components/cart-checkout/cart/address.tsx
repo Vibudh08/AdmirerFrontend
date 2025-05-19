@@ -35,62 +35,62 @@ const AddressBar = ({
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const handleGeolocationSuccess = useCallback(
-    async (position: GeolocationPosition) => {
-      try {
-        setIsLoading(true);
-        setError(null);
+  // const handleGeolocationSuccess = useCallback(
+  //   async (position: GeolocationPosition) => {
+  //     try {
+  //       setIsLoading(true);
+  //       setError(null);
 
-        const response = await fetch(
-          `https://nominatim.openstreetmap.org/reverse?format=json&lat=${position.coords.latitude}&lon=${position.coords.longitude}`
-        );
+  //       const response = await fetch(
+  //         `https://nominatim.openstreetmap.org/reverse?format=json&lat=${position.coords.latitude}&lon=${position.coords.longitude}`
+  //       );
 
-        if (!response.ok) throw new Error("Address lookup failed");
+  //       if (!response.ok) throw new Error("Address lookup failed");
 
-        const data = await response.json();
-        const newAddress = {
-          firstName: "",
-          lastName: "",
-          email: "",
-          street: data.address.road || data.address.highway || "",
-          city:
-            data.address.city ||
-            data.address.town ||
-            data.address.village ||
-            "",
-          state: data.address.state || "",
-          pincode: data.address.postcode || "",
-          flat: "",
-          locality: data.address.neighbourhood || data.address.suburb || "",
-          addressType: "home", // Default to home
-        };
+  //       const data = await response.json();
+  //       const newAddress = {
+  //         firstName: "",
+  //         lastName: "",
+  //         email: "",
+  //         street: data.address.road || data.address.highway || "",
+  //         city:
+  //           data.address.city ||
+  //           data.address.town ||
+  //           data.address.village ||
+  //           "",
+  //         state: data.address.state || "",
+  //         pincode: data.address.postcode || "",
+  //         flat: "",
+  //         locality: data.address.neighbourhood || data.address.suburb || "",
+  //         addressType: "home", // Default to home
+  //       };
 
-        form.setFieldsValue(newAddress);
-        onAddressChange(newAddress);
-      } catch (err) {
-        setError("Failed to fetch address details");
-      } finally {
-        setIsLoading(false);
-      }
-    },
-    [form, onAddressChange]
-  );
+  //       form.setFieldsValue(newAddress);
+  //       onAddressChange(newAddress);
+  //     } catch (err) {
+  //       setError("Failed to fetch address details");
+  //     } finally {
+  //       setIsLoading(false);
+  //     }
+  //   },
+  //   [form, onAddressChange]
+  // );
 
-  const getCurrentLocation = useCallback(() => {
-    if (!navigator.geolocation) {
-      setError("Geolocation is not supported by your browser");
-      return;
-    }
+  // const getCurrentLocation = useCallback(() => {
+  //   if (!navigator.geolocation) {
+  //     setError("Geolocation is not supported by your browser");
+  //     return;
+  //   }
 
-    setIsLoading(true);
-    navigator.geolocation.getCurrentPosition(
-      handleGeolocationSuccess,
-      (error) => {
-        setError("Unable to retrieve your location");
-        setIsLoading(false);
-      }
-    );
-  }, [handleGeolocationSuccess]);
+  //   setIsLoading(true);
+  //   navigator.geolocation.getCurrentPosition(
+  //     handleGeolocationSuccess,
+  //     (error) => {
+  //       setError("Unable to retrieve your location");
+  //       setIsLoading(false);
+  //     }
+  //   );
+  // }, [handleGeolocationSuccess]);
 
   const handleSubmit = async (values: AddressData) => {
     try {
@@ -301,23 +301,30 @@ const AddressBar = ({
 
       {/* Pincode Field */}
       <Form.Item
-        label="Pincode/Zip Code"
-        name="pincode"
-        rules={[
-          { required: true, message: "Please input your pincode!" },
-          { pattern: /^[0-9]+$/, message: "Pincode must contain only numbers" },
-        ]}
-      >
-        <Input
-          placeholder="6 digits [0-9] PIN code"
-          allowClear
-          prefix={<EnvironmentOutlined className="text-gray-400" />}
-        />
-      </Form.Item>
+  label="Pincode/Zip Code"
+  name="pincode"
+  normalize={(value: string) => {
+    const digitsOnly = value.replace(/\D/g, ""); // Remove non-numeric chars
+    return digitsOnly.slice(0, 6); // Limit to 6 digits
+  }}
+  rules={[
+    { required: true, message: "Please input your pincode!" },
+    { pattern: /^[0-9]{6}$/, message: "Pincode must be exactly 6 digits" },
+  ]}
+>
+  <Input
+    placeholder="6 digits [0-9] PIN code"
+    allowClear
+    maxLength={6}
+    prefix={<EnvironmentOutlined className="text-gray-400" />}
+  />
+</Form.Item>
+
+
 
       <Form.Item>
         <div style={{ display: "flex", gap: "8px" }}>
-          <Button
+          {/* <Button
             className="w-[180px] border rounded h-[40px] py-2 hover:!border-none text-sm text-white hover:!bg-purple-700 hover:!text-white bg-purple-600"
             onClick={(e) => {
               e.preventDefault();
@@ -329,9 +336,9 @@ const AddressBar = ({
             htmlType="button"
           >
             {isLoading ? "Detecting Location..." : "Use Current Location"}
-          </Button>
+          </Button> */}
           <Button
-            className="w-[100px] border rounded hover:!border-none h-[40px] py-2 text-sm text-white hover:!bg-purple-700 hover:!text-white bg-purple-600"
+            className="w-[130px] border rounded hover:!border-none h-[40px] py-2 text-sm text-white hover:!bg-purple-700 hover:!text-white bg-purple-600"
             htmlType="submit"
             style={{ marginLeft: "auto" }}
           >

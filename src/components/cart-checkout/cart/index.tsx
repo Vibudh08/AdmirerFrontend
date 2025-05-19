@@ -2,7 +2,14 @@ import React, { useEffect, useState } from "react";
 import Item from "./order-item";
 import DeliveryInfo from "./current-address";
 import axios from "axios";
-import { addToCart, cartProductData, cartRemove, getShippingAndBillingAddress, updateCartQuantity } from "../../api/api-end-points";
+import {
+  addToCart,
+  cartProductData,
+  cartRemove,
+  getShippingAndBillingAddress,
+  updateCartQuantity,
+} from "../../api/api-end-points";
+import LoaderCode from "../../Loader";
 
 interface CartProps {
   setTotalMRP: (value: number) => void;
@@ -10,6 +17,7 @@ interface CartProps {
   setTotalAmount: (value: number) => void;
   setItemCount: (value: number) => void;
   setShippingData: (value: any) => void;
+  openAddressModal?: boolean;
 }
 
 interface ItemProps {
@@ -27,18 +35,11 @@ interface ItemProps {
 }
 
 const Loader = () => (
-  <div className="fixed inset-0 bg-white bg-opacity-80 backdrop-blur-sm flex items-center justify-center z-50">
-    <div className="flex flex-col items-center">
-      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mb-4"></div>
-      <p className="text-lg font-bold text-gray-800">
-        Loading your experience, please wait...
-      </p>
-    </div>
-  </div>
+  <LoaderCode/>
 );
 
 const EmptyCart = () => (
-  <div className="flex flex-col items-center justify-center !border h-full py-20 bg-white w-full text-center">
+  <div className="flex flex-col items-center justify-center !border h-[100vh] py-20 bg-white w-full text-center">
     <img
       src="https://cdn-icons-png.flaticon.com/512/2038/2038854.png"
       alt="Empty cart"
@@ -105,6 +106,7 @@ const Cart: React.FC<CartProps> = ({
   setTotalAmount,
   setItemCount,
   setShippingData,
+  openAddressModal,
 }) => {
   const [totalItem, setTotalItem] = useState<ItemProps[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -112,6 +114,11 @@ const Cart: React.FC<CartProps> = ({
   const [addressForNimbus, setAddressForNimbus] = useState<Address | null>(
     null
   );
+
+  const syncCartCountToHeader = (count: number) => {
+    localStorage.setItem("itemCount", count.toString());
+    window.dispatchEvent(new Event("itemCountUpdated"));
+  };
 
   const recalculateTotals = (items: ItemProps[]) => {
     let original = 0;
@@ -158,6 +165,8 @@ const Cart: React.FC<CartProps> = ({
     const updatedItems = totalItem.filter((item) => item.id !== id);
     setTotalItem(updatedItems);
     setItemCount(updatedItems.length);
+
+    syncCartCountToHeader(updatedItems.length);
     recalculateTotals(updatedItems);
 
     try {
@@ -186,7 +195,7 @@ const Cart: React.FC<CartProps> = ({
     console.log("🛒 Guest Cart from LocalStorage:", guestCart);
     console.log("🛒 API Cart from Backend:", apiCart);
 
-    // ✅ Sync guest cart to backend
+    // Sync guest cart to backend
     if (authToken && guestCart.length > 0) {
       try {
         await Promise.all(
@@ -208,28 +217,25 @@ const Cart: React.FC<CartProps> = ({
         localStorage.removeItem("guest_cart");
         console.log("✅ Guest cart synced to backend and cleared.");
       } catch (error) {
-        console.error("❌ Error syncing guest cart to backend:", error);
+        console.error("Error syncing guest cart to backend:", error);
       }
     }
 
     // 🛒 Fetch user cart from backend
     if (authToken) {
       try {
-        const response = await axios.get(
-          cartProductData,
-          {
-            headers: {
-              Authorization: `Bearer ${authToken}`,
-            },
-          }
-        );
+        const response = await axios.get(cartProductData, {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+        });
         apiCart = response.data.data.products || [];
       } catch (error) {
-        console.error("❌ Failed to fetch cart data from API:", error);
+        console.error("Failed to fetch cart data from API:", error);
       }
     }
 
-    // 🔁 Transform backend cart
+    // Transform backend cart
     const transformedApiCart: ItemProps[] = apiCart.map((item) => ({
       id: item.id,
       brandName: item.product_name || "Unknown",
@@ -242,9 +248,8 @@ const Cart: React.FC<CartProps> = ({
       image: item.image,
       totalQuantity: item.in_stock < 3 ? item.in_stock.toString() : "3",
     }));
-    
 
-    // 🧾 Merge guest cart items if needed (though usually empty after sync)
+    // Merge guest cart items if needed (though usually empty after sync)
     const transformedGuestCart: ItemProps[] = guestCart.map((item) => ({
       id: item.id,
       brandName: item.product_name || "Unknown",
@@ -268,6 +273,8 @@ const Cart: React.FC<CartProps> = ({
 
     setTotalItem(mergedCart);
     setItemCount(mergedCart.length);
+
+    syncCartCountToHeader(mergedCart.length);
     recalculateTotals(mergedCart);
     setIsLoading(false);
   };
@@ -296,25 +303,27 @@ const Cart: React.FC<CartProps> = ({
       });
       setShippingData(data.shipping_address[0]);
     } catch (error) {
-      console.error("❌ Failed to fetch address:", error);
+      console.error("Failed to fetch address:", error);
     }
   };
   useEffect(() => {
     fetchAddresses();
-  }, []);  
+  }, []);
 
   if (isLoading) return <Loader />;
   if (totalItem.length === 0) return <EmptyCart />;
+  // console.log("total item" ,totalItem.length)
 
   return (
-    <div className="flex flex-col w-[65%] max-md:w-[100%] bg-white px-4 py-2">
+    <div className="flex flex-col w-[65%] max-md:w-[100%] bg-white px-4 max-md:px-2 py-2">
       {addressData && (
         <DeliveryInfo
-        billingAddress={addressData.billingAddress}
-        shippingAddresses={addressData.shippingAddresses}
-        onAddressSelect={setAddressForNimbus}
-        onAddressSaved={fetchAddresses} // ✅ passed here
-      />
+          billingAddress={addressData.billingAddress}
+          shippingAddresses={addressData.shippingAddresses}
+          onAddressSelect={setAddressForNimbus}
+          onAddressSaved={fetchAddresses}
+          externalTriggerOpen={openAddressModal}
+        />
       )}
       <div className="flex flex-col">
         {totalItem.map((item, index) => (
@@ -339,6 +348,7 @@ const Cart: React.FC<CartProps> = ({
               ).toFixed(2)}
               totalQuantity={item.totalQuantity}
               onQuantityChange={handleQuantityChange}
+              totalItem={totalItem.length}
             />
           </div>
         ))}

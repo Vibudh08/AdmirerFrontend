@@ -9,11 +9,17 @@ import PincodeChecker from "../components/product-detail/pincodeChecker";
 import OfferBanner from "../components/product-detail/OfferBanner";
 import ProductAccordion from "../components/product-detail/ProductDescription";
 import { FaHeart } from "react-icons/fa";
-import { addToCart, productDetails, wishlist_add_remove } from "../components/api/api-end-points";
+import {
+  addToCart,
+  productDetails,
+  wishlist_add_remove,
+} from "../components/api/api-end-points";
 import Slider from "react-slick";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { FaRegHeart } from "react-icons/fa";
-import { toast } from 'react-toastify'; 
+import { toast } from "react-toastify";
+import SingleProductCard from "../components/product-detail/SingleProductCard ";
+import LoaderCode from "../components/Loader";
 
 // Arrows
 const CustomPrevArrow = ({ onClick }: { onClick: () => void }) => (
@@ -35,17 +41,10 @@ const CustomNextArrow = ({ onClick }: { onClick: () => void }) => (
 );
 
 const Loader = () => (
-  <div className="fixed inset-0 bg-white bg-opacity-80 backdrop-blur-sm flex items-center justify-center z-50">
-    <div className="flex flex-col items-center">
-      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mb-4"></div>
-      <p className="text-lg font-bold text-gray-800">
-        Loading your experience, please wait...
-      </p>
-    </div>
-  </div>
+  <LoaderCode/>
 );
 
-const ProductDetails = () => {
+const ProductDetails = (item: { wishlist: number }) => {
   const { id } = useParams<{ id: string }>(); // Get the product ID from the URL
   const [product, setProduct] = useState<any>(null); // State for product details
   const [relatedProducts, setRelatedProducts] = useState<any[]>([]);
@@ -56,6 +55,7 @@ const ProductDetails = () => {
   const [zoomStyle, setZoomStyle] = useState({});
   const [isInCart, setIsInCart] = useState(false);
   const [isWishlisted, setIsWishlisted] = useState(false);
+ 
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
 
@@ -87,14 +87,16 @@ const ProductDetails = () => {
 
   const handleBuyNow = () => {
     const authToken = localStorage.getItem("auth_token");
-  
+
     if (authToken) {
       handleAddToCart(); // API-based
       navigate("/cart");
     } else {
       // Guest cart logic
       const cartItems = JSON.parse(localStorage.getItem("guest_cart") || "[]");
-      const isAlreadyAdded = cartItems.find((item: any) => item.id === product.id);
+      const isAlreadyAdded = cartItems.find(
+        (item: any) => item.id === product.id
+      );
       if (!isAlreadyAdded) {
         cartItems.push(product);
         localStorage.setItem("guest_cart", JSON.stringify(cartItems));
@@ -102,65 +104,38 @@ const ProductDetails = () => {
       navigate("/cart"); // Still go to cart for guest users
     }
   };
-  
-  
 
-  const toggleWishlist = async (prodId?: string) => {
-    const productIdToToggle = prodId || id;
-  
-    try {
-      const response = await fetch(wishlist_add_remove, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + localStorage.getItem("auth_token"),
-        },
-        body: JSON.stringify({
-          product_id: productIdToToggle,
-          wishlist: isWishlisted ? 0 : 1,
-        }),
-      });
-  
-      const result = await response.json();
-  
-      if (response.ok) {
-        const action = isWishlisted ? "Removed from" : "Added to";
-        setIsWishlisted(!isWishlisted);
-        toast.success(`${action} wishlist`);
-        console.log(result.message || "Wishlist updated");
-      } else if (response.status === 401) {
-        toast.error("Please log in to add items to your wishlist.");
-      } else {
-        console.error(result);
-        toast.error("Something went wrong while updating wishlist.");
-      }
-    } catch (err) {
-      console.error("Error toggling wishlist:", err);
-      toast.error("Something went wrong. Please try again.");
-    }
-  };
   
 
   const handleAddToCart = async () => {
     const authToken = localStorage.getItem("auth_token");
-  
+
     if (!authToken) {
-      // User not logged in - Store product locally
+      // Guest user
       const cartItems = JSON.parse(localStorage.getItem("guest_cart") || "[]");
-      const isAlreadyAdded = cartItems.find((item: any) => item.id === product.id);
+      const isAlreadyAdded = cartItems.find(
+        (item: any) => item.id === product.id
+      );
       if (!isAlreadyAdded) {
         cartItems.push(product);
         localStorage.setItem("guest_cart", JSON.stringify(cartItems));
+
+        // ✅ Update itemCount
+        const newCount =
+          parseInt(localStorage.getItem("itemCount") || "0", 10) + 1;
+        localStorage.setItem("itemCount", newCount.toString());
+        window.dispatchEvent(new Event("itemCountUpdated"));
+        setIsInCart(true);
         toast.success("Product added to cart");
       } else {
-        toast.success("Product already to cart");
+        toast.success("Product already in cart");
       }
       return;
     }
-  
-    // User is logged in - Proceed with API call
+
+    // Logged-in user
     try {
-      const response = await axios.post( 
+      const response = await axios.post(
         addToCart,
         {
           product_id: product.id,
@@ -173,16 +148,21 @@ const ProductDetails = () => {
           },
         }
       );
-  
+
       if (response.data && response.data.status === "success") {
         toast.success("Product added to cart");
         setIsInCart(true);
+
+        // ✅ Update itemCount only if added successfully
+        const newCount =
+          parseInt(localStorage.getItem("itemCount") || "0", 10) + 1;
+        localStorage.setItem("itemCount", newCount.toString());
+        window.dispatchEvent(new Event("itemCountUpdated"));
       }
     } catch (error) {
       console.error("Add to cart error:", error);
     }
   };
-  
 
   useEffect(() => {
     if (id) {
@@ -195,7 +175,7 @@ const ProductDetails = () => {
         })
         .then((response) => {
           const data = response.data.data;
-          console.log(data)
+          console.log(data);
           const relatedData = response.data.related_products;
 
           // Construct full image URLs
@@ -306,7 +286,7 @@ const ProductDetails = () => {
                 className="w-full object-cover"
                 ref={imageRef}
                 style={{ cursor: "none" }}
-              />  
+              />
               <div
                 style={{
                   ...zoomStyle,
@@ -364,7 +344,7 @@ const ProductDetails = () => {
             {product.in_stock < 5 && (
               <div className="mt-4 mb-1 space-x-1 text-[16px] text-gray-600">
                 Hurry Up! Only{" "}
-                <span className="text-purple-600 font-semibold">
+                <span className="text-[#7B48A5] font-semibold">
                   {product.in_stock} Item(s)
                 </span>{" "}
                 left in stock
@@ -373,22 +353,22 @@ const ProductDetails = () => {
 
             <div className="grid grid-cols-2 gap-2 text-sm text-gray-600 mt-5">
               <div className="flex items-center gap-3 text-[15px] font-medium">
-                <FaUndo className="text-purple-700" /> Return & Exchange
+                <FaUndo className="text-[#7B48A5]" /> Return & Exchange
               </div>
               <div className="flex items-center gap-3 text-[15px] font-medium">
-                <FaShieldAlt className="text-purple-700" /> 100% Original
+                <FaShieldAlt className="text-[#7B48A5]" /> 100% Original
               </div>
               <div className="flex items-center gap-3 text-[15px] font-medium">
-                <FaCertificate className="text-purple-700" /> Warranty
+                <FaCertificate className="text-[#7B48A5]" /> Warranty
               </div>
               <div className="flex items-center gap-3 text-[15px] font-medium">
-                <FaGem className="text-purple-700" /> Quality
+                <FaGem className="text-[#7B48A5]" /> Quality
               </div>
             </div>
             <div className="mt-5 flex gap-3 w-full ">
               <button
                 onClick={handleBuyNow}
-                className="bg-purple-600 text-white py-2 px-6 rounded-md h-[50px] w-1/2 hover:bg-purple-700 transition font-semibold"
+                className="bg-[#7B48A5] text-white py-2 px-6 rounded-md h-[50px] w-1/2 hover:bg-purple-700 transition font-semibold"
               >
                 Buy Now
               </button>
@@ -396,8 +376,8 @@ const ProductDetails = () => {
                 onClick={isInCart ? () => navigate("/cart") : handleAddToCart}
                 className={`${
                   isInCart
-                    ? "border border-purple-700 bg-purple-600 text-white hover:bg-purple-700"
-                    : "border border-purple-700 bg-purple-600 text-white hover:bg-purple-700"
+                    ? "border border-purple-700 bg-[#7B48A5] text-white hover:bg-purple-700"
+                    : "border border-purple-700 bg-[#7B48A5] text-white hover:bg-purple-700"
                 } py-2 px-6 rounded-md h-[50px] w-1/2 transition font-semibold`}
               >
                 {isInCart ? "View Cart" : "Add To Cart"}
@@ -418,63 +398,7 @@ const ProductDetails = () => {
         <div className="grid grid-cols-1 w-[85%] max-md:w-[98%] m-auto !gap-4 ">
           <Slider {...relatedProductsSlider}>
             {relatedProducts.map((item) => (
-              <div
-                key={item.id}
-                className="px-2 max-md:px-1" // Add horizontal spacing here
-              >
-                <div className="w-full font-sans bg-white rounded-xl p-3 max-md:p-1.5 flex flex-col gap-2 max-md:gap-1 border border-gray-200">
-                  <div className="relative group">
-                    <Link to={`/product/${item.id}`}>
-                      <img
-                        src={
-                          `https://admirer.in/asset/image/product/${item.image}` ||
-                          "https://via.placeholder.com/100"
-                        }
-                        alt={item.title}
-                        className="w-full h-full object-cover rounded-lg"
-                      />
-                    </Link>
-                    <button
-                      className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity"
-                      onClick={(e) => {
-                        // e.stopPropagation(); // Prevents the click from reaching parent div
-                        toggleWishlist(item.id);
-                      }}
-                    >
-                      <div
-                        className={`p-2 sm:p-1 rounded-full border shadow-md ${
-                          item.wishlist === 1
-                            ? "bg-red-900 border-red-500 text-red-500"
-                            : "bg-white border-red-500 text-red-500 "
-                        }`}
-                      >
-                        {item.wishlist === 1 ? (
-                          <FaHeart size={16} />
-                        ) : (
-                          <FaRegHeart size={16} />
-                        )}
-                      </div>
-                    </button>
-                  </div>
-                  <Link to={`/product/${item.id}`}>
-                    <div className="font-medium text-[16px] max-md:text-[16px] truncate">
-                      {item.title}
-                    </div>
-                  </Link>
-
-                  <div className="flex items-center gap-2 max-md:gap-1.5 text-lg">
-                    <span className="font-semibold text-black max-md:text-[16px]">
-                      ₹{item.discount}
-                    </span>
-                    <span className="line-through text-sm text-gray-400 max-md:text-[15px]">
-                      ₹{item.price}
-                    </span>
-                    <span className="bg-red-50 text-red-700 font-bold px-1 py-0.5 rounded text-xs max-md:text-[12px]">
-                      {item.discount_percent}% OFF
-                    </span>
-                  </div>
-                </div>
-              </div>
+              <SingleProductCard key={item.id} item={item} />
             ))}
           </Slider>
         </div>
