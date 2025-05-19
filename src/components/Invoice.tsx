@@ -39,7 +39,7 @@ const Invoice: React.FC<InvoiceProps> = ({ order }) => {
   
     // --- LOGO ---
     const logoImg = new Image();
-    logoImg.src = "/logo/admirer_logo.jpeg";
+    logoImg.src = "/logo/admirer_logo.png";
     await new Promise((res) => (logoImg.onload = res));
     doc.addImage(logoImg, "PNG", 14, 10, 40, 20);
   
@@ -220,7 +220,7 @@ const Invoice: React.FC<InvoiceProps> = ({ order }) => {
   return (
     <span
       onClick={downloadInvoice}
-      className="text-[16px] font-medium cursor-pointer text-blue-600"
+      className="text-[16px] font-medium cursor-pointer text-[#7b48a5]"
     >
       Download Invoice
     </span>
@@ -228,3 +228,4 @@ const Invoice: React.FC<InvoiceProps> = ({ order }) => {
 };
 
 export default Invoice;
+  

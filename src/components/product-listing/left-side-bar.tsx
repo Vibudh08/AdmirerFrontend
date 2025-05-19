@@ -226,11 +226,11 @@ const LeftSideBar: React.FC<LeftSideBarProps> = ({
   };
 
   return (
-    <div className=" m-6 p-6  bg-white shadow-md ">
+    <div className=" m-6 p-4  bg-white shadow-md ">
       {/* Price Range Section */}
       <div className="bg-white rounded-lg p-0 w-full max-w-md mx-auto ">
         <div className="flex justify-between items-center mb-4">
-          <h3 className="text-lg font-bold text-purple-800">Price Range</h3>
+          <h3 className="text-lg font-bold text-[#7b48a5]">Price Range</h3>
         </div>
         {/* Input boxes */}
         <div className="flex justify-between mb-8 gap-4">
@@ -277,7 +277,7 @@ const LeftSideBar: React.FC<LeftSideBarProps> = ({
         {/* Slider */}
         <div className="relative h-1 bg-gray-300 rounded-full my-8">
           <div
-            className="absolute h-full bg-indigo-600 rounded-full"
+            className="absolute h-full bg-[#7b48a5] rounded-full"
             style={trackStyle}
           ></div>
 
@@ -291,7 +291,7 @@ const LeftSideBar: React.FC<LeftSideBarProps> = ({
             onMouseUp={stopDrag}
             onTouchStart={startDrag}
             onTouchEnd={stopDrag}
-            className="absolute w-full h-1 top-1/2 -translate-y-1/2 appearance-none pointer-events-none bg-transparent [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-indigo-600 [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:relative [&::-webkit-slider-thumb]:z-10 [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-white [&::-webkit-slider-thumb]:shadow-md"
+            className="absolute w-full h-1 top-1/2 -translate-y-1/2 appearance-none pointer-events-none bg-transparent [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-[#7b48a5] [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:relative [&::-webkit-slider-thumb]:z-10 [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-white [&::-webkit-slider-thumb]:shadow-md"
           />
 
           <input
@@ -304,7 +304,7 @@ const LeftSideBar: React.FC<LeftSideBarProps> = ({
             onMouseUp={stopDrag}
             onTouchStart={startDrag}
             onTouchEnd={stopDrag}
-            className="absolute w-full h-1 top-1/2 -translate-y-1/2 appearance-none pointer-events-none bg-transparent [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-indigo-600 [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:relative [&::-webkit-slider-thumb]:z-10 [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-white [&::-webkit-slider-thumb]:shadow-md"
+            className="absolute w-full h-1 top-1/2 -translate-y-1/2 appearance-none pointer-events-none bg-transparent [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-[#7b48a5] [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:relative [&::-webkit-slider-thumb]:z-10 [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-white [&::-webkit-slider-thumb]:shadow-md"
           />
 
           {/* Tooltips */}
@@ -335,8 +335,8 @@ const LeftSideBar: React.FC<LeftSideBarProps> = ({
           className="flex justify-between items-center cursor-pointer"
           onClick={() => toggleSection("categories")}
         >
-          <h3 className="text-lg font-bold text-purple-800">Categories</h3>
-          <span className="text-purple-800">
+          <h3 className="text-lg font-bold text-[#7b48a5]">Categories</h3>
+          <span className="text-[#7b48a5]">
             {expandedSections.categories ? "−" : "+"}
           </span>
         </div>
@@ -352,13 +352,13 @@ const LeftSideBar: React.FC<LeftSideBarProps> = ({
                     value={category}
                     checked={selectedCategory === category}
                     onChange={() => handleCategoryChange(category)}
-                    className="h-4 w-4 hidden text-purple-600 focus:ring-purple-500"
+                    className="h-4 w-4 hidden text-[#7b48a5] focus:ring-purple-500"
                   />
                   <label
                     htmlFor={`cat-${category}`}
                     className={`ml-2 font-semibold ${
                       selectedCategory === category
-                        ? "text-purple-800"
+                        ? "text-[#7b48a5]"
                         : "text-purple-700"
                     }`}
                     onClick={(e) => {

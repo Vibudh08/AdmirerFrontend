@@ -71,7 +71,16 @@ const Checkout: React.FC<IndexProps> = ({
 
   const cleanedTotal = Number(totalAmount.replace(/,/g, ""));
   const gstAmount = Math.ceil(Number((cleanedTotal * 0.05).toFixed(2)));
-  const totalWithGST = Number((cleanedTotal + gstAmount).toFixed(2));
+
+  let totalWithGST;
+
+  if (itemCount === 3) {
+    totalWithGST = 999;
+  } else if (itemCount === 2) {
+    totalWithGST = 699;
+  } else {
+    totalWithGST = Number((cleanedTotal + gstAmount).toFixed(2));
+  }
   // const finalAmount = Math.round(totalWithGST * 100 ); // ✅ Send to Razorpay
   // console.log("totalAmount:", finalAmount, "type:", typeof finalAmount);
 
@@ -327,7 +336,12 @@ const Checkout: React.FC<IndexProps> = ({
         <hr className="hidden max-md:block" />
         <div className="mb-5">
           <div className="flex justify-between mt-4 mb-4 text-[15px] font-bold text-[#3e4152]">
-            <div>Total Amount</div>
+            {totalWithGST === 999 || totalWithGST === 699 ? (
+              <div>Offer Amount</div>
+            ) : (
+              <div>Total Amount</div>
+            )}
+
             <div>₹{totalWithGST.toFixed(2)}</div>
           </div>
         </div>
@@ -361,7 +375,7 @@ const Checkout: React.FC<IndexProps> = ({
             >
               <img src="/icons/cash-icon.svg" className="w-6 h-6 mr-2" alt="" />
               <label className="text-[15px] select-none cursor-pointer">
-                Cash On Delivery
+                Cash On Delivery (No extra charges)
               </label>
             </div>
           </div>
@@ -389,7 +403,7 @@ const Checkout: React.FC<IndexProps> = ({
             >
               <img src="/icons/online.svg" className="w-6 h-6 mr-2" alt="" />
               <label className="text-[15px] select-none cursor-pointer">
-                Online
+                Online (UPI / Card)
               </label>
             </div>
           </div>

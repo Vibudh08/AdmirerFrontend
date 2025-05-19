@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { IoShareSocialOutline } from "react-icons/io5";
 import { wishlist_add_remove } from "../api/api-end-points";
-import { toast } from 'react-toastify';
+import { toast } from "react-toastify";
 import {
   FaHeart,
   FaRegHeart,
@@ -11,6 +11,22 @@ import {
   FaLinkedinIn,
   FaTelegramPlane,
 } from "react-icons/fa";
+
+import {
+  FacebookShareButton,
+  WhatsappShareButton,
+  TwitterShareButton,
+  EmailShareButton,
+  FacebookIcon,
+  WhatsappIcon,
+  TwitterIcon,
+  EmailIcon,
+  LinkedinShareButton,
+  LinkedinIcon,
+  TelegramShareButton,
+  TelegramIcon,
+} from "react-share";
+import { FaXTwitter } from "react-icons/fa6";
 
 interface ProductActionsProps {
   productId: number;
@@ -23,6 +39,8 @@ const ProductActions: React.FC<ProductActionsProps> = ({
 }) => {
   const [inWishlist, setInWishlist] = useState(wishlist === 1);
   const [shareOpen, setShareOpen] = useState(false);
+  const productUrl = `https://admirer.in/product/${productId}`;
+  const productTitle = "Love this piece from Admirer! Have a look:";
 
   const toggleWishlist = async () => {
     try {
@@ -45,7 +63,6 @@ const ProductActions: React.FC<ProductActionsProps> = ({
         console.log(result.message || "Wishlist updated");
       } else if (response.status === 401) {
         toast.error("Please log in to add items to your wishlist.");
-
       } else {
         // alert("Something went wrong.");
         console.error(result);
@@ -74,14 +91,46 @@ const ProductActions: React.FC<ProductActionsProps> = ({
         className="hover:scale-105 transition-transform"
         aria-label="Share"
       >
-        {/* <IoShareSocialOutline className="text-2xl text-purple-500 hover:scale-110 transition-transform" /> */}
+        <IoShareSocialOutline className="text-2xl text-[#7B48A5] hover:scale-110 transition-transform" />
       </button>
 
       {shareOpen && (
-        <div
-          className="fixed inset-0 bg-black bg-opacity-40 z-30"
-          onClick={toggleSharePopup}
-        />
+        <>
+          {/* Dark overlay behind everything */}
+          <div
+            className="fixed inset-0 w-full h-full bg-black bg-opacity-40 z-30"
+            onClick={toggleSharePopup}
+          />
+
+          {/* Share popup container relative to the share icon */}
+          <div className="absolute top-10 right-0 z-50 bg-white border rounded-xl shadow-lg p-4 w-max">
+            <p className="text-sm font-semibold ">Share this product</p>
+            <div className="flex gap-3 mt-3">
+              <FacebookShareButton url={productUrl} title={productTitle}>
+                <FacebookIcon size={36} round />
+              </FacebookShareButton>
+              <WhatsappShareButton url={productUrl} title={productTitle}>
+                <WhatsappIcon size={36} round />
+              </WhatsappShareButton>
+              <TwitterShareButton url={productUrl} title={productTitle}>
+                <div className="w-9 h-9 rounded-full bg-black text-white flex items-center justify-center">
+                  <FaXTwitter size={23} />
+                </div>
+              </TwitterShareButton>
+              <EmailShareButton url={productUrl} subject={productTitle}>
+                <EmailIcon size={36} round />
+              </EmailShareButton>
+              {/* LinkedIn Share Button */}
+              {/* <LinkedinShareButton url={productUrl} title={productTitle}>
+                <LinkedinIcon size={36} round />
+              </LinkedinShareButton> */}
+              {/* Telegram Share Button */}
+              {/* <TelegramShareButton url={productUrl} title={productTitle}>
+                <TelegramIcon size={36} round />
+              </TelegramShareButton> */}
+            </div>
+          </div>
+        </>
       )}
     </div>
   );

@@ -161,7 +161,7 @@ const Header = ({}) => {
         <div className="m-auto max-md:w-full">
           <div className="flex justify-between items-center pt-1 w-[94%] m-auto max-md:w-full px-2">
             {/* Mobile Menu and Search */}
-            <div className="gap-[12px] hidden max-md:flex">
+            <div className="gap-[12px] hidden max-md:flex max-md:mt-[-4px]">
               {/* <div
                 className="w-5 h-[14px] mt-3 flex flex-col justify-between overflow-hidden cursor-pointer"
                 onClick={handleClick}
@@ -183,8 +183,8 @@ const Header = ({}) => {
             {/* Logo */}
             <Link to="/">
               <img
-                src="/logo/admirer_logo.jpeg"
-                className="w-[120px] h-[60px] cover ml-5"
+                src="/logo/admirer_logo.png"
+                className="w-[120px] max-md:w-[105px] h-[50px] max-md:h-[45px] cover ml-5"
                 alt=""
               />
             </Link>
@@ -195,7 +195,7 @@ const Header = ({}) => {
             </div>
 
             {/* Right Side Icons */}
-            <div className="flex gap-4 items-center max-md:mt-1 max-md:mr-1">
+            <div className="flex gap-4 items-center max-md:mt-[-2px] max-md:mr-1">
               {isLoggedIn ? (
                 <div className="group relative">
                   <Link to="/dashboard">

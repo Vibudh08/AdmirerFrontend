@@ -62,7 +62,7 @@ const SearchBarWithPopup: React.FC<SearchBarWithPopupProps> = ({ onSelectProduct
 
   return (
     <div
-      className="relative w-[400px] ml-[170px] max-md:ml-0 max-md:w-full"
+      className="relative w-[400px] ml-[110px] max-md:ml-0 max-md:w-full"
       ref={dropdownRef}
     >
       <Search className="absolute  ml-2 mt-[-2px] w-5 h-5 top-6 max-md:top-7 transform -translate-y-1/2 text-[#7B48A5]" />

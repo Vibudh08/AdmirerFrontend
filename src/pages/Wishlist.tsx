@@ -4,14 +4,10 @@ import { addToCart, get_wishlist_data, movecart, remove } from "../components/ap
 import { useNavigate } from "react-router-dom";
 import { toast } from 'react-toastify';
 import axios from "axios";
+import LoaderCode from "../components/Loader";
 
 const Loader = () => (
-  <div className="fixed inset-0 bg-white bg-opacity-80 backdrop-blur-sm flex items-center justify-center z-50">
-    <div className="flex flex-col items-center">
-      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mb-4"></div>
-      <p className="text-lg font-bold text-gray-800">Loading your experience, please wait...</p>
-    </div>
-  </div>
+  <LoaderCode/>
 );
 
 const EmptyWishlist = () => (

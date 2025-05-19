@@ -8,16 +8,12 @@ import {
   productPriceCategoryInfo_API,
   getSubCatName_API,
 } from "../components/api/api-end-points";
+import LoaderCode from "../components/Loader";
+
+
 
 const Loader = () => (
-  <div className="fixed inset-0 bg-white bg-opacity-80 backdrop-blur-sm flex items-center justify-center z-50">
-    <div className="flex flex-col items-center">
-      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mb-4"></div>
-      <p className="text-lg font-bold text-gray-800">
-        Loading your experience, please wait...
-      </p>
-    </div>
-  </div>
+  <LoaderCode/>
 );
 
 interface ProductLsitingProps {
@@ -42,6 +38,10 @@ const ProductListing: React.FC<ProductLsitingProps> = ({
   const [loading, setLoading] = useState(false);
   const [subCategory, setSubCategory] = useState("");
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+  
   useEffect(() => {
     if (!category && !subcategory) navigate("/");
   }, [category, subcategory, navigate]);
@@ -125,7 +125,7 @@ const ProductListing: React.FC<ProductLsitingProps> = ({
         <span className="sr-only">Open Filters</span>
       </button>
 
-      <div className="flex flex-col lg:flex-row w-full h-full gap-4 sm:gap-8">
+      <div className="flex flex-col lg:flex-row w-full h-full gap-4 sm:gap-6">
         <div
           className={`fixed lg:sticky top-0 lg:top-4 lg:h-[calc(100vh-2rem)] inset-y-0 left-0 z-[1000] w-[85%] sm:w-3/4 lg:w-[22%] xl:w-[20%] lg:min-w-[280px] bg-white rounded-r-xl lg:rounded-xl shadow-xl border border-gray-200 transform ${
             showMobileFilters ? "translate-x-0" : "-translate-x-full"

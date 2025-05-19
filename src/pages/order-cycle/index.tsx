@@ -56,7 +56,7 @@ const Complete_cart_checkout = () => {
               </div>
             ))}
           </div>
-          <div className="mt-5 text-[#1f295c] text-sm cursor-pointer font-[500]">
+          <div className="mt-5 max-md:mb-3 text-[#1f295c] text-sm cursor-pointer font-[500]">
             <Link to="/help_faq">
               <strong>Need Help? Contact Us</strong>
             </Link>

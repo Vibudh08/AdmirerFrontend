@@ -37,7 +37,7 @@ const OrderDetails: React.FC = () => {
   const { orderId } = useParams();
   const location = useLocation();
   const productIds: string[] = location.state?.productIds || [];
-
+console.log(productIds.length)
   // console.log("Order ID:", orderId);
   // console.log("All product IDs:", productIds);
 
@@ -70,7 +70,18 @@ const OrderDetails: React.FC = () => {
 
   const cleanedTotal = Number(totalPrice);
   const gstAmount = Math.ceil(Number((cleanedTotal * 0.05).toFixed(2)));
-  const totalWithGST = Number((cleanedTotal + gstAmount).toFixed(2));
+
+  let totalWithGST;
+
+  if(productIds.length === 3){
+    totalWithGST = 999
+  }
+  else if(productIds.length === 2){
+    totalWithGST = 699
+  }
+  else{
+    totalWithGST = Number((cleanedTotal + gstAmount).toFixed(2));
+  }
 
   // Arrows
   const CustomPrevArrow = ({ onClick }: { onClick: () => void }) => (
@@ -342,7 +353,7 @@ const OrderDetails: React.FC = () => {
                         Quantity: {order.quantity}
                       </p>
                     </div>
-                    <div className="flex  items-start text-white bg-purple-600 p-4  gap-2 mt-3">
+                    <div className="flex  items-start text-white bg-[#7b48a5] p-4  gap-2 mt-3">
                       <img
                         src="https://myntraweb.blob.core.windows.net/mymyntra/assets/img/box.svg"
                         alt=""
@@ -391,7 +402,7 @@ const OrderDetails: React.FC = () => {
                         onClick={() => handleRating(productIds[index], i)}
                         className={`w-9 h-9 cursor-pointer ${
                           i < (ratings[productIds[index]] || 0)
-                            ? "text-purple-600"
+                            ? "text-[#7b48a5]"
                             : "text-gray-300"
                         }`}
                         fill="currentColor"
@@ -414,7 +425,7 @@ const OrderDetails: React.FC = () => {
                           className="border p-2 h-[100px] "
                         ></textarea>
                         <button
-                          className="bg-purple-600 w-[120px] px-4 py-3 self-end rounded-sm hover:bg-purple-700 text-white"
+                          className="bg-[#7b48a5] w-[120px] px-4 py-3 self-end rounded-sm hover:bg-purple-700 text-white"
                           onClick={()=>handleReviewSubmit(productIds[index])}
                         >
                           Submit
@@ -462,8 +473,9 @@ const OrderDetails: React.FC = () => {
                   {address?.flat}, {address?.street}, {address?.locality}
                 </div>
                 <div className="text-sm">
-                  {address?.city}, {address?.state} - {address?.zip_code},{" "}
-                  {address?.addr_type}
+                  {address?.city}, {address?.state} 
+                  {/* {address?.zip_code},{" "} */}
+                  {/* {address?.addr_type} */}
                 </div>
                 {/* <div >
                      <strong>Phone number:</strong> 8736977153

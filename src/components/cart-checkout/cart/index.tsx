@@ -9,6 +9,7 @@ import {
   getShippingAndBillingAddress,
   updateCartQuantity,
 } from "../../api/api-end-points";
+import LoaderCode from "../../Loader";
 
 interface CartProps {
   setTotalMRP: (value: number) => void;
@@ -34,18 +35,11 @@ interface ItemProps {
 }
 
 const Loader = () => (
-  <div className="fixed inset-0 bg-white bg-opacity-80 backdrop-blur-sm flex items-center justify-center z-50">
-    <div className="flex flex-col items-center">
-      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mb-4"></div>
-      <p className="text-lg font-bold text-gray-800">
-        Loading your experience, please wait...
-      </p>
-    </div>
-  </div>
+  <LoaderCode/>
 );
 
 const EmptyCart = () => (
-  <div className="flex flex-col items-center justify-center !border h-full py-20 bg-white w-full text-center">
+  <div className="flex flex-col items-center justify-center !border h-[100vh] py-20 bg-white w-full text-center">
     <img
       src="https://cdn-icons-png.flaticon.com/512/2038/2038854.png"
       alt="Empty cart"
@@ -318,6 +312,7 @@ const Cart: React.FC<CartProps> = ({
 
   if (isLoading) return <Loader />;
   if (totalItem.length === 0) return <EmptyCart />;
+  // console.log("total item" ,totalItem.length)
 
   return (
     <div className="flex flex-col w-[65%] max-md:w-[100%] bg-white px-4 max-md:px-2 py-2">
@@ -353,6 +348,7 @@ const Cart: React.FC<CartProps> = ({
               ).toFixed(2)}
               totalQuantity={item.totalQuantity}
               onQuantityChange={handleQuantityChange}
+              totalItem={totalItem.length}
             />
           </div>
         ))}

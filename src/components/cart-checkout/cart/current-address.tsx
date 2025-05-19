@@ -132,7 +132,7 @@ const DeliveryInfo: React.FC<DeliveryInfoProps> = ({
         </div>
       ) : (
         <div
-          className="p-6 max-md:p-4"
+          className="p-6 max-md:p-3"
           style={{
             display: "flex",
             width: "100%",
@@ -195,7 +195,7 @@ const DeliveryInfo: React.FC<DeliveryInfoProps> = ({
               {getZipCode(selectedAddress!)}
             </div>
 
-            <div className="flex justify-between gap-3" style={{ marginTop: "16px" }}>
+            <div className="flex justify-between gap-3 max-md:gap-2" style={{ marginTop: "16px" }}>
               <Select
                 style={{ width: "100%", height: "35px" }}
                 value={JSON.stringify(selectedAddress)}
@@ -218,13 +218,12 @@ const DeliveryInfo: React.FC<DeliveryInfoProps> = ({
                   bottom: "17px",
                 }}
               > */}
-                <button
+                <button className="text-[14px] max-md:text-[12px] p-1"
                   style={{
                     width: "100px",
                     border: "none",
                     borderRadius: "6px",
                     height: "34px",
-                    fontSize: "14px",
                     fontWeight: "500",
                     textTransform: "uppercase",
                     letterSpacing: "0.5px",

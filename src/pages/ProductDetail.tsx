@@ -19,6 +19,7 @@ import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { FaRegHeart } from "react-icons/fa";
 import { toast } from "react-toastify";
 import SingleProductCard from "../components/product-detail/SingleProductCard ";
+import LoaderCode from "../components/Loader";
 
 // Arrows
 const CustomPrevArrow = ({ onClick }: { onClick: () => void }) => (
@@ -40,14 +41,7 @@ const CustomNextArrow = ({ onClick }: { onClick: () => void }) => (
 );
 
 const Loader = () => (
-  <div className="fixed inset-0 bg-white bg-opacity-80 backdrop-blur-sm flex items-center justify-center z-50">
-    <div className="flex flex-col items-center">
-      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mb-4"></div>
-      <p className="text-lg font-bold text-gray-800">
-        Loading your experience, please wait...
-      </p>
-    </div>
-  </div>
+  <LoaderCode/>
 );
 
 const ProductDetails = (item: { wishlist: number }) => {
