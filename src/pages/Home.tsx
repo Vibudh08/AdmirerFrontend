@@ -2,12 +2,12 @@ import Slider from "react-slick";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import React, { useEffect, useState } from "react";
 import TestimonialsSection from "../components/testimonial/Testimonial";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { homePageData } from "../components/api/api-end-points";
 import LoaderCode from "../components/Loader";
 
-// ✅ Move this outside the component
+
 interface HomePageProps {
   setCategoryId: React.Dispatch<React.SetStateAction<string>>;
   setSubcategoryId: React.Dispatch<React.SetStateAction<string>>;
@@ -18,19 +18,19 @@ const Loader = () => <LoaderCode />;
 // Arrows
 const CustomPrevArrow = ({ onClick }: { onClick: () => void }) => (
   <button
-    className="absolute left-5 top-1/2 transform -translate-y-1/2 z-10 bg-white p-1 rounded-full shadow-md hover:bg-black transition hover:text-white"
+    className="absolute left-5 max-md:left-1 top-1/2 transform -translate-y-1/2 z-10 bg-white p-1 rounded-full shadow-md hover:bg-black transition hover:text-white"
     onClick={onClick}
   >
-    <IoIosArrowBack className="text-3xl max-md:text-2xl text-gray-700 hover:text-white" />
+    <IoIosArrowBack className="text-3xl max-md:text-xl text-gray-700 hover:text-white" />
   </button>
 );
 
 const CustomNextArrow = ({ onClick }: { onClick: () => void }) => (
   <button
-    className="absolute right-5 top-1/2 transform -translate-y-1/2 z-10 bg-white p-1 rounded-full shadow-md hover:bg-black transition hover:text-white"
+    className="absolute right-5 max-md:right-1 top-1/2 transform -translate-y-1/2 z-10 bg-white p-1 rounded-full shadow-md hover:bg-black transition hover:text-white"
     onClick={onClick}
   >
-    <IoIosArrowForward className="text-3xl max-md:text-2xl text-gray-700 hover:text-white" />
+    <IoIosArrowForward className="text-3xl max-md:text-xl text-gray-700 hover:text-white" />
   </button>
 );
 
@@ -82,21 +82,72 @@ const Home: React.FC<HomePageProps> = ({ setCategoryId, setSubcategoryId }) => {
     slidesToShow: 1,
     slidesToScroll: 1,
     autoplay: true,
-    autoplaySpeed: 2000,
+    autoplaySpeed: 4000,
     arrows: true,
     prevArrow: <CustomPrevArrow onClick={() => {}} />,
     nextArrow: <CustomNextArrow onClick={() => {}} />,
   };
 
+  const shortsSetting = {
+    dots: false,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 6,
+    slidesToScroll: 1,
+    autoplay: false,
+    autoplaySpeed: 2000,
+    arrows: false,
+    prevArrow: <CustomPrevArrow onClick={() => {}} />,
+    nextArrow: <CustomNextArrow onClick={() => {}} />,
+    responsive: [
+      {
+        breakpoint: 768, // for screens <= 768px
+        settings: {
+          slidesToShow: 3,
+          slidesToScroll: 1,
+          arrows: false, // optional: hide arrows on small screens
+          dots: true,
+        },
+      },
+    ],
+  };
+
   const companies = [
-    "sdfghjgfdsaSDFGHFDS",
-    "4543234565431345",
-    "CVXCZZCVBNVCX",
-    "Facebook",
-    "Netflix",
-    "Adobe",
-    "Airbnb",
-    "Spotify",
+    "Cash On Delivery",
+    "Fast Shipping",
+    "7 Day Exchange",
+    "100% Original",
+    "Best Quality",
+    "UPI and Cards acceptable",
+    "No Hidden Charges",
+    "Secure Payment Gateway"
+  ];
+
+  const shorts = [
+    {
+      videoUrl: "/home/video/box_ring.mp4",
+      url: "108",
+    },
+    {
+      videoUrl: "/home/video/couple_ring.mp4",
+      url: "152",
+    },
+    {
+      videoUrl: "/home/video/hand_ring.mp4",
+      url: "167",
+    },
+    {
+      videoUrl: "/home/video/letter_ring.mp4",
+      url: "87",
+    },
+    {
+      videoUrl: "/home/video/necklace.mp4",
+      url: "158",
+    },
+    {
+      videoUrl: "/home/video/stone_ring.mp4",
+      url: "24",
+    },
   ];
 
   const handleClick = (url: string) => {
@@ -179,18 +230,29 @@ const Home: React.FC<HomePageProps> = ({ setCategoryId, setSubcategoryId }) => {
         </div>
       </div>
 
-      <div className="bg-white flex items-center justify-center pt-8 flex-col">
+      <div className="bg-white flex items-center justify-center pt-8 max-md:pt-4 flex-col">
         <h2 className="text-4xl max-md:text-2xl font-semibold text-gray-800 mb-1">
           Shop the best jewellery online
         </h2>
-        <p className="w-[75%] mt-3 max-md:w-full text-center text-base max-md:text-xs text-gray-600 tracking-wide">Fashion and trends keep changing on a regular basis, but what remains constant is the love for jewellery that individuals have. The jewellery exclusively from Admirer's collection lends an irresistible charm to the wearer that beautifully blends elegance and sophistication.</p>
-        <img src="/home/offer_banner.jpeg" className="w-[90%] max-md:hidden max-md:w-[95%] max-md:object-fill mt-5 h-full" alt="" />
-        <img src="/home/offer_banner_mobile.jpeg" className="w-[90%] max-md:block hidden max-md:w-[95%] max-md:object-fill mt-5 h-full" />
+        <p className="w-[75%] mt-3 max-md:w-full text-center text-base max-md:text-xs text-gray-600 tracking-wide">
+          Fashion trends may change, but the love for jewellery remains
+          timeless. Admirer's collection adds irresistible charm with a perfect
+          blend of elegance and sophistication.
+        </p>
+        <img
+          src="/home/offer_banner.jpeg"
+          className="w-[90%] max-md:hidden max-md:w-[95%] max-md:object-fill mt-5 h-full"
+          alt=""
+        />
+        <img
+          src="/home/offer_banner_mobile.jpeg"
+          className="w-[90%] max-md:block hidden max-md:w-[95%] max-md:object-fill mt-5 h-full"
+        />
       </div>
 
       {/* Categories */}
       <section>
-        <div className="text-center py-6 pt-12 bg-white">
+        <div className="text-center py-6 pt-12 bg-white max-md:pb-4">
           <h2 className="text-4xl max-md:text-2xl font-semibold text-gray-800 mb-1">
             Find Your Perfect Match
           </h2>
@@ -222,7 +284,7 @@ const Home: React.FC<HomePageProps> = ({ setCategoryId, setSubcategoryId }) => {
 
       {/* Advertisement Section */}
       <section>
-        <div className="bg-white flex flex-col items-center p-6">
+        <div className="bg-white flex flex-col items-center p-6 max-md:p-2 max-md:pt-0">
           <h2 className="text-4xl max-md:text-2xl font-semibold text-gray-800 mb-1">
             Admirer Collections
           </h2>
@@ -230,7 +292,7 @@ const Home: React.FC<HomePageProps> = ({ setCategoryId, setSubcategoryId }) => {
             Explore our newly launched collection
           </p>
           {advertisement.length >= 3 && (
-            <div className="mt-8 grid grid-cols-2 max-md:grid-cols-1 gap-2 max-md:gap-0 w-[90%] max-md:w-[97%] m-auto">
+            <div className="mt-8 max-md:mt-5 grid grid-cols-2 max-md:grid-cols-1 gap-2 max-md:gap-0 w-[90%] max-md:w-[97%] m-auto">
               <div>
                 <img
                   onClick={() => handleClick(advertisement[0].url)}
@@ -283,7 +345,7 @@ const Home: React.FC<HomePageProps> = ({ setCategoryId, setSubcategoryId }) => {
           </div>
 
           {/* Mobile View */}
-          <div className="mt-8 w-full md:hidden overflow-hidden">
+          <div className="mt-3 w-full md:hidden overflow-hidden">
             <div className="flex gap-2.5 overflow-x-auto scroll-smooth snap-x snap-mandatory px-4">
               {offers.map((item, idx) => (
                 <div
@@ -303,11 +365,37 @@ const Home: React.FC<HomePageProps> = ({ setCategoryId, setSubcategoryId }) => {
         </div>
       </section>
 
+      {/* Shorts Section */}
+      <section>
+        <div className="bg-white flex flex-col !pt-6 items-center pb-16 max-md:p-1">
+          <h2 className="text-4xl max-md:text-2xl font-semibold text-gray-800 mb-1">
+            Watch and Buy
+          </h2>
+          <div className="grid grid-cols-1 mt-6 max-md:mt-3 overflow-auto max-md:pb-7">
+            <Slider {...shortsSetting}>
+              {shorts.map((item, index) => (
+                <div key={index} className="p-1 max-md:p-0.5">
+                  <Link to={`product/${item.url}`}>
+                    <video autoPlay muted loop className="">
+                      <source src={item.videoUrl} type="video/mp4" />
+                      Your browser does not support the video tag.
+                    </video>
+                  </Link>
+                </div>
+              ))}
+            </Slider>
+          </div>
+        </div>
+      </section>
+
       {/* Bottom Banner */}
       {bottombanner.desktop_banner.image &&
         bottombanner.mobile_banner.image && (
-          <section className="bg-white py-6 pb-12">
-            <div className="w-[87%] m-auto">
+          <section className="bg-white flex flex-col  items-center pb-8  max-md:p-1">
+            <h2 className="text-4xl max-md:text-2xl font-semibold mb-8 max-md:mb-6 max-md:mt-4 text-gray-800 ">
+              Design Led Jewellery
+            </h2>
+            <div className="w-[90%] m-auto max-md:w-[95%]">
               <img
                 onClick={() => handleClick(bottombanner.desktop_banner.url)}
                 src={bottombanner.desktop_banner.image}

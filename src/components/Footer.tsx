@@ -14,16 +14,16 @@ const Footer = () => {
               ONLINE SHOPPING
             </h3>
             <ul className="grid grid-cols-2 md:grid-cols-1 space-y-2 max-md:space-y-1 text-gray-600 max-sm:text-sm">
-              <li>
+              <li className="hover:text-[#7b48a5] hover:font-semibold">
                 <Link to="">Jewellery</Link>
               </li>
-              <li>
+              <li className="hover:text-[#7b48a5] hover:font-semibold">
                 <Link to="">Ring Corner</Link>
               </li>
-              <li>
+              <li className="hover:text-[#7b48a5] hover:font-semibold">
                 <Link to="">Couple Rings</Link>
               </li>
-              <li>
+              <li className="hover:text-[#7b48a5] hover:font-semibold">
                 <Link to="">Luxe Jewelry</Link>
               </li>
             </ul>
@@ -35,28 +35,28 @@ const Footer = () => {
               CUSTOMER POLICIES
             </h3>
             <ul className="grid grid-cols-2 md:grid-cols-1 space-y-2 max-md:space-y-1 text-gray-600 max-sm:text-sm">
-              <li>
+              <li className="hover:text-[#7b48a5] hover:font-semibold">
                 <Link to="/privacy">Privacy Policy</Link>
               </li>
-              <li>
+              <li className="hover:text-[#7b48a5] hover:font-semibold">
                 <Link to="/terms">Terms & Conditions</Link>
               </li>
-              <li>
+              <li className="hover:text-[#7b48a5] hover:font-semibold">
                 <Link to="/exchange">Exchange Policy</Link>
               </li>
-              <li>
+              <li className="hover:text-[#7b48a5] hover:font-semibold">
                 <Link to="/about">About Us</Link>
               </li>
-              <li>
+              <li className="hover:text-[#7b48a5] hover:font-semibold">
                 <Link to="/help_faq">Help & FAQs</Link>
               </li>
-              <li>
+              <li className="hover:text-[#7b48a5] hover:font-semibold">
                 <Link to="/return">Return & Refund Policy</Link>
               </li>
-              <li>
+              <li className="hover:text-[#7b48a5] hover:font-semibold">
                 <Link to="/shipping">Shipping Policy</Link>
               </li>
-              <li>
+              <li className="hover:text-[#7b48a5] hover:font-semibold">
                 <Link to="/blogs">Blogs</Link>
               </li>
             </ul>

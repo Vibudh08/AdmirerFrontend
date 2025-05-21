@@ -37,7 +37,7 @@ const OrderDetails: React.FC = () => {
   const { orderId } = useParams();
   const location = useLocation();
   const productIds: string[] = location.state?.productIds || [];
-console.log(productIds.length)
+  // console.log(productIds.length)
   // console.log("Order ID:", orderId);
   // console.log("All product IDs:", productIds);
 
@@ -65,7 +65,7 @@ console.log(productIds.length)
     [productId: string]: boolean;
   }>({});
   const [review, setReview] = useState<string>();
-
+// console.log(ratings)
   const [relatedProducts, setRelatedProducts] = useState<any[]>([]);
 
   const cleanedTotal = Number(totalPrice);
@@ -281,6 +281,9 @@ console.log(productIds.length)
   const handleRating = (productId: string, value: number) => {
     setRatings((prev) => ({ ...prev, [productId]: value + 1 }));
     setReviewVisible((prev) => ({ ...prev, [productId]: true }));
+
+    // console.log(ratings);
+    // console.log(value);
 
     setTimeout(() => {
       const textarea = document.getElementById(
