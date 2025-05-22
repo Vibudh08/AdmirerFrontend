@@ -125,24 +125,24 @@ const Home: React.FC<HomePageProps> = ({ setCategoryId, setSubcategoryId }) => {
 
   const shorts = [
     {
-      videoUrl: "/home/video/box_ring.mp4",
-      url: "108",
-    },
-    {
-      videoUrl: "/home/video/couple_ring.mp4",
-      url: "152",
-    },
-    {
-      videoUrl: "/home/video/hand_ring.mp4",
-      url: "167",
-    },
-    {
       videoUrl: "/home/video/letter_ring.mp4",
       url: "87",
     },
     {
       videoUrl: "/home/video/necklace.mp4",
       url: "158",
+    },
+    {
+      videoUrl: "/home/video/hand_ring.mp4",
+      url: "167",
+    },
+    {
+      videoUrl: "/home/video/box_ring.mp4",
+      url: "108",
+    },
+    {
+      videoUrl: "/home/video/coupleRing.mp4",
+      url: "152",
     },
     {
       videoUrl: "/home/video/stone_ring.mp4",
@@ -217,12 +217,12 @@ const Home: React.FC<HomePageProps> = ({ setCategoryId, setSubcategoryId }) => {
         </div>
       </section>
 
-      <div className="relative overflow-hidden bg-white py-4">
+      <div className="relative overflow-hidden bg-purple-300 py-4">
         <div className="scroll-wrapper flex w-max animate-scroll">
           {[...companies, ...companies].map((company, index) => (
             <div
               key={index}
-              className="mx-8 whitespace-nowrap text-lg font-semibold text-gray-700"
+              className="mx-8 whitespace-nowrap text-lg font-semibold text-gray-800"
             >
               {company}
             </div>

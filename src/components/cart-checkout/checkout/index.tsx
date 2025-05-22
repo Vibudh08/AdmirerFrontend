@@ -357,7 +357,7 @@ const Checkout: React.FC<IndexProps> = ({
             onClick={() => setSelected("cod")}
             className={`flex items-center p-4 bg-purple-100 rounded-t-lg cursor-pointer ${
               selected === "cod"
-                ? "bg-purple-100 border-l-4 border-purple-900"
+                ? "bg-purple-300 border-l-4 border-purple-900"
                 : "bg-white"
             }`}
           >
@@ -366,11 +366,11 @@ const Checkout: React.FC<IndexProps> = ({
               name="payment"
               checked={selected === "cod"}
               onChange={() => setSelected("cod")}
-              className="form-radio hidden text-purple-700 mr-3"
+              className="form-radio hidden text-purple-950 mr-3"
             />
             <div
               className={`flex items-center ${
-                selected === "cod" ? "font-semibold text-purple-800" : "ml-1"
+                selected === "cod" ? "font-semibold text-purple-950" : "ml-1"
               }`}
             >
               <img src="/icons/cash-icon.svg" className="w-6 h-6 mr-2" alt="" />
@@ -385,7 +385,7 @@ const Checkout: React.FC<IndexProps> = ({
             onClick={() => setSelected("online")}
             className={`flex items-center p-4 rounded-b-lg cursor-pointer ${
               selected === "online"
-                ? "bg-purple-100 border-l-4 border-purple-800"
+                ? "bg-purple-300 border-l-4 border-purple-900"
                 : "bg-white"
             }`}
           >
@@ -394,16 +394,16 @@ const Checkout: React.FC<IndexProps> = ({
               name="payment"
               checked={selected === "online"}
               onChange={() => setSelected("online")}
-              className="form-radio hidden text-purple-700 mr-3"
+              className="form-radio hidden text-purple-950 mr-3"
             />
             <div
               className={`flex items-center ${
-                selected === "online" ? "font-semibold text-purple-800" : "ml-1"
+                selected === "online" ? "font-semibold text-purple-950" : "ml-1"
               }`}
             >
               <img src="/icons/online.svg" className="w-6 h-6 mr-2" alt="" />
               <label className="text-[15px] select-none cursor-pointer">
-                Online (UPI / Card)
+                Online (UPI / Any Card)
               </label>
             </div>
           </div>

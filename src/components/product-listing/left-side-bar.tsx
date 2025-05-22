@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { productCategoy_API, catSubcat_API } from "../api/api-end-points";
+import { Loader } from "lucide-react";
 interface LeftSideBarProps {
   minimum: number;
   maximum: number;
@@ -25,6 +26,8 @@ const LeftSideBar: React.FC<LeftSideBarProps> = ({
     price: true,
     categories: true,
   });
+  const [loading, setLoading] = useState(false);
+
   useEffect(() => {
     console.log("I am inside leftside bar and category is = ", category);
   }, [category]);
@@ -54,6 +57,12 @@ const LeftSideBar: React.FC<LeftSideBarProps> = ({
   //     });
   // }, []);
   useEffect(() => {
+    if (!category) {
+      setLoading(true); // Show loader when no category is present
+      return;
+    }
+  
+    setLoading(false);
     // Fetch categories
     fetch(catSubcat_API, {
       method: "POST",
@@ -226,6 +235,7 @@ const LeftSideBar: React.FC<LeftSideBarProps> = ({
   };
 
   return (
+    
     <div className=" m-6 p-4  bg-white shadow-md ">
       {/* Price Range Section */}
       <div className="bg-white rounded-lg p-0 w-full max-w-md mx-auto ">
@@ -330,6 +340,9 @@ const LeftSideBar: React.FC<LeftSideBarProps> = ({
         </div>
       </div>
       {/* Categories Section */}
+      {loading ? (
+  <Loader />
+) : (
       <div>
         <div
           className="flex justify-between items-center cursor-pointer"
@@ -412,6 +425,7 @@ const LeftSideBar: React.FC<LeftSideBarProps> = ({
           </div>
         )}
       </div>
+      )}
     </div>
   );
 };

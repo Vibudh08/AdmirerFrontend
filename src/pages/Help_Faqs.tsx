@@ -18,15 +18,15 @@ const faqData: FAQSection[] = [
     section: 1,
     items: [
       {
-        question: "What is Admirer?",
+        question: "What is BTJ Admirer?",
         answer:
-          "Admirer is an online shopping platform offering a wide range of products including electronics, home goods, fashion, and more. We provide a seamless shopping experience with fast delivery, secure payments, and a user-friendly interface.",
+          "BTJ Admirer is an online shopping platform offering a wide range of products including electronics, home goods, fashion, and more. We provide a seamless shopping experience with fast delivery, secure payments, and a user-friendly interface.",
       },
       {
         question: "What payment methods are accepted?",
         answer: (
           <>
-            <p>Admirer accepts a variety of payment methods, including:</p>
+            <p>BTJ Admirer accepts a variety of payment methods, including:</p>
             <ul className="list-disc list-inside">
               <li>UPI</li>
               <li>Net Banking</li>
@@ -81,7 +81,7 @@ const faqData: FAQSection[] = [
       {
         question: "Are there any discounts or promotions?",
         answer:
-          "Yes! Admirer offers seasonal sales, promotional codes, and exclusive discounts to our members.",
+          "Yes! BTJ Admirer offers seasonal sales, promotional codes, and exclusive discounts to our members.",
       },
     ],
   },
@@ -106,10 +106,14 @@ const HelpContact: React.FC = () => {
   return (
     <>
       <div className="text-center px-4 py-10 bg-white">
-        <h2 className="text-4xl max-md:text-2xl mt-5 mb-5 font-bold">Help & Contact</h2>
+        <h2 className="text-4xl max-md:text-2xl mt-5 mb-5 font-bold">
+          Help & Contact
+        </h2>
 
         <div className="bg-[#fcfcfc] mt-8 max-md:mt-3 py-10  rounded-lg shadow-sm max-w-5xl mx-auto">
-          <h3 className="text-xl max-md:text-lg font-semibold mb-12 max-md:mb-8">Have A Question</h3>
+          <h3 className="text-xl max-md:text-lg font-semibold mb-12 max-md:mb-8">
+            Have A Question
+          </h3>
 
           <div className="flex gap-8 max-md:gap-3 w-[75%] max-md:w-[100%] m-auto justify-around px-4 max-md:px-2">
             {/* Chat with Us */}
@@ -165,8 +169,7 @@ const HelpContact: React.FC = () => {
           </div>
 
           <p className="text-md tracking-wide leading-normal text-gray-600 mt-8 w-[78%] max-md:w-full m-auto px-6 max-md:px-1">
-            The toll free number is only applicable for domestic orders within
-            India.
+            We're available Monday to Friday, from 9:30 AM to 6:30 PM.
           </p>
         </div>
       </div>

@@ -15,7 +15,7 @@ const PrivacyPolicy = () => {
           <p className="leading-snug">
             At{" "}
             <Link to="/">
-              <strong className="text-gray-600">Admirer</strong>
+              <strong className="text-gray-600">BTJ Admirer</strong>
             </Link>
             , your privacy is of utmost importance to us. This Privacy Policy
             explains how we collect, use, protect, and disclose your information
@@ -211,7 +211,7 @@ const PrivacyPolicy = () => {
             </a>
           </p>
           <p className="leading-snug">
-            Thank you for trusting <Link to="/">Admirer</Link>. We value your
+            Thank you for trusting <Link to="/">BTJ Admirer</Link>. We value your
             privacy and are committed to keeping your information safe.
           </p>
         </section>

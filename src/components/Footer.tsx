@@ -113,8 +113,8 @@ const Footer = () => {
               <div className="flex gap-3 mb-4">
                 <img src="/icons/original.png" className="w-10 h-10 mt-1" />
                 <p className="text-[17px] leading-snug mb-0 max-sm:text-md">
-                  <span className="font-bold">100% ORIGINAL</span> guarantee for
-                  all products at admirer.in
+                  <span className="font-bold">100% ORIGINAL</span> products —
+                  guaranteed, only at BTJ Admirer.
                 </p>
               </div>
 
@@ -142,9 +142,15 @@ const Footer = () => {
           <p className="!mb-1">India</p>
         </div>
         <div className="mt-8 max-sm:mt-2 space-y-2 text-gray-600">
-          <p className="!mb-1"><strong>BTJ Alpha Technology Private Limited company</strong></p>
-          <p className="!mb-1"><strong>CIN:</strong> U62099UP2025PTC215855</p>
-          <p className="!mb-1"><strong>GSTIN:</strong> 09AANCB2020R1ZB</p>
+          <p className="!mb-1">
+            <strong>BTJ Alpha Technology Private Limited company</strong>
+          </p>
+          <p className="!mb-1">
+            <strong>CIN:</strong> U62099UP2025PTC215855
+          </p>
+          <p className="!mb-1">
+            <strong>GSTIN:</strong> 09AANCB2020R1ZB
+          </p>
         </div>
       </div>
 

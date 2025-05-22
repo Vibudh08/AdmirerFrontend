@@ -11,7 +11,7 @@ const ExchangePolicy = () => {
         <section className="space-y-4 text-gray-700">
           <h3 className="text-xl font-semibold">1. Introduction</h3>
           <p>
-            At Admirer, we are committed to delivering high-quality products that bring joy to your special moments. We take great care in processing and delivering your orders. However, if you are not satisfied with your purchase due to a valid reason, our Return & Refund Policy ensures a fair resolution.
+            At BTJ Admirer, we are committed to delivering high-quality products that bring joy to your special moments. We take great care in processing and delivering your orders. However, if you are not satisfied with your purchase due to a valid reason, our Return & Refund Policy ensures a fair resolution.
           </p>
         </section>
 

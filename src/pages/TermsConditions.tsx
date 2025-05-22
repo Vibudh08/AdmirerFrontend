@@ -15,7 +15,7 @@ const TermsConditions = () => {
         <section className="space-y-4 text-gray-700">
           <h3 className="text-xl font-semibold">1. Introduction</h3>
           <p className="leading-snug">
-            Welcome to Admirer! By placing an order with us, you agree to abide by our terms and conditions. These guidelines ensure a smooth and hassle-free experience for our customers. If you have any questions, please contact our customer care team before proceeding with your purchase.
+            Welcome to BTJ Admirer! By placing an order with us, you agree to abide by our terms and conditions. These guidelines ensure a smooth and hassle-free experience for our customers. If you have any questions, please contact our customer care team before proceeding with your purchase.
           </p>
         </section>
 
@@ -73,7 +73,7 @@ const TermsConditions = () => {
         <section className="space-y-4 text-gray-700">
           <h3 className="text-xl font-semibold">8. Modifications & Updates</h3>
           <p className="leading-snug">
-            Admirer reserves the right to update these Terms & Conditions at any time. Continued use of our services after changes implies acceptance of the revised terms.
+            BTJ Admirer reserves the right to update these Terms & Conditions at any time. Continued use of our services after changes implies acceptance of the revised terms.
           </p>
         </section>
 
@@ -84,7 +84,7 @@ const TermsConditions = () => {
             <li><strong>📩 Email:</strong> <a href="mailto:support@admirer.in" className="text-blue-600 hover:underline">support@admirer.in</a></li>
             <li><strong>📞 Customer Support:</strong> 0120-4525483</li>
           </ul>
-          <p className="leading-snug mt-2">We appreciate your trust in Admirer and look forward to making your celebrations truly special!</p>
+          <p className="leading-snug mt-2">We appreciate your trust in BTJ Admirer and look forward to making your celebrations truly special!</p>
         </section>
       </div>
     </div>
