@@ -14,16 +14,16 @@ const Footer = () => {
               ONLINE SHOPPING
             </h3>
             <ul className="grid grid-cols-2 md:grid-cols-1 space-y-2 max-md:space-y-1 text-gray-600 max-sm:text-sm">
-              <li>
+              <li className="hover:text-[#7b48a5] hover:font-semibold">
                 <Link to="">Jewellery</Link>
               </li>
-              <li>
+              <li className="hover:text-[#7b48a5] hover:font-semibold">
                 <Link to="">Ring Corner</Link>
               </li>
-              <li>
+              <li className="hover:text-[#7b48a5] hover:font-semibold">
                 <Link to="">Couple Rings</Link>
               </li>
-              <li>
+              <li className="hover:text-[#7b48a5] hover:font-semibold">
                 <Link to="">Luxe Jewelry</Link>
               </li>
             </ul>
@@ -35,28 +35,28 @@ const Footer = () => {
               CUSTOMER POLICIES
             </h3>
             <ul className="grid grid-cols-2 md:grid-cols-1 space-y-2 max-md:space-y-1 text-gray-600 max-sm:text-sm">
-              <li>
+              <li className="hover:text-[#7b48a5] hover:font-semibold">
                 <Link to="/privacy">Privacy Policy</Link>
               </li>
-              <li>
+              <li className="hover:text-[#7b48a5] hover:font-semibold">
                 <Link to="/terms">Terms & Conditions</Link>
               </li>
-              <li>
+              <li className="hover:text-[#7b48a5] hover:font-semibold">
                 <Link to="/exchange">Exchange Policy</Link>
               </li>
-              <li>
+              <li className="hover:text-[#7b48a5] hover:font-semibold">
                 <Link to="/about">About Us</Link>
               </li>
-              <li>
+              <li className="hover:text-[#7b48a5] hover:font-semibold">
                 <Link to="/help_faq">Help & FAQs</Link>
               </li>
-              <li>
+              <li className="hover:text-[#7b48a5] hover:font-semibold">
                 <Link to="/return">Return & Refund Policy</Link>
               </li>
-              <li>
+              <li className="hover:text-[#7b48a5] hover:font-semibold">
                 <Link to="/shipping">Shipping Policy</Link>
               </li>
-              <li>
+              <li className="hover:text-[#7b48a5] hover:font-semibold">
                 <Link to="/blogs">Blogs</Link>
               </li>
             </ul>
@@ -113,8 +113,8 @@ const Footer = () => {
               <div className="flex gap-3 mb-4">
                 <img src="/icons/original.png" className="w-10 h-10 mt-1" />
                 <p className="text-[17px] leading-snug mb-0 max-sm:text-md">
-                  <span className="font-bold">100% ORIGINAL</span> guarantee for
-                  all products at admirer.in
+                  <span className="font-bold">100% ORIGINAL</span> products —
+                  guaranteed, only at BTJ Admirer.
                 </p>
               </div>
 
@@ -142,9 +142,15 @@ const Footer = () => {
           <p className="!mb-1">India</p>
         </div>
         <div className="mt-8 max-sm:mt-2 space-y-2 text-gray-600">
-          <p className="!mb-1"><strong>BTJ Alpha Technology Private Limited company</strong></p>
-          <p className="!mb-1"><strong>CIN:</strong> U62099UP2025PTC215855</p>
-          <p className="!mb-1"><strong>GSTIN:</strong> 09AANCB2020R1ZB</p>
+          <p className="!mb-1">
+            <strong>BTJ Alpha Technology Private Limited company</strong>
+          </p>
+          <p className="!mb-1">
+            <strong>CIN:</strong> U62099UP2025PTC215855
+          </p>
+          <p className="!mb-1">
+            <strong>GSTIN:</strong> 09AANCB2020R1ZB
+          </p>
         </div>
       </div>
 

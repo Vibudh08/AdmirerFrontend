@@ -10,11 +10,7 @@ import {
 } from "../components/api/api-end-points";
 import LoaderCode from "../components/Loader";
 
-
-
-const Loader = () => (
-  <LoaderCode/>
-);
+const Loader = () => <LoaderCode />;
 
 interface ProductLsitingProps {
   category?: Number;
@@ -37,11 +33,12 @@ const ProductListing: React.FC<ProductLsitingProps> = ({
   const [dynamicMaxVal, setDynamicMaxVal] = useState(0);
   const [loading, setLoading] = useState(false);
   const [subCategory, setSubCategory] = useState("");
+  const [productDataLoaded, setProductDataLoaded] = useState(false);
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
-  
+
   useEffect(() => {
     if (!category && !subcategory) navigate("/");
   }, [category, subcategory, navigate]);
@@ -62,8 +59,18 @@ const ProductListing: React.FC<ProductLsitingProps> = ({
     }
   }, [isMobile]);
 
+  const filteredProducts = productDataArray.filter((item) => {
+    const discountedPrice = Number(item.discount);
+    return (
+      discountedPrice >= dynamicMinVal &&
+      discountedPrice <= dynamicMaxVal &&
+      (subCategory === item.sub_cat_name || subCategory === "")
+    );
+  });
+
   useEffect(() => {
     if (subcategory) {
+      setLoading(true);
       fetch(getSubCatName_API, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -73,13 +80,31 @@ const ProductListing: React.FC<ProductLsitingProps> = ({
         .then((value) => {
           setSubCategory(value?.subcatName || "");
           setCat(value?.catId || null);
-          setCategoryReady(true);
+          setCategoryReady(true); // This will trigger product fetch in other effect
         });
     } else if (category) {
+      setLoading(true);
       setCat(category);
-      setCategoryReady(true);
+
+      //Fetch products here directly
+      fetch(product_listing_API, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          maxPrice: maxVal,
+          minPrice: minVal,
+          category: Number(category),
+        }),
+      })
+        .then((res) => res.json())
+        .then((data) => setProductDataArray(data))
+        .catch((err) => console.error("Failed to fetch products:", err))
+        .finally(() => {
+          setLoading(false);
+          setCategoryReady(true);
+        });
     }
-  }, [subcategory, category]);
+  }, [subcategory, category, maxVal, minVal]);
 
   useEffect(() => {
     fetch(productPriceCategoryInfo_API)
@@ -94,7 +119,10 @@ const ProductListing: React.FC<ProductLsitingProps> = ({
 
   useEffect(() => {
     if (!categoryReady || !cat) return;
+    const start = performance.now(); // ⏱ start timing
     setLoading(true);
+    setLoading(true);
+    setProductDataLoaded(false); // reset when fetching starts
     fetch(product_listing_API, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -105,10 +133,19 @@ const ProductListing: React.FC<ProductLsitingProps> = ({
       }),
     })
       .then((res) => res.json())
-      .then((data) => setProductDataArray(data))
-      .catch((err) => console.error("Failed to fetch products:", err))
+      .then((data) => {
+        const end = performance.now(); // ⏱ end timing
+        console.log(`⏱ Product API took ${(end - start).toFixed(2)} ms`);
+        setProductDataArray(data);
+        setProductDataLoaded(true); // data fetch complete
+      })
+      .catch((err) => {
+        console.error("Failed to fetch products:", err);
+        setProductDataLoaded(true); // prevent stuck state
+      })
       .finally(() => setLoading(false));
   }, [minVal, maxVal, cat, categoryReady]);
+
   if (loading) return <Loader />;
   return (
     <div className="min-h-screen bg-gray-100 p-2 sm:p-4 relative">
@@ -159,44 +196,28 @@ const ProductListing: React.FC<ProductLsitingProps> = ({
 
         <div className="flex-grow bg-white rounded-xl shadow-sm border border-gray-200 p-2 sm:p-3 lg:p-4">
           <div className="grid grid-cols-2 md:grid-cols-3 gap-2 sm:gap-3 md:gap-4">
-            {productDataArray.filter((item) => {
-              const discountedPrice = Number(item.discount);
-              return (
-                discountedPrice >= dynamicMinVal &&
-                discountedPrice <= dynamicMaxVal &&
-                (subCategory === item.sub_cat_name || subCategory === "")
-              );
-            }).length === 0 ? (
+            {!loading && productDataLoaded && filteredProducts.length === 0 ? (
               <div className="col-span-full text-center text-gray-500 font-medium text-lg py-10">
                 No products found.
               </div>
             ) : (
-              productDataArray
-                .filter((item) => {
-                  const discountedPrice = Number(item.discount);
-                  return (
-                    discountedPrice >= dynamicMinVal &&
-                    discountedPrice <= dynamicMaxVal &&
-                    (subCategory === item.sub_cat_name || subCategory === "")
-                  );
-                })
-                .map((item, index) => (
-                  <ProductItem
-                    key={index}
-                    id={item.id}
-                    name={item.product_name}
-                    price={item.discount}
-                    description={item.description}
-                    originalPrice={item.price}
-                    imageUrl={item.image}
-                    discount={`${Math.round(
-                      ((Number(item.price) - Number(item.discount)) /
-                        Number(item.price)) *
-                        100
-                    )}%`}
-                    compactView={isMobile}
-                  />
-                ))
+              filteredProducts.map((item, index) => (
+                <ProductItem
+                  key={index}
+                  id={item.id}
+                  name={item.product_name}
+                  price={item.discount}
+                  description={item.description}
+                  originalPrice={item.price}
+                  imageUrl={item.image}
+                  discount={`${Math.round(
+                    ((Number(item.price) - Number(item.discount)) /
+                      Number(item.price)) *
+                      100
+                  )}%`}
+                  compactView={isMobile}
+                />
+              ))
             )}
           </div>
         </div>

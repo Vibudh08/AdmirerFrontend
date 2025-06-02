@@ -18,12 +18,13 @@ import SingleProductCard from "../product-detail/SingleProductCard ";
 import axios from "axios";
 import { toast } from "react-toastify";
 import Invoice from "../Invoice";
+import ExchangePopupModal from "./ExchangePopupModal";
 
 // Loader component
 const Loader = () => (
   <div className="fixed inset-0 bg-white bg-opacity-80 backdrop-blur-sm flex items-center justify-center z-50">
     <div className="flex flex-col items-center">
-      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mb-4"></div>
+      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#7b48a5] mb-4"></div>
       <p className="text-lg font-bold text-gray-800">
         Loading your experience, please wait...
       </p>
@@ -37,7 +38,7 @@ const OrderDetails: React.FC = () => {
   const { orderId } = useParams();
   const location = useLocation();
   const productIds: string[] = location.state?.productIds || [];
-console.log(productIds.length)
+  // console.log(productIds.length)
   // console.log("Order ID:", orderId);
   // console.log("All product IDs:", productIds);
 
@@ -65,21 +66,18 @@ console.log(productIds.length)
     [productId: string]: boolean;
   }>({});
   const [review, setReview] = useState<string>();
-
   const [relatedProducts, setRelatedProducts] = useState<any[]>([]);
-
+  const [isModalVisible, setModalVisible] = useState(false);
   const cleanedTotal = Number(totalPrice);
   const gstAmount = Math.ceil(Number((cleanedTotal * 0.05).toFixed(2)));
 
   let totalWithGST;
 
-  if(productIds.length === 3){
-    totalWithGST = 999
-  }
-  else if(productIds.length === 2){
-    totalWithGST = 699
-  }
-  else{
+  if (productIds.length === 3) {
+    totalWithGST = 999;
+  } else if (productIds.length === 2) {
+    totalWithGST = 699;
+  } else {
     totalWithGST = Number((cleanedTotal + gstAmount).toFixed(2));
   }
 
@@ -109,10 +107,11 @@ console.log(productIds.length)
     street: string;
     locality: string;
     city: string;
-    zip_code: string;
+    zipcode: string;
     country_name: string;
     state: string;
     addr_type: string;
+    mobile: string;
     email: string;
   }
   const [address, setAddress] = useState<Address>();
@@ -137,6 +136,13 @@ console.log(productIds.length)
         },
       },
     ],
+  };
+
+  const handleExchangeSubmit = (comment: string, images: File[]) => {
+    console.log("Comment:", comment);
+    console.log("Uploaded Images:", images);
+    // You can send `comment` and `images` to your API here
+    toast.success("Exchange request submitted.")
   };
 
   useEffect(() => {
@@ -170,9 +176,9 @@ console.log(productIds.length)
         orderId: orderData[0].order_id,
         customer: {
           name: `${address.first_name} ${address.last_name}`,
-          // phone: "Phone number",         not coming
-          // email: `${address.email}`,     not coming
-          address: `${address.flat}, ${address.street}, ${address.locality}, ${address.city}, ${address.state}, ${address.country_name} - ${address.zip_code}`,
+          phone: `${address.mobile}`,
+          email: `${address.email}`,
+          address: `${address.flat}, ${address.street}, ${address.locality}, ${address.city}, ${address.state}, ${address.country_name} - ${address.zipcode}`,
         },
         items: items,
         total: `Rs. ${totalPrice}`,
@@ -282,6 +288,9 @@ console.log(productIds.length)
     setRatings((prev) => ({ ...prev, [productId]: value + 1 }));
     setReviewVisible((prev) => ({ ...prev, [productId]: true }));
 
+    // console.log(ratings);
+    // console.log(value);
+
     setTimeout(() => {
       const textarea = document.getElementById(
         `review-textarea-${productId}`
@@ -295,10 +304,10 @@ console.log(productIds.length)
   };
 
   const handleReviewSubmit = (productId: string) => {
-    console.log(review)
+    console.log(review);
     toast.success("Your review has been submitted!");
     setReviewVisible((prev) => ({ ...prev, [productId]: false }));
-    setReview("")
+    setReview("");
   };
 
   // Show loader while data is loading
@@ -379,10 +388,20 @@ console.log(productIds.length)
                         <IoClose className="border rounded-full border-black mb-1 text-xl" />
                         <span className="font-semibold">Cancel</span>
                       </div>
-                      <div className="border-r p-3 hover:bg-purple-100 cursor-pointer flex flex-col items-center justify-center">
+                      <div
+                        onClick={() => setModalVisible(true)}
+                        className="border-r p-3 hover:bg-purple-100 cursor-pointer flex flex-col items-center justify-center"
+                      >
                         <CgArrowsExchangeAlt className="border rounded-full border-black mb-1 text-xl" />
                         <span className="font-semibold">Exchange</span>
                       </div>
+                      <ExchangePopupModal
+                        visible={isModalVisible}
+                        onClose={() => setModalVisible(false)}
+                        onSubmit={handleExchangeSubmit}
+                        productId={productIds[index]}
+                        orderId={id}
+                      />
                       <div className="p-3 hover:bg-purple-100 cursor-pointer flex flex-col items-center justify-center">
                         <IoIosReturnLeft className="border rounded-full border-black mb-1 text-xl" />
                         <span className="font-semibold">Return</span>
@@ -418,7 +437,8 @@ console.log(productIds.length)
                         <span className="font-semibold mt-1">
                           Write a Review
                         </span>
-                        <textarea onChange={(e)=>setReview(e.target.value)}
+                        <textarea
+                          onChange={(e) => setReview(e.target.value)}
                           value={review}
                           name=""
                           id={`review-textarea-${productIds[index]}`}
@@ -426,7 +446,7 @@ console.log(productIds.length)
                         ></textarea>
                         <button
                           className="bg-[#7b48a5] w-[120px] px-4 py-3 self-end rounded-sm hover:bg-purple-700 text-white"
-                          onClick={()=>handleReviewSubmit(productIds[index])}
+                          onClick={() => handleReviewSubmit(productIds[index])}
                         >
                           Submit
                         </button>
@@ -473,7 +493,7 @@ console.log(productIds.length)
                   {address?.flat}, {address?.street}, {address?.locality}
                 </div>
                 <div className="text-sm">
-                  {address?.city}, {address?.state} 
+                  {address?.city}, {address?.state}
                   {/* {address?.zip_code},{" "} */}
                   {/* {address?.addr_type} */}
                 </div>
