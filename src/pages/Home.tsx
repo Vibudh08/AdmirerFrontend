@@ -7,7 +7,6 @@ import axios from "axios";
 import { homePageData } from "../components/api/api-end-points";
 import LoaderCode from "../components/Loader";
 
-
 interface HomePageProps {
   setCategoryId: React.Dispatch<React.SetStateAction<string>>;
   setSubcategoryId: React.Dispatch<React.SetStateAction<string>>;
@@ -120,7 +119,7 @@ const Home: React.FC<HomePageProps> = ({ setCategoryId, setSubcategoryId }) => {
     "Best Quality",
     "UPI and Cards acceptable",
     "No Hidden Charges",
-    "Secure Payment Gateway"
+    "Secure Payment Gateway",
   ];
 
   const shorts = [
@@ -148,6 +147,25 @@ const Home: React.FC<HomePageProps> = ({ setCategoryId, setSubcategoryId }) => {
       videoUrl: "/home/video/stone_ring.mp4",
       url: "24",
     },
+  ];
+
+  const features = [
+    {
+      img: "https://www.josalukkasmedia.com/Media/CMS/Home/Section9/safe.svg",
+      title: "Safe & Secure Delivery",
+    },
+    {
+      img: "https://www.josalukkasmedia.com/Media/CMS/Home/Section9/shipping.svg",
+      title: "Free Shipping",
+    },
+    {
+      img: "https://www.josalukkasmedia.com/Media/CMS/Home/Section9/diamond.svg",
+      title: "7 Days Exchange",
+    },
+    // {
+    //   img: "https://ornatejewels.com/cdn/shop/files/BIS_925_hallmarkedSilverjewellery_3d1eb272-436d-4902-b56d-77628ee130b2.jpg?v=1715071167&width=150",
+    //   title: "Signature Gift Box",
+    // },
   ];
 
   const handleClick = (url: string) => {
@@ -217,7 +235,7 @@ const Home: React.FC<HomePageProps> = ({ setCategoryId, setSubcategoryId }) => {
         </div>
       </section>
 
-      <div className="relative overflow-hidden bg-purple-300 py-4">
+      <div className="relative overflow-hidden bg-purple-200 py-4">
         <div className="scroll-wrapper flex w-max animate-scroll">
           {[...companies, ...companies].map((company, index) => (
             <div
@@ -230,11 +248,11 @@ const Home: React.FC<HomePageProps> = ({ setCategoryId, setSubcategoryId }) => {
         </div>
       </div>
 
-      <div className="bg-white flex items-center justify-center pt-8 max-md:pt-4 flex-col">
+      <div className="bg-white flex items-center justify-center pt-10 max-md:pt-4 flex-col">
         <h2 className="text-4xl max-md:text-2xl font-semibold text-gray-800 mb-1">
           Shop the best jewellery online
         </h2>
-        <p className="w-[75%] mt-3 max-md:w-full text-center text-base max-md:text-xs text-gray-600 tracking-wide">
+        <p className="w-[75%] mt-3 max-md:w-full text-center text-lg max-md:text-xs text-gray-600 tracking-wide">
           Fashion trends may change, but the love for jewellery remains
           timeless. Admirer's collection adds irresistible charm with a perfect
           blend of elegance and sophistication.
@@ -328,7 +346,7 @@ const Home: React.FC<HomePageProps> = ({ setCategoryId, setSubcategoryId }) => {
           </h2>
 
           {/* Desktop View */}
-          <div className="mt-8 hidden md:grid grid-cols-3 gap-2 w-[90%] m-auto h-[450px]">
+          <div className="mt-8 hidden md:grid grid-cols-3 gap-2 w-[90%] m-auto ">
             {offers.map((item, idx) => (
               <div
                 key={idx}
@@ -367,7 +385,7 @@ const Home: React.FC<HomePageProps> = ({ setCategoryId, setSubcategoryId }) => {
 
       {/* Shorts Section */}
       <section>
-        <div className="bg-white flex flex-col !pt-6 items-center pb-16 max-md:p-1">
+        <div className="bg-white flex flex-col pt-0 items-center pb-16 max-md:p-1">
           <h2 className="text-4xl max-md:text-2xl font-semibold text-gray-800 mb-1">
             Watch and Buy
           </h2>
@@ -411,6 +429,19 @@ const Home: React.FC<HomePageProps> = ({ setCategoryId, setSubcategoryId }) => {
             </div>
           </section>
         )}
+
+      <section className="bg-white pb-10 max-md:pt-10">
+        <div className=" bg-purple-200">
+        <div className="grid grid-cols-3 max-md:grid-cols-3 items-center justify-center py-12 w-[85%] text-center m-auto gap-4">
+          {features.map((item, index) => (
+            <div key={index} className="flex flex-col items-center gap-5">
+              <img src={item.img} alt="" className="mx-auto text-xl" />
+              <p className="font-semibold">{item.title}</p>
+            </div>
+          ))}
+        </div>
+        </div>
+      </section>
 
       {/* Testimonials */}
       <section>

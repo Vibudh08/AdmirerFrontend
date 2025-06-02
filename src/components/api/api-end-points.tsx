@@ -31,3 +31,5 @@ export const logout = apiHeader + "logout";
 export const productDetails = apiHeader + "product-details"
 export const movecart = apiHeader + "user/wishlist/movecart";
 export const remove = apiHeader + "user/wishlist/remove";
+export const exchange = apiHeader + "exchange";
+export const exchangeStatus = apiHeader + "exchangeStatus";

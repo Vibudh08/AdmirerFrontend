@@ -3,6 +3,7 @@ import Coupons_screen from "../../coupons/Coupons_screen";
 import OrderSuccessModal from "../../OrderSuccessModal";
 import { toast } from "react-toastify";
 import { useNavigate, useLocation } from "react-router-dom";
+import { GoTag } from "react-icons/go";
 import { Modal } from "antd";
 import {
   nimbusDelievery_API,
@@ -61,7 +62,7 @@ const Checkout: React.FC<IndexProps> = ({
   useEffect(() => {
     console.log("the shipping data in checkout is = ", shippingData);
   }, [shippingData]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  // const [isModalOpen, setIsModalOpen] = useState(false);
   const [selected, setSelected] = useState("cod");
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [orderId, setOrderId] = useState("");
@@ -71,7 +72,9 @@ const Checkout: React.FC<IndexProps> = ({
 
   const cleanedTotal = Number(totalAmount.replace(/,/g, ""));
   const gstAmount = Math.ceil(Number((cleanedTotal * 0.05).toFixed(2)));
-
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const showModal = () => setIsModalOpen(true);
+  const handleCancel = () => setIsModalOpen(false);
   let totalWithGST;
 
   if (itemCount === 3) {
@@ -101,7 +104,7 @@ const Checkout: React.FC<IndexProps> = ({
 
     if (!authToken) {
       // 👉 Redirect to login with state only on button click
-      navigate("/login", { state: { fromCheckout: true } });
+      navigate("/LogIn", { state: { fromCheckout: true } });
       toast.error("Please LogIn before placing your order.");
       return;
     }
@@ -128,6 +131,7 @@ const Checkout: React.FC<IndexProps> = ({
         });
 
         const orderData = await createOrderRes.json();
+        console.log(orderData);
 
         const options = {
           key: "rzp_live_9dQQZTZXMKwBMJ",
@@ -177,7 +181,9 @@ const Checkout: React.FC<IndexProps> = ({
 
                 if (nimbusRes.status === 200) {
                   setOrderId(order_number);
-                  setShowSuccessModal(true);
+                  navigate("/order-confirmation", {
+                    state: { orderID: order_number },
+                  });
                   setLoading(false);
                 } else {
                   alert("Order placed but failed to notify delivery service.");
@@ -234,7 +240,7 @@ const Checkout: React.FC<IndexProps> = ({
 
         if (response.status === 200) {
           setOrderId(order_number);
-          setShowSuccessModal(true);
+          navigate("/order-confirmation", { state: { payload } });
         } else {
           alert("Failed to place COD order.");
         }
@@ -276,23 +282,48 @@ const Checkout: React.FC<IndexProps> = ({
 
   return (
     <>
-      <OrderSuccessModal
+      {/* <OrderSuccessModal
         open={showSuccessModal}
         orderId={orderId}
         onClose={() => setShowSuccessModal(false)}
-      />
+      /> */}
 
-      <div className="w-[35%] max-md:w-[100%] p-5 max-md:p-3 py-6 border-l bg-white border-[#eaeaec]">
-        <div className="mb-3 max-md:hidden flex justify-center items-center mt-[-10px] text-center">
-          <img
-            src="https://constant.myntassets.com/checkout/assets/img/sprite-secure.png"
-            className="w-8 h-8 mr-3"
-            alt="100% Secure"
-          />
-          <p className="text-[#535766] text-md tracking-wider font-semibold">
-            100% SECURE
-          </p>
+      <div className="w-[35%] max-md:w-[100%] p-5 max-md:p-3 py-6 pb-3 border-l bg-white border-[#eaeaec]">
+        <div className="mb-4">
+          <h3 className="text-[14px] text-[#535766] font-bold mb-4">
+            COUPONS
+          </h3>
+          <div className="flex justify-between items-center">
+            <div className="flex gap-3">
+              <GoTag className="text-[19px] mt-0.5" />
+              <p className="font-semibold text-[#282c3f]">Apply Coupons</p>
+            </div>
+            <button
+              className="px-3 py-1 border border-[#7B48A5] text-sm font-semibold text-[#7B48A5] hover:bg-[rgb(245,245,245)]"
+              onClick={showModal}
+            >
+              APPLY
+            </button>
+            <Modal
+              open={isModalOpen}
+              onCancel={handleCancel}
+              footer={null}
+              width={550}
+              centered
+              closable={false}
+              className="no-padding-modal"
+              bodyStyle={{
+                padding: 0,
+                background: "transparent",
+                boxShadow: "none",
+                borderRadius: 0,
+              }}
+            >
+              <Coupons_screen onClose={() => setIsModalOpen(false)} />
+            </Modal>
+          </div>
         </div>
+
         <hr className="max-md:hidden" />
         <div className="mt-5 mb-4 ">
           <div className="clear-both"></div>
@@ -415,7 +446,7 @@ const Checkout: React.FC<IndexProps> = ({
           className={`w-full border rounded h-[44px] py-2 text-sm font-semibold text-white ${
             loading
               ? "bg-purple-400 cursor-not-allowed"
-              : "hover:bg-purple-700 bg-purple-600"
+              : "hover:bg-purple-700 bg-[#7b48a5]"
           }`}
         >
           {loading ? (
@@ -446,18 +477,18 @@ const Checkout: React.FC<IndexProps> = ({
             "PLACE ORDER"
           )}
         </button>
+        <div className=" flex justify-center items-center mt-3 text-center">
+          <img
+            src="https://constant.myntassets.com/checkout/assets/img/sprite-secure.png"
+            className="w-8 h-8 mr-3 max-md:w-6 max-md:h-6 max-md:mr-2"
+            alt="100% Secure"
+          />
+          <p className="text-[#535766] text-md max-md:text-sm tracking-wider font-semibold">
+            100% SECURE
+          </p>
+        </div>
       </div>
-      <div className="mb-3 hidden max-md:flex justify-center items-center mt-[0px] text-center">
-        <img
-          src="https://constant.myntassets.com/checkout/assets/img/sprite-secure.png"
-          className="w-6 h-6 mr-2"
-          alt="100% Secure"
-        />
-        <p className="text-[#535766] text-sm tracking-wider font-semibold">
-          100% SECURE
-        </p>
-      </div>
-      <Modal
+      {/* <Modal
         title="More Information"
         open={isModalOpen}
         onCancel={() => setIsModalOpen(false)}
@@ -465,7 +496,7 @@ const Checkout: React.FC<IndexProps> = ({
         width={"350px"}
       >
         <p>{modalContent}</p>
-      </Modal>
+      </Modal> */}
     </>
   );
 };

@@ -1,4 +1,10 @@
-import { BrowserRouter, Routes, Route, useLocation, matchPath } from "react-router-dom";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  useLocation,
+  matchPath,
+} from "react-router-dom";
 import "./App.css";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
@@ -25,30 +31,31 @@ import AboutPage from "./pages/About";
 import ScrollToTop from "./components/ScrollToTop";
 import PrivateRoute from "./components/auth/PrivateRoute";
 import NotFound from "./pages/NotFound";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import ThankYouPage from "./components/cart-checkout/checkout/ThankYou";
 
 // List of all valid route patterns
 const routePatterns = [
-  '/',
-  '/LogIn',
-  '/product/:id',
-  '/dashboard_profile',
-  '/order/:id',
-  '/cart',
-  '/listing',
-  '/dashboard',
-  '/wishlist',
-  '/privacy',
-  '/terms',
-  '/return',
-  '/exchange',
-  '/shipping',
-  '/help_faq',
-  '/blogs',
-  '/blog-details/:id',
-  '/about',
-  '/404'
+  "/",
+  "/LogIn",
+  "/product/:id",
+  "/dashboard_profile",
+  "/order/:id",
+  "/cart",
+  "/listing",
+  "/dashboard",
+  "/wishlist",
+  "/privacy",
+  "/terms",
+  "/return",
+  "/exchange",
+  "/shipping",
+  "/help_faq",
+  "/blogs",
+  "/blog-details/:id",
+  "/about",
+  "/404",
 ];
 
 function App() {
@@ -56,45 +63,49 @@ function App() {
   const [subcategoryId, setSubcategoryId] = useState("");
   const [showHeader, setShowHeader] = useState(true);
   const [showFooter, setShowFooter] = useState(true);
-  
 
   const RouteTracker = () => {
     const location = useLocation();
-  
+
     useEffect(() => {
-      const isMatched = routePatterns.some(pattern =>
+      const isMatched = routePatterns.some((pattern) =>
         matchPath({ path: pattern, end: true }, location.pathname)
       );
-  
-      const isDashboardProfile = location.pathname.startsWith('/dashboard_profile');
-  
+
+      const isDashboardProfile =
+        location.pathname.startsWith("/dashboard_profile");
+
       // Routes where header and footer should be completely hidden (e.g., login, 404)
-      const fullHiddenRoutes = ['/LogIn'];
-  
+      const fullHiddenRoutes = ["/LogIn"];
+
       // Routes where only the footer should be hidden
-      const footerHiddenRoutes = ['/cart', '/order/:id'];
-  
-      const shouldHideHeader = fullHiddenRoutes.includes(location.pathname) || (!isMatched && !isDashboardProfile);
-      const shouldHideFooter = footerHiddenRoutes.some(pattern =>
+      const footerHiddenRoutes = ["/cart", "/order/:id"];
+
+      const shouldHideHeader =
+        fullHiddenRoutes.includes(location.pathname) ||
+        (!isMatched && !isDashboardProfile);
+      const shouldHideFooter = footerHiddenRoutes.some((pattern) =>
         matchPath({ path: pattern, end: true }, location.pathname)
       );
-  
+
       setShowHeader(!shouldHideHeader);
       setShowFooter(!shouldHideHeader && !shouldHideFooter);
     }, [location]);
-  
+
     return null;
   };
-  
-  
 
   return (
     <BrowserRouter>
       <ScrollToTop />
       <Layout>
         <RouteTracker />
-        {showHeader  && <Header  />}
-        <ToastContainer position="top-center" autoClose={2500} hideProgressBar />
+        {showHeader && <Header />}
+        <ToastContainer
+          position="top-center"
+          autoClose={2500}
+          hideProgressBar
+        />
         <Routes>
           <Route
             path="/"
@@ -106,9 +117,26 @@ function App() {
             }
           />
           <Route path="/LogIn" element={<Login />} />
-          <Route path="/product/:id" element={<ProductDetails wishlist={0} />} />
-          <Route path="/dashboard_profile" element={<PrivateRoute><Dashboard_Profile /></PrivateRoute>} />
-          <Route path="/order/:id" element={<PrivateRoute><OrderDetails /></PrivateRoute>} />
+          <Route
+            path="/product/:id"
+            element={<ProductDetails wishlist={0} />}
+          />
+          <Route
+            path="/dashboard_profile"
+            element={
+              <PrivateRoute>
+                <Dashboard_Profile />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/order/:id"
+            element={
+              <PrivateRoute>
+                <OrderDetails />
+              </PrivateRoute>
+            }
+          />
           <Route path="/cart" element={<Complete_cart_checkout />} />
           <Route
             path="/listing"
@@ -119,7 +147,14 @@ function App() {
               />
             }
           />
-          <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
+          <Route
+            path="/dashboard"
+            element={
+              <PrivateRoute>
+                <Dashboard />
+              </PrivateRoute>
+            }
+          />
           <Route path="/wishlist" element={<Wishlist />} />
           <Route path="/privacy" element={<PrivacyPolicy />} />
           <Route path="/terms" element={<TermsConditions />} />
@@ -132,8 +167,16 @@ function App() {
           <Route path="/about" element={<AboutPage />} />
           <Route path="/404" element={<NotFound />} />
           <Route path="/*" element={<NotFound />} />
+          <Route
+            path="/order-confirmation"
+            element={
+              <PrivateRoute>
+                <ThankYouPage />
+              </PrivateRoute>
+            }
+          />
         </Routes>
-        {showFooter  && <Footer />}
+        {showFooter && <Footer />}
       </Layout>
     </BrowserRouter>
   );
