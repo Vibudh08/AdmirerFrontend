@@ -34,6 +34,7 @@ import NotFound from "./pages/NotFound";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ThankYouPage from "./components/cart-checkout/checkout/ThankYou";
+import { GlobalContextProvider } from "./contexts/GlobalContextProvider";
 
 // List of all valid route patterns
 const routePatterns = [
@@ -96,89 +97,91 @@ function App() {
   };
 
   return (
-    <BrowserRouter>
-      <ScrollToTop />
-      <Layout>
-        <RouteTracker />
-        {showHeader && <Header />}
-        <ToastContainer
-          position="top-center"
-          autoClose={2500}
-          hideProgressBar
-        />
-        <Routes>
-          <Route
-            path="/"
-            element={
-              <Home
-                setCategoryId={setCategoryId}
-                setSubcategoryId={setSubcategoryId}
-              />
-            }
+    <GlobalContextProvider>
+      <BrowserRouter>
+        <ScrollToTop />
+        <Layout>
+          <RouteTracker />
+          {showHeader && <Header />}
+          <ToastContainer
+            position="top-center"
+            autoClose={2500}
+            hideProgressBar
           />
-          <Route path="/LogIn" element={<Login />} />
-          <Route
-            path="/product/:id"
-            element={<ProductDetails wishlist={0} />}
-          />
-          <Route
-            path="/dashboard_profile"
-            element={
-              <PrivateRoute>
-                <Dashboard_Profile />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/order/:id"
-            element={
-              <PrivateRoute>
-                <OrderDetails />
-              </PrivateRoute>
-            }
-          />
-          <Route path="/cart" element={<Complete_cart_checkout />} />
-          <Route
-            path="/listing"
-            element={
-              <ProductListing
-                category={Number(categoryId)}
-                subcategory={Number(subcategoryId)}
-              />
-            }
-          />
-          <Route
-            path="/dashboard"
-            element={
-              <PrivateRoute>
-                <Dashboard />
-              </PrivateRoute>
-            }
-          />
-          <Route path="/wishlist" element={<Wishlist />} />
-          <Route path="/privacy" element={<PrivacyPolicy />} />
-          <Route path="/terms" element={<TermsConditions />} />
-          <Route path="/return" element={<ReturnRefund />} />
-          <Route path="/exchange" element={<ExchangePolicy />} />
-          <Route path="/shipping" element={<ShippingPolicy />} />
-          <Route path="/help_faq" element={<HelpContact />} />
-          <Route path="/blogs" element={<BlogPage />} />
-          <Route path="/blog-details/:id" element={<BlogDetails />} />
-          <Route path="/about" element={<AboutPage />} />
-          <Route path="/404" element={<NotFound />} />
-          <Route path="/*" element={<NotFound />} />
-          <Route
-            path="/order-confirmation"
-            element={
-              <PrivateRoute>
-                <ThankYouPage />
-              </PrivateRoute>
-            }
-          />
-        </Routes>
-        {showFooter && <Footer />}
-      </Layout>
-    </BrowserRouter>
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <Home
+                  setCategoryId={setCategoryId}
+                  setSubcategoryId={setSubcategoryId}
+                />
+              }
+            />
+            <Route path="/LogIn" element={<Login />} />
+            <Route
+              path="/product/:id"
+              element={<ProductDetails wishlist={0} />}
+            />
+            <Route
+              path="/dashboard_profile"
+              element={
+                <PrivateRoute>
+                  <Dashboard_Profile />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/order/:id"
+              element={
+                <PrivateRoute>
+                  <OrderDetails />
+                </PrivateRoute>
+              }
+            />
+            <Route path="/cart" element={<Complete_cart_checkout />} />
+            <Route
+              path="/listing"
+              element={
+                <ProductListing
+                  category={Number(categoryId)}
+                  subcategory={Number(subcategoryId)}
+                />
+              }
+            />
+            <Route
+              path="/dashboard"
+              element={
+                <PrivateRoute>
+                  <Dashboard />
+                </PrivateRoute>
+              }
+            />
+            <Route path="/wishlist" element={<Wishlist />} />
+            <Route path="/privacy" element={<PrivacyPolicy />} />
+            <Route path="/terms" element={<TermsConditions />} />
+            <Route path="/return" element={<ReturnRefund />} />
+            <Route path="/exchange" element={<ExchangePolicy />} />
+            <Route path="/shipping" element={<ShippingPolicy />} />
+            <Route path="/help_faq" element={<HelpContact />} />
+            <Route path="/blogs" element={<BlogPage />} />
+            <Route path="/blog-details/:id" element={<BlogDetails />} />
+            <Route path="/about" element={<AboutPage />} />
+            <Route path="/404" element={<NotFound />} />
+            <Route path="/*" element={<NotFound />} />
+            <Route
+              path="/order-confirmation"
+              element={
+                <PrivateRoute>
+                  <ThankYouPage />
+                </PrivateRoute>
+              }
+            />
+          </Routes>
+          {showFooter && <Footer />}
+        </Layout>
+      </BrowserRouter>
+    </GlobalContextProvider>
   );
 }
 

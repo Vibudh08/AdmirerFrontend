@@ -4,6 +4,7 @@ import { UploadOutlined } from "@ant-design/icons";
 import { exchange, exchangeStatus } from "../api/api-end-points";
 import axios from "axios";
 import { Loader } from "lucide-react";
+import { toast } from "react-toastify";
 const { TextArea } = Input;
 
 interface ExchangePopupModalProps {
@@ -81,12 +82,13 @@ const ExchangePopupModal: React.FC<ExchangePopupModalProps> = ({
       const response = await axios.post(exchange, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
+          Authorization: "Bearer " + localStorage.getItem("auth_token"),
         },
       });
       const status = response.data.status;
-      console.log(status);
+      // console.log(status);
       setComment("");
-      // setStatus(status);
+      toast.success("Exchange request submitted successfully.")
       setFileList([]);
       onClose();
     } catch (error) {

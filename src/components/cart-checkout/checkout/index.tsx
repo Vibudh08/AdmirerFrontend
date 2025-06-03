@@ -10,6 +10,7 @@ import {
   razorPayCreateOrderApi,
   razorPayStoreApi,
 } from "../../api/api-end-points";
+import { useAwb } from "../../../contexts/AwbContext";
 
 interface PriceDetail {
   label: string;
@@ -75,6 +76,8 @@ const Checkout: React.FC<IndexProps> = ({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const showModal = () => setIsModalOpen(true);
   const handleCancel = () => setIsModalOpen(false);
+  const { setAwbNumber } = useAwb();
+
   let totalWithGST;
 
   if (itemCount === 3) {
@@ -239,6 +242,9 @@ const Checkout: React.FC<IndexProps> = ({
         });
 
         if (response.status === 200) {
+          const data = await response.json();
+          const awb = data.data.data.awb_number;
+          setAwbNumber(awb);
           setOrderId(order_number);
           navigate("/order-confirmation", { state: { payload } });
         } else {
@@ -290,9 +296,7 @@ const Checkout: React.FC<IndexProps> = ({
 
       <div className="w-[35%] max-md:w-[100%] p-5 max-md:p-3 py-6 pb-3 border-l bg-white border-[#eaeaec]">
         <div className="mb-4">
-          <h3 className="text-[14px] text-[#535766] font-bold mb-4">
-            COUPONS
-          </h3>
+          <h3 className="text-[14px] text-[#535766] font-bold mb-4">COUPONS</h3>
           <div className="flex justify-between items-center">
             <div className="flex gap-3">
               <GoTag className="text-[19px] mt-0.5" />

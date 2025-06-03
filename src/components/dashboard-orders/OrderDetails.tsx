@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useLocation, Link } from "react-router-dom";
-import { FaFileInvoice } from "react-icons/fa";
+import { useParams, useLocation, Link, useNavigate } from "react-router-dom";
 import {
   order_detail_API,
   getAddress_API,
   productDetails,
+  cancelOrder,
 } from "../api/api-end-points";
 import {
   IoIosArrowBack,
@@ -19,6 +19,8 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import Invoice from "../Invoice";
 import ExchangePopupModal from "./ExchangePopupModal";
+import { Modal } from "antd";
+import { useAwb } from "../../contexts/AwbContext";
 
 // Loader component
 const Loader = () => (
@@ -59,7 +61,7 @@ const OrderDetails: React.FC = () => {
   const [totalPrice, setTotalPrice] = useState(0);
   const [productNames, setProductNames] = useState<string[]>([]);
   const [payment_type, setPayment_type] = useState<string>();
-  const [loading, setLoading] = useState(true); // NEW
+  const [loading, setLoading] = useState(true);
   const [ratings, setRatings] = useState<{ [productId: string]: number }>({});
   const [invoiceData, setInvoiceData] = useState<any>(null);
   const [reviewVisible, setReviewVisible] = useState<{
@@ -70,7 +72,13 @@ const OrderDetails: React.FC = () => {
   const [isModalVisible, setModalVisible] = useState(false);
   const cleanedTotal = Number(totalPrice);
   const gstAmount = Math.ceil(Number((cleanedTotal * 0.05).toFixed(2)));
-
+  const [selectedProductId, setSelectedProductId] = useState<string | null>(
+    null
+  );
+  const [cancelLoader, setCancelLoader] = useState(false);
+  const navigate = useNavigate();
+  const [isCancelModalVisible, setIsCancelModalVisible] = useState(false);
+  const { awbNumber } = useAwb();
   let totalWithGST;
 
   if (productIds.length === 3) {
@@ -138,11 +146,39 @@ const OrderDetails: React.FC = () => {
     ],
   };
 
+  const handleCancelConfirm = async () => {
+    // console.log("Cancel product:", selectedProductId, "Order:", id);
+    setCancelLoader(true);
+    try {
+      await axios.post(
+        cancelOrder,
+        {
+          awb: awbNumber,
+          orderid: id,
+          productid: selectedProductId,
+        },
+        {
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("auth_token"),
+          },
+        }
+      );
+      toast.success("Order Cancelled Successfully");
+      navigate("/dashboard?section=orders");
+      // console.log(data.data.status)
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setIsCancelModalVisible(false);
+      setCancelLoader(false);
+    }
+  };
+
   const handleExchangeSubmit = (comment: string, images: File[]) => {
     console.log("Comment:", comment);
     console.log("Uploaded Images:", images);
     // You can send `comment` and `images` to your API here
-    toast.success("Exchange request submitted.")
+    toast.success("Exchange request submitted.");
   };
 
   useEffect(() => {
@@ -384,24 +420,28 @@ const OrderDetails: React.FC = () => {
                     </div>
                     {/* <div className="flex  items-start bg-white  border p-4  gap-2 mt-3"> */}
                     <div className="grid border shadow-sm mt-3 grid-cols-3 text-sm text-center">
-                      <div className="border-r p-3 hover:bg-purple-100 cursor-pointer flex flex-col items-center justify-center">
+                      {/* Cancel Button UI */}
+                      <div
+                        className="border-r p-3 hover:bg-purple-100 cursor-pointer flex flex-col items-center justify-center"
+                        onClick={() => {
+                          setSelectedProductId(productIds[index]);
+                          setIsCancelModalVisible(true);
+                        }}
+                      >
                         <IoClose className="border rounded-full border-black mb-1 text-xl" />
                         <span className="font-semibold">Cancel</span>
                       </div>
                       <div
-                        onClick={() => setModalVisible(true)}
+                        onClick={() => {
+                          setSelectedProductId(productIds[index]);
+                          setModalVisible(true);
+                        }}
                         className="border-r p-3 hover:bg-purple-100 cursor-pointer flex flex-col items-center justify-center"
                       >
                         <CgArrowsExchangeAlt className="border rounded-full border-black mb-1 text-xl" />
                         <span className="font-semibold">Exchange</span>
                       </div>
-                      <ExchangePopupModal
-                        visible={isModalVisible}
-                        onClose={() => setModalVisible(false)}
-                        onSubmit={handleExchangeSubmit}
-                        productId={productIds[index]}
-                        orderId={id}
-                      />
+
                       <div className="p-3 hover:bg-purple-100 cursor-pointer flex flex-col items-center justify-center">
                         <IoIosReturnLeft className="border rounded-full border-black mb-1 text-xl" />
                         <span className="font-semibold">Return</span>
@@ -461,10 +501,10 @@ const OrderDetails: React.FC = () => {
           {/* Right Section - Order Summary */}
           <div className="max-md:w-full w-80 space-y-4 sticky top-3 self-start">
             <div className="flex justify-between text-sm font-medium bg-white border rounded shadow-sm p-5 cursor-pointer">
-              <div className="flex gap-3">
-                <FaFileInvoice className="h-5 w-5" />
-                <Invoice order={invoiceData} />
-              </div>
+              {/* <div className="flex gap-3">
+                <FaFileInvoice className="h-5 w-5" /> */}
+              <Invoice order={invoiceData} />
+              {/* </div> */}
               <svg
                 className="w-5 h-5 text-gray-500"
                 fill="none"
@@ -565,6 +605,89 @@ const OrderDetails: React.FC = () => {
           </Slider>
         </div>
       </div>
+      {isModalVisible && selectedProductId && (
+        <ExchangePopupModal
+          visible={isModalVisible}
+          onClose={() => {
+            setModalVisible(false);
+            setSelectedProductId(null);
+          }}
+          onSubmit={handleExchangeSubmit}
+          productId={selectedProductId}
+          orderId={id}
+        />
+      )}
+      {/* Antd Modal for Cancel Confirmation */}
+      <Modal
+        // title="Are you sure you want to cancel the order?"
+        open={isCancelModalVisible}
+        onCancel={() => setIsCancelModalVisible(false)}
+        footer={null}
+      >
+        <p className="text-base font-semibold max-md:pt-3 pb-1 max-md:pb-2">
+          Are you sure you want to cancel the order?
+        </p>
+        <p>This action cannot be undone.</p>
+
+        <div className="flex justify-center gap-4 mt-6">
+          <button
+            onClick={handleCancelConfirm}
+            type="button"
+            disabled={cancelLoader}
+            style={{
+              backgroundColor: "#7b48a5",
+              color: "white",
+              padding: "8px 20px",
+              border: "none",
+              borderRadius: "4px",
+              cursor: cancelLoader ? "not-allowed" : "pointer",
+              opacity: cancelLoader ? 0.6 : 1,
+              pointerEvents: cancelLoader ? "none" : "auto",
+            }}
+          >
+            {cancelLoader ? (
+              <span className="flex items-center justify-center text-sm text-white">
+                <svg
+                  className="animate-spin h-5 w-5 mr-2 text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  />
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                  />
+                </svg>
+                Cancelling...
+              </span>
+            ) : (
+              "Yes, Cancel"
+            )}
+          </button>
+          <button
+            onClick={() => setIsCancelModalVisible(false)}
+            style={{
+              backgroundColor: "#e0e0e0",
+              color: "#333",
+              padding: "8px 20px",
+              border: "none",
+              borderRadius: "4px",
+              cursor: "pointer",
+            }}
+          >
+            No
+          </button>
+        </div>
+      </Modal>
     </>
   );
 };
