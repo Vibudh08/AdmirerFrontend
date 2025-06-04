@@ -13,6 +13,7 @@ interface ExchangePopupModalProps {
   onSubmit: (comment: string, images: File[]) => void;
   productId: string;
   orderId: string | undefined;
+  onSuccess: () => void;
 }
 
 const ExchangePopupModal: React.FC<ExchangePopupModalProps> = ({
@@ -21,6 +22,7 @@ const ExchangePopupModal: React.FC<ExchangePopupModalProps> = ({
   onSubmit,
   productId,
   orderId,
+  onSuccess
 }) => {
   const [comment, setComment] = useState("");
   const [fileList, setFileList] = useState<any[]>([]);
@@ -90,6 +92,7 @@ const ExchangePopupModal: React.FC<ExchangePopupModalProps> = ({
       setComment("");
       toast.success("Exchange request submitted successfully.")
       setFileList([]);
+      onSuccess();
       onClose();
     } catch (error) {
       console.error("Upload failed:", error);

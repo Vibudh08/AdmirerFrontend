@@ -120,7 +120,7 @@ const ProductDetails = (item: { wishlist: number }) => {
         cartItems.push(product);
         localStorage.setItem("guest_cart", JSON.stringify(cartItems));
 
-        // ✅ Update itemCount
+        // Update itemCount
         const newCount =
           parseInt(localStorage.getItem("itemCount") || "0", 10) + 1;
         localStorage.setItem("itemCount", newCount.toString());

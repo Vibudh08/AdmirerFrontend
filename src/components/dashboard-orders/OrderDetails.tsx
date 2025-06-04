@@ -5,6 +5,8 @@ import {
   getAddress_API,
   productDetails,
   cancelOrder,
+  exchangeStatus,
+  exchange,
 } from "../api/api-end-points";
 import {
   IoIosArrowBack,
@@ -58,6 +60,8 @@ const OrderDetails: React.FC = () => {
 
   const [orderData, setOrderData] = useState<OrderDetail[]>([]);
   const [status, setStatus] = useState("");
+  const [exchangeStatusMap, setExchangeStatusMap] = useState<{ [key: string]: number }>({});
+
   const [totalPrice, setTotalPrice] = useState(0);
   const [productNames, setProductNames] = useState<string[]>([]);
   const [payment_type, setPayment_type] = useState<string>();
@@ -174,12 +178,71 @@ const OrderDetails: React.FC = () => {
     }
   };
 
-  const handleExchangeSubmit = (comment: string, images: File[]) => {
-    console.log("Comment:", comment);
-    console.log("Uploaded Images:", images);
-    // You can send `comment` and `images` to your API here
-    toast.success("Exchange request submitted.");
+  const handleExchangeSubmit = async () => {
+    // try {
+    //   await axios.post(exchange, {
+    //     orderid: id,
+    //     productid: productIds,
+    //   });
+    //   setModalVisible(false);
+    //   // ✅ Re-fetch status immediately
+    //   const res = await axios.post(exchangeStatus, {
+    //     orderid: id,
+    //     productid: selectedProductId,
+    //   });
+    //   setExchangeStatusNum(res.data.status);
+    //   toast.success("Exchange request submitted.");
+    // } catch (err) {
+    //   console.error("Exchange failed", err);
+    // }
   };
+
+  const handleExchangeSuccess = () => {
+    if (selectedProductId) {
+      fetchStatus(selectedProductId);
+    }
+  };
+
+const fetchStatus = async (productId: string) => {
+  try {
+    const res = await axios.post(exchangeStatus, {
+      orderid: id,
+      productid: productId, // <- Pass only one productId
+    });
+
+    setExchangeStatusMap((prev) => ({
+      ...prev,
+      [productId]: res.data.status,
+    }));
+  } catch (err) {
+    console.error("Error fetching status:", err);
+  }
+};
+
+
+  useEffect(() => {
+  const fetchInitialStatus = async () => {
+    try {
+      const statusMap: { [key: string]: number } = {};
+
+      for (const pid of productIds) {
+        const res = await axios.post(exchangeStatus, {
+          orderid: id,
+          productid: pid,
+        });
+
+        statusMap[pid] = res.data.status;
+      }
+
+      setExchangeStatusMap(statusMap);
+    } catch (err) {
+      console.error("Error fetching initial status:", err);
+    }
+  };
+
+  fetchInitialStatus();
+}, []);
+
 
   useEffect(() => {
     if (orderData.length && address) {
@@ -243,8 +306,8 @@ const OrderDetails: React.FC = () => {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log("id", id);
-        console.log(data);
+        // console.log("id", id);
+        console.log("cwecdcfw",data);
         setOrderData(data?.data);
         setStatus(data?.tracking_status);
         setPayment_type(data?.data?.[0]?.payment_type);
@@ -304,7 +367,7 @@ const OrderDetails: React.FC = () => {
         })
         .then((response) => {
           const data = response.data.data;
-          console.log(data);
+          // console.log(data);
           const relatedData = response.data.related_products;
 
           // Construct full image URLs
@@ -340,7 +403,7 @@ const OrderDetails: React.FC = () => {
   };
 
   const handleReviewSubmit = (productId: string) => {
-    console.log(review);
+    // console.log(review);
     toast.success("Your review has been submitted!");
     setReviewVisible((prev) => ({ ...prev, [productId]: false }));
     setReview("");
@@ -439,7 +502,11 @@ const OrderDetails: React.FC = () => {
                         className="border-r p-3 hover:bg-purple-100 cursor-pointer flex flex-col items-center justify-center"
                       >
                         <CgArrowsExchangeAlt className="border rounded-full border-black mb-1 text-xl" />
-                        <span className="font-semibold">Exchange</span>
+                        <span className="font-semibold">
+                          {Number(exchangeStatusMap[productIds[index]]) > 0
+                            ? "View exchange status"
+                            : "Exchange"}
+                        </span>
                       </div>
 
                       <div className="p-3 hover:bg-purple-100 cursor-pointer flex flex-col items-center justify-center">
@@ -615,6 +682,7 @@ const OrderDetails: React.FC = () => {
           onSubmit={handleExchangeSubmit}
           productId={selectedProductId}
           orderId={id}
+          onSuccess={handleExchangeSuccess}
         />
       )}
       {/* Antd Modal for Cancel Confirmation */}

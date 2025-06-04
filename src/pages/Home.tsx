@@ -91,7 +91,7 @@ const Home: React.FC<HomePageProps> = ({ setCategoryId, setSubcategoryId }) => {
     dots: false,
     infinite: true,
     speed: 500,
-    slidesToShow: 6,
+    slidesToShow: 5,
     slidesToScroll: 1,
     autoplay: false,
     autoplaySpeed: 2000,
@@ -127,10 +127,10 @@ const Home: React.FC<HomePageProps> = ({ setCategoryId, setSubcategoryId }) => {
       videoUrl: "/home/video/letter_ring.mp4",
       url: "87",
     },
-    {
-      videoUrl: "/home/video/necklace.mp4",
-      url: "158",
-    },
+    // {
+    //   videoUrl: "/home/video/necklace.mp4",
+    //   url: "158",
+    // },
     {
       videoUrl: "/home/video/hand_ring.mp4",
       url: "167",

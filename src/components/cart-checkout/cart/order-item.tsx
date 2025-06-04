@@ -43,7 +43,7 @@ const Item: React.FC<ItemProps> = ({
   if (qty > totalQty) {
     qty = totalQty;
   }
-  console.log("totalitem", totalItem);
+  console.log("qty", quantity);
   const quantityOptions = Array.from({ length: totalQty }, (_, i) => i + 1);
 
   async function onMoveToWishlist(id: string | number): Promise<void> {
@@ -102,22 +102,32 @@ const Item: React.FC<ItemProps> = ({
 
           <div className="flex items-center mb-3 mt-2">
             <span className="font-semibold text-sm mr-2  text-black">Qty:</span>
-            
-            {totalItem == 2 || totalItem == 3 ? (
-              <span className="font-semibold">1</span>
-            ) : (
-              <select
-                className="border border-gray-300 cursor-pointer rounded px-2 py-1 text-sm font-medium bg-gray-50 focus:outline-none focus:ring-1 focus:ring-gray-400 w-16"
-                value={qty}
-                onChange={(e) => onQuantityChange(id, parseInt(e.target.value))}
-              >
-                {quantityOptions.map((num) => (
+
+            {/* // <span className="font-semibold">1</span> */}
+            <select
+              className="border border-gray-300 cursor-pointer rounded px-2 py-1 text-sm font-medium bg-gray-50 focus:outline-none focus:ring-1 focus:ring-gray-400 w-16"
+              value={totalItem === 2 || totalItem === 3 ? 1 : qty} // force show 1
+              onChange={(e) =>
+                onQuantityChange(
+                  id,
+                  totalItem === 2 || totalItem === 3
+                    ? 1
+                    : parseInt(e.target.value)
+                )
+              }
+            >
+              {totalItem === 2 || totalItem === 3 ? (
+                <option key={1} value={1}>
+                  1
+                </option>
+              ) : (
+                quantityOptions.map((num) => (
                   <option key={num} value={num}>
                     {num}
                   </option>
-                ))}
-              </select>
-            )}
+                ))
+              )}
+            </select>
           </div>
 
           <div className="flex items-center gap-2 mb-1">

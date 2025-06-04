@@ -34,9 +34,7 @@ interface ItemProps {
   totalQuantity: string;
 }
 
-const Loader = () => (
-  <LoaderCode/>
-);
+const Loader = () => <LoaderCode />;
 
 const EmptyCart = () => (
   <div className="flex flex-col items-center justify-center !border h-[100vh] py-20 bg-white w-full text-center">
@@ -139,14 +137,33 @@ const Cart: React.FC<CartProps> = ({
     setTotalAmount(original - discounted);
   };
 
+  useEffect(() => {
+    if (totalItem.length === 2 || totalItem.length === 3) {
+      totalItem.forEach((item) => {
+        if (parseInt(item.qty) !== 1) {
+          handleQuantityChange(item.id, 1); 
+        }
+      });
+    }
+  }, [totalItem]);
+
   const handleQuantityChange = async (id: number, newQty: number) => {
+    //Step 1: Force quantity to 1 if totalItem count is 2 or 3
+    if (totalItem.length === 2 || totalItem.length === 3) {
+      console.log("Combo detected, forcing quantity to 1");
+      newQty = 1;
+    }
+
+    //Step 2: Update local state
     const updatedItems = totalItem.map((item) =>
       item.id === id ? { ...item, qty: newQty.toString() } : item
     );
     setTotalItem(updatedItems);
     recalculateTotals(updatedItems);
 
+    //Step 3: Send to backend
     try {
+      console.log("Sending quantity to backend:", newQty); // Should log 1 in combo case
       await axios.post(
         updateCartQuantity,
         { productId: id, quantity: newQty },
