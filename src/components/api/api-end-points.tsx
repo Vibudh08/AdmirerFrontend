@@ -33,3 +33,4 @@ export const movecart = apiHeader + "user/wishlist/movecart";
 export const remove = apiHeader + "user/wishlist/remove";
 export const exchange = apiHeader + "exchange";
 export const exchangeStatus = apiHeader + "exchangeStatus";
+export const cancelOrder = apiHeader + "cancelOrder";

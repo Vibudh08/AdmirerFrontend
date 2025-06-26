@@ -120,7 +120,7 @@ const ProductDetails = (item: { wishlist: number }) => {
         cartItems.push(product);
         localStorage.setItem("guest_cart", JSON.stringify(cartItems));
 
-        // ✅ Update itemCount
+        // Update itemCount
         const newCount =
           parseInt(localStorage.getItem("itemCount") || "0", 10) + 1;
         localStorage.setItem("itemCount", newCount.toString());
@@ -298,21 +298,21 @@ const ProductDetails = (item: { wishlist: number }) => {
             </div>
 
             {/* Thumbnails Section */}
-            <div className="flex mt-4 flex-wrap">
+            <div className="flex mt-4 w-full overflow-x-auto overflow-y-hidden">
               {thumbnails && thumbnails.length > 0 ? (
                 thumbnails.map((src, idx) => (
                   <img
                     key={idx}
                     src={src}
                     alt={`Thumbnail ${idx + 1}`}
-                    onClick={() => handleImageClick(src)} // Click to update main image
-                    onMouseEnter={() => setHoverImage(src)} // Hover to show image in main container
-                    onMouseLeave={() => setHoverImage(null)} // Remove hover effect when mouse leaves
+                    onClick={() => handleImageClick(src)} 
+                    onMouseEnter={() => setHoverImage(src)} 
+                    onMouseLeave={() => setHoverImage(null)}
                     className="w-20 h-20 rounded border p-2 border-gray-300 object-cover cursor-pointer hover:scale-105 transition-transform"
                   />
                 ))
               ) : (
-                <div>No thumbnails available</div> // Optional fallback message
+                <div>No thumbnails available</div> 
               )}
             </div>
           </div>

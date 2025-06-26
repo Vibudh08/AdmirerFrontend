@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useLocation, Link } from "react-router-dom";
-import { FaFileInvoice } from "react-icons/fa";
+import { useParams, useLocation, Link, useNavigate } from "react-router-dom";
 import {
   order_detail_API,
   getAddress_API,
   productDetails,
+  cancelOrder,
+  exchangeStatus,
+  exchange,
 } from "../api/api-end-points";
 import {
   IoIosArrowBack,
@@ -19,6 +21,8 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import Invoice from "../Invoice";
 import ExchangePopupModal from "./ExchangePopupModal";
+import { Modal } from "antd";
+import { useAwb } from "../../contexts/AwbContext";
 
 // Loader component
 const Loader = () => (
@@ -55,11 +59,17 @@ const OrderDetails: React.FC = () => {
   }
 
   const [orderData, setOrderData] = useState<OrderDetail[]>([]);
+  // console.log(orderData);
+  // console.log(productIds);
   const [status, setStatus] = useState("");
+  const [exchangeStatusMap, setExchangeStatusMap] = useState<{
+    [key: string]: number;
+  }>({});
+
   const [totalPrice, setTotalPrice] = useState(0);
   const [productNames, setProductNames] = useState<string[]>([]);
   const [payment_type, setPayment_type] = useState<string>();
-  const [loading, setLoading] = useState(true); // NEW
+  const [loading, setLoading] = useState(true);
   const [ratings, setRatings] = useState<{ [productId: string]: number }>({});
   const [invoiceData, setInvoiceData] = useState<any>(null);
   const [reviewVisible, setReviewVisible] = useState<{
@@ -70,7 +80,15 @@ const OrderDetails: React.FC = () => {
   const [isModalVisible, setModalVisible] = useState(false);
   const cleanedTotal = Number(totalPrice);
   const gstAmount = Math.ceil(Number((cleanedTotal * 0.05).toFixed(2)));
-
+  const [selectedProductId, setSelectedProductId] = useState<string | null>(
+    null
+  );
+  const [cancelLoader, setCancelLoader] = useState(false);
+  const navigate = useNavigate();
+  const [isCancelModalVisible, setIsCancelModalVisible] = useState(false);
+  const [isWindowClosed, setIsWindowClosed] = useState(false);
+  const [cutoffDateStr, setCutoffDateStr] = useState("");
+  const { awbNumber } = useAwb();
   let totalWithGST;
 
   if (productIds.length === 3) {
@@ -138,12 +156,115 @@ const OrderDetails: React.FC = () => {
     ],
   };
 
-  const handleExchangeSubmit = (comment: string, images: File[]) => {
-    console.log("Comment:", comment);
-    console.log("Uploaded Images:", images);
-    // You can send `comment` and `images` to your API here
-    toast.success("Exchange request submitted.")
+  useEffect(() => {
+    if (orderData && orderData.length > 0 && orderData[0].date) {
+      const deliveryDate = new Date(orderData[0].date);
+      const cutoffDate = new Date(deliveryDate);
+      cutoffDate.setDate(deliveryDate.getDate() + 7); // add 7 days
+
+      const today = new Date();
+      setIsWindowClosed(today > cutoffDate);
+      setCutoffDateStr(
+        cutoffDate.toLocaleDateString("en-GB", {
+          day: "numeric",
+          month: "short",
+          year: "numeric",
+        })
+      );
+    }
+  }, [orderData]);
+
+  const handleCancelConfirm = async () => {
+    // console.log("Cancel product:", selectedProductId, "Order:", id);
+    setCancelLoader(true);
+    try {
+      await axios.post(
+        cancelOrder,
+        {
+          awb: awbNumber,
+          orderid: id,
+          productid: selectedProductId,
+        },
+        {
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("auth_token"),
+          },
+        }
+      );
+      toast.success("Order Cancelled Successfully");
+      navigate("/dashboard?section=orders");
+      // console.log(data.data.status)
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setIsCancelModalVisible(false);
+      setCancelLoader(false);
+    }
   };
+
+  const handleExchangeSubmit = async () => {
+    // try {
+    //   await axios.post(exchange, {
+    //     orderid: id,
+    //     productid: productIds,
+    //   });
+    //   setModalVisible(false);
+    //   // ✅ Re-fetch status immediately
+    //   const res = await axios.post(exchangeStatus, {
+    //     orderid: id,
+    //     productid: selectedProductId,
+    //   });
+    //   setExchangeStatusNum(res.data.status);
+    //   toast.success("Exchange request submitted.");
+    // } catch (err) {
+    //   console.error("Exchange failed", err);
+    // }
+  };
+
+  const handleExchangeSuccess = () => {
+    if (selectedProductId) {
+      fetchStatus(selectedProductId);
+    }
+  };
+
+  const fetchStatus = async (productId: string) => {
+    try {
+      const res = await axios.post(exchangeStatus, {
+        orderid: id,
+        productid: productId, // <- Pass only one productId
+      });
+
+      setExchangeStatusMap((prev) => ({
+        ...prev,
+        [productId]: res.data.status,
+      }));
+    } catch (err) {
+      console.error("Error fetching status:", err);
+    }
+  };
+
+  useEffect(() => {
+    const fetchInitialStatus = async () => {
+      try {
+        const statusMap: { [key: string]: number } = {};
+
+        for (const pid of productIds) {
+          const res = await axios.post(exchangeStatus, {
+            orderid: id,
+            productid: pid,
+          });
+
+          statusMap[pid] = res.data.status;
+        }
+
+        setExchangeStatusMap(statusMap);
+      } catch (err) {
+        console.error("Error fetching initial status:", err);
+      }
+    };
+
+    fetchInitialStatus();
+  }, []);
 
   useEffect(() => {
     if (orderData.length && address) {
@@ -207,8 +328,8 @@ const OrderDetails: React.FC = () => {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log("id", id);
-        console.log(data);
+        // console.log("id", id);
+        console.log("cwecdcfw", data);
         setOrderData(data?.data);
         setStatus(data?.tracking_status);
         setPayment_type(data?.data?.[0]?.payment_type);
@@ -268,7 +389,7 @@ const OrderDetails: React.FC = () => {
         })
         .then((response) => {
           const data = response.data.data;
-          console.log(data);
+          // console.log(data);
           const relatedData = response.data.related_products;
 
           // Construct full image URLs
@@ -304,7 +425,7 @@ const OrderDetails: React.FC = () => {
   };
 
   const handleReviewSubmit = (productId: string) => {
-    console.log(review);
+    // console.log(review);
     toast.success("Your review has been submitted!");
     setReviewVisible((prev) => ({ ...prev, [productId]: false }));
     setReview("");
@@ -362,10 +483,11 @@ const OrderDetails: React.FC = () => {
                         Quantity: {order.quantity}
                       </p>
                     </div>
-                    <div className="flex  items-start text-white bg-[#7b48a5] p-4  gap-2 mt-3">
+                    <div className="flex  items-start text-white bg-[#7b48a5] p-3  gap-2 mt-3">
                       <img
                         src="https://myntraweb.blob.core.windows.net/mymyntra/assets/img/box.svg"
                         alt=""
+                        className="w-5"
                       />
                       <div className="flex flex-col gap-1 ml-1">
                         <span className="text-[13px] font-bold text-start">
@@ -383,28 +505,40 @@ const OrderDetails: React.FC = () => {
                       </div>
                     </div>
                     {/* <div className="flex  items-start bg-white  border p-4  gap-2 mt-3"> */}
-                    <div className="grid border shadow-sm mt-3 grid-cols-3 text-sm text-center">
-                      <div className="border-r p-3 hover:bg-purple-100 cursor-pointer flex flex-col items-center justify-center">
-                        <IoClose className="border rounded-full border-black mb-1 text-xl" />
-                        <span className="font-semibold">Cancel</span>
-                      </div>
+                    <div className="grid border shadow-sm mt-3 grid-cols-1 text-sm">
                       <div
-                        onClick={() => setModalVisible(true)}
-                        className="border-r p-3 hover:bg-purple-100 cursor-pointer flex flex-col items-center justify-center"
+                        onClick={() => {
+                          setSelectedProductId(productIds[index]);
+                          setModalVisible(true);
+                        }}
+                        className="p-3 pl-3 hover:bg-purple-100 cursor-pointer flex flex-row gap-3 justify-start items-start text-start" // top alignment
                       >
-                        <CgArrowsExchangeAlt className="border rounded-full border-black mb-1 text-xl" />
-                        <span className="font-semibold">Exchange</span>
-                      </div>
-                      <ExchangePopupModal
-                        visible={isModalVisible}
-                        onClose={() => setModalVisible(false)}
-                        onSubmit={handleExchangeSubmit}
-                        productId={productIds[index]}
-                        orderId={id}
-                      />
-                      <div className="p-3 hover:bg-purple-100 cursor-pointer flex flex-col items-center justify-center">
-                        <IoIosReturnLeft className="border rounded-full border-black mb-1 text-xl" />
-                        <span className="font-semibold">Return</span>
+                        {/* Icon container with fixed size to push it down slightly */}
+                        <div className="pt-0.5">
+                          <CgArrowsExchangeAlt className="border rounded-full border-black text-base" />
+                        </div>
+
+                        {/* Text container with more content and line spacing */}
+                        <div className="flex flex-col text-start justify-start items-start ">
+                          <span className="text-[15px] font-semibold ">
+                            {Number(exchangeStatusMap[productIds[index]]) > 0
+                              ? "View exchange status"
+                              : "Exchange"}
+                          </span>
+                          {Number(exchangeStatusMap[productIds[index]]) > 0 ? (
+                            ""
+                          ) : (
+                            <p className="text-xs text-gray-600 pt-1 leading-snug">
+                              {isWindowClosed ? (
+                                <>Exchange window closed on {cutoffDateStr}</>
+                              ) : (
+                                <>
+                                  Exchange window available till {cutoffDateStr}
+                                </>
+                              )}
+                            </p>
+                          )}
+                        </div>
                       </div>
                     </div>
 
@@ -459,12 +593,12 @@ const OrderDetails: React.FC = () => {
           </div>
 
           {/* Right Section - Order Summary */}
-          <div className="max-md:w-full w-80 space-y-4 sticky top-3 self-start">
+          <div className="max-md:w-full w-80 space-y-3 sticky top-3 self-start">
             <div className="flex justify-between text-sm font-medium bg-white border rounded shadow-sm p-5 cursor-pointer">
-              <div className="flex gap-3">
-                <FaFileInvoice className="h-5 w-5" />
-                <Invoice order={invoiceData} />
-              </div>
+              {/* <div className="flex gap-3">
+                <FaFileInvoice className="h-5 w-5" /> */}
+              <Invoice order={invoiceData} />
+              {/* </div> */}
               <svg
                 className="w-5 h-5 text-gray-500"
                 fill="none"
@@ -549,6 +683,18 @@ const OrderDetails: React.FC = () => {
                 {payment_type}
               </span>
             </div>
+            <div
+              className="flex  text-sm font-medium bg-white border gap-2 rounded shadow-sm p-5 py-4 pb-3 cursor-pointer"
+              onClick={() => {
+                setSelectedProductId(selectedProductId);
+                setIsCancelModalVisible(true);
+              }}
+            >
+              <IoClose className="border rounded-full border-red-700 text-red-700 mb-1 text-xl" />
+              <span className="font-semibold text-red-700 hover:font-bold">
+                Cancel Order
+              </span>
+            </div>
           </div>
         </div>
       </div>
@@ -565,6 +711,90 @@ const OrderDetails: React.FC = () => {
           </Slider>
         </div>
       </div>
+      {isModalVisible && selectedProductId && (
+        <ExchangePopupModal
+          visible={isModalVisible}
+          onClose={() => {
+            setModalVisible(false);
+            setSelectedProductId(null);
+          }}
+          onSubmit={handleExchangeSubmit}
+          productId={selectedProductId}
+          orderId={id}
+          onSuccess={handleExchangeSuccess}
+        />
+      )}
+      {/* Antd Modal for Cancel Confirmation */}
+      <Modal
+        // title="Are you sure you want to cancel the order?"
+        open={isCancelModalVisible}
+        onCancel={() => setIsCancelModalVisible(false)}
+        footer={null}
+      >
+        <p className="text-base font-semibold max-md:pt-3 pb-1 max-md:pb-2">
+          Are you sure you want to cancel the order?
+        </p>
+        <p>This action cannot be undone.</p>
+
+        <div className="flex justify-center gap-4 mt-6">
+          <button
+            onClick={handleCancelConfirm}
+            type="button"
+            disabled={cancelLoader}
+            style={{
+              backgroundColor: "#7b48a5",
+              color: "white",
+              padding: "8px 20px",
+              border: "none",
+              borderRadius: "4px",
+              cursor: cancelLoader ? "not-allowed" : "pointer",
+              opacity: cancelLoader ? 0.6 : 1,
+              pointerEvents: cancelLoader ? "none" : "auto",
+            }}
+          >
+            {cancelLoader ? (
+              <span className="flex items-center justify-center text-sm text-white">
+                <svg
+                  className="animate-spin h-5 w-5 mr-2 text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  />
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                  />
+                </svg>
+                Cancelling...
+              </span>
+            ) : (
+              "Yes, Cancel"
+            )}
+          </button>
+          <button
+            onClick={() => setIsCancelModalVisible(false)}
+            style={{
+              backgroundColor: "#e0e0e0",
+              color: "#333",
+              padding: "8px 20px",
+              border: "none",
+              borderRadius: "4px",
+              cursor: "pointer",
+            }}
+          >
+            No
+          </button>
+        </div>
+      </Modal>
     </>
   );
 };
