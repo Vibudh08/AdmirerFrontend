@@ -150,7 +150,7 @@ const ProductDetails = (item: { wishlist: number }) => {
       );
 
       if (response.data && response.data.status === "success") {
-        toast.success("Product added to cart");
+        // toast.success("Product added to cart");
         setIsInCart(true);
 
         // ✅ Update itemCount only if added successfully
