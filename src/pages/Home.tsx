@@ -235,12 +235,12 @@ const Home: React.FC<HomePageProps> = ({ setCategoryId, setSubcategoryId }) => {
         </div>
       </section>
 
-      <div className="relative overflow-hidden bg-purple-200 py-4">
+      <div className="relative overflow-hidden bg-purple-200 py-3 max-md:py-2">
         <div className="scroll-wrapper flex w-max animate-scroll">
           {[...companies, ...companies].map((company, index) => (
             <div
               key={index}
-              className="mx-8 whitespace-nowrap text-lg font-semibold text-gray-800"
+              className="mx-8 whitespace-nowrap text-lg max-md:text-base font-semibold text-gray-800"
             >
               {company}
             </div>
@@ -432,7 +432,7 @@ const Home: React.FC<HomePageProps> = ({ setCategoryId, setSubcategoryId }) => {
 
       <section className="bg-white pb-10 max-md:pt-10">
         <div className=" bg-purple-200">
-        <div className="grid grid-cols-3 max-md:grid-cols-3 items-center justify-center py-12 w-[85%] text-center m-auto gap-4">
+        <div className="grid grid-cols-3 max-md:grid-cols-3 items-center justify-center py-12 w-[85%] max-md:w-full text-center m-auto gap-4">
           {features.map((item, index) => (
             <div key={index} className="flex flex-col items-center gap-5">
               <img src={item.img} alt="" className="mx-auto text-xl" />

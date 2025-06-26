@@ -59,8 +59,12 @@ const OrderDetails: React.FC = () => {
   }
 
   const [orderData, setOrderData] = useState<OrderDetail[]>([]);
+  // console.log(orderData);
+  // console.log(productIds);
   const [status, setStatus] = useState("");
-  const [exchangeStatusMap, setExchangeStatusMap] = useState<{ [key: string]: number }>({});
+  const [exchangeStatusMap, setExchangeStatusMap] = useState<{
+    [key: string]: number;
+  }>({});
 
   const [totalPrice, setTotalPrice] = useState(0);
   const [productNames, setProductNames] = useState<string[]>([]);
@@ -82,6 +86,8 @@ const OrderDetails: React.FC = () => {
   const [cancelLoader, setCancelLoader] = useState(false);
   const navigate = useNavigate();
   const [isCancelModalVisible, setIsCancelModalVisible] = useState(false);
+  const [isWindowClosed, setIsWindowClosed] = useState(false);
+  const [cutoffDateStr, setCutoffDateStr] = useState("");
   const { awbNumber } = useAwb();
   let totalWithGST;
 
@@ -150,6 +156,24 @@ const OrderDetails: React.FC = () => {
     ],
   };
 
+  useEffect(() => {
+    if (orderData && orderData.length > 0 && orderData[0].date) {
+      const deliveryDate = new Date(orderData[0].date);
+      const cutoffDate = new Date(deliveryDate);
+      cutoffDate.setDate(deliveryDate.getDate() + 7); // add 7 days
+
+      const today = new Date();
+      setIsWindowClosed(today > cutoffDate);
+      setCutoffDateStr(
+        cutoffDate.toLocaleDateString("en-GB", {
+          day: "numeric",
+          month: "short",
+          year: "numeric",
+        })
+      );
+    }
+  }, [orderData]);
+
   const handleCancelConfirm = async () => {
     // console.log("Cancel product:", selectedProductId, "Order:", id);
     setCancelLoader(true);
@@ -203,46 +227,44 @@ const OrderDetails: React.FC = () => {
     }
   };
 
-const fetchStatus = async (productId: string) => {
-  try {
-    const res = await axios.post(exchangeStatus, {
-      orderid: id,
-      productid: productId, // <- Pass only one productId
-    });
-
-    setExchangeStatusMap((prev) => ({
-      ...prev,
-      [productId]: res.data.status,
-    }));
-  } catch (err) {
-    console.error("Error fetching status:", err);
-  }
-};
-
-
-  useEffect(() => {
-  const fetchInitialStatus = async () => {
+  const fetchStatus = async (productId: string) => {
     try {
-      const statusMap: { [key: string]: number } = {};
+      const res = await axios.post(exchangeStatus, {
+        orderid: id,
+        productid: productId, // <- Pass only one productId
+      });
 
-      for (const pid of productIds) {
-        const res = await axios.post(exchangeStatus, {
-          orderid: id,
-          productid: pid,
-        });
-
-        statusMap[pid] = res.data.status;
-      }
-
-      setExchangeStatusMap(statusMap);
+      setExchangeStatusMap((prev) => ({
+        ...prev,
+        [productId]: res.data.status,
+      }));
     } catch (err) {
-      console.error("Error fetching initial status:", err);
+      console.error("Error fetching status:", err);
     }
   };
 
-  fetchInitialStatus();
-}, []);
+  useEffect(() => {
+    const fetchInitialStatus = async () => {
+      try {
+        const statusMap: { [key: string]: number } = {};
 
+        for (const pid of productIds) {
+          const res = await axios.post(exchangeStatus, {
+            orderid: id,
+            productid: pid,
+          });
+
+          statusMap[pid] = res.data.status;
+        }
+
+        setExchangeStatusMap(statusMap);
+      } catch (err) {
+        console.error("Error fetching initial status:", err);
+      }
+    };
+
+    fetchInitialStatus();
+  }, []);
 
   useEffect(() => {
     if (orderData.length && address) {
@@ -307,7 +329,7 @@ const fetchStatus = async (productId: string) => {
       .then((res) => res.json())
       .then((data) => {
         // console.log("id", id);
-        console.log("cwecdcfw",data);
+        console.log("cwecdcfw", data);
         setOrderData(data?.data);
         setStatus(data?.tracking_status);
         setPayment_type(data?.data?.[0]?.payment_type);
@@ -461,10 +483,11 @@ const fetchStatus = async (productId: string) => {
                         Quantity: {order.quantity}
                       </p>
                     </div>
-                    <div className="flex  items-start text-white bg-[#7b48a5] p-4  gap-2 mt-3">
+                    <div className="flex  items-start text-white bg-[#7b48a5] p-3  gap-2 mt-3">
                       <img
                         src="https://myntraweb.blob.core.windows.net/mymyntra/assets/img/box.svg"
                         alt=""
+                        className="w-5"
                       />
                       <div className="flex flex-col gap-1 ml-1">
                         <span className="text-[13px] font-bold text-start">
@@ -482,36 +505,40 @@ const fetchStatus = async (productId: string) => {
                       </div>
                     </div>
                     {/* <div className="flex  items-start bg-white  border p-4  gap-2 mt-3"> */}
-                    <div className="grid border shadow-sm mt-3 grid-cols-3 text-sm text-center">
-                      {/* Cancel Button UI */}
-                      <div
-                        className="border-r p-3 hover:bg-purple-100 cursor-pointer flex flex-col items-center justify-center"
-                        onClick={() => {
-                          setSelectedProductId(productIds[index]);
-                          setIsCancelModalVisible(true);
-                        }}
-                      >
-                        <IoClose className="border rounded-full border-black mb-1 text-xl" />
-                        <span className="font-semibold">Cancel</span>
-                      </div>
+                    <div className="grid border shadow-sm mt-3 grid-cols-1 text-sm">
                       <div
                         onClick={() => {
                           setSelectedProductId(productIds[index]);
                           setModalVisible(true);
                         }}
-                        className="border-r p-3 hover:bg-purple-100 cursor-pointer flex flex-col items-center justify-center"
+                        className="p-3 pl-3 hover:bg-purple-100 cursor-pointer flex flex-row gap-3 justify-start items-start text-start" // top alignment
                       >
-                        <CgArrowsExchangeAlt className="border rounded-full border-black mb-1 text-xl" />
-                        <span className="font-semibold">
-                          {Number(exchangeStatusMap[productIds[index]]) > 0
-                            ? "View exchange status"
-                            : "Exchange"}
-                        </span>
-                      </div>
+                        {/* Icon container with fixed size to push it down slightly */}
+                        <div className="pt-0.5">
+                          <CgArrowsExchangeAlt className="border rounded-full border-black text-base" />
+                        </div>
 
-                      <div className="p-3 hover:bg-purple-100 cursor-pointer flex flex-col items-center justify-center">
-                        <IoIosReturnLeft className="border rounded-full border-black mb-1 text-xl" />
-                        <span className="font-semibold">Return</span>
+                        {/* Text container with more content and line spacing */}
+                        <div className="flex flex-col text-start justify-start items-start ">
+                          <span className="text-[15px] font-semibold ">
+                            {Number(exchangeStatusMap[productIds[index]]) > 0
+                              ? "View exchange status"
+                              : "Exchange"}
+                          </span>
+                          {Number(exchangeStatusMap[productIds[index]]) > 0 ? (
+                            ""
+                          ) : (
+                            <p className="text-xs text-gray-600 pt-1 leading-snug">
+                              {isWindowClosed ? (
+                                <>Exchange window closed on {cutoffDateStr}</>
+                              ) : (
+                                <>
+                                  Exchange window available till {cutoffDateStr}
+                                </>
+                              )}
+                            </p>
+                          )}
+                        </div>
                       </div>
                     </div>
 
@@ -566,7 +593,7 @@ const fetchStatus = async (productId: string) => {
           </div>
 
           {/* Right Section - Order Summary */}
-          <div className="max-md:w-full w-80 space-y-4 sticky top-3 self-start">
+          <div className="max-md:w-full w-80 space-y-3 sticky top-3 self-start">
             <div className="flex justify-between text-sm font-medium bg-white border rounded shadow-sm p-5 cursor-pointer">
               {/* <div className="flex gap-3">
                 <FaFileInvoice className="h-5 w-5" /> */}
@@ -654,6 +681,18 @@ const fetchStatus = async (productId: string) => {
               Payment Method :
               <span className="text-gray-700 ml-1 uppercase">
                 {payment_type}
+              </span>
+            </div>
+            <div
+              className="flex  text-sm font-medium bg-white border gap-2 rounded shadow-sm p-5 py-4 pb-3 cursor-pointer"
+              onClick={() => {
+                setSelectedProductId(selectedProductId);
+                setIsCancelModalVisible(true);
+              }}
+            >
+              <IoClose className="border rounded-full border-red-700 text-red-700 mb-1 text-xl" />
+              <span className="font-semibold text-red-700 hover:font-bold">
+                Cancel Order
               </span>
             </div>
           </div>

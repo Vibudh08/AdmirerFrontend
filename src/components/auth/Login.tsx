@@ -197,7 +197,6 @@ const Login = () => {
                           document.getElementById(`otp-${index + 1}`)?.focus();
                         }
 
-                        // ✅ Collect and set the OTP for React Hook Form
                         const otp = Array.from(
                           { length: 6 },
                           (_, i) =>
