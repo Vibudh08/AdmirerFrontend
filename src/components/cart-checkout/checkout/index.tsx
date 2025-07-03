@@ -183,6 +183,10 @@ const Checkout: React.FC<IndexProps> = ({
                 });
 
                 if (nimbusRes.status === 200) {
+                  const data = await nimbusRes.json();
+                  const awb = data.data.data.awb_number;
+                  console.log(awb);
+                  setAwbNumber(awb);
                   setOrderId(order_number);
                   navigate("/order-confirmation", {
                     state: { orderID: order_number },
@@ -244,6 +248,7 @@ const Checkout: React.FC<IndexProps> = ({
         if (response.status === 200) {
           const data = await response.json();
           const awb = data.data.data.awb_number;
+          console.log(awb);
           setAwbNumber(awb);
           setOrderId(order_number);
           navigate("/order-confirmation", { state: { payload } });
@@ -492,7 +497,7 @@ const Checkout: React.FC<IndexProps> = ({
           </p>
         </div>
       </div>
-      {/* <Modal
+      <Modal
         title="More Information"
         open={isModalOpen}
         onCancel={() => setIsModalOpen(false)}
@@ -500,7 +505,7 @@ const Checkout: React.FC<IndexProps> = ({
         width={"350px"}
       >
         <p>{modalContent}</p>
-      </Modal> */}
+      </Modal>
     </>
   );
 };

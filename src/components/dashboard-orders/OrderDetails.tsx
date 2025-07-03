@@ -175,7 +175,7 @@ const OrderDetails: React.FC = () => {
   }, [orderData]);
 
   const handleCancelConfirm = async () => {
-    // console.log("Cancel product:", selectedProductId, "Order:", id);
+    console.log("Cancel product:", selectedProductId, "Order:", id, "awb:", awbNumber);
     setCancelLoader(true);
     try {
       await axios.post(
@@ -304,7 +304,7 @@ const OrderDetails: React.FC = () => {
         items: items,
         total: `Rs. ${totalPrice}`,
         gst: `Rs. ${gst}`,
-        totalAmount: `Rs. ${totalAmount}`,
+        totalAmount: `Rs. ${totalWithGST}`,
       };
 
       setInvoiceData(invoice);
@@ -443,7 +443,7 @@ const OrderDetails: React.FC = () => {
   // (Your full JSX below remains unchanged)
   return (
     <>
-      <div className="max-w-6xl mx-auto px-0 sm:px-6 lg:px-8 py-6">
+      <div className="max-w-6xl mx-auto px-0 sm:px-6 lg:px-8 py-6 max-md:pt-3">
         <div className="flex flex-col md:flex-row gap-6">
           {/* Left Section - Order Items */}
           <div className="flex-1 space-y-4 ">

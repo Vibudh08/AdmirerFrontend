@@ -88,47 +88,44 @@ const DeliveryInfo: React.FC<DeliveryInfoProps> = ({
   return (
     <>
       {allAddresses.length === 0 ? (
-        <div className="flex items-center justify-center mb-2 p-6 !max-md:p-4">
+        <div className="flex items-center justify-center p-6 px-0 !max-md:p-4 gap-2">
           <div
-            className="justify-between"
+            className="justify-between w-[80%] max-md:w-[75%]"
             style={{
-              width: "100%",
-              // padding: "24px",
+              height: "40px",
               backgroundColor: "white",
-              borderRadius: "12px",
+              borderRadius: "10px",
               border: "1px solid #e8e8e8",
-              marginTop: "16px",
               display: "flex",
               alignItems: "center",
               textAlign: "center",
             }}
           >
             <p
-              className="font-semibold"
-              style={{ color: "#555", marginBottom: "16px", fontSize: "17px" }}
+              className="font-semibold p-3 max-md:px-2 max-md:text-base"
+              style={{ color: "#555", marginBottom: "16px"}}
             >
               There are no saved addresses.
             </p>
-            <button
-              style={{
-                border: "none",
-                borderRadius: "6px",
-                height: "40px",
-                padding: "0 20px",
-                fontSize: "14px",
-                fontWeight: "500",
-                textTransform: "uppercase",
-                letterSpacing: "0.5px",
-                color: "white",
-                backgroundColor: "#722ed1",
-                cursor: "pointer",
-                boxShadow: "0 2px 4px rgba(114, 46, 209, 0.3)",
-              }}
-              onClick={() => setIsModalVisible(true)}
-            >
-              Add Address
-            </button>
           </div>
+          <button
+            className="px-1 w-[20%] text-xs max-md:px-0 max-md:w-[25%]"
+            style={{
+              border: "none",
+              borderRadius: "10px",
+              height: "40px",
+              fontWeight: "500",
+              textTransform: "uppercase",
+              letterSpacing: "0.5px",
+              color: "white",
+              backgroundColor: "#722ed1",
+              cursor: "pointer",
+              boxShadow: "0 2px 4px rgba(114, 46, 209, 0.3)",
+            }}
+            onClick={() => setIsModalVisible(true)}
+          >
+            Add Address
+          </button>
         </div>
       ) : (
         <div
@@ -195,9 +192,12 @@ const DeliveryInfo: React.FC<DeliveryInfoProps> = ({
               {getZipCode(selectedAddress!)}
             </div>
 
-            <div className="flex justify-between gap-3 max-md:gap-2" style={{ marginTop: "16px" }}>
+            <div
+              className="flex justify-between gap-3 max-md:gap-2"
+              style={{ marginTop: "16px" }}
+            >
               <Select
-                style={{ width: "100%", height: "35px" }}
+                style={{ width: "80%", height: "35px" }}
                 value={JSON.stringify(selectedAddress)}
                 onChange={(value) => {
                   const selected = JSON.parse(value) as Address;
@@ -218,24 +218,25 @@ const DeliveryInfo: React.FC<DeliveryInfoProps> = ({
                   bottom: "17px",
                 }}
               > */}
-                <button className="text-[14px] max-md:text-[12px] p-1"
-                  style={{
-                    width: "100px",
-                    border: "none",
-                    borderRadius: "6px",
-                    height: "34px",
-                    fontWeight: "500",
-                    textTransform: "uppercase",
-                    letterSpacing: "0.5px",
-                    color: "white",
-                    backgroundColor: "#722ed1",
-                    cursor: "pointer",
-                    boxShadow: "0 2px 4px rgba(114, 46, 209, 0.3)",
-                  }}
-                  onClick={() => setIsModalVisible(true)}
-                >
-                  Change
-                </button>
+              <button
+                className="text-[14px] max-md:text-[12px] p-1 "
+                style={{
+                  width: "20%",
+                  border: "none",
+                  borderRadius: "6px",
+                  height: "34px",
+                  fontWeight: "500",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.5px",
+                  color: "white",
+                  backgroundColor: "#722ed1",
+                  cursor: "pointer",
+                  boxShadow: "0 2px 4px rgba(114, 46, 209, 0.3)",
+                }}
+                onClick={() => setIsModalVisible(true)}
+              >
+                Change
+              </button>
               {/* </div> */}
             </div>
           </div>

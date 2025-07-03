@@ -1,4 +1,3 @@
-// ScrollToTop.tsx
 import { useLocation } from 'react-router-dom';
 import { useLayoutEffect, useEffect } from 'react';
 
@@ -12,13 +11,19 @@ const ScrollToTop = () => {
     }
 
     return () => {
-      // Optional: reset when component unmounts
       window.history.scrollRestoration = 'auto';
     };
   }, []);
 
-  // Force scroll to top on route change
   useLayoutEffect(() => {
+    const skipScrollRestore = sessionStorage.getItem("listingScrollY");
+
+    // If scroll position is saved, let the page handle it
+    if (pathname.includes("/listing") && skipScrollRestore) {
+      return;
+    }
+
+    // Default: scroll to top
     window.scrollTo(0, 0);
   }, [pathname]);
 

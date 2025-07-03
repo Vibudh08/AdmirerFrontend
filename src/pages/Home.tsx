@@ -168,19 +168,37 @@ const Home: React.FC<HomePageProps> = ({ setCategoryId, setSubcategoryId }) => {
     // },
   ];
 
+  // const handleClick = (url: string) => {
+  //   const catIdMatch = url.match(/cat-([a-zA-Z0-9]+)/);
+  //   const subcatIdMatch = url.match(/subcat-([a-zA-Z0-9]+)/);
+
+  //   const categoryId = catIdMatch ? catIdMatch[1] : "";
+  //   const subcategoryId = subcatIdMatch ? subcatIdMatch[1] : "";
+
+  //   setCategoryId(categoryId);
+  //   console.log("category id", categoryId);
+  //   setSubcategoryId(subcategoryId);
+  //   console.log("subcategory id", subcategoryId);
+  //   navigate("/listing");
+  // };
+
   const handleClick = (url: string) => {
-    const catIdMatch = url.match(/cat-([a-zA-Z0-9]+)/);
-    const subcatIdMatch = url.match(/subcat-([a-zA-Z0-9]+)/);
+  const catIdMatch = url.match(/cat-([a-zA-Z0-9]+)/);
+  const subcatIdMatch = url.match(/subcat-([a-zA-Z0-9]+)/);
 
-    const categoryId = catIdMatch ? catIdMatch[1] : "";
-    const subcategoryId = subcatIdMatch ? subcatIdMatch[1] : "";
+  const categoryId = catIdMatch ? catIdMatch[1] : "";
+  const subcategoryId = subcatIdMatch ? subcatIdMatch[1] : "";
 
-    setCategoryId(categoryId);
-    console.log("category id", categoryId);
-    setSubcategoryId(subcategoryId);
-    console.log("subcategory id", subcategoryId);
-    navigate("/listing");
-  };
+  // 🟡 Store in sessionStorage
+  sessionStorage.setItem("categoryId", categoryId);
+  sessionStorage.setItem("subcategoryId", subcategoryId);
+
+  // 🟢 Update state too
+  setCategoryId(categoryId);
+  setSubcategoryId(subcategoryId);
+
+  navigate("/listing");
+};
 
   useEffect(() => {
     axios

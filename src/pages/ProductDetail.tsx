@@ -265,7 +265,7 @@ const ProductDetails = (item: { wishlist: number }) => {
   if (isLoading) return <Loader />;
 
   return (
-    <div className="bg-white py-3">
+    <div className="bg-white py-3 max-md:pt-0">
       <div className="w-[75%] max-md:w-full mx-auto bg-white p-6 max-md:p-3 rounded-2xl ">
         <div className="flex flex-col max-md:block lg:flex-row gap-8">
           {/* Left Section */}

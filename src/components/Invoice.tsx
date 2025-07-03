@@ -48,7 +48,7 @@ const Invoice: React.FC<InvoiceProps> = ({ order }) => {
     doc.setFontSize(11);
     doc.text(`Invoice Number : ${order.invoiceNo}`, 14, 44);
     doc.text(`Date : ${order.orderDate}`, 14, 50);
-    doc.text(`Payment Mode : ${order.paymentType}`, 14, 56);
+    doc.text(`Payment Mode : ${order.paymentType.toUpperCase()}`, 14, 56);
     doc.text(`Order ID : ${order.orderId}`, 14, 62);
 
     // --- COMPANY INFO (Below Invoice Info) ---

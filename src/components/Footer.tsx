@@ -14,16 +14,16 @@ const Footer = () => {
               ONLINE SHOPPING
             </h3>
             <ul className="grid grid-cols-2 md:grid-cols-1 space-y-2 max-md:space-y-1 text-gray-600 max-sm:text-sm">
-              <li className="hover:text-[#7b48a5] hover:font-semibold">
+              <li className="hover:text-[#7b48a5] hover:font-semibold hover:underline">
                 <Link to="">Jewellery</Link>
               </li>
-              <li className="hover:text-[#7b48a5] hover:font-semibold">
+              <li className="hover:text-[#7b48a5] hover:font-semibold hover:underline">
                 <Link to="">Ring Corner</Link>
               </li>
-              <li className="hover:text-[#7b48a5] hover:font-semibold">
+              <li className="hover:text-[#7b48a5] hover:font-semibold hover:underline">
                 <Link to="">Couple Rings</Link>
               </li>
-              <li className="hover:text-[#7b48a5] hover:font-semibold">
+              <li className="hover:text-[#7b48a5] hover:font-semibold hover:underline">
                 <Link to="">Luxe Jewelry</Link>
               </li>
             </ul>
@@ -35,28 +35,28 @@ const Footer = () => {
               CUSTOMER POLICIES
             </h3>
             <ul className="grid grid-cols-2 md:grid-cols-1 space-y-2 max-md:space-y-1 text-gray-600 max-sm:text-sm">
-              <li className="hover:text-[#7b48a5] hover:font-semibold">
+              <li className="hover:text-[#7b48a5] hover:font-semibold hover:underline">
                 <Link to="/privacy">Privacy Policy</Link>
               </li>
-              <li className="hover:text-[#7b48a5] hover:font-semibold">
+              <li className="hover:text-[#7b48a5] hover:font-semibold hover:underline">
                 <Link to="/terms">Terms & Conditions</Link>
               </li>
-              <li className="hover:text-[#7b48a5] hover:font-semibold">
+              <li className="hover:text-[#7b48a5] hover:font-semibold hover:underline">
                 <Link to="/exchange">Exchange Policy</Link>
               </li>
-              <li className="hover:text-[#7b48a5] hover:font-semibold">
+              <li className="hover:text-[#7b48a5] hover:font-semibold hover:underline">
                 <Link to="/about">About Us</Link>
               </li>
-              <li className="hover:text-[#7b48a5] hover:font-semibold">
+              <li className="hover:text-[#7b48a5] hover:font-semibold hover:underline">
                 <Link to="/help_faq">Help & FAQs</Link>
               </li>
-              <li className="hover:text-[#7b48a5] hover:font-semibold">
+              <li className="hover:text-[#7b48a5] hover:font-semibold hover:underline">
                 <Link to="/return">Return & Refund Policy</Link>
               </li>
-              <li className="hover:text-[#7b48a5] hover:font-semibold">
+              <li className="hover:text-[#7b48a5] hover:font-semibold hover:underline">
                 <Link to="/shipping">Shipping Policy</Link>
               </li>
-              <li className="hover:text-[#7b48a5] hover:font-semibold">
+              <li className="hover:text-[#7b48a5] hover:font-semibold hover:underline">
                 <Link to="/blogs">Blogs</Link>
               </li>
             </ul>
@@ -141,9 +141,10 @@ const Footer = () => {
           <p className="!mb-1">Uttar Pradesh, 201301</p>
           <p className="!mb-1">India</p>
         </div>
-        <div className="mt-8 max-sm:mt-2 space-y-2 text-gray-600">
+        <div className=" max-sm:mt-5 text-gray-600">
+          <h3 className="font-semibold mb-3 text-black">LEGAL INFORMATION</h3>
           <p className="!mb-1">
-            <strong>BTJ Alpha Technology Private Limited company</strong>
+            <strong>Company Name:</strong> BTJ Alpha Technology Private Limited
           </p>
           <p className="!mb-1">
             <strong>CIN:</strong> U62099UP2025PTC215855

@@ -12,7 +12,9 @@ interface SearchBarWithPopupProps {
   onSelectProduct?: () => void; // optional callback for external control
 }
 
-const SearchBarWithPopup: React.FC<SearchBarWithPopupProps> = ({ onSelectProduct }) => {
+const SearchBarWithPopup: React.FC<SearchBarWithPopupProps> = ({
+  onSelectProduct,
+}) => {
   const [query, setQuery] = useState<string>("");
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [showDropdown, setShowDropdown] = useState<boolean>(false);
@@ -76,25 +78,29 @@ const SearchBarWithPopup: React.FC<SearchBarWithPopupProps> = ({ onSelectProduct
       />
 
       {showDropdown && (
-        <div className="absolute z-50 mt-1 bg-white shadow-2xl max-md:shadow-none rounded-xl w-full max-h-[250px] max-md:max-h-[400px] overflow-y-auto">
-          {filteredProducts.length > 0 ? (
-            filteredProducts.map((product) => (
-              <div
-                key={product.id}
-                className="px-4 py-2 hover:bg-[#f5e8ff] cursor-pointer text-sm text-gray-700"
-                onClick={() => {
-                  navigate(`/product/${product.id}`);
-                  setShowDropdown(false);
-                  setQuery("");
-                  onSelectProduct?.(); 
-                }}
-              >
-                {product.product_name}
+        <div className="absolute z-50 mt-1 bg-white shadow-2xl max-md:shadow-none rounded-xl w-full max-h-[250px] max-md:max-h-[400px] overflow-hidden">
+          <div className="overflow-y-auto max-h-[250px] max-md:max-h-[400px] rounded-xl pr-2 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-transparent">
+            {filteredProducts.length > 0 ? (
+              filteredProducts.map((product) => (
+                <div
+                  key={product.id}
+                  className="px-4 py-2 hover:bg-[#f5e8ff] cursor-pointer text-sm text-gray-700"
+                  onClick={() => {
+                    navigate(`/product/${product.id}`);
+                    setShowDropdown(false);
+                    setQuery("");
+                    onSelectProduct?.();
+                  }}
+                >
+                  {product.product_name}
+                </div>
+              ))
+            ) : (
+              <div className="px-4 py-2 text-gray-500 text-sm">
+                No products found
               </div>
-            ))
-          ) : (
-            <div className="px-4 py-2 text-gray-500 text-sm">No products found</div>
-          )}
+            )}
+          </div>
         </div>
       )}
     </div>

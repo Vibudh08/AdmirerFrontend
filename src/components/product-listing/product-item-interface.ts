@@ -7,4 +7,5 @@ export default interface productItemProps {
   imageUrl?: string;
   compactView?: boolean;
   id: number;
+  subcategory: Number | undefined;
 }
