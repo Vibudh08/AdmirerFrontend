@@ -24,7 +24,7 @@ const Footer = () => {
                 <Link to="">Couple Rings</Link>
               </li>
               <li className="hover:text-[#7b48a5] hover:font-semibold hover:underline">
-                <Link to="">Luxe Jewelry</Link>
+                <Link to="">Alphabet Rings</Link>
               </li>
             </ul>
           </div>
@@ -111,7 +111,7 @@ const Footer = () => {
             {/* Guarantee and Exchange Info */}
             <div className="mt-4 text-sm text-gray-600">
               <div className="flex gap-3 mb-4">
-                <img src="/icons/original.png" className="w-10 h-10 mt-1" />
+                <img src="/icons/100__original__1_-removebg-preview.png" className="w-10 h-10 mt-1" />
                 <p className="text-[17px] leading-snug mb-0 max-sm:text-md">
                   <span className="font-bold">100% ORIGINAL</span> products —
                   guaranteed, only at BTJ Admirer.

@@ -8,4 +8,5 @@ export default interface productItemProps {
   compactView?: boolean;
   id: number;
   subcategory: Number | undefined;
+  wishlist?: number;
 }

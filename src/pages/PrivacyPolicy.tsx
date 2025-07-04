@@ -32,7 +32,7 @@ const PrivacyPolicy = () => {
             including providing and improving our services to you. The types of
             information we may collect include:
           </p>
-          <ul className="list-disc list-inside space-y-3">
+          <ul className="list-disc list-outside pl-6 space-y-3 ">
             <li className="leading-snug">
               <strong>Personal Information:</strong> When you create an account,
               make a purchase, or interact with our website, we may collect
@@ -53,12 +53,13 @@ const PrivacyPolicy = () => {
             </li>
           </ul>
         </section>
+        
 
         <section className="space-y-4 text-gray-700">
           <h3 className="text-xl font-semibold">
             2. How We Use Your Information
           </h3>
-          <ul className="list-disc list-inside space-y-2">
+          <ul className="list-disc list-outside pl-6 space-y-2">
             <li className="leading-snug">
               To provide, operate, and maintain our website and services.
             </li>
@@ -102,7 +103,7 @@ const PrivacyPolicy = () => {
             parties. We may share your information in the following
             circumstances:
           </p>
-          <ul className="list-disc list-inside space-y-2">
+          <ul className="list-disc list-outside pl-6 space-y-2">
             <li className="leading-snug">
               <strong>Service Providers:</strong> We may share your personal
               information with trusted third-party service providers who assist
@@ -131,7 +132,7 @@ const PrivacyPolicy = () => {
 
         <section className="space-y-4 text-gray-700">
           <h3 className="text-xl font-semibold">6. Your Rights and Choices</h3>
-          <ul className="list-disc list-inside space-y-2">
+          <ul className="list-disc list-outside pl-6 space-y-2">
             <li className="leading-snug">
               <strong>Access and Update Your Information:</strong> You may
               access, update, or correct your personal information at any time

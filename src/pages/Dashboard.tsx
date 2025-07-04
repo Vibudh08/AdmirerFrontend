@@ -47,7 +47,7 @@ const Dashboard = () => {
     <div className="p-6 max-sm:p-0 w-[85%] mt-1 max-sm:mt-3 max-md:w-[100%] m-auto flex max-sm:block gap-5">
       <div className="w-[30%] max-sm:w-[100%] max-sm:m-auto flex flex-col gap-5 ">
         {/* Top Greeting Section */}
-        <div className="max-md:hidden bg-white p-4 flex gap-5 shadow-md items-center">
+        <div className="max-md:hidden bg-white p-4 py-3 flex gap-5 shadow-md items-center">
           <img
             src="https://static-assets-web.flixcart.com/fk-p-linchpin-web/fk-cp-zion/img/profile-pic-male_4811a1.svg"
             alt=""

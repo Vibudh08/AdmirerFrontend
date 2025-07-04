@@ -87,7 +87,7 @@ const Checkout: React.FC<IndexProps> = ({
   } else {
     totalWithGST = Number((cleanedTotal + gstAmount).toFixed(2));
   }
-  // const finalAmount = Math.round(totalWithGST * 100 ); // ✅ Send to Razorpay
+  // const finalAmount = Math.round(totalWithGST * 100 );
   // console.log("totalAmount:", finalAmount, "type:", typeof finalAmount);
 
   const navigate = useNavigate(); // 👈 initialize navigate
@@ -139,8 +139,13 @@ const Checkout: React.FC<IndexProps> = ({
         const options = {
           key: "rzp_live_9dQQZTZXMKwBMJ",
           amount: orderData.amount,
+          image: "/logo/admirer_logo.png",
           currency: "INR",
           name: "BTJ Admirer",
+          notes: {
+            order_type: "Online",
+            platform: "WebApp",
+          },
           description: "Order Payment",
           order_id: orderData.order_id,
           handler: async function (response: any) {

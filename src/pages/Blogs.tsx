@@ -75,13 +75,13 @@ const BlogPage = () => {
                       Fashion Jewelry
                     </div>
                   </div>
-                  <h3 className="text-2xl font-semibold text-gray-800 transition">
+                  <h3 className="text-2xl font-semibold text-gray-800 transition truncate">
                     {post.title}
                   </h3>
                   <p className="text-gray-600 text-md leading-relaxed tracking-wide line-clamp-2">
                     {description}
                   </p>
-                  <p className="text-sm text-gray-400">{post.date}</p>
+                  <p className="text-sm text-gray-400">{new Date(post.date).toLocaleDateString("en-GB")}</p>
                 </div>
               </div>
             </Link>

@@ -16,8 +16,10 @@ const ProductItem: React.FC<productItemProps> = ({
   imageUrl,
   compactView = false,
   subcategory,
+  wishlist
 }) => {
   const [isWishlisted, setIsWishlisted] = useState(false);
+     const [wishlistStatus, setWishlistStatus] = useState(wishlist === 1);
   const navigate = useNavigate();
 
  const handleClick = () => {

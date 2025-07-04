@@ -27,7 +27,7 @@ const BlogDetails = () => {
     <section className="bg-white py-10">
       <div className="w-[83%] max-md:w-full mx-auto px-4">
         <p className="text-sm text-purple-700 mb-3 uppercase tracking-wide">
-          {post.date}
+          {new Date(post.date).toLocaleDateString("en-GB")}
         </p>
         <h1 className="text-3xl lg:text-4xl font-bold text-gray-800 mb-6">
           {post.title}

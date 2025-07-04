@@ -175,7 +175,14 @@ const OrderDetails: React.FC = () => {
   }, [orderData]);
 
   const handleCancelConfirm = async () => {
-    console.log("Cancel product:", selectedProductId, "Order:", id, "awb:", awbNumber);
+    console.log(
+      "Cancel product:",
+      selectedProductId,
+      "Order:",
+      id,
+      "awb:",
+      awbNumber
+    );
     setCancelLoader(true);
     try {
       await axios.post(
@@ -702,7 +709,6 @@ const OrderDetails: React.FC = () => {
         <h2 className="text-3xl max-md:text-2xl font-semibold mb-6   text-center">
           Items that go well with this item
         </h2>
-
         <div className="grid grid-cols-1 w-[85%]  max-md:w-[98%] m-auto !gap-4 ">
           <Slider {...relatedProductsSlider}>
             {relatedProducts.map((item) => (

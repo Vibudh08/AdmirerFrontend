@@ -151,6 +151,7 @@ const ProductListing: React.FC<ProductLsitingProps> = ({
       .then((data) => {
         const end = performance.now(); // ⏱ end timing
         console.log(`⏱ Product API took ${(end - start).toFixed(2)} ms`);
+        console.log(data)
         setProductDataArray(data);
         setProductDataLoaded(true); // data fetch complete
       })
@@ -233,6 +234,7 @@ const ProductListing: React.FC<ProductLsitingProps> = ({
                   )}%`}
                   compactView={isMobile}
                   subcategory={subcategory}
+                  wishlist={item.wishlist}
                 />
               ))
             )}

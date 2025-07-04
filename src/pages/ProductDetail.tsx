@@ -40,9 +40,7 @@ const CustomNextArrow = ({ onClick }: { onClick: () => void }) => (
   </button>
 );
 
-const Loader = () => (
-  <LoaderCode/>
-);
+const Loader = () => <LoaderCode />;
 
 const ProductDetails = (item: { wishlist: number }) => {
   const { id } = useParams<{ id: string }>(); // Get the product ID from the URL
@@ -55,7 +53,10 @@ const ProductDetails = (item: { wishlist: number }) => {
   const [zoomStyle, setZoomStyle] = useState({});
   const [isInCart, setIsInCart] = useState(false);
   const [isWishlisted, setIsWishlisted] = useState(false);
- 
+  const [justAddedProductId, setJustAddedProductId] = useState<number | null>(
+    null
+  );
+
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
 
@@ -85,6 +86,17 @@ const ProductDetails = (item: { wishlist: number }) => {
     ],
   };
 
+  const isProductInCart = (productId: number): boolean => {
+    const authToken = localStorage.getItem("auth_token");
+
+    if (authToken) {
+      return product?.in_cart === 1;
+    } else {
+      const guestCart = JSON.parse(localStorage.getItem("guest_cart") || "[]");
+      return guestCart.some((item: any) => item.id === productId);
+    }
+  };
+
   const handleBuyNow = () => {
     const authToken = localStorage.getItem("auth_token");
 
@@ -105,8 +117,6 @@ const ProductDetails = (item: { wishlist: number }) => {
     }
   };
 
-  
-
   const handleAddToCart = async () => {
     const authToken = localStorage.getItem("auth_token");
 
@@ -125,6 +135,8 @@ const ProductDetails = (item: { wishlist: number }) => {
           parseInt(localStorage.getItem("itemCount") || "0", 10) + 1;
         localStorage.setItem("itemCount", newCount.toString());
         window.dispatchEvent(new Event("itemCountUpdated"));
+        setJustAddedProductId(product.id); // ✅ Set only this product as "just added"
+
         setIsInCart(true);
         toast.success("Product added to cart");
       } else {
@@ -152,6 +164,7 @@ const ProductDetails = (item: { wishlist: number }) => {
       if (response.data && response.data.status === "success") {
         // toast.success("Product added to cart");
         setIsInCart(true);
+        setJustAddedProductId(product.id); // ✅ Set only this product as "just added"
 
         // ✅ Update itemCount only if added successfully
         const newCount =
@@ -204,7 +217,7 @@ const ProductDetails = (item: { wishlist: number }) => {
   }, [id]);
 
   const handleImageClick = (clickedImg: string) => {
-    setMainImage(clickedImg); // Set clicked image as the main image
+    setMainImage(clickedImg); 
   };
 
   const handleZoom = (e: React.MouseEvent) => {
@@ -305,14 +318,14 @@ const ProductDetails = (item: { wishlist: number }) => {
                     key={idx}
                     src={src}
                     alt={`Thumbnail ${idx + 1}`}
-                    onClick={() => handleImageClick(src)} 
-                    onMouseEnter={() => setHoverImage(src)} 
+                    onClick={() => handleImageClick(src)}
+                    onMouseEnter={() => setHoverImage(src)}
                     onMouseLeave={() => setHoverImage(null)}
                     className="w-20 h-20 rounded border p-2 border-gray-300 object-cover cursor-pointer hover:scale-105 transition-transform"
                   />
                 ))
               ) : (
-                <div>No thumbnails available</div> 
+                <div>No thumbnails available</div>
               )}
             </div>
           </div>
@@ -373,14 +386,18 @@ const ProductDetails = (item: { wishlist: number }) => {
                 Buy Now
               </button>
               <button
-                onClick={isInCart ? () => navigate("/cart") : handleAddToCart}
-                className={`${
-                  isInCart
-                    ? "border border-purple-700 bg-[#7B48A5] text-white hover:bg-purple-700"
-                    : "border border-purple-700 bg-[#7B48A5] text-white hover:bg-purple-700"
-                } py-2 px-6 rounded-md h-[50px] w-1/2 transition font-semibold`}
+                onClick={
+                  justAddedProductId === product.id ||
+                  isProductInCart(product.id)
+                    ? () => navigate("/cart")
+                    : handleAddToCart
+                }
+                className="border border-purple-700 bg-[#7B48A5] text-white hover:bg-purple-700 py-2 px-6 rounded-md h-[50px] w-1/2 transition font-semibold"
               >
-                {isInCart ? "View Cart" : "Add To Cart"}
+                {justAddedProductId === product.id ||
+                isProductInCart(product.id)
+                  ? "View Cart"
+                  : "Add To Cart"}
               </button>
             </div>
             <OfferBanner percentageDiscount={60} />
