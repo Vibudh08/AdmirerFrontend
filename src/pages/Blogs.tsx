@@ -50,7 +50,7 @@ const BlogPage = () => {
   return (
     <section className="bg-[#f8f8f8] flex flex-col lg:flex-row pb-12 px-4 max-md:px-0">
       {/* Blog Posts */}
-      <div className="flex flex-wrap gap-8 justify-center w-full lg:w-[70%] bg-white p-6 rounded-lg shadow-sm">
+      <div className="flex flex-wrap gap-8 justify-center w-full lg:w-[70%] bg-white p-6 max-md:p-4 rounded-lg shadow-sm">
         {posts.map((post) => {
           const image = post.image || "/asset/image/blog/default-blog.jpg";
           const description = post.descpt.replace(/<[^>]+>/g, "").slice(0, 120);
@@ -63,7 +63,7 @@ const BlogPage = () => {
               className="w-full sm:w-[360px] transition-all"
             >
               <div className="flex flex-col bg-white shadow-md hover:shadow-xl rounded-xl overflow-hidden transition duration-300">
-                <div className="h-[220px] bg-cover bg-center">
+                <div className="h-full bg-cover bg-center">
                   <img src={image} alt="" />
                 </div>
                 <div className="p-5 space-y-2">
@@ -75,13 +75,13 @@ const BlogPage = () => {
                       Fashion Jewelry
                     </div>
                   </div>
-                  <h3 className="text-2xl font-semibold text-gray-800 transition">
+                  <h3 className="text-2xl font-semibold text-gray-800 transition truncate">
                     {post.title}
                   </h3>
                   <p className="text-gray-600 text-md leading-relaxed tracking-wide line-clamp-2">
                     {description}
                   </p>
-                  <p className="text-sm text-gray-400">{post.date}</p>
+                  <p className="text-sm text-gray-400">{new Date(post.date).toLocaleDateString("en-GB")}</p>
                 </div>
               </div>
             </Link>
@@ -90,7 +90,7 @@ const BlogPage = () => {
       </div>
 
       {/* Sidebar */}
-      <div className="lg:w-[30%] p-6 flex flex-col gap-6">
+      <div className="lg:w-[30%] p-6 flex flex-col gap-6 max-md:p-3">
         <div className="bg-white shadow-lg rounded-lg p-5">
           <h3 className="border-b pb-4 mb-4 font-medium text-xl text-gray-800">
             RECENT POSTS

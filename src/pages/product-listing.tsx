@@ -36,8 +36,22 @@ const ProductListing: React.FC<ProductLsitingProps> = ({
   const [productDataLoaded, setProductDataLoaded] = useState(false);
 
   useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
+    const savedY = sessionStorage.getItem("listingScrollY");
+
+    if (savedY && productDataLoaded) {
+      // Delay scroll slightly to ensure render is complete
+      setTimeout(() => {
+        window.scrollTo(0, parseInt(savedY));
+        sessionStorage.removeItem("listingScrollY");
+      }, 0);
+    }
+  }, [productDataLoaded]);
+
+  // useEffect(() => {
+  //   if (subCategory && sessionStorage.getItem("activeSubcategory")) {
+  //     sessionStorage.removeItem("activeSubcategory");
+  //   }
+  // }, [subCategory]);
 
   useEffect(() => {
     if (!category && !subcategory) navigate("/");
@@ -69,24 +83,25 @@ const ProductListing: React.FC<ProductLsitingProps> = ({
   });
 
   useEffect(() => {
-    if (subcategory) {
+    const sessionSubcatId = sessionStorage.getItem("subcategoryId");
+    const finalSubcatId = subcategory || sessionSubcatId;
+
+    if (finalSubcatId) {
       setLoading(true);
       fetch(getSubCatName_API, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ subcatId: Number(subcategory) }),
+        body: JSON.stringify({ subcatId: Number(finalSubcatId) }),
       })
         .then((res) => res.json())
         .then((value) => {
           setSubCategory(value?.subcatName || "");
           setCat(value?.catId || null);
-          setCategoryReady(true); // This will trigger product fetch in other effect
+          setCategoryReady(true);
         });
     } else if (category) {
       setLoading(true);
       setCat(category);
-
-      //Fetch products here directly
       fetch(product_listing_API, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -136,6 +151,7 @@ const ProductListing: React.FC<ProductLsitingProps> = ({
       .then((data) => {
         const end = performance.now(); // ⏱ end timing
         console.log(`⏱ Product API took ${(end - start).toFixed(2)} ms`);
+        console.log(data)
         setProductDataArray(data);
         setProductDataLoaded(true); // data fetch complete
       })
@@ -183,6 +199,7 @@ const ProductListing: React.FC<ProductLsitingProps> = ({
             setDynamicMax={setDynamicMaxVal}
             category={Number(cat)}
             setSubCategory={setSubCategory}
+            activeSubCategory={subCategory}
           />
         </div>
 
@@ -216,6 +233,8 @@ const ProductListing: React.FC<ProductLsitingProps> = ({
                       100
                   )}%`}
                   compactView={isMobile}
+                  subcategory={subcategory}
+                  wishlist={item.wishlist}
                 />
               ))
             )}

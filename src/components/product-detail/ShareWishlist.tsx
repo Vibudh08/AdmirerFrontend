@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { IoShareSocialOutline } from "react-icons/io5";
 import { wishlist_add_remove } from "../api/api-end-points";
 import { toast } from "react-toastify";
@@ -41,6 +41,10 @@ const ProductActions: React.FC<ProductActionsProps> = ({
   const [shareOpen, setShareOpen] = useState(false);
   const productUrl = `https://admirer.in/product/${productId}`;
   const productTitle = "Love this piece from Admirer! Have a look:";
+
+  useEffect(() => {
+    setInWishlist(wishlist === 1);
+  }, [productId, wishlist]);
 
   const toggleWishlist = async () => {
     try {

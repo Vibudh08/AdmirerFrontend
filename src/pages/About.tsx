@@ -37,7 +37,7 @@ const AboutPage = () => {
 
           {/* Right Side - Text */}
           <div className="space-y-3">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-5 mt-16 max-md:mt-0">
+            <h2 className="text-2xl md:text-4xl font-bold text-gray-900 mb-5 mt-16 max-md:mt-0">
               The sparkle and elegance <br />
               you deserve in your life.
             </h2>

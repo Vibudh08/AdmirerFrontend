@@ -5,7 +5,6 @@ import productItemProps from "./product-item-interface";
 import { wishlist_add_remove } from "../api/api-end-points";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import DOMPurify from "dompurify";
 
 const ProductItem: React.FC<productItemProps> = ({
   name,
@@ -16,20 +15,17 @@ const ProductItem: React.FC<productItemProps> = ({
   discount,
   imageUrl,
   compactView = false,
+  subcategory,
+  wishlist
 }) => {
   const [isWishlisted, setIsWishlisted] = useState(false);
+     const [wishlistStatus, setWishlistStatus] = useState(wishlist === 1);
   const navigate = useNavigate();
 
-  const sanitizedDescription = DOMPurify.sanitize(description);
-
-  const cleanedDescription = sanitizedDescription.replace(
-    /Product description/i,
-    ""
-  );
-
-  const handleClick = () => {
-    navigate(`/product/${id}`);
-  };
+ const handleClick = () => {
+  sessionStorage.setItem("listingScrollY", window.scrollY.toString());
+  navigate(`/product/${id}`);
+};
 
   const toggleWishlist = async () => {
     try {

@@ -87,7 +87,7 @@ const Checkout: React.FC<IndexProps> = ({
   } else {
     totalWithGST = Number((cleanedTotal + gstAmount).toFixed(2));
   }
-  // const finalAmount = Math.round(totalWithGST * 100 ); // ✅ Send to Razorpay
+  // const finalAmount = Math.round(totalWithGST * 100 );
   // console.log("totalAmount:", finalAmount, "type:", typeof finalAmount);
 
   const navigate = useNavigate(); // 👈 initialize navigate
@@ -139,8 +139,13 @@ const Checkout: React.FC<IndexProps> = ({
         const options = {
           key: "rzp_live_9dQQZTZXMKwBMJ",
           amount: orderData.amount,
+          image: "/logo/admirer_logo.png",
           currency: "INR",
           name: "BTJ Admirer",
+          notes: {
+            order_type: "Online",
+            platform: "WebApp",
+          },
           description: "Order Payment",
           order_id: orderData.order_id,
           handler: async function (response: any) {
@@ -183,6 +188,10 @@ const Checkout: React.FC<IndexProps> = ({
                 });
 
                 if (nimbusRes.status === 200) {
+                  const data = await nimbusRes.json();
+                  const awb = data.data.data.awb_number;
+                  console.log(awb);
+                  setAwbNumber(awb);
                   setOrderId(order_number);
                   navigate("/order-confirmation", {
                     state: { orderID: order_number },
@@ -244,6 +253,7 @@ const Checkout: React.FC<IndexProps> = ({
         if (response.status === 200) {
           const data = await response.json();
           const awb = data.data.data.awb_number;
+          console.log(awb);
           setAwbNumber(awb);
           setOrderId(order_number);
           navigate("/order-confirmation", { state: { payload } });
@@ -492,7 +502,7 @@ const Checkout: React.FC<IndexProps> = ({
           </p>
         </div>
       </div>
-      {/* <Modal
+      <Modal
         title="More Information"
         open={isModalOpen}
         onCancel={() => setIsModalOpen(false)}
@@ -500,7 +510,7 @@ const Checkout: React.FC<IndexProps> = ({
         width={"350px"}
       >
         <p>{modalContent}</p>
-      </Modal> */}
+      </Modal>
     </>
   );
 };

@@ -174,7 +174,7 @@ const HelpContact: React.FC = () => {
         </div>
       </div>
 
-      <section className="bg-white py-10">
+      <section className="bg-white py-10 max-md:pt-4">
         <div className="w-[65%] max-md:w-full mx-auto px-4 grid grid-cols-1">
           <h1 className="text-2xl max-md:text-xl font-semibold mb-8">
             Top Customer Questions
