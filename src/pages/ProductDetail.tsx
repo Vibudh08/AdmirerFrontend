@@ -208,6 +208,7 @@ const ProductDetails = (item: { wishlist: number }) => {
           // Set inCart status from API
           if (data.in_cart === 1) {
             setIsInCart(true);
+            setJustAddedProductId(product.id);
           }
         })
         .catch((error) => {
