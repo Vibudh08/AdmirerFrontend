@@ -162,10 +162,10 @@ const Home: React.FC<HomePageProps> = ({ setCategoryId, setSubcategoryId }) => {
       img: "https://www.josalukkasmedia.com/Media/CMS/Home/Section9/diamond.svg",
       title: "7 Days Exchange",
     },
-    // {
-    //   img: "https://ornatejewels.com/cdn/shop/files/BIS_925_hallmarkedSilverjewellery_3d1eb272-436d-4902-b56d-77628ee130b2.jpg?v=1715071167&width=150",
-    //   title: "Signature Gift Box",
-    // },
+    {
+      img: "/icons/secure_pay.png",
+      title: "Secure Payment",
+    },
   ];
 
   // const handleClick = (url: string) => {
@@ -450,7 +450,7 @@ const Home: React.FC<HomePageProps> = ({ setCategoryId, setSubcategoryId }) => {
 
       <section className="bg-white pb-10 max-md:pt-10">
         <div className=" bg-purple-200">
-        <div className="grid grid-cols-3 max-md:grid-cols-3 items-center justify-center py-12 w-[85%] max-md:w-full text-center m-auto gap-4">
+        <div className="grid grid-cols-4 max-md:grid-cols-2 items-center justify-center py-12 w-[85%] max-md:w-full text-center m-auto gap-4">
           {features.map((item, index) => (
             <div key={index} className="flex flex-col items-center gap-5">
               <img src={item.img} alt="" className="mx-auto text-xl" />
