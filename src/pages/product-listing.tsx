@@ -9,9 +9,28 @@ import {
   getSubCatName_API,
 } from "../components/api/api-end-points";
 import LoaderCode from "../components/Loader";
+import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
+import Slider from "react-slick";
 
 const Loader = () => <LoaderCode />;
+// Arrows
+const CustomPrevArrow = ({ onClick }: { onClick: () => void }) => (
+  <button
+    className="absolute left-5 max-md:left-1 top-1/2 transform -translate-y-1/2 z-10 bg-white p-1 rounded-full shadow-md hover:bg-black transition hover:text-white"
+    onClick={onClick}
+  >
+    <IoIosArrowBack className="text-3xl max-md:text-xl text-gray-700 hover:text-white" />
+  </button>
+);
 
+const CustomNextArrow = ({ onClick }: { onClick: () => void }) => (
+  <button
+    className="absolute right-5 max-md:right-1 top-1/2 transform -translate-y-1/2 z-10 bg-white p-1 rounded-full shadow-md hover:bg-black transition hover:text-white"
+    onClick={onClick}
+  >
+    <IoIosArrowForward className="text-3xl max-md:text-xl text-gray-700 hover:text-white" />
+  </button>
+);
 interface ProductLsitingProps {
   category?: Number;
   subcategory?: Number;
@@ -34,6 +53,19 @@ const ProductListing: React.FC<ProductLsitingProps> = ({
   const [loading, setLoading] = useState(false);
   const [subCategory, setSubCategory] = useState("");
   const [productDataLoaded, setProductDataLoaded] = useState(false);
+
+  const sliderSettings = {
+    dots: false,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    autoplay: true,
+    autoplaySpeed: 4000,
+    arrows: true,
+    prevArrow: <CustomPrevArrow onClick={() => {}} />,
+    nextArrow: <CustomNextArrow onClick={() => {}} />,
+  };
 
   useEffect(() => {
     const savedY = sessionStorage.getItem("listingScrollY");
@@ -151,7 +183,7 @@ const ProductListing: React.FC<ProductLsitingProps> = ({
       .then((data) => {
         const end = performance.now(); // ⏱ end timing
         console.log(`⏱ Product API took ${(end - start).toFixed(2)} ms`);
-        console.log(data)
+        console.log(data);
         setProductDataArray(data);
         setProductDataLoaded(true); // data fetch complete
       })
@@ -177,6 +209,37 @@ const ProductListing: React.FC<ProductLsitingProps> = ({
         <FiFilter size={20} />
         <span className="sr-only">Open Filters</span>
       </button>
+
+      <div className="flex-grow bg-white rounded-xl shadow-sm border border-gray-200 p-2 sm:p-3 lg:p-4 mb-4 max-md:mb-2">
+        <div className="relative">
+          <Slider {...sliderSettings}>
+            <div>
+              <img
+                className="w-full desktop-banner hidden md:block"
+                src="/listing/raksha_bandhan.gif"
+                alt="Desktop Banner"
+              />
+              <img
+                className="w-full mobile-banner block md:hidden"
+                src="/listing/mobile_view.gif"
+                alt="Mobile Banner"
+              />
+            </div>
+            <div>
+              <img
+                className="w-full desktop-banner hidden md:block"
+                src="/listing/raksha_bandhan2.gif"
+                alt="Desktop Banner"
+              />
+              <img
+                className="w-full mobile-banner block md:hidden"
+                src="/listing/mobile_view2.gif"
+                alt="Mobile Banner"
+              />
+            </div>
+          </Slider>
+        </div>
+      </div>
 
       <div className="flex flex-col lg:flex-row w-full h-full gap-4 sm:gap-6">
         <div
