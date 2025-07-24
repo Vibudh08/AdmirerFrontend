@@ -25,21 +25,20 @@ const LeftSideBar: React.FC<LeftSideBarProps> = ({
   );
   const [categories, setCategories] = useState<Record<string, string[]>>({});
   const [expandedSections, setExpandedSections] = useState<
-  Record<string, boolean>
+    Record<string, boolean>
   >({
     price: true,
     categories: true,
   });
   const [loading, setLoading] = useState(false);
- const hasRestored = useRef(false);
+  const hasRestored = useRef(false);
 
-useEffect(() => {
-  if (!hasRestored.current && activeSubCategory) {
-    setSelectedCategory(activeSubCategory);
-    hasRestored.current = true;
-  }
-}, [activeSubCategory]);
-
+  useEffect(() => {
+    if (!hasRestored.current && activeSubCategory) {
+      setSelectedCategory(activeSubCategory);
+      hasRestored.current = true;
+    }
+  }, [activeSubCategory]);
 
   useEffect(() => {
     console.log("I am inside leftside bar and category is = ", category);
@@ -69,45 +68,50 @@ useEffect(() => {
   //       console.log("The category of the left-side-bar is = ", data);
   //     });
   // }, []);
-useEffect(() => {
-  if (!category) {
-    setLoading(true);
-    return;
-  }
+  useEffect(() => {
+    if (!category) {
+      setLoading(true);
+      return;
+    }
 
-  setLoading(false);
+    setLoading(false);
 
-  fetch(catSubcat_API, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ category }),
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      setCategories(data);
+    fetch(catSubcat_API, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ category }),
+    })
+      .then((response) => response.json())
+      .then((data: Record<string, string[]>) => {
+        setCategories(data);
 
-      // 🛑 Only restore if nothing selected yet
-      if (!selectedCategory) {
-        const savedSub = sessionStorage.getItem("activeSubcategory");
+        const allSubs = Object.values(data).flat();
+        const isValidPropSub = allSubs.includes(category.toString());
 
-        if (savedSub && Object.values(data).flat().includes(savedSub)) {
-          setSelectedCategory(savedSub);
-          setSubCategory(savedSub);
-          return;
+        if (isValidPropSub) {
+          // ✅ Link se aaye ho → session update karo
+          sessionStorage.setItem("activeSubcategory", category.toString());
+          setSelectedCategory(category.toString());
+          setSubCategory(category.toString());
+        } else {
+          const savedSub = sessionStorage.getItem("activeSubcategory");
+          if (savedSub && allSubs.includes(savedSub)) {
+            setSelectedCategory(savedSub);
+            setSubCategory(savedSub);
+          } else {
+            const firstCategory = Object.keys(data)[0];
+            if (firstCategory && data[firstCategory].length > 0) {
+              const firstSub = data[firstCategory][0];
+              sessionStorage.setItem("activeSubcategory", firstSub);
+              setSelectedCategory(firstSub);
+              setSubCategory(firstSub);
+            }
+          }
         }
-
-        // Fallback to first subcategory
-        const firstCategory = Object.keys(data)[0];
-        if (firstCategory && data[firstCategory].length > 0) {
-          const firstSub = data[firstCategory][0];
-          setSelectedCategory(firstSub);
-          setSubCategory(firstSub);
-        }
-      }
-    });
-}, [category]);
+      });
+  }, [category]);
 
   // functions related for price range
   useEffect(() => {
@@ -232,31 +236,12 @@ useEffect(() => {
   //   }
   // };
 
-const handleCategoryChange = (category: string) => {
-setSelectedCategory(category);
-  setSubCategory(category);
-  sessionStorage.setItem("subcategoryId", category); // Save it
-
-  let isMainCategory = false;
-  let parentCategory = "";
-
-  for (const [cat, subcats] of Object.entries(categories)) {
-    if (cat === category) {
-      isMainCategory = true;
-      break;
-    }
-    if (subcats.includes(category)) {
-      parentCategory = cat;
-      break;
-    }
-  }
-
-  if (isMainCategory) {
-    setSubCategory("");
-  } else {
+  const handleCategoryChange = (category: string) => {
+    setSelectedCategory(category);
     setSubCategory(category);
-  }
-};
+    sessionStorage.setItem("activeSubcategory", category);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   const toggleSection = (section: string) => {
     setExpandedSections((prev) => ({

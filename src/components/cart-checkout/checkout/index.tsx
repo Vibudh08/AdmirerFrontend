@@ -80,10 +80,17 @@ const Checkout: React.FC<IndexProps> = ({
 
   let totalWithGST;
 
-  if (itemCount === 3) {
-    totalWithGST = 999;
-  } else if (itemCount === 2) {
-    totalWithGST = 699;
+  const cartItems = JSON.parse(localStorage.getItem("cartItems") || "[]");
+  // console.log("Cart Items:", cartItems);
+  // console.log("Subcat IDs:", cartItems.map((item: { subcat_id: any; }) => item.subcat_id));
+  const isComboApplied =
+    cartItems.length === 3 &&
+    cartItems.every(
+      (item: { subcat_id: string }) => parseInt(item.subcat_id) === 10
+    );
+
+  if (isComboApplied) {
+    totalWithGST = 1049;
   } else {
     totalWithGST = Number((cleanedTotal + gstAmount).toFixed(2));
   }
@@ -265,6 +272,9 @@ const Checkout: React.FC<IndexProps> = ({
         alert("Something went wrong while placing your order.");
       }
     }
+    localStorage.removeItem("cartItems");
+    localStorage.setItem("itemCount", "0");
+    window.dispatchEvent(new Event("itemCountUpdated"));
     setLoading(false);
   };
 
@@ -381,7 +391,7 @@ const Checkout: React.FC<IndexProps> = ({
         <hr className="hidden max-md:block" />
         <div className="mb-5">
           <div className="flex justify-between mt-4 mb-4 text-[15px] font-bold text-[#3e4152]">
-            {totalWithGST === 999 || totalWithGST === 699 ? (
+            {totalWithGST === 1049 ? (
               <div>Offer Amount</div>
             ) : (
               <div>Total Amount</div>

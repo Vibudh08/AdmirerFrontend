@@ -74,6 +74,15 @@ const Item: React.FC<ItemProps> = ({
     }
   }
 
+  const cartItems = JSON.parse(localStorage.getItem("cartItems") || "[]");
+  // console.log("Cart Items:", cartItems);
+  // console.log("Subcat IDs:", cartItems.map((item: { subcat_id: any; }) => item.subcat_id));
+  const isComboApplied =
+    cartItems.length === 3 &&
+    cartItems.every(
+      (item: { subcat_id: string }) => parseInt(item.subcat_id) === 10
+    );
+
   return (
     <div className="bg-white relative mt-1 mb-2">
       <div className="flex border border-gray-200 rounded-lg overflow-hidden hover:shadow-sm transition-shadow duration-200">
@@ -106,17 +115,15 @@ const Item: React.FC<ItemProps> = ({
             {/* // <span className="font-semibold">1</span> */}
             <select
               className="border border-gray-300 cursor-pointer rounded px-2 py-1 text-sm font-medium bg-gray-50 focus:outline-none focus:ring-1 focus:ring-gray-400 w-16"
-              value={totalItem === 2 || totalItem === 3 ? 1 : qty} // force show 1
+              value={isComboApplied ? 1 : qty} // force show 1
               onChange={(e) =>
                 onQuantityChange(
                   id,
-                  totalItem === 2 || totalItem === 3
-                    ? 1
-                    : parseInt(e.target.value)
+                  isComboApplied ? 1 : parseInt(e.target.value)
                 )
               }
             >
-              {totalItem === 2 || totalItem === 3 ? (
+              {isComboApplied ? (
                 <option key={1} value={1}>
                   1
                 </option>

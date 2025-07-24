@@ -96,7 +96,7 @@ const AddressBar = ({
     try {
       setIsLoading(true);
       setError(null);
-  
+
       const res = await fetch(signUp_API, {
         method: "POST",
         headers: {
@@ -116,14 +116,14 @@ const AddressBar = ({
           addressType: values.addressType,
         }),
       });
-  
+
       if (!res.ok) {
         throw new Error("Failed to save address");
       }
-  
+
       // ✅ Close modal
       setIsModalVisible(false);
-  
+
       // ✅ Trigger parent refresh
       onAddressChange(values);
     } catch (err) {
@@ -133,7 +133,6 @@ const AddressBar = ({
       setIsLoading(false);
     }
   };
-  
 
   return (
     <Form
@@ -148,6 +147,7 @@ const AddressBar = ({
           label="First Name"
           name="firstName"
           rules={[{ required: true, message: "Please input your first name!" }]}
+          className="mb-3"
         >
           <Input
             allowClear
@@ -159,6 +159,7 @@ const AddressBar = ({
           label="Last Name"
           name="lastName"
           rules={[{ required: true, message: "Please input your last name!" }]}
+          className="mb-3"
         >
           <Input allowClear />
         </Form.Item>
@@ -174,6 +175,7 @@ const AddressBar = ({
             message: "Please enter a valid email address!",
           },
         ]}
+          className="mb-3"
       >
         <Input
           allowClear
@@ -188,6 +190,7 @@ const AddressBar = ({
         name="addressType"
         rules={[{ required: true, message: "Please select address type!" }]}
         initialValue="home"
+          className="mb-3"
       >
         <Select
           options={[
@@ -210,6 +213,7 @@ const AddressBar = ({
         rules={[
           { required: true, message: "Please input your flat/house number!" },
         ]}
+          className="mb-3"
       >
         <Input allowClear placeholder="e.g. B-102, Sunshine Apartments" />
       </Form.Item>
@@ -220,6 +224,7 @@ const AddressBar = ({
         rules={[
           { required: true, message: "Please input your street address!" },
         ]}
+          className="mb-3"
       >
         <Input
           allowClear
@@ -232,6 +237,7 @@ const AddressBar = ({
         label="Locality/Area"
         name="locality"
         rules={[{ required: true, message: "Please input your locality!" }]}
+          className="mb-3"
       >
         <Input allowClear placeholder="e.g. Downtown, Westside" />
       </Form.Item>
@@ -241,86 +247,95 @@ const AddressBar = ({
           label="City"
           name="city"
           rules={[{ required: true, message: "Please input your city!" }]}
+          className="mb-3"
         >
-          <Input allowClear />
+          <Input allowClear placeholder="Enter your city" />
         </Form.Item>
 
         <Form.Item
           label="State"
           name="state"
           rules={[{ required: true, message: "Please input your state!" }]}
+          className="mb-3"
         >
           {/* <Input allowClear /> */}
           <Select
-          options={ [
-            { value: "ANDAMAN AND NICOBAR ISLANDS", label: "ANDAMAN AND NICOBAR ISLANDS" },
-            { value: "ANDHRA PRADESH", label: "ANDHRA PRADESH" },
-            { value: "ARUNACHAL PRADESH", label: "ARUNACHAL PRADESH" },
-            { value: "ASSAM", label: "ASSAM" },
-            { value: "BIHAR", label: "BIHAR" },
-            { value: "CHANDIGARH", label: "CHANDIGARH" },
-            { value: "CHHATTISGARH", label: "CHHATTISGARH" },
-            { value: "DADRA AND NAGAR HAVELI AND DAMAN AND DIU", label: "DADRA AND NAGAR HAVELI AND DAMAN AND DIU" },
-            { value: "DELHI", label: "DELHI" },
-            { value: "GOA", label: "GOA" },
-            { value: "GUJARAT", label: "GUJARAT" },
-            { value: "HARYANA", label: "HARYANA" },
-            { value: "HIMACHAL PRADESH", label: "HIMACHAL PRADESH" },
-            { value: "JAMMU AND KASHMIR", label: "JAMMU AND KASHMIR" },
-            { value: "JHARKHAND", label: "JHARKHAND" },
-            { value: "KARNATAKA", label: "KARNATAKA" },
-            { value: "KERALA", label: "KERALA" },
-            { value: "LADAKH", label: "LADAKH" },
-            { value: "LAKSHADWEEP", label: "LAKSHADWEEP" },
-            { value: "MADHYA PRADESH", label: "MADHYA PRADESH" },
-            { value: "MAHARASHTRA", label: "MAHARASHTRA" },
-            { value: "MANIPUR", label: "MANIPUR" },
-            { value: "MEGHALAYA", label: "MEGHALAYA" },
-            { value: "MIZORAM", label: "MIZORAM" },
-            { value: "NAGALAND", label: "NAGALAND" },
-            { value: "ODISHA", label: "ODISHA" },
-            { value: "PUDUCHERRY", label: "PUDUCHERRY" },
-            { value: "PUNJAB", label: "PUNJAB" },
-            { value: "RAJASTHAN", label: "RAJASTHAN" },
-            { value: "SIKKIM", label: "SIKKIM" },
-            { value: "TAMIL NADU", label: "TAMIL NADU" },
-            { value: "TELANGANA", label: "TELANGANA" },
-            { value: "TRIPURA", label: "TRIPURA" },
-            { value: "UTTAR PRADESH", label: "UTTAR PRADESH" },
-            { value: "UTTARAKHAND", label: "UTTARAKHAND" },
-            { value: "WEST BENGAL", label: "WEST BENGAL" }
-          ]}
-          optionRender={(option) => (
-            <div>
-               {option.data.label}
-            </div>
-          )}
-        />
+            allowClear
+            showSearch
+            placeholder="Enter your state"
+            options={[
+              {
+                value: "ANDAMAN AND NICOBAR ISLANDS",
+                label: "ANDAMAN AND NICOBAR ISLANDS",
+              },
+              { value: "ANDHRA PRADESH", label: "ANDHRA PRADESH" },
+              { value: "ARUNACHAL PRADESH", label: "ARUNACHAL PRADESH" },
+              { value: "ASSAM", label: "ASSAM" },
+              { value: "BIHAR", label: "BIHAR" },
+              { value: "CHANDIGARH", label: "CHANDIGARH" },
+              { value: "CHHATTISGARH", label: "CHHATTISGARH" },
+              {
+                value: "DADRA AND NAGAR HAVELI AND DAMAN AND DIU",
+                label: "DADRA AND NAGAR HAVELI AND DAMAN AND DIU",
+              },
+              { value: "DELHI", label: "DELHI" },
+              { value: "GOA", label: "GOA" },
+              { value: "GUJARAT", label: "GUJARAT" },
+              { value: "HARYANA", label: "HARYANA" },
+              { value: "HIMACHAL PRADESH", label: "HIMACHAL PRADESH" },
+              { value: "JAMMU AND KASHMIR", label: "JAMMU AND KASHMIR" },
+              { value: "JHARKHAND", label: "JHARKHAND" },
+              { value: "KARNATAKA", label: "KARNATAKA" },
+              { value: "KERALA", label: "KERALA" },
+              { value: "LADAKH", label: "LADAKH" },
+              { value: "LAKSHADWEEP", label: "LAKSHADWEEP" },
+              { value: "MADHYA PRADESH", label: "MADHYA PRADESH" },
+              { value: "MAHARASHTRA", label: "MAHARASHTRA" },
+              { value: "MANIPUR", label: "MANIPUR" },
+              { value: "MEGHALAYA", label: "MEGHALAYA" },
+              { value: "MIZORAM", label: "MIZORAM" },
+              { value: "NAGALAND", label: "NAGALAND" },
+              { value: "ODISHA", label: "ODISHA" },
+              { value: "PUDUCHERRY", label: "PUDUCHERRY" },
+              { value: "PUNJAB", label: "PUNJAB" },
+              { value: "RAJASTHAN", label: "RAJASTHAN" },
+              { value: "SIKKIM", label: "SIKKIM" },
+              { value: "TAMIL NADU", label: "TAMIL NADU" },
+              { value: "TELANGANA", label: "TELANGANA" },
+              { value: "TRIPURA", label: "TRIPURA" },
+              { value: "UTTAR PRADESH", label: "UTTAR PRADESH" },
+              { value: "UTTARAKHAND", label: "UTTARAKHAND" },
+              { value: "WEST BENGAL", label: "WEST BENGAL" },
+            ]}
+            optionRender={(option) => <div>{option.data.label}</div>}
+          />
         </Form.Item>
       </div>
 
       {/* Pincode Field */}
       <Form.Item
-  label="Pincode/Zip Code"
-  name="pincode"
-  normalize={(value: string) => {
-    const digitsOnly = value.replace(/\D/g, ""); // Remove non-numeric chars
-    return digitsOnly.slice(0, 6); // Limit to 6 digits
-  }}
-  rules={[
-    { required: true, message: "Please input your pincode!" },
-    { pattern: /^[0-9]{6}$/, message: "Pincode must be exactly 6 digits" },
-  ]}
->
-  <Input
-    placeholder="6 digits [0-9] PIN code"
-    allowClear
-    maxLength={6}
-    prefix={<EnvironmentOutlined className="text-gray-400" />}
-  />
-</Form.Item>
-
-
+        label="Pincode/Zip Code"
+        name="pincode"
+        normalize={(value: string) => {
+          const digitsOnly = value.replace(/\D/g, ""); // Remove non-numeric chars
+          return digitsOnly.slice(0, 6); // Limit to 6 digits
+        }}
+        rules={[
+          { required: true, message: "Please input your pincode!" },
+          {
+            pattern: /^[0-9]{6}$/,
+            message: "Pincode must be exactly 6 digits",
+          },
+        ]}
+          className="mb-3"
+      >
+        <Input
+          placeholder="6 digits [0-9] PIN code"
+          allowClear
+          maxLength={6}
+          prefix={<EnvironmentOutlined className="text-gray-400" />}
+        />
+      </Form.Item>
 
       <Form.Item>
         <div style={{ display: "flex", gap: "8px" }}>

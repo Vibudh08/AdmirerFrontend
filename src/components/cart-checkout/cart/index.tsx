@@ -22,6 +22,7 @@ interface CartProps {
 
 interface ItemProps {
   id: number;
+  subcat_id: number;
   brandName: string;
   brandId: string;
   size?: string;
@@ -61,10 +62,12 @@ interface RawCartItem {
   discount: string;
   image: string;
   in_stock: number;
+  subcat_id: number;
 }
 
 interface GuestCartItem {
   images: any;
+  subcat_id: number;
   id: number;
   product_name?: string;
   name?: string;
@@ -136,70 +139,97 @@ const Cart: React.FC<CartProps> = ({
     setDiscountAmount(discounted);
     setTotalAmount(original - discounted);
   };
+const [cartItems, setCartItems] = useState(() => {
+  return JSON.parse(localStorage.getItem("cartItems") || "[]");
+});
 
-  useEffect(() => {
-    if (totalItem.length === 2 || totalItem.length === 3) {
-      totalItem.forEach((item) => {
-        if (parseInt(item.qty) !== 1) {
-          handleQuantityChange(item.id, 1); 
-        }
-      });
-    }
-  }, [totalItem]);
+  // console.log("Cart Items:", cartItems);
+  // console.log("Subcat IDs:", cartItems.map((item: { subcat_id: any; }) => item.subcat_id));
+const isComboApplied =
+  cartItems.length === 3 &&
+  cartItems.every((item: { subcat_id: string }) => parseInt(item.subcat_id) === 10);
+
+// ✅ 1. Cart Items as STATE
+
+// ✅ 2. When localStorage changes, update state too (example)
+useEffect(() => {
+  const stored = JSON.parse(localStorage.getItem("cartItems") || "[]");
+  setCartItems(stored);
+}, [totalItem]); // agar tum cart localStorage update karte ho to isko trigger karo
+
+useEffect(() => {
+  if (isComboApplied) {
+    cartItems.forEach((item: { qty: string; id: number }) => {
+      if (parseInt(item.qty) !== 1) {
+        handleQuantityChange(item.id, 1);
+      }
+    });
+  }
+}, [cartItems, isComboApplied]);
+
 
   const handleQuantityChange = async (id: number, newQty: number) => {
-    //Step 1: Force quantity to 1 if totalItem count is 2 or 3
-    if (totalItem.length === 2 || totalItem.length === 3) {
-      console.log("Combo detected, forcing quantity to 1");
-      newQty = 1;
-    }
+  if (isComboApplied) {
+    console.log("Combo detected, forcing quantity to 1");
+    newQty = 1;
+  }
 
-    //Step 2: Update local state
-    const updatedItems = totalItem.map((item) =>
-      item.id === id ? { ...item, qty: newQty.toString() } : item
+  const updatedItems = cartItems.map((item: { id: number; }) =>
+    item.id === id ? { ...item, qty: newQty.toString() } : item
+  );
+
+  setCartItems(updatedItems);
+  localStorage.setItem("cartItems", JSON.stringify(updatedItems));
+
+  setTotalItem(updatedItems); // agar totalItem bhi use ho raha hai
+  recalculateTotals(updatedItems);
+
+  try {
+    console.log("Sending quantity to backend:", newQty);
+    await axios.post(
+      updateCartQuantity,
+      { productId: id, quantity: newQty },
+      {
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("auth_token"),
+        },
+      }
     );
-    setTotalItem(updatedItems);
-    recalculateTotals(updatedItems);
+  } catch (error) {
+    console.error("Failed to update cart quantity:", error);
+  }
+};
 
-    //Step 3: Send to backend
-    try {
-      console.log("Sending quantity to backend:", newQty); // Should log 1 in combo case
-      await axios.post(
-        updateCartQuantity,
-        { productId: id, quantity: newQty },
-        {
-          headers: {
-            Authorization: "Bearer " + localStorage.getItem("auth_token"),
-          },
-        }
-      );
-    } catch (error) {
-      console.error("Failed to update cart quantity:", error);
-    }
-  };
 
-  const handleDelete = async (id: number) => {
-    const updatedItems = totalItem.filter((item) => item.id !== id);
-    setTotalItem(updatedItems);
-    setItemCount(updatedItems.length);
+ const handleDelete = async (id: number) => {
+  const updatedItems = totalItem.filter((item) => item.id !== id);
 
-    syncCartCountToHeader(updatedItems.length);
-    recalculateTotals(updatedItems);
+  // 1️⃣ React state update
+  setTotalItem(updatedItems);
+  setItemCount(updatedItems.length);
 
-    try {
-      await axios.post(
-        cartRemove,
-        { pid: id },
-        {
-          headers: {
-            Authorization: "Bearer " + localStorage.getItem("auth_token"),
-          },
-        }
-      );
-    } catch (error) {
-      console.error("Backend error on delete:", error);
-    }
-  };
+  // 2️⃣ LocalStorage update ✅
+  localStorage.setItem("cartItems", JSON.stringify(updatedItems));
+
+  // 3️⃣ Sync other stuff
+  syncCartCountToHeader(updatedItems.length);
+  recalculateTotals(updatedItems);
+
+  // 4️⃣ Backend call
+  try {
+    await axios.post(
+      cartRemove,
+      { pid: id },
+      {
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("auth_token"),
+        },
+      }
+    );
+  } catch (error) {
+    console.error("Backend error on delete:", error);
+  }
+};
 
   const fetchCartData = async () => {
     setIsLoading(true);
@@ -209,8 +239,8 @@ const Cart: React.FC<CartProps> = ({
     const guestCart: GuestCartItem[] = JSON.parse(
       localStorage.getItem("guest_cart") || "[]"
     );
-    console.log("🛒 Guest Cart from LocalStorage:", guestCart);
-    console.log("🛒 API Cart from Backend:", apiCart);
+    // console.log("🛒 Guest Cart from LocalStorage:", guestCart);
+    // console.log("🛒 API Cart from Backend:", apiCart);
 
     // Sync guest cart to backend
     if (authToken && guestCart.length > 0) {
@@ -247,6 +277,7 @@ const Cart: React.FC<CartProps> = ({
           },
         });
         apiCart = response.data.data.products || [];
+        console.log("cartdata", apiCart);
       } catch (error) {
         console.error("Failed to fetch cart data from API:", error);
       }
@@ -255,6 +286,7 @@ const Cart: React.FC<CartProps> = ({
     // Transform backend cart
     const transformedApiCart: ItemProps[] = apiCart.map((item) => ({
       id: item.id,
+      subcat_id: item.subcat_id,
       brandName: item.product_name || "Unknown",
       brandId: item.id.toString(),
       description: item.description || "No description available",
@@ -269,6 +301,7 @@ const Cart: React.FC<CartProps> = ({
     // Merge guest cart items if needed (though usually empty after sync)
     const transformedGuestCart: ItemProps[] = guestCart.map((item) => ({
       id: item.id,
+      subcat_id: item.subcat_id,
       brandName: item.product_name || "Unknown",
       brandId: item.id.toString(),
       description: item.description || "No description available",
@@ -293,6 +326,8 @@ const Cart: React.FC<CartProps> = ({
 
     syncCartCountToHeader(mergedCart.length);
     recalculateTotals(mergedCart);
+
+    localStorage.setItem("cartItems", JSON.stringify(mergedCart));
     setIsLoading(false);
   };
 

@@ -42,6 +42,7 @@ const OrderDetails: React.FC = () => {
   const { orderId } = useParams();
   const location = useLocation();
   const productIds: string[] = location.state?.productIds || [];
+  const [isComboApplied, setIsComboApplied] = useState(false);
   // console.log(productIds.length)
   // console.log("Order ID:", orderId);
   // console.log("All product IDs:", productIds);
@@ -89,15 +90,10 @@ const OrderDetails: React.FC = () => {
   const [isWindowClosed, setIsWindowClosed] = useState(false);
   const [cutoffDateStr, setCutoffDateStr] = useState("");
   const { awbNumber } = useAwb();
-  let totalWithGST;
 
-  if (productIds.length === 3) {
-    totalWithGST = 999;
-  } else if (productIds.length === 2) {
-    totalWithGST = 699;
-  } else {
-    totalWithGST = Number((cleanedTotal + gstAmount).toFixed(2));
-  }
+  const totalWithGST = isComboApplied
+    ? 1049
+    : Number((cleanedTotal + gstAmount).toFixed(2));
 
   // Arrows
   const CustomPrevArrow = ({ onClick }: { onClick: () => void }) => (
@@ -155,6 +151,46 @@ const OrderDetails: React.FC = () => {
       },
     ],
   };
+
+  // for checking offer amount
+
+  useEffect(() => {
+    const fetchAllProductDetails = async () => {
+      if (productIds.length === 3) {
+        try {
+          // Call API 3 times in parallel
+          const promises = productIds.map((id) =>
+            axios.get(`${productDetails}/${id}`, {
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: "Bearer " + localStorage.getItem("auth_token"),
+              },
+            })
+          );
+
+          const responses = await Promise.all(promises);
+
+          const allAreCombo = responses.every(
+            (res) => parseInt(res.data.data.subcat_id) === 10
+          );
+
+          console.log(
+            "Combo check responses:",
+            responses.map((r) => r.data.data)
+          );
+
+          setIsComboApplied(allAreCombo);
+        } catch (error) {
+          console.error("Error fetching product details:", error);
+          setIsComboApplied(false);
+        }
+      } else {
+        setIsComboApplied(false);
+      }
+    };
+
+    fetchAllProductDetails();
+  }, [productIds]);
 
   useEffect(() => {
     if (orderData && orderData.length > 0 && orderData[0].date) {
@@ -316,7 +352,7 @@ const OrderDetails: React.FC = () => {
 
       setInvoiceData(invoice);
     }
-  }, [orderData, address]);
+  },[isComboApplied, orderData, address]);
 
   useEffect(() => {
     let orderFetched = false;
@@ -676,7 +712,7 @@ const OrderDetails: React.FC = () => {
                 </div>
                 <div className="border-t pt-2 flex justify-between font-semibold">
                   <span className="font-semibold mt-1 text-[14px] text-black">
-                    Total Amount
+                    {isComboApplied ? "Offer Amount" : "Total Amount"}
                   </span>
                   <span className="font-semibold mt-1 text-[14px] text-black">
                     ₹{totalWithGST}
