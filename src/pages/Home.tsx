@@ -7,11 +7,6 @@ import axios from "axios";
 import { homePageData } from "../components/api/api-end-points";
 import LoaderCode from "../components/Loader";
 
-interface HomePageProps {
-  setCategoryId: React.Dispatch<React.SetStateAction<string>>;
-  setSubcategoryId: React.Dispatch<React.SetStateAction<string>>;
-}
-
 const Loader = () => <LoaderCode />;
 
 // Arrows
@@ -61,7 +56,7 @@ interface BottomBanner {
   desktop_banner: BannerData;
 }
 
-const Home: React.FC<HomePageProps> = ({ setCategoryId, setSubcategoryId }) => {
+const Home: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [banners, setBanners] = useState<BannerItem[]>([]);
   const [category, setCategory] = useState<CategoryItem[]>([]);
@@ -183,22 +178,22 @@ const Home: React.FC<HomePageProps> = ({ setCategoryId, setSubcategoryId }) => {
   // };
 
   const handleClick = (url: string) => {
-  const catIdMatch = url.match(/cat-([a-zA-Z0-9]+)/);
-  const subcatIdMatch = url.match(/subcat-([a-zA-Z0-9]+)/);
+    const catIdMatch = url.match(/cat-([a-zA-Z0-9]+)/);
+    const subcatIdMatch = url.match(/subcat-([a-zA-Z0-9]+)/);
+    console.log(catIdMatch);
+    console.log(subcatIdMatch);
+    const categoryId = catIdMatch ? catIdMatch[1] : "";
+    const subcategoryId = subcatIdMatch ? subcatIdMatch[1] : "";
 
-  const categoryId = catIdMatch ? catIdMatch[1] : "";
-  const subcategoryId = subcatIdMatch ? subcatIdMatch[1] : "";
+    sessionStorage.setItem("categoryId", categoryId);
+    sessionStorage.setItem("activeSubcategory", subcategoryId);
 
-  // 🟡 Store in sessionStorage
-  sessionStorage.setItem("categoryId", categoryId);
-  sessionStorage.setItem("subcategoryId", subcategoryId);
+    // setCategoryId(categoryId);
+    // setSubcategoryId(subcategoryId);
 
-  // 🟢 Update state too
-  setCategoryId(categoryId);
-  setSubcategoryId(subcategoryId);
-
-  navigate("/listing");
-};
+    // ✅ Navigate with params in URL
+    navigate(`/listing?cat=26&subcat=${subcategoryId}`);
+  };
 
   useEffect(() => {
     axios
@@ -450,14 +445,14 @@ const Home: React.FC<HomePageProps> = ({ setCategoryId, setSubcategoryId }) => {
 
       <section className="bg-white pb-10 max-md:pt-10">
         <div className=" bg-purple-200">
-        <div className="grid grid-cols-4 max-md:grid-cols-2 items-center justify-center py-12 w-[85%] max-md:w-full text-center m-auto gap-4">
-          {features.map((item, index) => (
-            <div key={index} className="flex flex-col items-center gap-5">
-              <img src={item.img} alt="" className="mx-auto text-xl" />
-              <p className="font-semibold">{item.title}</p>
-            </div>
-          ))}
-        </div>
+          <div className="grid grid-cols-4 max-md:grid-cols-2 items-center justify-center py-12 w-[85%] max-md:w-full text-center m-auto gap-4">
+            {features.map((item, index) => (
+              <div key={index} className="flex flex-col items-center gap-5">
+                <img src={item.img} alt="" className="mx-auto text-xl" />
+                <p className="font-semibold">{item.title}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 

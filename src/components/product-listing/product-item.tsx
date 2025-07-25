@@ -10,22 +10,20 @@ const ProductItem: React.FC<productItemProps> = ({
   name,
   id,
   price,
-  description,
   originalPrice,
   discount,
   imageUrl,
   compactView = false,
-  subcategory,
-  wishlist
+  wishlist,
 }) => {
   const [isWishlisted, setIsWishlisted] = useState(false);
-     const [wishlistStatus, setWishlistStatus] = useState(wishlist === 1);
+  const [wishlistStatus, setWishlistStatus] = useState(wishlist === 1);
   const navigate = useNavigate();
 
- const handleClick = () => {
-  sessionStorage.setItem("listingScrollY", window.scrollY.toString());
-  navigate(`/product/${id}`);
-};
+  const handleClick = () => {
+    sessionStorage.setItem("listingScrollY", window.scrollY.toString());
+    navigate(`/product/${id}`);
+  };
 
   const toggleWishlist = async () => {
     try {
@@ -115,7 +113,9 @@ const ProductItem: React.FC<productItemProps> = ({
       /> */}
 
       <div className="flex items-center gap-1 sm:gap-2.5 flex-wrap">
-        <span className="font-semibold text-black text-lg max-md:text-sm">Rs {price}</span>
+        <span className="font-semibold text-black text-lg max-md:text-sm">
+          Rs {price}
+        </span>
         <span className="line-through text-gray-400 text-[16px] max-md:text-xs">
           Rs {originalPrice}
         </span>

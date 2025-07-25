@@ -113,8 +113,13 @@ function App() {
               path="/"
               element={
                 <Home
-                  setCategoryId={setCategoryId}
-                  setSubcategoryId={setSubcategoryId}
+                />
+              }
+            />
+            <Route
+              path="/listing"
+              element={
+                <ProductListing
                 />
               }
             />
@@ -140,15 +145,6 @@ function App() {
               }
             />
             <Route path="/cart" element={<Complete_cart_checkout />} />
-            <Route
-              path="/listing"
-              element={
-                <ProductListing
-                  category={Number(categoryId)}
-                  subcategory={Number(subcategoryId)}
-                />
-              }
-            />
             <Route
               path="/dashboard"
               element={
@@ -178,8 +174,8 @@ function App() {
               }
             />
           </Routes>
-          {showFooter && <Footer />}
         </Layout>
+      {showFooter && <Footer />}
       </BrowserRouter>
     </GlobalContextProvider>
   );

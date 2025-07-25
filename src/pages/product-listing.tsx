@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 import ProductItem from "../components/product-listing/product-item";
 import LeftSideBar from "../components/product-listing/left-side-bar";
 import { FiFilter, FiX } from "react-icons/fi";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
+
 import {
   product_listing_API,
   productPriceCategoryInfo_API,
@@ -31,15 +32,8 @@ const CustomNextArrow = ({ onClick }: { onClick: () => void }) => (
     <IoIosArrowForward className="text-3xl max-md:text-xl text-gray-700 hover:text-white" />
   </button>
 );
-interface ProductLsitingProps {
-  category?: Number;
-  subcategory?: Number;
-}
 
-const ProductListing: React.FC<ProductLsitingProps> = ({
-  category,
-  subcategory,
-}) => {
+const ProductListing: React.FC = () => {
   const navigate = useNavigate();
   const [cat, setCat] = useState<Number | null>(null);
   const [showMobileFilters, setShowMobileFilters] = useState(false);
@@ -53,6 +47,43 @@ const ProductListing: React.FC<ProductLsitingProps> = ({
   const [loading, setLoading] = useState(false);
   const [subCategory, setSubCategory] = useState("");
   const [productDataLoaded, setProductDataLoaded] = useState(false);
+  const [savedScrollY, setSavedScrollY] = useState<number | null>(null);
+
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const urlCategoryId = searchParams.get("cat");
+  const urlSubcategoryId = searchParams.get("subcat");
+
+  const finalCategoryId = urlCategoryId || sessionStorage.getItem("categoryId");
+  const finalSubcategoryId =
+    urlSubcategoryId || sessionStorage.getItem("subcategoryId");
+  useEffect(() => {
+    if ("scrollRestoration" in window.history) {
+      window.history.scrollRestoration = "manual";
+    }
+  }, []);
+
+  useEffect(() => {
+    const savedY = sessionStorage.getItem("listingScrollY");
+    if (savedY) {
+      setSavedScrollY(parseInt(savedY));
+    }
+  }, []);
+
+  useEffect(() => {
+    if (savedScrollY !== null && productDataLoaded) {
+      setTimeout(() => {
+        window.scrollTo(0, savedScrollY);
+        sessionStorage.removeItem("listingScrollY");
+      }, 0);
+    }
+  }, [savedScrollY, productDataLoaded]);
+
+  useEffect(() => {
+    if (!finalCategoryId && !finalSubcategoryId) {
+      navigate("/");
+    }
+  }, [finalCategoryId, finalSubcategoryId, navigate]);
 
   const sliderSettings = {
     dots: false,
@@ -67,27 +98,23 @@ const ProductListing: React.FC<ProductLsitingProps> = ({
     nextArrow: <CustomNextArrow onClick={() => {}} />,
   };
 
-  useEffect(() => {
-    const savedY = sessionStorage.getItem("listingScrollY");
+  // useEffect(() => {
+  //   const savedY = sessionStorage.getItem("listingScrollY");
 
-    if (savedY && productDataLoaded) {
-      // Delay scroll slightly to ensure render is complete
-      setTimeout(() => {
-        window.scrollTo(0, parseInt(savedY));
-        sessionStorage.removeItem("listingScrollY");
-      }, 0);
-    }
-  }, [productDataLoaded]);
+  //   if (savedY && productDataLoaded) {
+  //     // Delay scroll slightly to ensure render is complete
+  //     setTimeout(() => {
+  //       window.scrollTo(0, parseInt(savedY));
+  //       sessionStorage.removeItem("listingScrollY");
+  //     }, 0);
+  //   }
+  // }, [productDataLoaded]);
 
   // useEffect(() => {
   //   if (subCategory && sessionStorage.getItem("activeSubcategory")) {
   //     sessionStorage.removeItem("activeSubcategory");
   //   }
   // }, [subCategory]);
-
-  useEffect(() => {
-    if (!category && !subcategory) navigate("/");
-  }, [category, subcategory, navigate]);
 
   useEffect(() => {
     const checkIfMobile = () => {
@@ -115,11 +142,20 @@ const ProductListing: React.FC<ProductLsitingProps> = ({
   });
 
   useEffect(() => {
-    const sessionSubcatId = sessionStorage.getItem("subcategoryId");
-    const finalSubcatId = subcategory || sessionSubcatId;
+    // STEP 1: Get from URL or Session
+    const location = window.location;
+    const searchParams = new URLSearchParams(location.search);
+    const urlCategoryId = searchParams.get("cat");
+    const urlSubcategoryId = searchParams.get("subcat");
+
+    const finalCategoryId =
+      urlCategoryId || sessionStorage.getItem("categoryId");
+    const finalSubcatId =
+      urlSubcategoryId || sessionStorage.getItem("subcategoryId");
 
     if (finalSubcatId) {
       setLoading(true);
+
       fetch(getSubCatName_API, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -129,18 +165,23 @@ const ProductListing: React.FC<ProductLsitingProps> = ({
         .then((value) => {
           setSubCategory(value?.subcatName || "");
           setCat(value?.catId || null);
+          // ✅ Also update session if needed:
+          if (value?.catId) {
+            sessionStorage.setItem("categoryId", value?.catId);
+          }
           setCategoryReady(true);
         });
-    } else if (category) {
+    } else if (finalCategoryId) {
       setLoading(true);
-      setCat(category);
+      setCat(Number(finalCategoryId));
+      sessionStorage.setItem("categoryId", finalCategoryId);
       fetch(product_listing_API, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           maxPrice: maxVal,
           minPrice: minVal,
-          category: Number(category),
+          category: Number(finalCategoryId),
         }),
       })
         .then((res) => res.json())
@@ -151,7 +192,7 @@ const ProductListing: React.FC<ProductLsitingProps> = ({
           setCategoryReady(true);
         });
     }
-  }, [subcategory, category, maxVal, minVal]);
+  }, [maxVal, minVal]);
 
   useEffect(() => {
     fetch(productPriceCategoryInfo_API)
@@ -260,7 +301,7 @@ const ProductListing: React.FC<ProductLsitingProps> = ({
             maximum={maxVal}
             setDynamicMin={setDynamicMinVal}
             setDynamicMax={setDynamicMaxVal}
-            category={Number(cat)}
+            // category={Number(cat)}
             setSubCategory={setSubCategory}
             activeSubCategory={subCategory}
           />
@@ -287,7 +328,6 @@ const ProductListing: React.FC<ProductLsitingProps> = ({
                   id={item.id}
                   name={item.product_name}
                   price={item.discount}
-                  description={item.description}
                   originalPrice={item.price}
                   imageUrl={item.image}
                   discount={`${Math.round(
@@ -296,8 +336,9 @@ const ProductListing: React.FC<ProductLsitingProps> = ({
                       100
                   )}%`}
                   compactView={isMobile}
-                  subcategory={subcategory}
                   wishlist={item.wishlist}
+                  description={""}
+                  subcategory={undefined}
                 />
               ))
             )}

@@ -6,10 +6,11 @@ interface LeftSideBarProps {
   maximum: number;
   setDynamicMin: (val: number) => void;
   setDynamicMax: (val: number) => void;
-  category: Number;
+  category?: number; // ✅ optional karo
   setSubCategory: (val: string) => void;
   activeSubCategory?: string;
 }
+
 const LeftSideBar: React.FC<LeftSideBarProps> = ({
   minimum,
   maximum,
@@ -69,32 +70,55 @@ const LeftSideBar: React.FC<LeftSideBarProps> = ({
   //     });
   // }, []);
   useEffect(() => {
-    if (!category) {
-      setLoading(true);
+    const rawCat = sessionStorage.getItem("categoryId");
+    const rawSubcat = sessionStorage.getItem("subcategoryId");
+
+    // Agar tumko catId bhi URL se mil rha hai to woh bhi parse kar sakte ho:
+    const urlParams = new URLSearchParams(window.location.search);
+    const urlCat = urlParams.get("cat");
+    const urlSubcat = urlParams.get("subcat");
+
+    const finalCat = urlCat || rawCat || null;
+    const finalSubcat = urlSubcat || rawSubcat || null;
+
+    console.log("👉 FINAL CAT:", finalCat);
+    console.log("👉 FINAL SUBCAT:", finalSubcat);
+
+    if (!finalCat) {
+      console.log("❌ No valid category id, skipping fetch");
       return;
     }
-
-    setLoading(false);
+    window.scrollTo({ top: 0, behavior: "auto" }); // extra add to move top instead of that same product
+    setLoading(true);
 
     fetch(catSubcat_API, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ category }),
+      body: JSON.stringify({ category: finalCat }),
     })
       .then((response) => response.json())
       .then((data: Record<string, string[]>) => {
+        console.log("✅ API DATA:", data);
+
         setCategories(data);
 
-        const allSubs = Object.values(data).flat();
-        const isValidPropSub = allSubs.includes(category.toString());
+        const initialExpanded: Record<string, boolean> = {
+          price: true,
+          categories: true,
+        };
+        Object.keys(data).forEach((cat) => {
+          initialExpanded[cat] = true; // har category expand
+        });
+        setExpandedSections(initialExpanded);
 
-        if (isValidPropSub) {
-          // ✅ Link se aaye ho → session update karo
-          sessionStorage.setItem("activeSubcategory", category.toString());
-          setSelectedCategory(category.toString());
-          setSubCategory(category.toString());
+        const allSubs = Object.values(data).flat();
+
+        if (finalSubcat && allSubs.includes(finalSubcat)) {
+          sessionStorage.setItem("activeSubcategory", finalSubcat);
+          setSelectedCategory(finalSubcat);
+          setSubCategory(finalSubcat);
         } else {
           const savedSub = sessionStorage.getItem("activeSubcategory");
           if (savedSub && allSubs.includes(savedSub)) {
@@ -102,16 +126,13 @@ const LeftSideBar: React.FC<LeftSideBarProps> = ({
             setSubCategory(savedSub);
           } else {
             const firstCategory = Object.keys(data)[0];
-            if (firstCategory && data[firstCategory].length > 0) {
-              const firstSub = data[firstCategory][0];
-              sessionStorage.setItem("activeSubcategory", firstSub);
-              setSelectedCategory(firstSub);
-              setSubCategory(firstSub);
-            }
           }
         }
+      })
+      .finally(() => {
+        setLoading(false);
       });
-  }, [category]);
+  }, []);
 
   // functions related for price range
   useEffect(() => {
@@ -236,11 +257,27 @@ const LeftSideBar: React.FC<LeftSideBarProps> = ({
   //   }
   // };
 
-  const handleCategoryChange = (category: string) => {
-    setSelectedCategory(category);
-    setSubCategory(category);
-    sessionStorage.setItem("activeSubcategory", category);
+  const handleCategoryChange = (clicked: string) => {
+    // Check if it's a **main category**
+    const isMainCategory = Object.keys(categories).includes(clicked);
+
+    if (isMainCategory) {
+      // Agar main category pe click hua → subcategory ko empty karo
+      setSelectedCategory(clicked);
+      setSubCategory(""); // 🟢 empty subcat means show all
+      sessionStorage.setItem("activeSubcategory", "");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } else {
+      // Subcategory pe click
+      setSelectedCategory(clicked);
+      setSubCategory(clicked);
+      sessionStorage.setItem("activeSubcategory", clicked);
+    }
     window.scrollTo({ top: 0, behavior: "smooth" });
+    setExpandedSections((prev) => ({
+      ...prev,
+      [clicked]: true, // force expand main category
+    }));
   };
 
   const toggleSection = (section: string) => {
@@ -396,7 +433,7 @@ const LeftSideBar: React.FC<LeftSideBarProps> = ({
                     >
                       {category}
                     </label>
-                    {subcategories.length > 0 && (
+                    {subcategories?.length > 0 && (
                       <span
                         className="ml-2 text-purple-800 cursor-pointer"
                         onClick={() => toggleSection(category)}
