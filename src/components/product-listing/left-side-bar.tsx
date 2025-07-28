@@ -288,14 +288,14 @@ const LeftSideBar: React.FC<LeftSideBarProps> = ({
   };
 
   return (
-    <div className=" m-6 p-4  bg-white shadow-md ">
+    <div className="p-6 ">
       {/* Price Range Section */}
       <div className="bg-white rounded-lg p-0 w-full max-w-md mx-auto ">
-        <div className="flex justify-between items-center mb-4">
+        <div className="flex justify-between items-center mb-1">
           <h3 className="text-lg font-bold text-[#7b48a5]">Price Range</h3>
         </div>
         {/* Input boxes */}
-        <div className="flex justify-between mb-8 gap-4">
+        <div className="flex justify-between mb-2 gap-4">
           <div className="flex-1 min-w-0">
             <label className="block text-xs font-medium text-gray-600 mb-1">
               Min (Rs)
@@ -337,7 +337,7 @@ const LeftSideBar: React.FC<LeftSideBarProps> = ({
         </div>
 
         {/* Slider */}
-        <div className="relative h-1 bg-gray-300 rounded-full my-8">
+        <div className="relative h-1 bg-gray-300 rounded-full my-6 mb-8">
           <div
             className="absolute h-full bg-[#7b48a5] rounded-full"
             style={trackStyle}
@@ -406,9 +406,9 @@ const LeftSideBar: React.FC<LeftSideBarProps> = ({
             </span>
           </div>
           {expandedSections.categories && (
-            <div className="mt-3">
+            <div className="mt-1">
               {Object.entries(categories).map(([category, subcategories]) => (
-                <div key={category} className="mb-4">
+                <div key={category} className="mb-4 ">
                   <div className="flex items-center">
                     <input
                       type="radio"
@@ -417,11 +417,11 @@ const LeftSideBar: React.FC<LeftSideBarProps> = ({
                       value={category}
                       checked={selectedCategory === category}
                       onChange={() => handleCategoryChange(category)}
-                      className="h-4 w-4 hidden text-[#7b48a5] focus:ring-purple-500"
+                      className="h-4 w-4 hidden text-[#7b48a5] focus:ring-purple-500 cursor-pointer"
                     />
                     <label
                       htmlFor={`cat-${category}`}
-                      className={`ml-2 font-semibold ${
+                      className={`ml-2 font-semibold cursor-pointer ${
                         selectedCategory === category
                           ? "text-[#7b48a5]"
                           : "text-purple-700"
@@ -443,11 +443,11 @@ const LeftSideBar: React.FC<LeftSideBarProps> = ({
                     )}
                   </div>
                   {expandedSections[category] && subcategories.length > 0 && (
-                    <div className="ml-6 space-y-2 mt-2">
+                    <div className="ml-4 space-y-2 mt-2">
                       {subcategories.map((subcategory, idx) => (
                         <div
                           key={`${category}-${idx}`}
-                          className="flex items-center"
+                          className="flex items-center  "
                         >
                           <input
                             type="radio"
@@ -456,11 +456,11 @@ const LeftSideBar: React.FC<LeftSideBarProps> = ({
                             value={subcategory}
                             checked={selectedCategory === subcategory}
                             onChange={() => handleCategoryChange(subcategory)}
-                            className="h-4 w-4 text-purple-600 focus:ring-purple-500"
+                            className="h-4 w-4 text-purple-600 cursor-pointer focus:ring-purple-500 shrink-0"
                           />
                           <label
                             htmlFor={`${category}-${idx}`}
-                            className={`ml-2 font-medium ${
+                            className={`ml-2 font-medium cursor-pointer ${
                               selectedCategory === subcategory
                                 ? "text-purple-800 font-semibold"
                                 : "text-purple-600"

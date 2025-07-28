@@ -302,6 +302,10 @@ const Home: React.FC = () => {
                     src={cat.image}
                     alt={cat.title}
                     className="w-full object-cover"
+                    onError={(e) => {
+                      e.currentTarget.onerror = null; // prevent infinite loop
+                      e.currentTarget.src = "https://admirer.in/asset/image/combo-offer-image.jpg";
+                    }}
                   />
                 </div>
                 <h3 className="text-lg font-semibold text-gray-800">

@@ -3,6 +3,7 @@ import ProductItem from "../components/product-listing/product-item";
 import LeftSideBar from "../components/product-listing/left-side-bar";
 import { FiFilter, FiX } from "react-icons/fi";
 import { useNavigate, useLocation } from "react-router-dom";
+import { Empty } from "antd";
 
 import {
   product_listing_API,
@@ -282,9 +283,9 @@ const ProductListing: React.FC = () => {
         </div>
       </div>
 
-      <div className="flex flex-col lg:flex-row w-full h-full gap-4 sm:gap-6">
+      <div className="flex flex-col lg:flex-row w-full h-full gap-4 sm:gap-5">
         <div
-          className={`fixed lg:sticky top-0 lg:top-4 lg:h-[calc(100vh-2rem)] inset-y-0 left-0 z-[1000] w-[85%] sm:w-3/4 lg:w-[22%] xl:w-[20%] lg:min-w-[280px] bg-white rounded-r-xl lg:rounded-xl shadow-xl border border-gray-200 transform ${
+          className={`fixed lg:sticky top-0 lg:top-4 lg:h-[calc(100vh-2rem)] inset-y-0 left-0 z-[1000] w-[85%] sm:w-3/4 lg:w-[22%] xl:w-[20%] lg:min-w-[260px] bg-white rounded-r-xl lg:rounded-xl shadow-sm border border-gray-200 transform ${
             showMobileFilters ? "translate-x-0" : "-translate-x-full"
           } lg:translate-x-0 transition-transform duration-300 ease-in-out overflow-y-auto max-h-screen`}
         >
@@ -318,8 +319,8 @@ const ProductListing: React.FC = () => {
         <div className="flex-grow bg-white rounded-xl shadow-sm border border-gray-200 p-2 sm:p-3 lg:p-4">
           <div className="grid grid-cols-2 md:grid-cols-3 gap-2 sm:gap-3 md:gap-4">
             {!loading && productDataLoaded && filteredProducts.length === 0 ? (
-              <div className="col-span-full text-center text-gray-500 font-medium text-lg py-10">
-                No products found.
+              <div className="col-span-full h-100vh flex items-center text-center justify-center ">
+                <Empty />
               </div>
             ) : (
               filteredProducts.map((item, index) => (

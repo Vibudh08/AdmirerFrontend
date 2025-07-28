@@ -80,20 +80,20 @@ const Checkout: React.FC<IndexProps> = ({
 
   let totalWithGST;
 
-  const cartItems = JSON.parse(localStorage.getItem("cartItems") || "[]");
+  // const cartItems = JSON.parse(localStorage.getItem("cartItems") || "[]");
   // console.log("Cart Items:", cartItems);
   // console.log("Subcat IDs:", cartItems.map((item: { subcat_id: any; }) => item.subcat_id));
-  const isComboApplied =
-    cartItems.length === 3 &&
-    cartItems.every(
-      (item: { subcat_id: string }) => parseInt(item.subcat_id) === 10
-    );
+  // const isComboApplied =
+  //   cartItems.length === 3 &&
+  //   cartItems.every(
+  //     (item: { subcat_id: string }) => parseInt(item.subcat_id) === 10
+  //   );
 
-  if (isComboApplied) {
-    totalWithGST = 1049;
-  } else {
+  // if (isComboApplied) {
+  //   totalWithGST = 1049;
+  // } else {
     totalWithGST = Number((cleanedTotal + gstAmount).toFixed(2));
-  }
+  // }
   // const finalAmount = Math.round(totalWithGST * 100 );
   // console.log("totalAmount:", finalAmount, "type:", typeof finalAmount);
 

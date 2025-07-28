@@ -33,6 +33,7 @@ interface ItemProps {
   return_days: string;
   image: string;
   totalQuantity: string;
+  displayPrice: string;
 }
 
 const Loader = () => <LoaderCode />;
@@ -125,111 +126,199 @@ const Cart: React.FC<CartProps> = ({
     let original = 0;
     let discounted = 0;
 
-    items.forEach((item) => {
-      const price = parseFloat(item.price || "0");
-      const discountPercent = parseFloat(item.discount || "0");
-      const quantity = parseInt(item.qty || "1");
+    const comboItems = items.filter((item) => Number(item.subcat_id) === 10);
+    const otherItems = items.filter((item) => Number(item.subcat_id) !== 10);
 
-      const discountedPrice = price - discountPercent;
-      original += price * quantity;
-      discounted += discountedPrice * quantity;
+    const comboUnitPrice = 349; // ✅ FINAL COMBO PRICE
+    const comboPack = 3;
+
+    const totalComboCount = comboItems.reduce(
+      (sum, item) => sum + parseInt(item.qty || "1"),
+      0
+    );
+
+    const comboSets = Math.floor(totalComboCount / comboPack);
+    let comboCounted = comboSets * comboPack;
+
+    const updatedItems: ItemProps[] = [];
+
+    comboItems.forEach((item) => {
+      const qty = parseInt(item.qty || "1");
+      console.log("QTY:", qty, "comboCounted:", comboCounted);
+
+      let finalPrice = parseFloat(item.price || "0");
+
+      if (comboCounted >= qty) {
+        finalPrice = 349;
+        comboCounted -= qty;
+      } else if (comboCounted > 0) {
+        finalPrice = 349;
+        comboCounted = 0;
+      } else {
+        finalPrice = parseFloat(item.discount || "0");
+      }
+
+      console.log("Setting displayPrice:", finalPrice);
+
+      updatedItems.push({
+        ...item,
+        displayPrice: finalPrice.toString(),
+      });
+
+      original += parseFloat(item.price) * qty;
+      discounted += finalPrice * qty;
+    });
+
+    // console.log("totalComboCount", totalComboCount);
+    // console.log("comboSets", comboSets);
+    // console.log("comboCounted", comboCounted);
+    // console.log("Full Items:", items);
+    // console.log("Combo Items:", comboItems);
+    // console.log("Other Items:", otherItems);
+    otherItems.forEach((item) => {
+      const qty = parseInt(item.qty || "1");
+      const basePrice = parseFloat(item.displayPrice || "0");
+
+      updatedItems.push({
+        ...item,
+        displayPrice: basePrice.toString(),
+      });
+
+      original += parseFloat(item.price) * qty;
+      discounted += basePrice * qty;
     });
 
     setTotalMRP(original);
-    setDiscountAmount(discounted);
-    setTotalAmount(original - discounted);
+    setDiscountAmount(original - discounted);
+    setTotalAmount( discounted);
+
+    console.log("✅ FINAL Items:", updatedItems);
+    console.log();
+    setTotalItem(updatedItems);
   };
-const [cartItems, setCartItems] = useState(() => {
-  return JSON.parse(localStorage.getItem("cartItems") || "[]");
-});
+
+  // const [cartItems, setCartItems] = useState(() => {
+  //   return JSON.parse(localStorage.getItem("cartItems") || "[]");
+  // });
 
   // console.log("Cart Items:", cartItems);
   // console.log("Subcat IDs:", cartItems.map((item: { subcat_id: any; }) => item.subcat_id));
-const isComboApplied =
-  cartItems.length === 3 &&
-  cartItems.every((item: { subcat_id: string }) => parseInt(item.subcat_id) === 10);
+  // const isComboApplied =
+  //   cartItems.length === 3 &&
+  //   cartItems.every(
+  //     (item: { subcat_id: string }) => parseInt(item.subcat_id) === 10
+  //   );
 
-// ✅ 1. Cart Items as STATE
+  // ✅ 1. Cart Items as STATE
 
-// ✅ 2. When localStorage changes, update state too (example)
-useEffect(() => {
-  const stored = JSON.parse(localStorage.getItem("cartItems") || "[]");
-  setCartItems(stored);
-}, [totalItem]); // agar tum cart localStorage update karte ho to isko trigger karo
+  // ✅ 2. When localStorage changes, update state too (example)
+  // useEffect(() => {
+  //   const stored = JSON.parse(localStorage.getItem("cartItems") || "[]");
+  //   setCartItems(stored);
+  // }, [totalItem]); // agar tum cart localStorage update karte ho to isko trigger karo
 
-useEffect(() => {
-  if (isComboApplied) {
-    cartItems.forEach((item: { qty: string; id: number }) => {
-      if (parseInt(item.qty) !== 1) {
-        handleQuantityChange(item.id, 1);
-      }
-    });
-  }
-}, [cartItems, isComboApplied]);
+  // useEffect(() => {
+  //   if (isComboApplied) {
+  //     cartItems.forEach((item: { qty: string; id: number }) => {
+  //       if (parseInt(item.qty) !== 1) {
+  //         handleQuantityChange(item.id, 1);
+  //       }
+  //     });
+  //   }
+  // }, [cartItems, isComboApplied]);
 
+  // const handleQuantityChange = async (id: number, newQty: number) => {
+  //   if (isComboApplied) {
+  //     console.log("Combo detected, forcing quantity to 1");
+  //     newQty = 1;
+  //   }
+
+  //   const updatedItems = cartItems.map((item: { id: number }) =>
+  //     item.id === id ? { ...item, qty: newQty.toString() } : item
+  //   );
+
+  //   setCartItems(updatedItems);
+  //   localStorage.setItem("cartItems", JSON.stringify(updatedItems));
+
+  //   setTotalItem(updatedItems); // agar totalItem bhi use ho raha hai
+  //   recalculateTotals(updatedItems);
+
+  //   try {
+  //     console.log("Sending quantity to backend:", newQty);
+  //     await axios.post(
+  //       updateCartQuantity,
+  //       { productId: id, quantity: newQty },
+  //       {
+  //         headers: {
+  //           Authorization: "Bearer " + localStorage.getItem("auth_token"),
+  //         },
+  //       }
+  //     );
+  //   } catch (error) {
+  //     console.error("Failed to update cart quantity:", error);
+  //   }
+  // };
 
   const handleQuantityChange = async (id: number, newQty: number) => {
-  if (isComboApplied) {
-    console.log("Combo detected, forcing quantity to 1");
-    newQty = 1;
-  }
+    // if (isComboApplied) {
+    //   console.log("Combo detected, forcing quantity to 1");
+    //   newQty = 1;
+    // }
 
-  const updatedItems = cartItems.map((item: { id: number; }) =>
-    item.id === id ? { ...item, qty: newQty.toString() } : item
-  );
+    // const updatedItems = cartItems.map((item: { id: number }) =>
+    //   item.id === id ? { ...item, qty: newQty.toString() } : item
+    // );
 
-  setCartItems(updatedItems);
-  localStorage.setItem("cartItems", JSON.stringify(updatedItems));
+    // setCartItems(updatedItems);
+    // localStorage.setItem("cartItems", JSON.stringify(updatedItems));
 
-  setTotalItem(updatedItems); // agar totalItem bhi use ho raha hai
-  recalculateTotals(updatedItems);
+    // setTotalItem(updatedItems); // agar totalItem bhi use ho raha hai
+    // recalculateTotals(updatedItems);
 
-  try {
-    console.log("Sending quantity to backend:", newQty);
-    await axios.post(
-      updateCartQuantity,
-      { productId: id, quantity: newQty },
-      {
-        headers: {
-          Authorization: "Bearer " + localStorage.getItem("auth_token"),
-        },
-      }
-    );
-  } catch (error) {
-    console.error("Failed to update cart quantity:", error);
-  }
-};
+    try {
+      console.log("Sending quantity to backend:", 1);
+      await axios.post(
+        updateCartQuantity,
+        { productId: id, quantity: 1 },
+        {
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("auth_token"),
+          },
+        }
+      );
+    } catch (error) {
+      console.error("Failed to update cart quantity:", error);
+    }
+  };
+  const handleDelete = async (id: number) => {
+    const updatedItems = totalItem.filter((item) => item.id !== id);
 
+    // 1️⃣ React state update
+    setTotalItem(updatedItems);
+    setItemCount(updatedItems.length);
 
- const handleDelete = async (id: number) => {
-  const updatedItems = totalItem.filter((item) => item.id !== id);
+    // 2️⃣ LocalStorage update ✅
+    localStorage.setItem("cartItems", JSON.stringify(updatedItems));
 
-  // 1️⃣ React state update
-  setTotalItem(updatedItems);
-  setItemCount(updatedItems.length);
+    // 3️⃣ Sync other stuff
+    syncCartCountToHeader(updatedItems.length);
+    recalculateTotals(updatedItems);
 
-  // 2️⃣ LocalStorage update ✅
-  localStorage.setItem("cartItems", JSON.stringify(updatedItems));
-
-  // 3️⃣ Sync other stuff
-  syncCartCountToHeader(updatedItems.length);
-  recalculateTotals(updatedItems);
-
-  // 4️⃣ Backend call
-  try {
-    await axios.post(
-      cartRemove,
-      { pid: id },
-      {
-        headers: {
-          Authorization: "Bearer " + localStorage.getItem("auth_token"),
-        },
-      }
-    );
-  } catch (error) {
-    console.error("Backend error on delete:", error);
-  }
-};
+    // 4️⃣ Backend call
+    try {
+      await axios.post(
+        cartRemove,
+        { pid: id },
+        {
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("auth_token"),
+          },
+        }
+      );
+    } catch (error) {
+      console.error("Backend error on delete:", error);
+    }
+  };
 
   const fetchCartData = async () => {
     setIsLoading(true);
@@ -239,25 +328,15 @@ useEffect(() => {
     const guestCart: GuestCartItem[] = JSON.parse(
       localStorage.getItem("guest_cart") || "[]"
     );
-    // console.log("🛒 Guest Cart from LocalStorage:", guestCart);
-    // console.log("🛒 API Cart from Backend:", apiCart);
 
-    // Sync guest cart to backend
     if (authToken && guestCart.length > 0) {
       try {
         await Promise.all(
           guestCart.map((item) =>
             axios.post(
               addToCart,
-              {
-                product_id: item.id,
-                cart: 1,
-              },
-              {
-                headers: {
-                  Authorization: `Bearer ${authToken}`,
-                },
-              }
+              { product_id: item.id, cart: 1 },
+              { headers: { Authorization: `Bearer ${authToken}` } }
             )
           )
         );
@@ -268,13 +347,10 @@ useEffect(() => {
       }
     }
 
-    // 🛒 Fetch user cart from backend
     if (authToken) {
       try {
         const response = await axios.get(cartProductData, {
-          headers: {
-            Authorization: `Bearer ${authToken}`,
-          },
+          headers: { Authorization: `Bearer ${authToken}` },
         });
         apiCart = response.data.data.products || [];
         console.log("cartdata", apiCart);
@@ -283,7 +359,6 @@ useEffect(() => {
       }
     }
 
-    // Transform backend cart
     const transformedApiCart: ItemProps[] = apiCart.map((item) => ({
       id: item.id,
       subcat_id: item.subcat_id,
@@ -292,13 +367,13 @@ useEffect(() => {
       description: item.description || "No description available",
       qty: item.quantity,
       price: item.price,
-      discount: item.discount,
+      discount: item.discount || item.price,
+      displayPrice: item.discount || item.price,
       return_days: "7",
       image: item.image,
       totalQuantity: item.in_stock < 3 ? item.in_stock.toString() : "3",
     }));
 
-    // Merge guest cart items if needed (though usually empty after sync)
     const transformedGuestCart: ItemProps[] = guestCart.map((item) => ({
       id: item.id,
       subcat_id: item.subcat_id,
@@ -308,6 +383,7 @@ useEffect(() => {
       qty: item.qty || "1",
       price: item.price || "0",
       discount: item.discount || "0",
+      displayPrice: item.price || "0",
       return_days: item.return_days || "7",
       image: `https://admirer.in/asset/image/product/${item.images[0]?.image}`,
       totalQuantity: item.in_stock < 3 ? item.in_stock.toString() : "3",
@@ -321,13 +397,18 @@ useEffect(() => {
       if (!exists) mergedCart.push(guestItem);
     });
 
-    setTotalItem(mergedCart);
     setItemCount(mergedCart.length);
-
     syncCartCountToHeader(mergedCart.length);
+
+    // ✅ FINAL: Ab bas recalculateTotals hi last me `setTotalItem` karega
     recalculateTotals(mergedCart);
 
     localStorage.setItem("cartItems", JSON.stringify(mergedCart));
+    console.log("API CART:", apiCart);
+    console.log("GUEST CART:", guestCart);
+    console.log("Transformed API:", transformedApiCart);
+    console.log("Transformed Guest:", transformedGuestCart);
+    console.log("MergedCart before recalculate:", mergedCart);
     setIsLoading(false);
   };
 
@@ -388,15 +469,11 @@ useEffect(() => {
               price={item.price}
               quantity={item.qty}
               brandId={item.brandId}
-              discount={item.discount}
+              discount={item.displayPrice}
               return_day={item.return_days}
               onRemove={handleDelete}
               finalPrice={(
-                (parseFloat(item.price || "0") -
-                  (parseFloat(item.price || "0") *
-                    parseFloat(item.discount || "0")) /
-                    100) *
-                parseInt(item.qty || "1")
+                parseFloat(item.displayPrice || "0") * parseInt(item.qty || "1")
               ).toFixed(2)}
               totalQuantity={item.totalQuantity}
               onQuantityChange={handleQuantityChange}

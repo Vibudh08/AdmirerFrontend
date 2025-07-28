@@ -75,7 +75,7 @@ const Footer = () => {
             <h3 className="font-semibold mb-3 tracking-wide">
               EXPERIENCE ON MOBILE
             </h3>
-            <div className="bg-white w-fit rounded">
+            <div className="bg-white w-fit rounded-lg">
               <QRCode
                 errorLevel="H"
                 value="https://admirer.in"
@@ -121,14 +121,14 @@ const Footer = () => {
           <div>
             <div className="mt-4 text-sm text-gray-100">
               <div className="flex gap-3 mb-4">
-                <img src="/icons/original.png" className="w-10 h-10 mt-1" />
+                <img src="/icons/original.png" className="w-10 h-10 mt-1 bg-white  p-0.5" />
                 <p className="text-[17px] leading-snug mb-0 max-sm:text-md">
                   <span className="font-bold text-white">100% ORIGINAL</span>{" "}
                   products — guaranteed, only at BTJ Admirer.
                 </p>
               </div>
               <div className="flex gap-3 mb-4">
-                <img src="/icons/seven-days.png" className="w-10 h-10 mt-1" />
+                <img src="/icons/seven-days.png" className="w-10 h-10 mt-1 bg-white p-0.5" />
                 <p className="text-[17px] leading-snug max-sm:text-md">
                   <span className="font-bold text-white">
                     Exchange within 7 days

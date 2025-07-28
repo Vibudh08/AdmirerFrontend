@@ -43,7 +43,8 @@ const Item: React.FC<ItemProps> = ({
   if (qty > totalQty) {
     qty = totalQty;
   }
-  console.log("qty", quantity);
+  // console.log("wrgrefwqfb", discount);
+  // console.log("qty", quantity);
   const quantityOptions = Array.from({ length: totalQty }, (_, i) => i + 1);
 
   async function onMoveToWishlist(id: string | number): Promise<void> {
@@ -113,7 +114,7 @@ const Item: React.FC<ItemProps> = ({
             <span className="font-semibold text-sm mr-2  text-black">Qty:</span>
 
             {/* // <span className="font-semibold">1</span> */}
-            <select
+            {/* <select
               className="border border-gray-300 cursor-pointer rounded px-2 py-1 text-sm font-medium bg-gray-50 focus:outline-none focus:ring-1 focus:ring-gray-400 w-16"
               value={isComboApplied ? 1 : qty} // force show 1
               onChange={(e) =>
@@ -134,6 +135,15 @@ const Item: React.FC<ItemProps> = ({
                   </option>
                 ))
               )}
+            </select> */}
+
+            <select
+              className="border border-gray-300 cursor-pointer rounded px-2 py-1 text-sm font-medium bg-gray-50 focus:outline-none focus:ring-1 focus:ring-gray-400 w-16"
+              value={1}
+            >
+              <option key={1} value={1}>
+                1
+              </option>
             </select>
           </div>
 
@@ -153,6 +163,11 @@ const Item: React.FC<ItemProps> = ({
               % off
             </span>
           </div>
+          {parseFloat(discount) == 349 && (
+            <div className="text-green-600 text-xs font-semibold">
+              Combo Offer Price
+            </div>
+          )}
         </div>
       </div>
     </div>

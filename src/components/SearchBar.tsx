@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Search } from "lucide-react";
-import { useNavigate } from "react-router-dom"; // for navigating to /product/id
+import { useNavigate } from "react-router-dom";
 import { search } from "./api/api-end-points";
 
 interface Product {
@@ -9,7 +9,7 @@ interface Product {
 }
 
 interface SearchBarWithPopupProps {
-  onSelectProduct?: () => void; // optional callback for external control
+  onSelectProduct?: () => void;
 }
 
 const SearchBarWithPopup: React.FC<SearchBarWithPopupProps> = ({
@@ -64,7 +64,7 @@ const SearchBarWithPopup: React.FC<SearchBarWithPopupProps> = ({
 
   return (
     <div
-      className="relative w-[400px] ml-[110px] max-md:ml-0 max-md:w-full"
+      className="relative w-[400px] max-lg:ml-[50px] ml-[110px] max-md:ml-0 max-md:w-full"
       ref={dropdownRef}
     >
       <Search className="absolute  ml-2 mt-[-2px] w-5 h-5 top-6 max-md:top-7 transform -translate-y-1/2 text-[#7B48A5]" />
