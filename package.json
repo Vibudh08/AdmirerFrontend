@@ -17,6 +17,7 @@
     "@fortawesome/react-fontawesome": "^0.2.2",
     "@lottiefiles/dotlottie-react": "^0.13.5",
     "antd": "^5.24.6",
+    "aos": "^2.3.4",
     "axios": "^1.8.4",
     "dompurify": "^3.2.5",
     "framer-motion": "^12.7.2",
@@ -40,6 +41,7 @@
   "devDependencies": {
     "@eslint/js": "^9.17.0",
     "@tailwindcss/line-clamp": "^0.4.4",
+    "@types/aos": "^3.0.7",
     "@types/express": "^5.0.1",
     "@types/node": "^22.14.0",
     "@types/react": "^18.3.17",

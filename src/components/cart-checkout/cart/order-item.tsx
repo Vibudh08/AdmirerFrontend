@@ -3,6 +3,8 @@ import { FaTimes } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import RemoveFromBag from "./RemoveFromBag";
 import { wishlist_add_remove } from "../../api/api-end-points";
+import { Select } from "antd";
+const { Option } = Select;
 
 interface ItemProps {
   id: number;
@@ -44,7 +46,7 @@ const Item: React.FC<ItemProps> = ({
     qty = totalQty;
   }
   // console.log("wrgrefwqfb", discount);
-  // console.log("qty", quantity);
+  console.log("qty", quantity);
   const quantityOptions = Array.from({ length: totalQty }, (_, i) => i + 1);
 
   async function onMoveToWishlist(id: string | number): Promise<void> {
@@ -75,14 +77,14 @@ const Item: React.FC<ItemProps> = ({
     }
   }
 
-  const cartItems = JSON.parse(localStorage.getItem("cartItems") || "[]");
+  // const cartItems = JSON.parse(localStorage.getItem("cartItems") || "[]");
   // console.log("Cart Items:", cartItems);
   // console.log("Subcat IDs:", cartItems.map((item: { subcat_id: any; }) => item.subcat_id));
-  const isComboApplied =
-    cartItems.length === 3 &&
-    cartItems.every(
-      (item: { subcat_id: string }) => parseInt(item.subcat_id) === 10
-    );
+  // const isComboApplied =
+  //   cartItems.length === 3 &&
+  //   cartItems.every(
+  //     (item: { subcat_id: string }) => parseInt(item.subcat_id) === 10
+  //   );
 
   return (
     <div className="bg-white relative mt-1 mb-2">
@@ -114,37 +116,28 @@ const Item: React.FC<ItemProps> = ({
             <span className="font-semibold text-sm mr-2  text-black">Qty:</span>
 
             {/* // <span className="font-semibold">1</span> */}
-            {/* <select
-              className="border border-gray-300 cursor-pointer rounded px-2 py-1 text-sm font-medium bg-gray-50 focus:outline-none focus:ring-1 focus:ring-gray-400 w-16"
-              value={isComboApplied ? 1 : qty} // force show 1
-              onChange={(e) =>
-                onQuantityChange(
-                  id,
-                  isComboApplied ? 1 : parseInt(e.target.value)
-                )
-              }
-            >
-              {isComboApplied ? (
-                <option key={1} value={1}>
-                  1
-                </option>
-              ) : (
-                quantityOptions.map((num) => (
-                  <option key={num} value={num}>
-                    {num}
-                  </option>
-                ))
-              )}
-            </select> */}
 
-            <select
+            <Select
+              value={qty}
+              onChange={(value) => onQuantityChange(id, value)}
+              className="w-16 border border-gray-300 bg-gray-50 !h-[30px] rounded text-sm font-medium focus:outline-none"
+              size="small"
+            >
+              {quantityOptions.map((num) => (
+                <Option  key={num} value={num}>
+                  {num}
+                </Option>
+              ))}
+            </Select>
+
+            {/* <select
               className="border border-gray-300 cursor-pointer rounded px-2 py-1 text-sm font-medium bg-gray-50 focus:outline-none focus:ring-1 focus:ring-gray-400 w-16"
               value={1}
             >
               <option key={1} value={1}>
                 1
               </option>
-            </select>
+            </select> */}
           </div>
 
           <div className="flex items-center gap-2 mb-1">

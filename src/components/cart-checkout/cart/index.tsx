@@ -123,83 +123,118 @@ const Cart: React.FC<CartProps> = ({
   };
 
   const recalculateTotals = (items: ItemProps[]) => {
-    let original = 0;
-    let discounted = 0;
+  let original = 0;
+  let discounted = 0;
 
-    const comboItems = items.filter((item) => Number(item.subcat_id) === 10);
-    const otherItems = items.filter((item) => Number(item.subcat_id) !== 10);
+  const comboUnitPrice = 349;
+  const comboPack = 3;
 
-    const comboUnitPrice = 349; // ✅ FINAL COMBO PRICE
-    const comboPack = 3;
+  const comboItems = items.filter((item) => Number(item.subcat_id) === 10);
+  const otherItems = items.filter((item) => Number(item.subcat_id) !== 10);
 
-    const totalComboCount = comboItems.reduce(
-      (sum, item) => sum + parseInt(item.qty || "1"),
-      0
-    );
+  let remainingCommonComboQty = 0;
 
-    const comboSets = Math.floor(totalComboCount / comboPack);
-    let comboCounted = comboSets * comboPack;
+  const updatedItems: ItemProps[] = [];
 
-    const updatedItems: ItemProps[] = [];
+  comboItems.forEach((item) => {
+    const qty = parseInt(item.qty || "1");
 
-    comboItems.forEach((item) => {
-      const qty = parseInt(item.qty || "1");
-      console.log("QTY:", qty, "comboCounted:", comboCounted);
+    // Apne hi qty se pack ban raha hai kya?
+    const selfComboSets = Math.floor(qty / comboPack);
+    const selfComboQty = selfComboSets * comboPack;
 
-      let finalPrice = parseFloat(item.price || "0");
+    const leftoverQty = qty - selfComboQty;
 
-      if (comboCounted >= qty) {
-        finalPrice = 349;
-        comboCounted -= qty;
-      } else if (comboCounted > 0) {
-        finalPrice = 349;
-        comboCounted = 0;
-      } else {
-        finalPrice = parseFloat(item.discount || "0");
-      }
+    // Bachahua common pool mein jaye
+    remainingCommonComboQty += leftoverQty;
 
-      console.log("Setting displayPrice:", finalPrice);
+    const comboPrice = selfComboQty * comboUnitPrice;
+    const normalPrice = leftoverQty * parseFloat(item.discount || item.price);
 
-      updatedItems.push({
-        ...item,
-        displayPrice: finalPrice.toString(),
-      });
+    original += qty * parseFloat(item.price || "0");
+    discounted += comboPrice + normalPrice;
 
-      original += parseFloat(item.price) * qty;
-      discounted += finalPrice * qty;
+    let finalDisplayPrice = 0;
+    if (qty === selfComboQty) {
+      finalDisplayPrice = comboUnitPrice;
+    } else if (qty === leftoverQty) {
+      finalDisplayPrice = parseFloat(item.discount || item.price);
+    } else {
+      // Mixed combo + normal
+      finalDisplayPrice = ((comboPrice + normalPrice) / qty);
+    }
+
+    updatedItems.push({
+      ...item,
+      displayPrice: finalDisplayPrice.toFixed(2),
     });
+  });
 
-    // console.log("totalComboCount", totalComboCount);
-    // console.log("comboSets", comboSets);
-    // console.log("comboCounted", comboCounted);
-    // console.log("Full Items:", items);
-    // console.log("Combo Items:", comboItems);
-    // console.log("Other Items:", otherItems);
-    otherItems.forEach((item) => {
-      const qty = parseInt(item.qty || "1");
-      const basePrice = parseFloat(item.displayPrice || "0");
+  // Ab bacha hua leftover sab comboItems mein equally combo mein daalo:
+  if (remainingCommonComboQty > 0) {
+    const commonComboSets = Math.floor(remainingCommonComboQty / comboPack);
+    let comboQtyLeft = commonComboSets * comboPack;
 
-      updatedItems.push({
-        ...item,
-        displayPrice: basePrice.toString(),
+    if (comboQtyLeft > 0) {
+      updatedItems.forEach((item) => {
+        if (Number(item.subcat_id) === 10) {
+          const qty = parseInt(item.qty || "1");
+          const existingDisplay = parseFloat(item.displayPrice || "0");
+
+          // Us item ka original qty
+          const originalQty = qty;
+
+          // Pehle se kitna combo lag chuka
+          const selfComboSets = Math.floor(qty / comboPack);
+          const selfComboQty = selfComboSets * comboPack;
+
+          const leftover = qty - selfComboQty;
+
+          if (leftover > 0 && comboQtyLeft > 0) {
+            const takeCombo = Math.min(leftover, comboQtyLeft);
+            const newComboPrice = takeCombo * comboUnitPrice;
+            const newNormalPrice = (leftover - takeCombo) * parseFloat(item.discount || item.price);
+
+            comboQtyLeft -= takeCombo;
+
+            const newTotal = (selfComboQty * comboUnitPrice) + newComboPrice + newNormalPrice;
+            const newDisplay = newTotal / originalQty;
+
+            discounted -= existingDisplay * originalQty; // Remove old
+            discounted += newTotal; // Add new
+
+            item.displayPrice = newDisplay.toFixed(2);
+          }
+        }
       });
+    }
+  }
 
-      original += parseFloat(item.price) * qty;
-      discounted += basePrice * qty;
+  otherItems.forEach((item) => {
+    const qty = parseInt(item.qty || "1");
+    const basePrice = parseFloat(item.displayPrice || item.price || "0");
+
+    original += parseFloat(item.price || "0") * qty;
+    discounted += basePrice * qty;
+
+    updatedItems.push({
+      ...item,
+      displayPrice: basePrice.toFixed(2),
     });
+  });
 
-    setTotalMRP(original);
-    setDiscountAmount(original - discounted);
-    setTotalAmount( discounted);
+  setTotalMRP(original);
+  setDiscountAmount(original - discounted);
+  setTotalAmount(discounted);
+  setTotalItem(updatedItems);
 
-    console.log("✅ FINAL Items:", updatedItems);
-    console.log();
-    setTotalItem(updatedItems);
-  };
+  console.log("✅ FINAL Items:", updatedItems);
+};
 
-  // const [cartItems, setCartItems] = useState(() => {
-  //   return JSON.parse(localStorage.getItem("cartItems") || "[]");
-  // });
+
+  const [cartItems, setCartItems] = useState(() => {
+    return JSON.parse(localStorage.getItem("cartItems") || "[]");
+  });
 
   // console.log("Cart Items:", cartItems);
   // console.log("Subcat IDs:", cartItems.map((item: { subcat_id: any; }) => item.subcat_id));
@@ -212,10 +247,10 @@ const Cart: React.FC<CartProps> = ({
   // ✅ 1. Cart Items as STATE
 
   // ✅ 2. When localStorage changes, update state too (example)
-  // useEffect(() => {
-  //   const stored = JSON.parse(localStorage.getItem("cartItems") || "[]");
-  //   setCartItems(stored);
-  // }, [totalItem]); // agar tum cart localStorage update karte ho to isko trigger karo
+  useEffect(() => {
+    const stored = JSON.parse(localStorage.getItem("cartItems") || "[]");
+    setCartItems(stored);
+  }, [totalItem]); // agar tum cart localStorage update karte ho to isko trigger karo
 
   // useEffect(() => {
   //   if (isComboApplied) {
@@ -227,59 +262,27 @@ const Cart: React.FC<CartProps> = ({
   //   }
   // }, [cartItems, isComboApplied]);
 
-  // const handleQuantityChange = async (id: number, newQty: number) => {
-  //   if (isComboApplied) {
-  //     console.log("Combo detected, forcing quantity to 1");
-  //     newQty = 1;
-  //   }
-
-  //   const updatedItems = cartItems.map((item: { id: number }) =>
-  //     item.id === id ? { ...item, qty: newQty.toString() } : item
-  //   );
-
-  //   setCartItems(updatedItems);
-  //   localStorage.setItem("cartItems", JSON.stringify(updatedItems));
-
-  //   setTotalItem(updatedItems); // agar totalItem bhi use ho raha hai
-  //   recalculateTotals(updatedItems);
-
-  //   try {
-  //     console.log("Sending quantity to backend:", newQty);
-  //     await axios.post(
-  //       updateCartQuantity,
-  //       { productId: id, quantity: newQty },
-  //       {
-  //         headers: {
-  //           Authorization: "Bearer " + localStorage.getItem("auth_token"),
-  //         },
-  //       }
-  //     );
-  //   } catch (error) {
-  //     console.error("Failed to update cart quantity:", error);
-  //   }
-  // };
-
   const handleQuantityChange = async (id: number, newQty: number) => {
     // if (isComboApplied) {
     //   console.log("Combo detected, forcing quantity to 1");
     //   newQty = 1;
     // }
 
-    // const updatedItems = cartItems.map((item: { id: number }) =>
-    //   item.id === id ? { ...item, qty: newQty.toString() } : item
-    // );
+    const updatedItems = cartItems.map((item: { id: number }) =>
+      item.id === id ? { ...item, qty: newQty.toString() } : item
+    );
 
-    // setCartItems(updatedItems);
-    // localStorage.setItem("cartItems", JSON.stringify(updatedItems));
+    setCartItems(updatedItems);
+    localStorage.setItem("cartItems", JSON.stringify(updatedItems));
 
-    // setTotalItem(updatedItems); // agar totalItem bhi use ho raha hai
-    // recalculateTotals(updatedItems);
+    setTotalItem(updatedItems); // agar totalItem bhi use ho raha hai
+    recalculateTotals(updatedItems);
 
     try {
-      console.log("Sending quantity to backend:", 1);
+      console.log("Sending quantity to backend:", newQty);
       await axios.post(
         updateCartQuantity,
-        { productId: id, quantity: 1 },
+        { productId: id, quantity: newQty },
         {
           headers: {
             Authorization: "Bearer " + localStorage.getItem("auth_token"),
@@ -290,6 +293,38 @@ const Cart: React.FC<CartProps> = ({
       console.error("Failed to update cart quantity:", error);
     }
   };
+
+  // const handleQuantityChange = async (id: number, newQty: number) => {
+  // if (isComboApplied) {
+  //   console.log("Combo detected, forcing quantity to 1");
+  //   newQty = 1;
+  // }
+
+  // const updatedItems = cartItems.map((item: { id: number }) =>
+  //   item.id === id ? { ...item, qty: newQty.toString() } : item
+  // );
+
+  // setCartItems(updatedItems);
+  // localStorage.setItem("cartItems", JSON.stringify(updatedItems));
+
+  // setTotalItem(updatedItems); // agar totalItem bhi use ho raha hai
+  // recalculateTotals(updatedItems);
+
+  //   try {
+  //     console.log("Sending quantity to backend:", 1);
+  //     await axios.post(
+  //       updateCartQuantity,
+  //       { productId: id, quantity: 1 },
+  //       {
+  //         headers: {
+  //           Authorization: "Bearer " + localStorage.getItem("auth_token"),
+  //         },
+  //       }
+  //     );
+  //   } catch (error) {
+  //     console.error("Failed to update cart quantity:", error);
+  //   }
+  // };
   const handleDelete = async (id: number) => {
     const updatedItems = totalItem.filter((item) => item.id !== id);
 

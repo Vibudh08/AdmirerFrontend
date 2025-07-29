@@ -41,13 +41,15 @@ const OrderDetails: React.FC = () => {
 
   const { orderId } = useParams();
   const location = useLocation();
-  const productIds: string[] = location.state?.productIds || [];
   const [isComboApplied, setIsComboApplied] = useState(false);
-  // console.log(productIds.length)
-  // console.log("Order ID:", orderId);
-  // console.log("All product IDs:", productIds);
+  const productIds: string[] = location.state?.productIds || [];
+  const rotatedProductIds = [...productIds.slice(1), productIds[0]];
+
+  // console.log("Original:", productIds);
+  // console.log("Rotated:", rotatedProductIds);
 
   interface OrderDetail {
+    displayPrice: number;
     price: string;
     order_id: string;
     quantity: string;
@@ -91,9 +93,7 @@ const OrderDetails: React.FC = () => {
   const [cutoffDateStr, setCutoffDateStr] = useState("");
   const { awbNumber } = useAwb();
 
-  const totalWithGST = isComboApplied
-    ? 1049
-    : Number((cleanedTotal + gstAmount).toFixed(2));
+  const totalWithGST = Number((cleanedTotal + gstAmount).toFixed(2));
 
   // Arrows
   const CustomPrevArrow = ({ onClick }: { onClick: () => void }) => (
@@ -152,45 +152,124 @@ const OrderDetails: React.FC = () => {
     ],
   };
 
+  // for getting subcat_id
+ useEffect(() => {
+  const fetchAllProductDetails = async () => {
+    if (!productIds.length || !orderData.length) {
+      console.log("No productIds or no orderData yet — skipping.");
+      return;
+    }
+
+    try {
+      // Product detail API call for each product
+      const promises = productIds.map((pid) =>
+        axios.get(`${productDetails}/${pid}`, {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + localStorage.getItem("auth_token"),
+          },
+        })
+      );
+
+      const responses = await Promise.all(promises);
+
+      // Mark combo items
+      const enriched = orderData.map((item, index) => {
+        const subcat_id =
+          parseInt(responses[index]?.data?.data?.subcat_id) || null;
+        return { ...item, subcat_id };
+      });
+
+      console.log("✅ OrderData with subcat_id:", enriched);
+
+      // ✅ Calculate total combo quantity
+      const comboItems = enriched.filter((item) => item.subcat_id === 10);
+      const totalComboQty = comboItems.reduce(
+        (sum, item) => sum + Number(item.quantity || "1"),
+        0
+      );
+
+      console.log("Total combo qty:", totalComboQty);
+
+      const comboPack = 3;
+      const comboSets = Math.floor(totalComboQty / comboPack);
+      let comboCounted = comboSets * comboPack;
+
+      console.log("comboSets:", comboSets, "comboCounted:", comboCounted);
+
+      const finalOrderData = enriched.map((item) => {
+        let displayPrice = Number(item.price);
+
+        if (item.subcat_id === 10) {
+          const qty = Number(item.quantity || "1");
+          if (qty >= 3) {
+            // If self quantity is 3 or more → full combo
+            displayPrice = 349;
+          } else if (comboCounted >= qty) {
+            displayPrice = 349;
+            comboCounted -= qty;
+          } else if (comboCounted > 0) {
+            displayPrice = 349;
+            comboCounted = 0;
+          } else {
+            // no combo for this leftover qty
+            displayPrice = Number(item.price);
+          }
+        }
+
+        return { ...item, displayPrice };
+      });
+
+      console.log("✅ Final OrderData with displayPrice:", finalOrderData);
+      setOrderData(finalOrderData);
+    } catch (error) {
+      console.error("Error fetching product details:", error);
+    }
+  };
+
+  fetchAllProductDetails();
+}, [productIds, orderData.length]);
+
+
   // for checking offer amount
 
-  useEffect(() => {
-    const fetchAllProductDetails = async () => {
-      if (productIds.length === 3) {
-        try {
-          // Call API 3 times in parallel
-          const promises = productIds.map((id) =>
-            axios.get(`${productDetails}/${id}`, {
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: "Bearer " + localStorage.getItem("auth_token"),
-              },
-            })
-          );
+  // useEffect(() => {
+  //   const fetchAllProductDetails = async () => {
+  //     if (productIds.length === 3) {
+  //       try {
+  //         // Call API 3 times in parallel
+  //         const promises = productIds.map((id) =>
+  //           axios.get(`${productDetails}/${id}`, {
+  //             headers: {
+  //               "Content-Type": "application/json",
+  //               Authorization: "Bearer " + localStorage.getItem("auth_token"),
+  //             },
+  //           })
+  //         );
 
-          const responses = await Promise.all(promises);
+  //         const responses = await Promise.all(promises);
 
-          const allAreCombo = responses.every(
-            (res) => parseInt(res.data.data.subcat_id) === 10
-          );
+  //         const allAreCombo = responses.every(
+  //           (res) => parseInt(res.data.data.subcat_id) === 10
+  //         );
 
-          console.log(
-            "Combo check responses:",
-            responses.map((r) => r.data.data)
-          );
+  //         console.log(
+  //           "Combo check responses:",
+  //           responses.map((r) => r.data.data)
+  //         );
 
-          setIsComboApplied(allAreCombo);
-        } catch (error) {
-          console.error("Error fetching product details:", error);
-          setIsComboApplied(false);
-        }
-      } else {
-        setIsComboApplied(false);
-      }
-    };
+  //         setIsComboApplied(allAreCombo);
+  //       } catch (error) {
+  //         console.error("Error fetching product details:", error);
+  //         setIsComboApplied(false);
+  //       }
+  //     } else {
+  //       setIsComboApplied(false);
+  //     }
+  //   };
 
-    fetchAllProductDetails();
-  }, [productIds]);
+  //   fetchAllProductDetails();
+  // }, [productIds]);
 
   useEffect(() => {
     if (orderData && orderData.length > 0 && orderData[0].date) {
@@ -309,50 +388,56 @@ const OrderDetails: React.FC = () => {
     fetchInitialStatus();
   }, []);
 
-  useEffect(() => {
-    if (orderData.length && address) {
-      const items = orderData.map((item) => ({
+useEffect(() => {
+  if (orderData.length && address) {
+    const items = orderData.map((item) => {
+      const unitPrice = Number(item.displayPrice || item.price);
+      const qty = Number(item.quantity);
+      const total = unitPrice * qty;
+      const gst = Math.ceil(total * 0.05);
+
+      return {
         name: item.product_name,
-        price: `Rs. ${Number(item.price).toFixed(2)}`,
-        qty: Number(item.quantity),
-        total: `Rs. ${(Number(item.price) * Number(item.quantity)).toFixed(2)}`,
-        gst: `Rs. ${Math.ceil(
-          Number(item.price) * Number(item.quantity) * 0.05
-        ).toFixed(2)}`,
-      }));
-
-      const totalPrice = `${items
-        .reduce((acc, item) => acc + Number(item.total.replace("Rs. ", "")), 0)
-        .toFixed(2)}`;
-
-      const gst = Math.ceil(Number(totalPrice) * 0.05).toFixed(2);
-
-      const totalAmount = (Number(totalPrice) + Number(gst)).toFixed(2);
-
-      const invoice = {
-        invoiceNo: `#${Math.floor(Math.random() * 90000) + 10000}`,
-        orderDate: new Date(orderData[0].date).toLocaleDateString("en-GB", {
-          day: "numeric",
-          month: "short",
-          year: "numeric",
-        }),
-        paymentType: orderData[0].payment_type,
-        orderId: orderData[0].order_id,
-        customer: {
-          name: `${address.first_name} ${address.last_name}`,
-          phone: `${address.mobile}`,
-          email: `${address.email}`,
-          address: `${address.flat}, ${address.street}, ${address.locality}, ${address.city}, ${address.state}, ${address.country_name} - ${address.zipcode}`,
-        },
-        items: items,
-        total: `Rs. ${totalPrice}`,
-        gst: `Rs. ${gst}`,
-        totalAmount: `Rs. ${totalWithGST}`,
+        price: `Rs. ${unitPrice.toFixed(2)}`,
+        qty,
+        total: `Rs. ${total.toFixed(2)}`,
+        gst: `Rs. ${gst.toFixed(2)}`,
       };
+    });
 
-      setInvoiceData(invoice);
-    }
-  },[isComboApplied, orderData, address]);
+    const totalPrice = items.reduce(
+      (acc, item) => acc + Number(item.total.replace("Rs. ", "")),
+      0
+    );
+
+    const gst = Math.ceil(totalPrice * 0.05);
+    const totalWithGST = totalPrice + gst;
+
+    const invoice = {
+      invoiceNo: `#${Math.floor(Math.random() * 90000) + 10000}`,
+      orderDate: new Date(orderData[0].date).toLocaleDateString("en-GB", {
+        day: "numeric",
+        month: "short",
+        year: "numeric",
+      }),
+      paymentType: orderData[0].payment_type,
+      orderId: orderData[0].order_id,
+      customer: {
+        name: `${address.first_name} ${address.last_name}`,
+        phone: `${address.mobile}`,
+        email: `${address.email}`,
+        address: `${address.flat}, ${address.street}, ${address.locality}, ${address.city}, ${address.state}, ${address.country_name} - ${address.zipcode}`,
+      },
+      items: items,
+      total: `Rs. ${totalPrice.toFixed(2)}`,
+      gst: `Rs. ${gst.toFixed(2)}`,
+      totalAmount: `Rs. ${totalWithGST.toFixed(2)}`,
+    };
+
+    setInvoiceData(invoice);
+  }
+}, [isComboApplied, orderData, address]);
+
 
   useEffect(() => {
     let orderFetched = false;
@@ -371,7 +456,7 @@ const OrderDetails: React.FC = () => {
     })
       .then((res) => res.json())
       .then((data) => {
-        // console.log("id", id);
+        console.log("id", id);
         console.log("cwecdcfw", data);
         setOrderData(data?.data);
         setStatus(data?.tracking_status);
@@ -407,16 +492,15 @@ const OrderDetails: React.FC = () => {
 
   useEffect(() => {
     if (orderData && Array.isArray(orderData)) {
-      const names: string[] = [];
       let total = 0;
 
       orderData.forEach((item) => {
-        if (item.product_name) names.push(item.product_name);
-        if (item.price)
-          total += parseFloat(item.price) * parseFloat(item.quantity);
+        const itemPrice = item.displayPrice
+          ? Number(item.displayPrice)
+          : Number(item.price);
+        total += itemPrice * Number(item.quantity || 1);
       });
 
-      setProductNames(names);
       setTotalPrice(total);
     }
   }, [orderData]);
@@ -519,9 +603,19 @@ const OrderDetails: React.FC = () => {
                       {/* <p className="text-xs text-gray-500 mt-0.5">
                     Seller: LogicDevices
                   </p> */}
-                      <p className="text-lg font-semibold text-gray-800 mt-2">
-                        Price: ₹{order.price}
-                      </p>
+                      <div className="flex items-center justify-center gap-1 mt-2">
+                        <p className="text-lg font-semibold text-gray-800">
+                          Price: ₹
+                          {(order.displayPrice ?? order.price) *
+                            Number(order.quantity)}
+                        </p>
+                        {order.displayPrice == 349 && (
+                          <span className="text-green-600 text-xs mt-1 font-semibold">
+                            (Combo Offer Price)
+                          </span>
+                        )}
+                      </div>
+
                       <p className="text-sm text-gray-500 mt-0.5 font-semibold">
                         Quantity: {order.quantity}
                       </p>
@@ -589,7 +683,7 @@ const OrderDetails: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="border p-3 mb-3 pt-4 flex mt-4 flex-col flex-wrap justify-between gap-3">
+                {/* <div className="border p-3 mb-3 pt-4 flex mt-4 flex-col flex-wrap justify-between gap-3">
                   <span className="font-semibold">Rate this product</span>
                   <div className="flex gap-3">
                     {[...Array(5)].map((_, i) => (
@@ -630,7 +724,7 @@ const OrderDetails: React.FC = () => {
                       </div>
                     </>
                   )}
-                </div>
+                </div> */}
               </div>
             ))}
           </div>

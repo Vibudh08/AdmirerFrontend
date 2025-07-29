@@ -9,9 +9,9 @@ import { Heart, ShoppingBag } from "lucide-react";
 import SearchBarWithPopup from "./SearchBar";
 import axios from "axios";
 import { logout } from "./api/api-end-points";
+import { Popover } from "antd";
 
 const Header = ({}) => {
-
   const [show, setShow] = useState(false);
   const [searchPopup, setSearchPopup] = useState(false);
   const [cartShow, setCartShow] = useState(false);
@@ -64,6 +64,20 @@ const Header = ({}) => {
       console.error("Error in logout:", err);
     }
   };
+
+  const content = (
+    <div className="flex gap-1 w-[100px] flex-col">
+      <Link to="/dashboard" className=" font-semibold hover:text-[#7B48A5]">
+        Dashboard
+      </Link>
+      <button
+        onClick={handleLogout}
+        className=" hover:text-[#7B48A5] font-semibold w-full text-left"
+      >
+        Logout
+      </button>
+    </div>
+  );
 
   return (
     <>
@@ -197,32 +211,21 @@ const Header = ({}) => {
             {/* Right Side Icons */}
             <div className="flex gap-4 items-center max-md:mt-[-2px] max-md:mr-1">
               {isLoggedIn ? (
-                <div className="group relative">
-                  <Link to="/dashboard">
-                    <div className="flex items-center gap-2 cursor-pointer">
-                      <FaRegUser className="w-5 h-5 mb-[2px] text-[#7B48A5]" />
-                      <p className="text-md max-md:hidden tracking-wider text-gray-800">
-                        Account
-                      </p>
-                    </div>
-                  </Link>
-                  <div className="max-md:hidden">
-                    <div className="absolute hidden max-md:hover:hidden group-hover:block bg-white shadow-md rounded  p-2 w-32 left-0 z-10">
-                      <Link
-                        to="/dashboard"
-                        className="block py-1 hover:text-[#7B48A5]"
-                      >
-                        Dashboard
-                      </Link>
-                      <button
-                        onClick={handleLogout}
-                        className="block py-1 hover:text-[#7B48A5] w-full text-left"
-                      >
-                        Logout
-                      </button>
-                    </div>
+                <Popover placement="bottom" content={content}>
+                  <div className="group relative">
+                    <Link to="/dashboard">
+                      <div className="flex items-center gap-2 cursor-pointer">
+                        <FaRegUser className="w-5 h-5 mb-[2px] text-[#7B48A5]" />
+                        <p className="text-md max-md:hidden tracking-wider text-gray-800">
+                          Account
+                        </p>
+                      </div>
+                    </Link>
+                    {/* <div className="max-md:hidden">
+                    
+                    </div> */}
                   </div>
-                </div>
+                </Popover>
               ) : (
                 <Link to="/LogIn">
                   <div className="flex items-center gap-2">
