@@ -10,6 +10,7 @@ import SearchBarWithPopup from "./SearchBar";
 import axios from "axios";
 import { logout } from "./api/api-end-points";
 import { Popover } from "antd";
+import { useLocation } from "react-router-dom";
 
 const Header = ({}) => {
   const [show, setShow] = useState(false);
@@ -18,7 +19,8 @@ const Header = ({}) => {
   const [itemCount, setItemCount] = useState<number>(() => {
     return parseInt(localStorage.getItem("itemCount") || "0", 10);
   });
-
+  const location = useLocation();
+  const isHome = location.pathname === "/";
   useEffect(() => {
     const handleItemCountUpdate = () => {
       const updatedCount = parseInt(
@@ -145,7 +147,11 @@ const Header = ({}) => {
       </div>
 
       {/* Main Header */}
-      <main className="w-full relative top-0 left-0 z-50 pb-[1px] pt-[1px] bg-white shadow-md">
+      <main
+        className={`w-full relative top-0 left-0 z-50 pb-[3px] pt-[-1px] ${
+          isHome ? "bg-transparent" : "bg-white shadow-md"
+        }`}
+      >
         {/* Top Banner */}
         {/* <div className="tf-top-bar bg_white line">
           <div className="px_15 lg-px_40">
@@ -216,7 +222,7 @@ const Header = ({}) => {
                     <Link to="/dashboard">
                       <div className="flex items-center gap-2 cursor-pointer">
                         <FaRegUser className="w-5 h-5 mb-[2px] text-[#7B48A5]" />
-                        <p className="text-md max-md:hidden tracking-wider text-gray-800">
+                        <p className="text-md max-md:hidden tracking-wider font-semibold text-gray-600">
                           Account
                         </p>
                       </div>
@@ -230,7 +236,7 @@ const Header = ({}) => {
                 <Link to="/LogIn">
                   <div className="flex items-center gap-2">
                     <FaRegUser className="w-5 h-5 mb-[2px] text-[#7B48A5]" />
-                    <p className="text-md max-md:hidden tracking-wider text-gray-800">
+                    <p className="text-md max-md:hidden tracking-wider font-semibold text-gray-600">
                       Login
                     </p>
                   </div>
@@ -242,8 +248,8 @@ const Header = ({}) => {
 
               <Link to="/wishlist">
                 <div className="flex items-center gap-2">
-                  <Heart className="w-5 h-5 text-[#7B48A5]" />
-                  <p className="text-md max-md:hidden tracking-wider text-gray-800">
+                  <Heart className="w-5 h-5 text-[#7B48A5]" strokeWidth={2.5} />
+                  <p className="text-md max-md:hidden tracking-wider font-semibold text-gray-600">
                     Wishlist
                   </p>
                 </div>
@@ -255,7 +261,10 @@ const Header = ({}) => {
               <Link to="/cart">
                 <div className="flex items-center gap-2 relative">
                   <div className="relative">
-                    <ShoppingBag className="w-5 h-5 text-[#7B48A5]" />
+                    <ShoppingBag
+                      className="w-5 h-5 text-[#7B48A5]"
+                      strokeWidth={2.5}
+                    />
 
                     {/* Badge above the icon */}
                     {itemCount! > 0 && (
@@ -265,7 +274,7 @@ const Header = ({}) => {
                     )}
                   </div>
 
-                  <p className="text-md max-md:hidden tracking-wider  text-gray-800">
+                  <p className="text-md max-md:hidden tracking-wider font-semibold text-gray-600">
                     Cart
                   </p>
                 </div>

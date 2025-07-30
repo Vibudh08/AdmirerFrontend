@@ -6,6 +6,8 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { homePageData } from "../components/api/api-end-points";
 import LoaderCode from "../components/Loader";
+import AOS from "aos";
+import "aos/dist/aos.css";
 
 const Loader = () => <LoaderCode />;
 
@@ -66,7 +68,7 @@ const Home: React.FC = () => {
     mobile_banner: { image: "", url: "" },
     desktop_banner: { image: "", url: "" },
   });
-
+  const [isDesktop, setIsDesktop] = useState(true);
   const navigate = useNavigate();
 
   const sliderSettings = {
@@ -177,6 +179,23 @@ const Home: React.FC = () => {
   //   navigate("/listing");
   // };
 
+  useEffect(() => {
+    const handleResize = () => {
+      setIsDesktop(window.innerWidth >= 768);
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+
+    AOS.init({
+      duration: 1000,
+      easing: "ease-in-out",
+      once: false,
+      offset: 100,
+      mirror: false,
+    });
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
   const handleClick = (url: string) => {
     const catIdMatch = url.match(/cat-([a-zA-Z0-9]+)/);
     const subcatIdMatch = url.match(/subcat-([a-zA-Z0-9]+)/);
@@ -212,9 +231,9 @@ const Home: React.FC = () => {
       });
   }, []);
 
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
+  // useEffect(() => {
+  //   window.scrollTo(0, 0);
+  // }, []);
 
   if (isLoading) return <Loader />;
 
@@ -222,248 +241,359 @@ const Home: React.FC = () => {
     <>
       {/* Content starts here after loading is complete */}
 
-      {/* Hero Slider */}
-      <section>
-        <div className="relative">
-          <Slider {...sliderSettings}>
-            {banners.map((item, index) => (
-              <div
-                key={index}
-                onClick={() => handleClick(item.url)}
-                className="cursor-pointer"
-              >
-                <img
-                  className="w-full desktop-banner hidden md:block"
-                  src={item.image}
-                  alt={`Banner ${index}`}
-                />
-                <img
-                  className="w-full mobile-banner block md:hidden"
-                  src={item.mobile_img}
-                  alt={`Mobile Banner ${index}`}
-                />
-              </div>
-            ))}
-          </Slider>
-        </div>
-      </section>
-
-      <div className="relative overflow-hidden bg-purple-200 py-3 max-md:py-2">
-        <div className="scroll-wrapper flex w-max animate-scroll">
-          {[...companies, ...companies].map((company, index) => (
-            <div
-              key={index}
-              className="mx-8 whitespace-nowrap text-lg max-md:text-base font-semibold text-gray-800"
-            >
-              {company}
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <div className="bg-white flex items-center justify-center pt-10 max-md:pt-4 flex-col">
-        <h2 className="text-4xl max-md:text-2xl font-semibold text-gray-800 mb-1">
-          Shop the best jewellery online
-        </h2>
-        <p className="w-[75%] mt-3 max-md:w-full text-center text-lg max-md:text-xs text-gray-600 tracking-wide">
-          Fashion trends may change, but the love for jewellery remains
-          timeless. Admirer's collection adds irresistible charm with a perfect
-          blend of elegance and sophistication.
-        </p>
-        <img
-          src="/home/offer_banner.jpeg"
-          className="w-[90%] max-md:hidden max-md:w-[95%] max-md:object-fill mt-5 h-full"
-          alt=""
-        />
-        <img
-          src="/home/offer_banner_mobile.jpeg"
-          className="w-[90%] max-md:block hidden max-md:w-[95%] max-md:object-fill mt-5 h-full"
-        />
-      </div>
-
-      {/* Categories */}
-      <section>
-        <div className="text-center py-6 pt-12 bg-white max-md:pb-4">
-          <h2 className="text-4xl max-md:text-2xl font-semibold text-gray-800 mb-1">
-            Find Your Perfect Match
-          </h2>
-          <p className="text-xl max-md:text-lg text-gray-600 tracking-wider">
-            Shop by Categories
-          </p>
-          <div className="mt-8 max-md:mt-4 w-[85%] max-md:w-full max-md:p-3 grid grid-cols-4 max-md:grid-cols-2 gap-4 max-md:gap-3 m-auto">
-            {category.map((cat, index) => (
-              <div
-                key={index}
-                onClick={() => handleClick(cat.url)}
-                className="cursor-pointer"
-              >
-                <div className="rounded-xl overflow-hidden mb-4">
+      <main>
+        {/* Hero Slider */}
+        <section
+          {...(isDesktop && { "data-aos": "fade-up", "data-aos-delay": "100" })}
+          className="mt-[-55px]"
+        >
+          <div className="relative">
+            <Slider {...sliderSettings}>
+              {banners.map((item, index) => (
+                <div
+                  key={index}
+                  onClick={() => handleClick(item.url)}
+                  className="cursor-pointer"
+                >
                   <img
-                    src={cat.image}
-                    alt={cat.title}
-                    className="w-full object-cover"
-                    onError={(e) => {
-                      e.currentTarget.onerror = null; // prevent infinite loop
-                      e.currentTarget.src = "https://admirer.in/asset/image/combo-offer-image.jpg";
-                    }}
+                    className="w-full desktop-banner hidden md:block"
+                    src={item.image}
+                    alt={`Banner ${index}`}
+                  />
+                  <img
+                    className="w-full mobile-banner block md:hidden"
+                    src={item.mobile_img}
+                    alt={`Mobile Banner ${index}`}
                   />
                 </div>
-                <h3 className="text-lg font-semibold text-gray-800">
-                  {cat.title}
-                </h3>
-              </div>
-            ))}
+              ))}
+            </Slider>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Advertisement Section */}
-      <section>
-        <div className="bg-white flex flex-col items-center p-6 max-md:p-2 max-md:pt-0">
-          <h2 className="text-4xl max-md:text-2xl font-semibold text-gray-800 mb-1">
-            Admirer Collections
-          </h2>
-          <p className="text-xl max-md:text-lg text-gray-600 tracking-wider">
-            Explore our newly launched collection
-          </p>
-          {advertisement.length >= 3 && (
-            <div className="mt-8 max-md:mt-5 grid grid-cols-2 max-md:grid-cols-1 gap-2 max-md:gap-0 w-[90%] max-md:w-[97%] m-auto">
-              <div>
-                <img
-                  onClick={() => handleClick(advertisement[0].url)}
-                  src={advertisement[0].image}
-                  alt="Main collection"
-                  className="w-full h-auto rounded-xl max-md:h-[97%] cursor-pointer"
-                />
-              </div>
-              <div className="grid gap-1.5 max-md:gap-3">
-                <img
-                  onClick={() => handleClick(advertisement[1].url)}
-                  src={advertisement[1].image}
-                  alt="advertisement 1"
-                  className="w-full h-auto rounded-xl cursor-pointer"
-                />
-                <img
-                  onClick={() => handleClick(advertisement[2].url)}
-                  src={advertisement[2].image}
-                  alt="advertisement 2"
-                  className="w-full h-auto rounded-xl cursor-pointer"
-                />
-              </div>
-            </div>
-          )}
-        </div>
-      </section>
-
-      {/* Offers Section */}
-      <section className="">
-        <div className="bg-white flex flex-col items-center p-6 pb-16 max-md:p-4">
-          <h2 className="text-4xl max-md:text-2xl font-semibold text-gray-800 mb-1">
-            Curated For You
-          </h2>
-
-          {/* Desktop View */}
-          <div className="mt-8 hidden md:grid grid-cols-3 gap-2 w-[90%] m-auto ">
-            {offers.map((item, idx) => (
+        {/* Scrolling Text */}
+        <div className="relative overflow-hidden bg-purple-200 py-3 max-md:py-2">
+          <div className="scroll-wrapper flex w-max animate-scroll">
+            {[...companies, ...companies].map((company, index) => (
               <div
-                key={idx}
-                onClick={() => handleClick(item.url)}
-                className="cursor-pointer"
+                key={index}
+                className="mx-8 whitespace-nowrap text-lg max-md:text-base font-semibold text-gray-800"
               >
-                <img
-                  src={item.image}
-                  className="w-full h-full object-cover rounded-xl"
-                  alt={`Curated ${idx}`}
-                />
+                {company}
               </div>
             ))}
           </div>
+        </div>
 
-          {/* Mobile View */}
-          <div className="mt-3 w-full md:hidden overflow-hidden">
-            <div className="flex gap-2.5 overflow-x-auto scroll-smooth snap-x snap-mandatory px-4">
+        {/* Hero Content */}
+        <div
+          className="bg-white flex items-center justify-center pt-10 max-md:pt-4 flex-col"
+          {...(isDesktop && { "data-aos": "fade-up", "data-aos-delay": "300" })}
+        >
+          <img src="/home/1.jpeg" className="w-[900px] max-md:mt-2" alt="" />
+          <img
+            src="/home/offer banner.jpeg"
+            className="w-[90%] block  mt-5 max-md:mt-4 h-full"
+            alt=""
+            {...(isDesktop && {
+              "data-aos": "fade-up",
+              "data-aos-delay": "400",
+            })}
+          />
+        </div>
+
+        {/* Categories */}
+        <section>
+          <div
+            className="text-center py-6 pt-8 bg-white max-md:pb-4"
+            {...(isDesktop && {
+              "data-aos": "fade-up",
+              "data-aos-delay": "500",
+            })}
+          >
+            <div className="flex justify-center items-center mt-3">
+              <img
+                src="/home/2.jpeg"
+                className="w-[700px] max-md:mt-2 "
+                alt=""
+              />
+            </div>
+
+            <div className="mt-8 max-md:mt-4 w-[100%] max-md:w-full max-md:p-2 grid grid-cols-5 max-md:grid-cols-2  max-md:gap-2 m-auto">
+              {category.map((cat, index) => (
+                <div
+                  key={index}
+                  onClick={() => handleClick(cat.url)}
+                  className="cursor-pointer"
+                  {...(isDesktop && {
+                    "data-aos": "zoom-in-up",
+                    "data-aos-delay": `${100 + index * 100}`,
+                  })}
+                >
+                  <div className="max-md:rounded-2xl overflow-hidden mb-4 max-md:mb-1.5">
+                    <img
+                      src={cat.image}
+                      alt={cat.title}
+                      className="w-full object-cover"
+                      onError={(e) => {
+                        e.currentTarget.onerror = null;
+                        e.currentTarget.src =
+                          "https://admirer.in/asset/image/combo-offer-image.jpg";
+                      }}
+                    />
+                  </div>
+                  <h3 className="text-lg font-semibold text-gray-800">
+                    {cat.title}
+                  </h3>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Advertisement */}
+        <section>
+          <div className="bg-white flex flex-col items-center p-8 max-md:p-4 max-md:pt-0">
+            <div
+              className="flex justify-center items-center mt-3"
+              {...(isDesktop && {
+                "data-aos": "fade-up",
+                "data-aos-delay": "100",
+              })}
+            >
+              <img
+                src="/home/3.png"
+                className="w-[700px] max-md:mt-2 "
+                alt=""
+              />
+            </div>
+
+            {advertisement.length >= 3 && (
+              <div className="mt-10 max-md:mt-6 grid grid-cols-2 max-md:grid-cols-1 gap-2 w-[97%] m-auto">
+                <div
+                  {...(isDesktop && {
+                    "data-aos": "fade-right",
+                    "data-aos-delay": "300",
+                  })}
+                >
+                  <img
+                    onClick={() => handleClick(advertisement[0].url)}
+                    src={advertisement[0].image}
+                    alt="Main collection"
+                    className="w-full h-auto rounded-2xl shadow-md cursor-pointer"
+                  />
+                </div>
+
+                <div className="grid gap-2 max-md:gap-4">
+                  <img
+                    onClick={() => handleClick(advertisement[1].url)}
+                    src={advertisement[1].image}
+                    alt="advertisement 1"
+                    className="w-full h-auto rounded-2xl shadow-md cursor-pointer"
+                    {...(isDesktop && {
+                      "data-aos": "fade-down",
+                      "data-aos-delay": "400",
+                    })}
+                  />
+
+                  <img
+                    onClick={() => handleClick(advertisement[2].url)}
+                    src={advertisement[2].image}
+                    alt="advertisement 2"
+                    className="w-full h-auto rounded-2xl shadow-md cursor-pointer"
+                    {...(isDesktop && {
+                      "data-aos": "fade-up",
+                      "data-aos-delay": "400",
+                    })}
+                  />
+                </div>
+              </div>
+            )}
+          </div>
+        </section>
+
+        {/* Offers */}
+        <section>
+          <div className="bg-white flex flex-col items-center p-6 pb-16 max-md:p-4">
+            <div
+              className="flex justify-center items-center mt-3"
+              {...(isDesktop && {
+                "data-aos": "fade-up",
+                "data-aos-delay": "100",
+              })}
+            >
+              <img
+                src="/home/4.jpeg"
+                className="w-[400px] max-md:mt-2 "
+                alt=""
+              />
+            </div>
+
+            {/* Desktop */}
+            <div className="mt-8 hidden md:grid grid-cols-3 gap-4 w-[90%] m-auto">
               {offers.map((item, idx) => (
                 <div
                   key={idx}
                   onClick={() => handleClick(item.url)}
-                  className="flex-shrink-0 w-[72vw] snap-center"
+                  className="cursor-pointer"
+                  {...(isDesktop && {
+                    "data-aos": "fade-up",
+                    "data-aos-delay": `${200 + idx * 250}`,
+                  })}
                 >
                   <img
                     src={item.image}
-                    className="w-full h-[auto] object-cover rounded-xl"
+                    className="w-full h-full object-cover rounded-xl shadow-md"
                     alt={`Curated ${idx}`}
                   />
                 </div>
               ))}
             </div>
-          </div>
-        </div>
-      </section>
 
-      {/* Shorts Section */}
-      <section>
-        <div className="bg-white flex flex-col pt-0 items-center pb-16 max-md:p-1">
-          <h2 className="text-4xl max-md:text-2xl font-semibold text-gray-800 mb-1">
-            Watch and Buy
-          </h2>
-          <div className="grid grid-cols-1 mt-6 max-md:mt-3 overflow-auto max-md:pb-7">
-            <Slider {...shortsSetting}>
-              {shorts.map((item, index) => (
-                <div key={index} className="p-1 max-md:p-0.5">
-                  <Link to={`product/${item.url}`}>
-                    <video autoPlay muted loop className="">
-                      <source src={item.videoUrl} type="video/mp4" />
-                      Your browser does not support the video tag.
-                    </video>
-                  </Link>
-                </div>
-              ))}
-            </Slider>
+            {/* Mobile */}
+            <div className="mt-4 w-full md:hidden overflow-hidden">
+              <div className="flex gap-4 overflow-x-auto scroll-smooth snap-x snap-mandatory px-4">
+                {offers.map((item, idx) => (
+                  <div
+                    key={idx}
+                    onClick={() => handleClick(item.url)}
+                    className="flex-shrink-0 w-[72vw] snap-center"
+                  >
+                    <img
+                      src={item.image}
+                      className="w-full h-auto object-cover rounded-xl shadow-md"
+                      alt={`Curated ${idx}`}
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Bottom Banner */}
-      {bottombanner.desktop_banner.image &&
-        bottombanner.mobile_banner.image && (
-          <section className="bg-white flex flex-col  items-center pb-8  max-md:p-1">
-            <h2 className="text-4xl max-md:text-2xl font-semibold mb-8 max-md:mb-6 max-md:mt-4 text-gray-800 ">
-              Design Led Jewellery
-            </h2>
-            <div className="w-[90%] m-auto max-md:w-[95%]">
+        {/* Shorts */}
+        <section>
+          <div className="bg-white flex flex-col pt-0 items-center pb-16 max-md:p-1">
+            <div
+              className="flex justify-center items-center mt-3"
+              {...(isDesktop && {
+                "data-aos": "fade-up",
+                "data-aos-delay": "100",
+              })}
+            >
               <img
-                onClick={() => handleClick(bottombanner.desktop_banner.url)}
-                src={bottombanner.desktop_banner.image}
-                className="w-full rounded-lg desktop-banner cursor-pointer"
-                alt="Desktop Bottom Banner"
-              />
-              <img
-                onClick={() => handleClick(bottombanner.mobile_banner.url)}
-                src={bottombanner.mobile_banner.image}
-                className="w-full rounded-lg mobile-banner cursor-pointer"
-                alt="Mobile Bottom Banner"
+                src="/home/5.jpeg"
+                className="w-[400px] max-md:mt-2 "
+                alt=""
               />
             </div>
-          </section>
-        )}
-
-      <section className="bg-white pb-10 max-md:pt-10">
-        <div className=" bg-purple-200">
-          <div className="grid grid-cols-4 max-md:grid-cols-2 items-center justify-center py-12 w-[85%] max-md:w-full text-center m-auto gap-4">
-            {features.map((item, index) => (
-              <div key={index} className="flex flex-col items-center gap-5">
-                <img src={item.img} alt="" className="mx-auto text-xl" />
-                <p className="font-semibold">{item.title}</p>
-              </div>
-            ))}
+            <div className="grid grid-cols-1 mt-6 max-md:mt-3 overflow-auto max-md:pb-7">
+              <Slider {...shortsSetting}>
+                {shorts.map((item, index) => (
+                  <div
+                    key={index}
+                    className="p-1 max-md:p-0.5"
+                    {...(isDesktop && {
+                      "data-aos": "zoom-in",
+                      "data-aos-delay": `${200 + index * 100}`,
+                    })}
+                  >
+                    <Link to={`product/${item.url}`}>
+                      <video
+                        autoPlay
+                        muted
+                        loop
+                        preload="auto"
+                        onError={(e) => {
+                          const video = e.target as HTMLVideoElement;
+                          video.style.display = "none";
+                        }}
+                      >
+                        <source src={item.videoUrl} type="video/mp4" />
+                        Your browser does not support the video tag.
+                      </video>
+                    </Link>
+                  </div>
+                ))}
+              </Slider>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Testimonials */}
-      <section>
-        <TestimonialsSection />
-      </section>
+        {/* Bottom Banner */}
+        {bottombanner.desktop_banner.image &&
+          bottombanner.mobile_banner.image && (
+            <section className="bg-white flex flex-col items-center pb-8 max-md:p-1">
+              <div
+                className="flex justify-center items-center"
+                {...(isDesktop && {
+                  "data-aos": "fade-up",
+                  "data-aos-delay": "100",
+                })}
+              >
+                <img
+                  src="/home/6.jpeg"
+                  className="w-[400px] max-md:mt-2 mb-6 "
+                  alt=""
+                />
+              </div>
+              <div
+                className="w-[90%] m-auto max-md:w-[95%]"
+                {...(isDesktop && {
+                  "data-aos": "fade-up",
+                  "data-aos-delay": "200",
+                })}
+              >
+                <img
+                  onClick={() => handleClick(bottombanner.desktop_banner.url)}
+                  src={bottombanner.desktop_banner.image}
+                  className="w-full rounded-lg desktop-banner cursor-pointer"
+                  alt="Desktop Bottom Banner"
+                />
+                <img
+                  onClick={() => handleClick(bottombanner.mobile_banner.url)}
+                  src={bottombanner.mobile_banner.image}
+                  className="w-full rounded-lg mobile-banner cursor-pointer"
+                  alt="Mobile Bottom Banner"
+                />
+              </div>
+            </section>
+          )}
+
+        {/* Features */}
+        <section className="bg-white pb-10 max-md:pt-10">
+          <div className="bg-purple-200">
+            <div
+              className="grid grid-cols-4 max-md:grid-cols-2 items-center justify-center py-12 w-[85%] max-md:w-full text-center m-auto gap-4"
+              {...(isDesktop && {
+                "data-aos": "fade-up",
+                "data-aos-delay": "100",
+              })}
+            >
+              {features.map((item, index) => (
+                <div
+                  key={index}
+                  className="flex flex-col items-center gap-5"
+                  {...(isDesktop && {
+                    "data-aos": "fade-up",
+                    "data-aos-delay": `${100 + index * 100}`,
+                  })}
+                >
+                  <img src={item.img} alt="" className="mx-auto text-xl" />
+                  <p className="font-semibold">{item.title}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Testimonials */}
+        <section
+          {...(isDesktop && { "data-aos": "fade-up", "data-aos-delay": "100" })}
+        >
+          <TestimonialsSection />
+        </section>
+      </main>
     </>
   );
 };

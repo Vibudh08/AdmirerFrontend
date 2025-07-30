@@ -11,6 +11,7 @@ import {
   razorPayStoreApi,
 } from "../../api/api-end-points";
 import { useAwb } from "../../../contexts/AwbContext";
+import { response } from "express";
 
 interface PriceDetail {
   label: string;
@@ -92,7 +93,7 @@ const Checkout: React.FC<IndexProps> = ({
   // if (isComboApplied) {
   //   totalWithGST = 1049;
   // } else {
-    totalWithGST = Number((cleanedTotal + gstAmount).toFixed(2));
+  totalWithGST = Number((cleanedTotal + gstAmount).toFixed(2));
   // }
   // const finalAmount = Math.round(totalWithGST * 100 );
   // console.log("totalAmount:", finalAmount, "type:", typeof finalAmount);
@@ -256,7 +257,7 @@ const Checkout: React.FC<IndexProps> = ({
           },
           body: JSON.stringify(payload),
         });
-
+        console.log(response);
         if (response.status === 200) {
           const data = await response.json();
           const awb = data.data.data.awb_number;
@@ -265,11 +266,12 @@ const Checkout: React.FC<IndexProps> = ({
           setOrderId(order_number);
           navigate("/order-confirmation", { state: { payload } });
         } else {
-          alert("Failed to place COD order.");
+          toast.error("Failed to place COD order.");
         }
       } catch (err) {
         console.error("❌ Error placing COD order:", err);
-        alert("Something went wrong while placing your order.");
+        // toast.error(data.message);
+        toast.error("Courier is not serviceable.");
       }
     }
     localStorage.removeItem("cartItems");
