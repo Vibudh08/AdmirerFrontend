@@ -73,7 +73,7 @@ const SearchBarWithPopup: React.FC<SearchBarWithPopupProps> = ({
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         placeholder="Search for products..."
-        className=" pl-8 pr-2 w-full h-[40px] max-md:h-[45px] rounded-md border border-[#7B48A5]  outline-none ring-2 ring-[#d3b6e9] text-gray"
+        className="bg-transparent pl-8 pr-2 w-full h-[40px] placeholder:text-gray-500 placeholder:font-semibold max-md:h-[45px] rounded-md border-2 border-[#7B48A5]  outline-none ring-2 ring-[#d3b6e9] text-gray"
         onFocus={() => query && setShowDropdown(true)}
       />
 

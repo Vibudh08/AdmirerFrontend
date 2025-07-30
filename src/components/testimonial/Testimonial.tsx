@@ -109,16 +109,20 @@ const TestimonialsSection = () => {
   };
 
   return (
-    <section className="py-12 pb-16 bg-gray-50 sm:py-16 lg:py-20 ">
+    <section className="py-8 !pb-24 bg-gray-50 sm:py-10 lg:py-10 ">
       <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
         <div className="flex flex-col items-center">
           <div className="text-center">
-            <h2 className="text-4xl max-md:text-2xl font-semibold text-gray-800 mb-1">
-              Our happy clients say about us
-            </h2>
+            <div className="flex justify-center items-center mt-3">
+              <img
+                src="/home/7.png"
+                className="w-[600px] max-md:mt-2 "
+                alt=""
+              />
+            </div>
           </div>
 
-          <div className="relative mt-10 md:mt-24 md:order-2">
+          <div className="relative mt-10 md:mt-12 md:order-2">
             <div className="absolute -inset-x-1 inset-y-16 md:-inset-x-2 md:-inset-y-6">
               <div
                 className="w-full h-full max-w-5xl mx-auto rounded-3xl opacity-30 blur-lg filter"
