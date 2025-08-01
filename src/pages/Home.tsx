@@ -148,19 +148,19 @@ const Home: React.FC = () => {
 
   const features = [
     {
-      img: "https://www.josalukkasmedia.com/Media/CMS/Home/Section9/safe.svg",
+      img: "/home/safe_delivery.png",
       title: "Safe & Secure Delivery",
     },
     {
-      img: "https://www.josalukkasmedia.com/Media/CMS/Home/Section9/shipping.svg",
+      img: "/home/shipping.png",
       title: "Free Shipping",
     },
     {
-      img: "https://www.josalukkasmedia.com/Media/CMS/Home/Section9/diamond.svg",
+      img: "/home/exchange.png",
       title: "7 Days Exchange",
     },
     {
-      img: "/icons/secure_pay.png",
+      img: "/home/secure.png",
       title: "Secure Payment",
     },
   ];
@@ -199,8 +199,8 @@ const Home: React.FC = () => {
   const handleClick = (url: string) => {
     const catIdMatch = url.match(/cat-([a-zA-Z0-9]+)/);
     const subcatIdMatch = url.match(/subcat-([a-zA-Z0-9]+)/);
-    console.log(catIdMatch);
-    console.log(subcatIdMatch);
+    console.log("url", url);
+    // console.log(subcatIdMatch);
     const categoryId = catIdMatch ? catIdMatch[1] : "";
     const subcategoryId = subcatIdMatch ? subcatIdMatch[1] : "";
 
@@ -231,9 +231,9 @@ const Home: React.FC = () => {
       });
   }, []);
 
-  // useEffect(() => {
-  //   window.scrollTo(0, 0);
-  // }, []);
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   if (isLoading) return <Loader />;
 
@@ -290,11 +290,14 @@ const Home: React.FC = () => {
           className="bg-white flex items-center justify-center pt-10 max-md:pt-4 flex-col"
           {...(isDesktop && { "data-aos": "fade-up", "data-aos-delay": "300" })}
         >
-          <img src="/home/1.jpeg" className="w-[900px] max-md:mt-2" alt="" />
+          <div className="flex justify-center items-center ml-20 max-md:ml-6">
+            <img src="/home/1.jpeg" className="w-[900px] max-md:mt-2" alt="" />
+          </div>
           <img
-            src="/home/offer banner.jpeg"
-            className="w-[90%] block  mt-5 max-md:mt-4 h-full"
+            src="/home/offer-banner.jpeg"
+            className="w-[90%] block  mt-5 max-md:mt-4 h-full cursor-pointer"
             alt=""
+            onClick={() => handleClick("subcat-15")}
             {...(isDesktop && {
               "data-aos": "fade-up",
               "data-aos-delay": "400",
@@ -562,7 +565,7 @@ const Home: React.FC = () => {
 
         {/* Features */}
         <section className="bg-white pb-10 max-md:pt-10">
-          <div className="bg-purple-200">
+          <div className="bg-gradient-to-r from-purple-200 to-purple-300">
             <div
               className="grid grid-cols-4 max-md:grid-cols-2 items-center justify-center py-12 w-[85%] max-md:w-full text-center m-auto gap-4"
               {...(isDesktop && {
@@ -579,8 +582,8 @@ const Home: React.FC = () => {
                     "data-aos-delay": `${100 + index * 100}`,
                   })}
                 >
-                  <img src={item.img} alt="" className="mx-auto text-xl" />
-                  <p className="font-semibold">{item.title}</p>
+                  <img src={item.img} alt="" className={`mx-auto ${index == 1 ? "w-20 " : "w-16"}`} />
+                  <p className={`font-semibold ${index == 1 ? "mt-[-16px] " : ""}`}>{item.title}</p>
                 </div>
               ))}
             </div>

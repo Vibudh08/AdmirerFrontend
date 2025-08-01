@@ -51,16 +51,22 @@ const Footer = () => {
             </h3>
             <ul className="grid grid-cols-2 md:grid-cols-1 space-y-2 max-md:space-y-1 text-gray-100 max-sm:text-sm">
               <li className="hover:text-white hover:font-semibold hover:underline">
-                <Link to="">Jewellery</Link>
+                <Link to="/listing?cat=26">Jewellery</Link>
               </li>
               <li className="hover:text-white hover:font-semibold hover:underline">
-                <Link to="">Ring Corner</Link>
+                <Link to="/listing?cat=26&subcat=10">Women Ring</Link>
               </li>
               <li className="hover:text-white hover:font-semibold hover:underline">
-                <Link to="">Couple Rings</Link>
+                <Link to="/listing?cat=26&subcat=11">Engagement Ring</Link>
               </li>
               <li className="hover:text-white hover:font-semibold hover:underline">
-                <Link to="">Alphabet Rings</Link>
+                <Link to="/listing?cat=26&subcat=12">Necklace</Link>
+              </li>
+              <li className="hover:text-white hover:font-semibold hover:underline">
+                <Link to="/listing?cat=26&subcat=13">Alphabet Rings</Link>
+              </li>
+              <li className="hover:text-white hover:font-semibold hover:underline">
+                <Link to="/listing?cat=26&subcat=15">3 Ring Combo Set @ 999</Link>
               </li>
             </ul>
           </div>

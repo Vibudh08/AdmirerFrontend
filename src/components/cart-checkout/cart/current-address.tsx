@@ -197,7 +197,7 @@ const DeliveryInfo: React.FC<DeliveryInfoProps> = ({
               style={{ marginTop: "16px" }}
             >
               <Select
-                style={{ width: "80%", height: "35px" }}
+                style={{  height: "35px" }}
                 value={JSON.stringify(selectedAddress)}
                 onChange={(value) => {
                   const selected = JSON.parse(value) as Address;
@@ -210,18 +210,11 @@ const DeliveryInfo: React.FC<DeliveryInfoProps> = ({
                     address
                   )} ${getLastName(address)}, ${address.flat}, ${address.city}`,
                 }))}
+                className="w-[80%] max-md:w-[70%]"
               />
-              {/* <div
-                style={{
-                  position: "absolute",
-                  right: "20px",
-                  bottom: "17px",
-                }}
-              > */}
               <button
-                className="text-[14px] max-md:text-[12px] p-1 "
+                className="text-[14px] max-md:text-[12px] p-1 w-[20%] max-md:w-[30%]"
                 style={{
-                  width: "20%",
                   border: "none",
                   borderRadius: "6px",
                   height: "34px",
@@ -235,9 +228,8 @@ const DeliveryInfo: React.FC<DeliveryInfoProps> = ({
                 }}
                 onClick={() => setIsModalVisible(true)}
               >
-                Change
+                Add New
               </button>
-              {/* </div> */}
             </div>
           </div>
         </div>
@@ -245,21 +237,20 @@ const DeliveryInfo: React.FC<DeliveryInfoProps> = ({
 
       <Modal
         title={
-          <span style={{ color: "#722ed1" }}>Update Delivery Address</span>
+          <span style={{ color: "#722ed1" }}>Add New Address</span>
         }
         open={isModalVisible}
         onCancel={() => {
           setIsModalVisible(false);
-          onModalClose?.(); // ✅ parent ko bhi bol do
+          onModalClose?.();
         }}
         footer={null}
         width={700}
         centered
-        bodyStyle={{ padding: "24px" }}
       >
         <AddressBar
           setIsModalVisible={setIsModalVisible}
-          onAddressChange={onAddressSaved} // ✅ call fetchAddresses after save
+          onAddressChange={onAddressSaved}
         />
       </Modal>
     </>

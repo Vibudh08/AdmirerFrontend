@@ -65,6 +65,7 @@ const ProductActions: React.FC<ProductActionsProps> = ({
       if (response.ok) {
         setInWishlist(!inWishlist);
         console.log(result.message || "Wishlist updated");
+        toast.success(inWishlist ? "Removed from wishlist" : "Added to wishlist" )
       } else if (response.status === 401) {
         toast.error("Please log in to add items to your wishlist.");
       } else {

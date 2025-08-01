@@ -9,6 +9,8 @@ import PincodeChecker from "../components/product-detail/pincodeChecker";
 import OfferBanner from "../components/product-detail/OfferBanner";
 import ProductAccordion from "../components/product-detail/ProductDescription";
 import { FaHeart } from "react-icons/fa";
+import { Fancybox } from "@fancyapps/ui";
+import "@fancyapps/ui/dist/fancybox/fancybox.css";
 import {
   addToCart,
   productDetails,
@@ -51,6 +53,7 @@ const ProductDetails = (item: { wishlist: number }) => {
   const [hoverImage, setHoverImage] = useState<string | null>(null);
   const [lensStyle, setLensStyle] = useState({});
   const [zoomStyle, setZoomStyle] = useState({});
+  const [isMobile, setIsMobile] = useState(false);
   const [isInCart, setIsInCart] = useState(false);
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [justAddedProductId, setJustAddedProductId] = useState<number | null>(
@@ -218,7 +221,7 @@ const ProductDetails = (item: { wishlist: number }) => {
   }, [id]);
 
   const handleImageClick = (clickedImg: string) => {
-    setMainImage(clickedImg); 
+    setMainImage(clickedImg);
   };
 
   const handleZoom = (e: React.MouseEvent) => {
@@ -276,6 +279,29 @@ const ProductDetails = (item: { wishlist: number }) => {
     });
   };
 
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768); // Or your breakpoint
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  useEffect(() => {
+    Fancybox.bind("[data-fancybox='gallery']", {
+      plugins: ["Thumbs"],
+      Thumbs: {
+        autoStart: true,
+      },
+    } as any);
+
+    return () => {
+      Fancybox.unbind("[data-fancybox='gallery']");
+      Fancybox.close();
+    };
+  }, []);
+
   if (isLoading) return <Loader />;
 
   return (
@@ -287,31 +313,65 @@ const ProductDetails = (item: { wishlist: number }) => {
             {/* Main Image Display */}
             <div
               className="relative w-full overflow-hidden rounded border group"
-              onMouseMove={handleZoom}
-              onMouseLeave={() => {
-                setZoomStyle({ display: "none" });
-                setLensStyle({ display: "none" });
-              }}
+              onMouseMove={!isMobile ? handleZoom : undefined}
+              onMouseLeave={
+                !isMobile
+                  ? () => {
+                      setZoomStyle({ display: "none" });
+                      setLensStyle({ display: "none" });
+                    }
+                  : undefined
+              }
               ref={containerRef}
             >
-              <img
-                src={hoverImage || mainImage}
-                alt="Main Product"
-                className="w-full object-cover"
-                ref={imageRef}
-                style={{ cursor: "none" }}
-              />
-              <div
-                style={{
-                  ...zoomStyle,
-                  backgroundImage: `url(${hoverImage || mainImage})`,
-                }}
-                className="absolute pointer-events-none"
-              />
-              <div style={lensStyle} ref={lensRef} />
+              {isMobile ? (
+                <>
+                  <a
+                    href={mainImage}
+                    data-fancybox="gallery"
+                    data-fancybox-index="0"
+                    data-thumb={mainImage}
+                  >
+                    <img src={mainImage} alt="Main" />
+                  </a>
+
+                  {/* Hidden anchors for all other images */}
+                  {thumbnails
+                    .filter((src) => src !== mainImage) // don’t duplicate main image
+                    .map((src, idx) => (
+                      <a
+                        key={idx}
+                        href={src}
+                        data-fancybox="gallery"
+                        data-thumb={src}
+                        style={{ display: "none" }}
+                      />
+                    ))}
+                </>
+              ) : (
+                <img
+                  src={hoverImage || mainImage}
+                  alt="Main Product"
+                  className="w-full object-cover"
+                  ref={imageRef}
+                  style={{ cursor: "none" }}
+                />
+              )}
+              {!isMobile && (
+                <>
+                  <div
+                    style={{
+                      ...zoomStyle,
+                      backgroundImage: `url(${hoverImage || mainImage})`,
+                    }}
+                    className="absolute pointer-events-none"
+                  />
+                  <div style={lensStyle} ref={lensRef} />
+                </>
+              )}
             </div>
 
-            {/* Thumbnails Section */}
+            {/* Thumbnails */}
             <div className="flex mt-4 w-full overflow-x-auto overflow-y-hidden">
               {thumbnails && thumbnails.length > 0 ? (
                 thumbnails.map((src, idx) => (
@@ -320,8 +380,12 @@ const ProductDetails = (item: { wishlist: number }) => {
                     src={src}
                     alt={`Thumbnail ${idx + 1}`}
                     onClick={() => handleImageClick(src)}
-                    onMouseEnter={() => setHoverImage(src)}
-                    onMouseLeave={() => setHoverImage(null)}
+                    onMouseEnter={
+                      !isMobile ? () => setHoverImage(src) : undefined
+                    }
+                    onMouseLeave={
+                      !isMobile ? () => setHoverImage(null) : undefined
+                    }
                     className="w-20 h-20 rounded border p-2 border-gray-300 object-cover cursor-pointer hover:scale-105 transition-transform"
                   />
                 ))
@@ -356,7 +420,7 @@ const ProductDetails = (item: { wishlist: number }) => {
             <div className="text-sm text-gray-500 mb-1">Incl. of all taxes</div>
 
             {product.in_stock < 5 && (
-              <div className="mt-4 mb-1 space-x-1 text-[16px] text-gray-600">
+              <div className="mt-4 mb-1 space-x-1 text-[16px] text-gray-600 p-1 bg-gradient-to-r from-purple-300 rounded to-white">
                 Hurry Up! Only{" "}
                 <span className="text-[#7B48A5] font-semibold">
                   {product.in_stock} Item(s)
@@ -364,6 +428,7 @@ const ProductDetails = (item: { wishlist: number }) => {
                 left in stock
               </div>
             )}
+            {/* <PincodeChecker/> */}
 
             <div className="grid grid-cols-2 gap-2 text-sm text-gray-600 mt-5">
               <div className="flex items-center gap-3 text-[15px] font-medium">

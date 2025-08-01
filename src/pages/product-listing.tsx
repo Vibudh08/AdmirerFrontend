@@ -166,7 +166,7 @@ const ProductListing: React.FC = () => {
         .then((value) => {
           setSubCategory(value?.subcatName || "");
           setCat(value?.catId || null);
-          // ✅ Also update session if needed:
+          // Also update session if needed:
           if (value?.catId) {
             sessionStorage.setItem("categoryId", value?.catId);
           }

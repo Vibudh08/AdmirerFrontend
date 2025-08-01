@@ -264,7 +264,7 @@ const LeftSideBar: React.FC<LeftSideBarProps> = ({
     if (isMainCategory) {
       // Agar main category pe click hua → subcategory ko empty karo
       setSelectedCategory(clicked);
-      setSubCategory(""); // 🟢 empty subcat means show all
+      setSubCategory(""); //  empty subcat means show all
       sessionStorage.setItem("activeSubcategory", "");
       window.scrollTo({ top: 0, behavior: "smooth" });
     } else {
