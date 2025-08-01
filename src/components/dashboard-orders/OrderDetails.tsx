@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useLocation, Link, useNavigate } from "react-router-dom";
+import { Rate } from "antd";
 import {
   order_detail_API,
   getAddress_API,
@@ -153,83 +154,82 @@ const OrderDetails: React.FC = () => {
   };
 
   // for getting subcat_id
- useEffect(() => {
-  const fetchAllProductDetails = async () => {
-    if (!productIds.length || !orderData.length) {
-      console.log("No productIds or no orderData yet — skipping.");
-      return;
-    }
+  useEffect(() => {
+    const fetchAllProductDetails = async () => {
+      if (!productIds.length || !orderData.length) {
+        console.log("No productIds or no orderData yet — skipping.");
+        return;
+      }
 
-    try {
-      // Product detail API call for each product
-      const promises = productIds.map((pid) =>
-        axios.get(`${productDetails}/${pid}`, {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: "Bearer " + localStorage.getItem("auth_token"),
-          },
-        })
-      );
+      try {
+        // Product detail API call for each product
+        const promises = productIds.map((pid) =>
+          axios.get(`${productDetails}/${pid}`, {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: "Bearer " + localStorage.getItem("auth_token"),
+            },
+          })
+        );
 
-      const responses = await Promise.all(promises);
+        const responses = await Promise.all(promises);
 
-      // Mark combo items
-      const enriched = orderData.map((item, index) => {
-        const subcat_id =
-          parseInt(responses[index]?.data?.data?.subcat_id) || null;
-        return { ...item, subcat_id };
-      });
+        // Mark combo items
+        const enriched = orderData.map((item, index) => {
+          const subcat_id =
+            parseInt(responses[index]?.data?.data?.subcat_id) || null;
+          return { ...item, subcat_id };
+        });
 
-      console.log("✅ OrderData with subcat_id:", enriched);
+        console.log("✅ OrderData with subcat_id:", enriched);
 
-      // ✅ Calculate total combo quantity
-      const comboItems = enriched.filter((item) => item.subcat_id === 10);
-      const totalComboQty = comboItems.reduce(
-        (sum, item) => sum + Number(item.quantity || "1"),
-        0
-      );
+        // ✅ Calculate total combo quantity
+        const comboItems = enriched.filter((item) => item.subcat_id === 10);
+        const totalComboQty = comboItems.reduce(
+          (sum, item) => sum + Number(item.quantity || "1"),
+          0
+        );
 
-      console.log("Total combo qty:", totalComboQty);
+        console.log("Total combo qty:", totalComboQty);
 
-      const comboPack = 3;
-      const comboSets = Math.floor(totalComboQty / comboPack);
-      let comboCounted = comboSets * comboPack;
+        const comboPack = 3;
+        const comboSets = Math.floor(totalComboQty / comboPack);
+        let comboCounted = comboSets * comboPack;
 
-      console.log("comboSets:", comboSets, "comboCounted:", comboCounted);
+        console.log("comboSets:", comboSets, "comboCounted:", comboCounted);
 
-      const finalOrderData = enriched.map((item) => {
-        let displayPrice = Number(item.price);
+        const finalOrderData = enriched.map((item) => {
+          let displayPrice = Number(item.price);
 
-        if (item.subcat_id === 10) {
-          const qty = Number(item.quantity || "1");
-          if (qty >= 3) {
-            // If self quantity is 3 or more → full combo
-            displayPrice = 349;
-          } else if (comboCounted >= qty) {
-            displayPrice = 349;
-            comboCounted -= qty;
-          } else if (comboCounted > 0) {
-            displayPrice = 349;
-            comboCounted = 0;
-          } else {
-            // no combo for this leftover qty
-            displayPrice = Number(item.price);
+          if (item.subcat_id === 10) {
+            const qty = Number(item.quantity || "1");
+            if (qty >= 3) {
+              // If self quantity is 3 or more → full combo
+              displayPrice = 349;
+            } else if (comboCounted >= qty) {
+              displayPrice = 349;
+              comboCounted -= qty;
+            } else if (comboCounted > 0) {
+              displayPrice = 349;
+              comboCounted = 0;
+            } else {
+              // no combo for this leftover qty
+              displayPrice = Number(item.price);
+            }
           }
-        }
 
-        return { ...item, displayPrice };
-      });
+          return { ...item, displayPrice };
+        });
 
-      console.log("✅ Final OrderData with displayPrice:", finalOrderData);
-      setOrderData(finalOrderData);
-    } catch (error) {
-      console.error("Error fetching product details:", error);
-    }
-  };
+        console.log("✅ Final OrderData with displayPrice:", finalOrderData);
+        setOrderData(finalOrderData);
+      } catch (error) {
+        console.error("Error fetching product details:", error);
+      }
+    };
 
-  fetchAllProductDetails();
-}, [productIds, orderData.length]);
-
+    fetchAllProductDetails();
+  }, [productIds, orderData.length]);
 
   // for checking offer amount
 
@@ -388,56 +388,55 @@ const OrderDetails: React.FC = () => {
     fetchInitialStatus();
   }, []);
 
-useEffect(() => {
-  if (orderData.length && address) {
-    const items = orderData.map((item) => {
-      const unitPrice = Number(item.displayPrice || item.price);
-      const qty = Number(item.quantity);
-      const total = unitPrice * qty;
-      const gst = Math.ceil(total * 0.05);
+  useEffect(() => {
+    if (orderData.length && address) {
+      const items = orderData.map((item) => {
+        const unitPrice = Number(item.displayPrice || item.price);
+        const qty = Number(item.quantity);
+        const total = unitPrice * qty;
+        const gst = Math.ceil(total * 0.05);
 
-      return {
-        name: item.product_name,
-        price: `Rs. ${unitPrice.toFixed(2)}`,
-        qty,
-        total: `Rs. ${total.toFixed(2)}`,
+        return {
+          name: item.product_name,
+          price: `Rs. ${unitPrice.toFixed(2)}`,
+          qty,
+          total: `Rs. ${total.toFixed(2)}`,
+          gst: `Rs. ${gst.toFixed(2)}`,
+        };
+      });
+
+      const totalPrice = items.reduce(
+        (acc, item) => acc + Number(item.total.replace("Rs. ", "")),
+        0
+      );
+
+      const gst = Math.ceil(totalPrice * 0.05);
+      const totalWithGST = totalPrice + gst;
+
+      const invoice = {
+        invoiceNo: `#${Math.floor(Math.random() * 90000) + 10000}`,
+        orderDate: new Date(orderData[0].date).toLocaleDateString("en-GB", {
+          day: "numeric",
+          month: "short",
+          year: "numeric",
+        }),
+        paymentType: orderData[0].payment_type,
+        orderId: orderData[0].order_id,
+        customer: {
+          name: `${address.first_name} ${address.last_name}`,
+          phone: `${address.mobile}`,
+          email: `${address.email}`,
+          address: `${address.flat}, ${address.street}, ${address.locality}, ${address.city}, ${address.state}, ${address.country_name} - ${address.zipcode}`,
+        },
+        items: items,
+        total: `Rs. ${totalPrice.toFixed(2)}`,
         gst: `Rs. ${gst.toFixed(2)}`,
+        totalAmount: `Rs. ${totalWithGST.toFixed(2)}`,
       };
-    });
 
-    const totalPrice = items.reduce(
-      (acc, item) => acc + Number(item.total.replace("Rs. ", "")),
-      0
-    );
-
-    const gst = Math.ceil(totalPrice * 0.05);
-    const totalWithGST = totalPrice + gst;
-
-    const invoice = {
-      invoiceNo: `#${Math.floor(Math.random() * 90000) + 10000}`,
-      orderDate: new Date(orderData[0].date).toLocaleDateString("en-GB", {
-        day: "numeric",
-        month: "short",
-        year: "numeric",
-      }),
-      paymentType: orderData[0].payment_type,
-      orderId: orderData[0].order_id,
-      customer: {
-        name: `${address.first_name} ${address.last_name}`,
-        phone: `${address.mobile}`,
-        email: `${address.email}`,
-        address: `${address.flat}, ${address.street}, ${address.locality}, ${address.city}, ${address.state}, ${address.country_name} - ${address.zipcode}`,
-      },
-      items: items,
-      total: `Rs. ${totalPrice.toFixed(2)}`,
-      gst: `Rs. ${gst.toFixed(2)}`,
-      totalAmount: `Rs. ${totalWithGST.toFixed(2)}`,
-    };
-
-    setInvoiceData(invoice);
-  }
-}, [isComboApplied, orderData, address]);
-
+      setInvoiceData(invoice);
+    }
+  }, [isComboApplied, orderData, address]);
 
   useEffect(() => {
     let orderFetched = false;
@@ -582,45 +581,45 @@ useEffect(() => {
                 <div className=" gap-6 ">
                   <div className="text-center">
                     {/* {order.image && ( */}
-
-                    <Link to={`/product/${productIds[index]}`}>
-                      <div className="flex items-center justify-center w-full">
-                        <img
-                          src={
-                            "https://admirer.in/asset/image/product/" +
-                            order.image
-                          }
-                          alt={order.product_name}
-                          className="w-36 mb-4 object-contain"
-                        />
-                      </div>
-                    </Link>
-                    {/* )} */}
-                    <div className="flex-1">
-                      <h2 className="font-semibold text-gray-800 text-[16px] leading-snug">
-                        {order.product_name}
-                      </h2>
-                      {/* <p className="text-xs text-gray-500 mt-0.5">
-                    Seller: LogicDevices
-                  </p> */}
-                      <div className="flex items-center justify-center gap-1 mt-2">
-                        <p className="text-lg font-semibold text-gray-800">
-                          Price: ₹
-                          {(order.displayPrice ?? order.price) *
-                            Number(order.quantity)}
+                    <div className="flex justify-center items-center text-start gap-2">
+                      <Link
+                        className="w-[30%] max-md:w-[45%]"
+                        to={`/product/${productIds[index]}`}
+                      >
+                        <div className="flex items-center justify-center w-full">
+                          <img
+                            src={
+                              "https://admirer.in/asset/image/product/" +
+                              order.image
+                            }
+                            alt={order.product_name}
+                            className="w-36 mb-2 object-contain"
+                          />
+                        </div>
+                      </Link>
+                      {/* )} */}
+                      <div className="flex-1">
+                        <h2 className="font-semibold text-gray-800 text-[18px] max-md:text-[16px] leading-snug text-start mb-0.5">
+                          {order.product_name}
+                        </h2>
+                        <p className="text-sm text-gray-500  font-semibold">
+                          Quantity: {order.quantity}
                         </p>
-                        {order.displayPrice == 349 && (
-                          <span className="text-green-600 text-xs mt-1 font-semibold">
-                            (Combo Offer Price)
-                          </span>
-                        )}
+                        <div className="mt-1">
+                          <p className="text-lg font-semibold text-gray-800 mb-0">
+                            Price: ₹
+                            {(order.displayPrice ?? order.price) *
+                              Number(order.quantity)}
+                          </p>
+                          {order.displayPrice == 349 && (
+                            <span className="block text-green-600 text-xs mt-0.5 font-semibold">
+                              (Combo Offer Price)
+                            </span>
+                          )}
+                        </div>
                       </div>
-
-                      <p className="text-sm text-gray-500 mt-0.5 font-semibold">
-                        Quantity: {order.quantity}
-                      </p>
                     </div>
-                    <div className="flex  items-start text-white bg-[#7b48a5] p-3  gap-2 mt-3">
+                    <div className="flex  items-start text-white bg-[#7b48a5] p-3  gap-2 mt-1">
                       <img
                         src="https://myntraweb.blob.core.windows.net/mymyntra/assets/img/box.svg"
                         alt=""
@@ -684,28 +683,17 @@ useEffect(() => {
                 </div>
 
                 {/* <div className="border p-3 mb-3 pt-4 flex mt-4 flex-col flex-wrap justify-between gap-3">
-                  <span className="font-semibold">Rate this product</span>
-                  <div className="flex gap-3">
-                    {[...Array(5)].map((_, i) => (
-                      <svg
-                        key={i}
-                        onClick={() => handleRating(productIds[index], i)}
-                        className={`w-9 h-9 cursor-pointer ${
-                          i < (ratings[productIds[index]] || 0)
-                            ? "text-[#7b48a5]"
-                            : "text-gray-300"
-                        }`}
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                      >
-                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.967a1 1 0 00.95.69h4.178c.969 0 1.371 1.24.588 1.81l-3.385 2.46a1 1 0 00-.364 1.118l1.287 3.966c.3.922-.755 1.688-1.538 1.118l-3.385-2.46a1 1 0 00-1.176 0l-3.385 2.46c-.783.57-1.838-.196-1.539-1.118l1.287-3.966a1 1 0 00-.364-1.118L2.048 9.394c-.783-.57-.38-1.81.588-1.81h4.178a1 1 0 00.95-.69l1.285-3.967z" />
-                      </svg>
-                    ))}
-                  </div>
+                  <span className="font-semibold text-[15px]">
+                    Rate this product
+                  </span>
+                  <Rate
+                    style={{ fontSize: "30px", color: "#7b48a5" }}
+                    onChange={(value) => handleRating(productIds[index], value)}
+                  />
                   {reviewVisible[productIds[index]] && (
                     <>
                       <div className="flex flex-col gap-4 mt-1 ">
-                        <span className="font-semibold mt-1">
+                        <span className="font-semibold mt-1 text-[15px]">
                           Write a Review
                         </span>
                         <textarea

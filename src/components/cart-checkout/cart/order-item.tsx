@@ -115,7 +115,6 @@ const Item: React.FC<ItemProps> = ({
           <div className="flex items-center mb-3 mt-2">
             <span className="font-semibold text-sm mr-2  text-black">Qty:</span>
 
-            {/* // <span className="font-semibold">1</span> */}
 
             <Select
               value={qty}

@@ -148,7 +148,7 @@ const Header = ({}) => {
 
       {/* Main Header */}
       <main
-        className={`w-full relative top-0 left-0 z-50 pb-[3px] pt-[-1px] ${
+        className={`w-full relative top-0 left-0 z-50 pb-[1px] ${
           isHome ? "bg-transparent" : "bg-white shadow-md"
         }`}
       >
@@ -179,7 +179,7 @@ const Header = ({}) => {
 
         {/* Main Header Content */}
         <div className="m-auto max-md:w-full">
-          <div className="flex justify-between items-center pt-1 w-[94%] m-auto max-md:w-full px-2">
+          <div className="flex justify-between items-center w-[94%] m-auto max-md:w-full px-2">
             {/* Mobile Menu and Search */}
             <div className="gap-[12px] hidden max-md:flex max-md:mt-[-4px]">
               {/* <div

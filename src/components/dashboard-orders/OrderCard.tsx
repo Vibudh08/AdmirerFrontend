@@ -33,7 +33,7 @@ const OrderCard: React.FC<OrderCardProps> = ({ orderedData }) => {
         return (
           <div
             key={orderId}
-            className="border rounded-md p-4 bg-white flex flex-col gap-2 cursor-pointer hover:shadow transition"
+            className="border rounded-md max-md:rounded-none p-4 max-md:p-3 bg-white flex flex-col gap-2 cursor-pointer hover:shadow transition"
             onClick={() => {
               console.log("Navigating to order ID:", orderId);
               navigate(`/order/${orderId}`, {
@@ -42,7 +42,7 @@ const OrderCard: React.FC<OrderCardProps> = ({ orderedData }) => {
             }}
           >
             {products.map((product, index) => (
-              <div key={index} className="flex gap-4 rounded-md bg-gray-50 p-3 max-md:p-2 border items-center">
+              <div key={index} className="flex gap-4  rounded-md bg-gray-50 p-3 max-md:p-3 max-md:py-4 border items-center">
                 <img
                   src={
                     "https://admirer.in/asset/image/product/" +
@@ -56,12 +56,12 @@ const OrderCard: React.FC<OrderCardProps> = ({ orderedData }) => {
                     <h3 className="font-medium text-gray-800 text-sm">
                       {product.product_name}
                     </h3>
-                    <span className="text-sm font-medium text-gray-900">
+                    {/* <span className="text-sm font-medium text-gray-900">
                       ₹{product.price}
-                    </span>
+                    </span> */}
                   </div>
-                  <div className="flex justify-between max-md:block items-center">
-                    <div className="flex items-center gap-1 text-sm max-md:mb-1 font-medium">
+                  <div className=" justify-between max-md:block items-center">
+                    <div className="flex items-center gap-1 text-sm max-md:mb-1 mb-1 font-medium">
                       <span className="w-2 h-2 rounded-full bg-gray-400"></span>
                       {product.order_status}
                     </div>

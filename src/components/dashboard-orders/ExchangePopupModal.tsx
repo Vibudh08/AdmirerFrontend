@@ -118,6 +118,7 @@ const ExchangePopupModal: React.FC<ExchangePopupModalProps> = ({
       open={visible}
       onCancel={onClose}
       footer={null}
+      width={400}
     >
       {loading ? (
         <div className="flex justify-center">

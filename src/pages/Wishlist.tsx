@@ -11,7 +11,7 @@ const Loader = () => (
 );
 
 const EmptyWishlist = () => (
-  <div className="flex flex-col items-center justify-center h-[70vh] py-10 text-center">
+  <div className="flex flex-col items-center justify-center h-[90vh]  text-center">
     <img
       src="https://cdn-icons-png.flaticon.com/512/6134/6134065.png"
       alt="Empty Wishlist"
@@ -125,7 +125,7 @@ const Wishlist = () => {
   if (loading) return <Loader />;
 
   return (
-    <div className="bg-white py-5">
+    <div className="bg-white py-4 pb-16">
       {wishlistItems.length === 0 ? (
         <EmptyWishlist />
       ) : (
