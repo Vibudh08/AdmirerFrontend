@@ -1,18 +1,24 @@
 import React, { useEffect, useState } from "react";
+// Coupons modal component
 import Coupons_screen from "../../coupons/Coupons_screen";
+// Order success modal (abhi commented)
 import OrderSuccessModal from "../../OrderSuccessModal";
+// Toast for notifications
 import { toast } from "react-toastify";
+// Routing hooks
 import { useNavigate, useLocation } from "react-router-dom";
-import { GoTag } from "react-icons/go";
+// Ant Design modal
 import { Modal } from "antd";
+// APIs
 import {
   nimbusDelievery_API,
   razorPayCreateOrderApi,
   razorPayStoreApi,
 } from "../../api/api-end-points";
+// AWB context (for storing generated awb number)
 import { useAwb } from "../../../contexts/AwbContext";
-import { response } from "express";
 
+// Types for static price details display
 interface PriceDetail {
   label: string;
   value: string;
@@ -23,6 +29,7 @@ interface PriceDetail {
   moreInfoContent?: string;
 }
 
+// Address data structure
 interface ShippingData {
   first_name: string;
   last_name: string;
@@ -38,6 +45,7 @@ interface ShippingData {
   addr_type: string;
 }
 
+// Props for checkout component
 interface IndexProps {
   itemCount?: number;
   totalMRP?: string;
@@ -61,45 +69,38 @@ const Checkout: React.FC<IndexProps> = ({
   shippingData,
   onRequestAddressModal,
 }) => {
+  // DEBUG: show shipping data in console when changes
   useEffect(() => {
-    console.log("the shipping data in checkout is = ", shippingData);
+    // console.log("the shipping data in checkout is = ", shippingData);
   }, [shippingData]);
+
   // const [isModalOpen, setIsModalOpen] = useState(false);
+  // Selected payment method (cod/online)
   const [selected, setSelected] = useState("cod");
+  // For showing success modal
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+  // Order number generated
   const [orderId, setOrderId] = useState("");
+  // Loading flag for place order
   const [loading, setLoading] = useState(false);
 
+  // For modal: coupon or know more
   const [modalContent, setModalContent] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
+  // Razorpay amount calculations
   const cleanedTotal = Number(totalAmount.replace(/,/g, ""));
   const gstAmount = Math.ceil(Number((cleanedTotal * 0.05).toFixed(2)));
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const showModal = () => setIsModalOpen(true);
-  const handleCancel = () => setIsModalOpen(false);
+
+  // Final payable amount with GST (no combo condition active)
+  let totalWithGST = Number((cleanedTotal + gstAmount).toFixed(2));
+
+  // Navigation hook for redirect
+  const navigate = useNavigate();
+  // Awb context for storing delivery tracking number
   const { setAwbNumber } = useAwb();
 
-  let totalWithGST;
-
-  // const cartItems = JSON.parse(localStorage.getItem("cartItems") || "[]");
-  // console.log("Cart Items:", cartItems);
-  // console.log("Subcat IDs:", cartItems.map((item: { subcat_id: any; }) => item.subcat_id));
-  // const isComboApplied =
-  //   cartItems.length === 3 &&
-  //   cartItems.every(
-  //     (item: { subcat_id: string }) => parseInt(item.subcat_id) === 10
-  //   );
-
-  // if (isComboApplied) {
-  //   totalWithGST = 1049;
-  // } else {
-  totalWithGST = Number((cleanedTotal + gstAmount).toFixed(2));
-  // }
-  // const finalAmount = Math.round(totalWithGST * 100 );
-  // console.log("totalAmount:", finalAmount, "type:", typeof finalAmount);
-
-  const navigate = useNavigate(); // 👈 initialize navigate
-
+  // Basic check for incomplete data, show blank if missing
   const isLoading =
     !itemCount ||
     itemCount === 0 ||
@@ -110,16 +111,18 @@ const Checkout: React.FC<IndexProps> = ({
 
   if (isLoading) return <div></div>;
 
+  // Place order handler for both COD and online payment
   const handlePlaceOrder = async () => {
     const authToken = localStorage.getItem("auth_token");
 
+    // If not logged in, redirect to login
     if (!authToken) {
-      // 👉 Redirect to login with state only on button click
       navigate("/LogIn", { state: { fromCheckout: true } });
       toast.error("Please LogIn before placing your order.");
       return;
     }
 
+    // If address missing, show address modal
     if (!shippingData) {
       onRequestAddressModal?.();
       toast.error("Please fill in your address before placing your order.");
@@ -128,10 +131,13 @@ const Checkout: React.FC<IndexProps> = ({
     }
     setLoading(true);
 
+    // Order number created with timestamp
     const order_number = "BTJ" + new Date().getTime();
 
+    // Online payment flow
     if (selected === "online") {
       try {
+        // Create order in backend
         const createOrderRes = await fetch(razorPayCreateOrderApi, {
           method: "POST",
           headers: {
@@ -142,8 +148,9 @@ const Checkout: React.FC<IndexProps> = ({
         });
 
         const orderData = await createOrderRes.json();
-        console.log(orderData);
+        // console.log(orderData);
 
+        // Razorpay config
         const options = {
           key: "rzp_live_9dQQZTZXMKwBMJ",
           amount: orderData.amount,
@@ -159,6 +166,7 @@ const Checkout: React.FC<IndexProps> = ({
           handler: async function (response: any) {
             try {
               setLoading(true);
+              // Verify payment signature
               const verifyRes = await fetch(razorPayStoreApi, {
                 method: "POST",
                 headers: {
@@ -173,6 +181,7 @@ const Checkout: React.FC<IndexProps> = ({
               });
 
               if (verifyRes.ok) {
+                // Place delivery order in Nimbus
                 const payload = {
                   orderID: order_number,
                   paymentType: "prepaid",
@@ -227,6 +236,7 @@ const Checkout: React.FC<IndexProps> = ({
           theme: { color: "#7B48A5" },
         };
 
+        // Open Razorpay widget
         const rzp = new (window as any).Razorpay(options);
         rzp.open();
       } catch (err) {
@@ -234,6 +244,7 @@ const Checkout: React.FC<IndexProps> = ({
         alert("Something went wrong while processing online payment.");
       }
     } else {
+      // Cash on Delivery flow
       try {
         const payload = {
           orderID: order_number,
@@ -274,12 +285,14 @@ const Checkout: React.FC<IndexProps> = ({
         toast.error("Courier is not serviceable.");
       }
     }
+    // Cart cleanup & header sync
     localStorage.removeItem("cartItems");
     localStorage.setItem("itemCount", "0");
     window.dispatchEvent(new Event("itemCountUpdated"));
     setLoading(false);
   };
 
+  // Price breakdown for UI
   const priceDetails: PriceDetail[] = [
     { label: "Total MRP", value: `₹${totalMRP}` },
     {

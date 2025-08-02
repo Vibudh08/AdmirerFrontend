@@ -95,6 +95,7 @@ const Item: React.FC<ItemProps> = ({
             productImage={image}
             onRemove={onRemove}
             onMoveToWishlist={onMoveToWishlist}
+            onQuantityChange={onQuantityChange}
           />
         </div>
 

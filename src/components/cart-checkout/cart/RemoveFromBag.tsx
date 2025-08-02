@@ -8,6 +8,11 @@ interface RemoveFromBagProps {
   productImage: string;
   onRemove: (id: number) => void;
   onMoveToWishlist: (id: number) => void;
+  onQuantityChange: (
+    id: number,
+    newQty: number,
+    options: { forceRemove?: boolean }
+  ) => void;
 }
 
 const RemoveFromBag: React.FC<RemoveFromBagProps> = ({
@@ -15,6 +20,7 @@ const RemoveFromBag: React.FC<RemoveFromBagProps> = ({
   productImage,
   onRemove,
   onMoveToWishlist,
+  onQuantityChange,
 }) => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
@@ -24,18 +30,20 @@ const RemoveFromBag: React.FC<RemoveFromBagProps> = ({
   const handleRemove = () => {
     onRemove(Number(id));
     setIsModalOpen(false);
+    onQuantityChange(Number(id), 1, { forceRemove: true });
   };
 
   const handleMoveToWishlist = () => {
     onMoveToWishlist(Number(id));
     onRemove(Number(id));
     setIsModalOpen(false);
+    onQuantityChange(Number(id), 1, { forceRemove: true });
   };
 
   return (
     <>
       <button
-        onClick={showModal}
+        onClick={showModal} 
         className="text-gray-500 hover:text-gray-700 focus:outline-none"
         aria-label="Remove item"
       >
@@ -61,7 +69,9 @@ const RemoveFromBag: React.FC<RemoveFromBagProps> = ({
             />
             <div className="flex items-start  w-full">
               <div className="">
-                <p className="font-semibold text-[16px] !mb-1">Move from Cart</p>
+                <p className="font-semibold text-[16px] !mb-1">
+                  Move from Cart
+                </p>
                 <p className="text-sm text-gray-500 ">
                   Are you sure you want to move this item from cart?
                 </p>

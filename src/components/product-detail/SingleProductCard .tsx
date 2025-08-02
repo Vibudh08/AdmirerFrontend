@@ -5,10 +5,9 @@ import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { wishlist_add_remove } from "../api/api-end-points";
 
-const SingleProductCard = ({ item, }: { item: any }) => {
-    
-      const [isWishlisted, setIsWishlisted] = useState(false);
-   const [wishlistStatus, setWishlistStatus] = useState(item.wishlist === 1);
+const SingleProductCard = ({ item }: { item: any }) => {
+  const [isWishlisted, setIsWishlisted] = useState(false);
+  const [wishlistStatus, setWishlistStatus] = useState(item.wishlist === 1);
 
   const toggleWishlist = async (prodId?: string) => {
     const productIdToToggle = prodId || item.id;
@@ -64,10 +63,10 @@ const SingleProductCard = ({ item, }: { item: any }) => {
           <div
             className={`absolute top-2 right-2 p-2 sm:p-1 rounded-full border shadow-md cursor-pointer ${
               wishlistStatus
-                ?  "bg-purple-100 border-[#7B48A5] text-[#7B48A5]"
+                ? "bg-purple-100 border-[#7B48A5] text-[#7B48A5]"
                 : "bg-white border-[#7B48A5] text-[#7B48A5] "
             }`}
-            onClick={()=>toggleWishlist(item.id)}
+            onClick={() => toggleWishlist(item.id)}
           >
             {wishlistStatus ? <FaHeart size={16} /> : <FaRegHeart size={16} />}
           </div>
