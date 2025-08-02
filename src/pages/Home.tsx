@@ -69,6 +69,9 @@ const Home: React.FC = () => {
     desktop_banner: { image: "", url: "" },
   });
   const [isDesktop, setIsDesktop] = useState(true);
+  const [videoErrors, setVideoErrors] = useState<{ [key: string]: boolean }>(
+    {}
+  );
   const navigate = useNavigate();
 
   const sliderSettings = {
@@ -502,19 +505,28 @@ const Home: React.FC = () => {
                     })}
                   >
                     <Link to={`product/${item.url}`}>
-                      <video
-                        autoPlay
-                        muted
-                        loop
-                        preload="auto"
-                        onError={(e) => {
-                          const video = e.target as HTMLVideoElement;
-                          video.style.display = "none";
-                        }}
-                      >
-                        <source src={item.videoUrl} type="video/mp4" />
-                        Your browser does not support the video tag.
-                      </video>
+                      {!videoErrors[index] ? (
+                        <video
+                          autoPlay
+                          muted
+                          loop
+                          preload="auto"
+                          onError={() =>
+                            setVideoErrors((prev) => ({
+                              ...prev,
+                              [index]: true,
+                            }))
+                          }
+                        >
+                          <source src={item.videoUrl} type="video/mp4" />
+                          Your browser does not support the video tag.
+                        </video>
+                      ) : (
+                        <img
+                          src="/home/video/fallback_image.png"
+                          alt="Fallback"
+                        />
+                      )}
                     </Link>
                   </div>
                 ))}
@@ -582,8 +594,18 @@ const Home: React.FC = () => {
                     "data-aos-delay": `${100 + index * 100}`,
                   })}
                 >
-                  <img src={item.img} alt="" className={`mx-auto ${index == 1 ? "w-20 " : "w-16"}`} />
-                  <p className={`font-semibold ${index == 1 ? "mt-[-16px] " : ""}`}>{item.title}</p>
+                  <img
+                    src={item.img}
+                    alt=""
+                    className={`mx-auto ${index == 1 ? "w-20 " : "w-16"}`}
+                  />
+                  <p
+                    className={`font-semibold ${
+                      index == 1 ? "mt-[-16px] " : ""
+                    }`}
+                  >
+                    {item.title}
+                  </p>
                 </div>
               ))}
             </div>
