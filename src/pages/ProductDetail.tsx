@@ -113,7 +113,7 @@ const ProductDetails = (item: { wishlist: number }) => {
         (item: any) => item.id === product.id
       );
       if (!isAlreadyAdded) {
-        cartItems.push(product);
+        cartItems.push({ ...product, qty: 1 });
         localStorage.setItem("guest_cart", JSON.stringify(cartItems));
       }
       navigate("/cart"); // Still go to cart for guest users

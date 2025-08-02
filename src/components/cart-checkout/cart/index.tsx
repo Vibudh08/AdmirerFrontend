@@ -1,16 +1,23 @@
+// React imports — React, hooks
 import React, { useEffect, useState } from "react";
+// Ek ek cart item ka component
 import Item from "./order-item";
+// Delivery address section ka component
 import DeliveryInfo from "./current-address";
+// API call karne ke liye
 import axios from "axios";
+// Backend endpoints
 import {
-  addToCart,
-  cartProductData,
-  cartRemove,
-  getShippingAndBillingAddress,
-  updateCartQuantity,
+  addToCart, // Guest cart backend mein sync karne ke liye
+  cartProductData, // Cart data lene ka API
+  cartRemove, // Cart item delete ka API
+  getShippingAndBillingAddress, // Address API
+  updateCartQuantity, // Cart item qty update API
 } from "../../api/api-end-points";
+// Loader jab cart ya address data load ho raha ho
 import LoaderCode from "../../Loader";
 
+// CartProps mein parent se jo props aayenge woh
 interface CartProps {
   setTotalMRP: (value: number) => void;
   setDiscountAmount: (value: number) => void;
@@ -20,9 +27,10 @@ interface CartProps {
   openAddressModal?: boolean;
 }
 
+// Ek item ka structure — jo cart mein hai
 interface ItemProps {
   id: number;
-  subcat_id: number;
+  subcat_id: number; // Ye combo pack identify karne mein kaam aata hai
   brandName: string;
   brandId: string;
   size?: string;
@@ -36,24 +44,7 @@ interface ItemProps {
   displayPrice: string;
 }
 
-const Loader = () => <LoaderCode />;
-
-const EmptyCart = () => (
-  <div className="flex flex-col items-center justify-center !border h-[100vh] py-20 bg-white w-full text-center">
-    <img
-      src="https://cdn-icons-png.flaticon.com/512/2038/2038854.png"
-      alt="Empty cart"
-      className="w-28 h-28 mb-6"
-    />
-    <h2 className="text-2xl font-semibold text-gray-700 mb-2">
-      Your cart is empty
-    </h2>
-    <p className="text-gray-500">
-      Looks like you haven't added anything to your cart yet.
-    </p>
-  </div>
-);
-
+// Raw API response structure
 interface RawCartItem {
   id: number;
   product_name?: string;
@@ -66,6 +57,7 @@ interface RawCartItem {
   subcat_id: number;
 }
 
+// Guest user cart ka item structure
 interface GuestCartItem {
   images: any;
   subcat_id: number;
@@ -81,6 +73,7 @@ interface GuestCartItem {
   in_stock: number;
 }
 
+// Address ka structure
 interface Address {
   first_name?: string;
   firstname?: string;
@@ -97,10 +90,31 @@ interface Address {
   email?: string | null;
 }
 
+// Billing + shipping ka combined
 interface AddressData {
   billingAddress: Address;
   shippingAddresses: Address[];
 }
+
+// Loader — jab cart ya address data aa raha ho
+const Loader = () => <LoaderCode />;
+
+// EmptyCart — agar cart empty ho
+const EmptyCart = () => (
+  <div className="flex flex-col items-center justify-center !border h-[100vh] py-20 bg-white w-full text-center">
+    <img
+      src="https://cdn-icons-png.flaticon.com/512/2038/2038854.png"
+      alt="Empty cart"
+      className="w-28 h-28 mb-6"
+    />
+    <h2 className="text-2xl font-semibold text-gray-700 mb-2">
+      Your cart is empty
+    </h2>
+    <p className="text-gray-500">
+      Looks like you haven't added anything to your cart yet.
+    </p>
+  </div>
+);
 
 const Cart: React.FC<CartProps> = ({
   setTotalMRP,
@@ -110,171 +124,167 @@ const Cart: React.FC<CartProps> = ({
   setShippingData,
   openAddressModal,
 }) => {
-  const [totalItem, setTotalItem] = useState<ItemProps[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [addressData, setAddressData] = useState<AddressData | null>(null);
+  // STATES
+  const [totalItem, setTotalItem] = useState<ItemProps[]>([]); // Cart ke saare items
+  const [isLoading, setIsLoading] = useState(true); // Loading spinner flag
+  const [addressData, setAddressData] = useState<AddressData | null>(null); // Billing + shipping
   const [addressForNimbus, setAddressForNimbus] = useState<Address | null>(
     null
-  );
+  ); // Nimbus delivery address
 
+  // Cart badge count header mein sync karne ka helper
   const syncCartCountToHeader = (count: number) => {
     localStorage.setItem("itemCount", count.toString());
     window.dispatchEvent(new Event("itemCountUpdated"));
   };
 
   const recalculateTotals = (items: ItemProps[]) => {
-  let original = 0;
-  let discounted = 0;
+    let original = 0; // MRP sum
+    let discounted = 0; // Discounted sum
 
-  const comboUnitPrice = 349;
-  const comboPack = 3;
+    const comboUnitPrice = 349; // Combo unit price
+    const comboPack = 3; // Combo pack size
 
-  const comboItems = items.filter((item) => Number(item.subcat_id) === 10);
-  const otherItems = items.filter((item) => Number(item.subcat_id) !== 10);
+    // Combo aur baaki items alag alag
+    const comboItems = items.filter((item) => Number(item.subcat_id) === 10);
+    const otherItems = items.filter((item) => Number(item.subcat_id) !== 10);
 
-  let remainingCommonComboQty = 0;
+    let remainingCommonComboQty = 0; // Combo ke leftover ka pool
 
-  const updatedItems: ItemProps[] = [];
+    const updatedItems: ItemProps[] = []; // Final items list
 
-  comboItems.forEach((item) => {
-    const qty = parseInt(item.qty || "1");
+    // Har combo item ka pehle pack banega jitna ban sake
+    comboItems.forEach((item) => {
+      const qty = parseInt(item.qty || "1");
 
-    // Apne hi qty se pack ban raha hai kya?
-    const selfComboSets = Math.floor(qty / comboPack);
-    const selfComboQty = selfComboSets * comboPack;
+      // Apne hi qty se pack ban raha hai kya?
+      const selfComboSets = Math.floor(qty / comboPack);
+      const selfComboQty = selfComboSets * comboPack;
 
-    const leftoverQty = qty - selfComboQty;
+      const leftoverQty = qty - selfComboQty;
 
-    // Bachahua common pool mein jaye
-    remainingCommonComboQty += leftoverQty;
+      // Bachahua common pool mein jaye
+      remainingCommonComboQty += leftoverQty;
 
-    const comboPrice = selfComboQty * comboUnitPrice;
-    const normalPrice = leftoverQty * parseFloat(item.discount || item.price);
+      const comboPrice = selfComboQty * comboUnitPrice;
+      const normalPrice = leftoverQty * parseFloat(item.discount || item.price);
 
-    original += qty * parseFloat(item.price || "0");
-    discounted += comboPrice + normalPrice;
+      original += qty * parseFloat(item.price || "0");
+      discounted += comboPrice + normalPrice;
 
-    let finalDisplayPrice = 0;
-    if (qty === selfComboQty) {
-      finalDisplayPrice = comboUnitPrice;
-    } else if (qty === leftoverQty) {
-      finalDisplayPrice = parseFloat(item.discount || item.price);
-    } else {
-      // Mixed combo + normal
-      finalDisplayPrice = ((comboPrice + normalPrice) / qty);
-    }
+      let finalDisplayPrice = 0;
+      if (qty === selfComboQty) {
+        finalDisplayPrice = comboUnitPrice;
+      } else if (qty === leftoverQty) {
+        finalDisplayPrice = parseFloat(item.discount || item.price);
+      } else {
+        // Mixed combo + normal
+        finalDisplayPrice = (comboPrice + normalPrice) / qty;
+      }
 
-    updatedItems.push({
-      ...item,
-      displayPrice: finalDisplayPrice.toFixed(2),
-    });
-  });
-
-  // Ab bacha hua leftover sab comboItems mein equally combo mein daalo:
-  if (remainingCommonComboQty > 0) {
-    const commonComboSets = Math.floor(remainingCommonComboQty / comboPack);
-    let comboQtyLeft = commonComboSets * comboPack;
-
-    if (comboQtyLeft > 0) {
-      updatedItems.forEach((item) => {
-        if (Number(item.subcat_id) === 10) {
-          const qty = parseInt(item.qty || "1");
-          const existingDisplay = parseFloat(item.displayPrice || "0");
-
-          // Us item ka original qty
-          const originalQty = qty;
-
-          // Pehle se kitna combo lag chuka
-          const selfComboSets = Math.floor(qty / comboPack);
-          const selfComboQty = selfComboSets * comboPack;
-
-          const leftover = qty - selfComboQty;
-
-          if (leftover > 0 && comboQtyLeft > 0) {
-            const takeCombo = Math.min(leftover, comboQtyLeft);
-            const newComboPrice = takeCombo * comboUnitPrice;
-            const newNormalPrice = (leftover - takeCombo) * parseFloat(item.discount || item.price);
-
-            comboQtyLeft -= takeCombo;
-
-            const newTotal = (selfComboQty * comboUnitPrice) + newComboPrice + newNormalPrice;
-            const newDisplay = newTotal / originalQty;
-
-            discounted -= existingDisplay * originalQty; // Remove old
-            discounted += newTotal; // Add new
-
-            item.displayPrice = newDisplay.toFixed(2);
-          }
-        }
+      updatedItems.push({
+        ...item,
+        displayPrice: finalDisplayPrice.toFixed(2),
       });
-    }
-  }
-
-  otherItems.forEach((item) => {
-    const qty = parseInt(item.qty || "1");
-    const basePrice = parseFloat(item.displayPrice || item.price || "0");
-
-    original += parseFloat(item.price || "0") * qty;
-    discounted += basePrice * qty;
-
-    updatedItems.push({
-      ...item,
-      displayPrice: basePrice.toFixed(2),
     });
-  });
 
-  setTotalMRP(original);
-  setDiscountAmount(original - discounted);
-  setTotalAmount(discounted);
-  setTotalItem(updatedItems);
+    // Ab bacha hua leftover sab comboItems mein equally combo mein daalo:
+    if (remainingCommonComboQty > 0) {
+      const commonComboSets = Math.floor(remainingCommonComboQty / comboPack);
+      let comboQtyLeft = commonComboSets * comboPack;
 
-  console.log("✅ FINAL Items:", updatedItems);
-};
+      if (comboQtyLeft > 0) {
+        updatedItems.forEach((item) => {
+          if (Number(item.subcat_id) === 10) {
+            const qty = parseInt(item.qty || "1");
+            const existingDisplay = parseFloat(item.displayPrice || "0");
 
+            // Us item ka original qty
+            const originalQty = qty;
+
+            // Pehle se kitna combo lag chuka
+            const selfComboSets = Math.floor(qty / comboPack);
+            const selfComboQty = selfComboSets * comboPack;
+
+            const leftover = qty - selfComboQty;
+
+            if (leftover > 0 && comboQtyLeft > 0) {
+              const takeCombo = Math.min(leftover, comboQtyLeft);
+              const newComboPrice = takeCombo * comboUnitPrice;
+              const newNormalPrice =
+                (leftover - takeCombo) *
+                parseFloat(item.discount || item.price);
+
+              comboQtyLeft -= takeCombo;
+
+              const newTotal =
+                selfComboQty * comboUnitPrice + newComboPrice + newNormalPrice;
+              const newDisplay = newTotal / originalQty;
+
+              discounted -= existingDisplay * originalQty; // Remove old
+              discounted += newTotal; // Add new
+
+              item.displayPrice = newDisplay.toFixed(2);
+            }
+          }
+        });
+      }
+    }
+
+    // Baaki normal items as is
+    otherItems.forEach((item) => {
+      const qty = parseInt(item.qty || "1");
+      const basePrice = parseFloat(item.displayPrice || item.price || "0");
+
+      original += parseFloat(item.price || "0") * qty;
+      discounted += basePrice * qty;
+
+      updatedItems.push({
+        ...item,
+        displayPrice: basePrice.toFixed(2),
+      });
+    });
+
+    // Sab final states
+    setTotalMRP(original);
+    setDiscountAmount(original - discounted);
+    setTotalAmount(discounted);
+    setTotalItem(updatedItems);
+
+    console.log("✅ FINAL Items:", updatedItems);
+  };
 
   const [cartItems, setCartItems] = useState(() => {
     return JSON.parse(localStorage.getItem("cartItems") || "[]");
   });
 
-  // console.log("Cart Items:", cartItems);
-  // console.log("Subcat IDs:", cartItems.map((item: { subcat_id: any; }) => item.subcat_id));
-  // const isComboApplied =
-  //   cartItems.length === 3 &&
-  //   cartItems.every(
-  //     (item: { subcat_id: string }) => parseInt(item.subcat_id) === 10
-  //   );
-
-  // ✅ 1. Cart Items as STATE
-
-  // ✅ 2. When localStorage changes, update state too (example)
   useEffect(() => {
     const stored = JSON.parse(localStorage.getItem("cartItems") || "[]");
     setCartItems(stored);
   }, [totalItem]); // agar tum cart localStorage update karte ho to isko trigger karo
 
-  // useEffect(() => {
-  //   if (isComboApplied) {
-  //     cartItems.forEach((item: { qty: string; id: number }) => {
-  //       if (parseInt(item.qty) !== 1) {
-  //         handleQuantityChange(item.id, 1);
-  //       }
-  //     });
-  //   }
-  // }, [cartItems, isComboApplied]);
+  const handleQuantityChange = async (
+    id: number,
+    newQty: number,
+    options: { forceRemove?: boolean } = {}
+  ) => {
+    const { forceRemove } = options;
 
-  const handleQuantityChange = async (id: number, newQty: number) => {
-    // if (isComboApplied) {
-    //   console.log("Combo detected, forcing quantity to 1");
-    //   newQty = 1;
-    // }
+    let updatedItems;
 
-    const updatedItems = cartItems.map((item: { id: number }) =>
-      item.id === id ? { ...item, qty: newQty.toString() } : item
-    );
-
+    if (newQty <= 0 || forceRemove) {
+      // REMOVE the item if qty is zero
+      updatedItems = cartItems.filter((item: { id: number }) => item.id !== id);
+    } else {
+      // Update qty if greater than zero
+      updatedItems = cartItems.map((item: { id: number }) =>
+        item.id === id ? { ...item, qty: newQty.toString() } : item
+      );
+    }
     setCartItems(updatedItems);
     localStorage.setItem("cartItems", JSON.stringify(updatedItems));
 
+    // Qty update aur sync backend + localStorage
     setTotalItem(updatedItems); // agar totalItem bhi use ho raha hai
     recalculateTotals(updatedItems);
 
@@ -294,37 +304,6 @@ const Cart: React.FC<CartProps> = ({
     }
   };
 
-  // const handleQuantityChange = async (id: number, newQty: number) => {
-  // if (isComboApplied) {
-  //   console.log("Combo detected, forcing quantity to 1");
-  //   newQty = 1;
-  // }
-
-  // const updatedItems = cartItems.map((item: { id: number }) =>
-  //   item.id === id ? { ...item, qty: newQty.toString() } : item
-  // );
-
-  // setCartItems(updatedItems);
-  // localStorage.setItem("cartItems", JSON.stringify(updatedItems));
-
-  // setTotalItem(updatedItems); // agar totalItem bhi use ho raha hai
-  // recalculateTotals(updatedItems);
-
-  //   try {
-  //     console.log("Sending quantity to backend:", 1);
-  //     await axios.post(
-  //       updateCartQuantity,
-  //       { productId: id, quantity: 1 },
-  //       {
-  //         headers: {
-  //           Authorization: "Bearer " + localStorage.getItem("auth_token"),
-  //         },
-  //       }
-  //     );
-  //   } catch (error) {
-  //     console.error("Failed to update cart quantity:", error);
-  //   }
-  // };
   const handleDelete = async (id: number) => {
     const updatedItems = totalItem.filter((item) => item.id !== id);
 
@@ -337,6 +316,8 @@ const Cart: React.FC<CartProps> = ({
 
     // 3️⃣ Sync other stuff
     syncCartCountToHeader(updatedItems.length);
+
+    // Item remove + backend sync + totals recalc
     recalculateTotals(updatedItems);
 
     // 4️⃣ Backend call
@@ -457,6 +438,7 @@ const Cart: React.FC<CartProps> = ({
   }, [addressForNimbus]);
 
   const fetchAddresses = async () => {
+    // Backend se address fetch + state update
     try {
       const response = await fetch(getShippingAndBillingAddress, {
         method: "GET",
