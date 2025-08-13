@@ -27,7 +27,7 @@ const CustomPrevArrow = ({ onClick }: { onClick: () => void }) => (
 
 const CustomNextArrow = ({ onClick }: { onClick: () => void }) => (
   <button
-    className="absolute right-5 max-md:right-1 top-1/2 transform -translate-y-1/2 z-10 bg-white p-1 rounded-full shadow-md hover:bg-black transition hover:text-white"
+    className="absolute right-5 max-md:right-1 top-1/2 transform -translate-y-1/2 bg-white p-1 rounded-full shadow-md hover:bg-black transition hover:text-white"
     onClick={onClick}
   >
     <IoIosArrowForward className="text-3xl max-md:text-xl text-gray-700 hover:text-white" />

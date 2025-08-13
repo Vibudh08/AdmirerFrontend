@@ -35,6 +35,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ThankYouPage from "./components/cart-checkout/checkout/ThankYou";
 import { GlobalContextProvider } from "./contexts/GlobalContextProvider";
+import RightSideBar from "./components/RightSideBar"
 
 // List of all valid route patterns
 const routePatterns = [
@@ -177,6 +178,8 @@ function App() {
         </Layout>
       {showFooter && <Footer />}
       </BrowserRouter>
+        <RightSideBar/>
+      
     </GlobalContextProvider>
   );
 }
