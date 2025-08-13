@@ -88,7 +88,7 @@ const ProductListing: React.FC = () => {
 
   const sliderSettings = {
     dots: false,
-    infinite: true,
+    infinite: false,
     speed: 500,
     slidesToShow: 1,
     slidesToScroll: 1,
@@ -243,12 +243,12 @@ const ProductListing: React.FC = () => {
 
       <button
         aria-label="Open filters"
-        className={`lg:hidden fixed bottom-6 right-6 z-20 bg-purple-600 text-white p-3 rounded-full shadow-lg flex items-center justify-center transition-transform hover:scale-105 active:scale-95 ${
+        className={`lg:hidden fixed bottom-6 right-5 z-10 bg-[#7b48a5] text-white p-3 rounded-full shadow-lg flex items-center justify-center transition-transform hover:scale-105 active:scale-95 ${
           showMobileFilters ? "opacity-0 pointer-events-none" : "opacity-100"
         }`}
         onClick={() => setShowMobileFilters(true)}
       >
-        <FiFilter size={20} />
+        <FiFilter size={16} />
         <span className="sr-only">Open Filters</span>
       </button>
 
@@ -258,16 +258,16 @@ const ProductListing: React.FC = () => {
             <div>
               <img
                 className="w-full desktop-banner hidden md:block"
-                src="/listing/raksha_bandhan.gif"
+                src="/listing/sale.jpg"
                 alt="Desktop Banner"
               />
               <img
                 className="w-full mobile-banner block md:hidden"
-                src="/listing/mobile_view.gif"
+                src="/listing/sale_mobile.jpg"
                 alt="Mobile Banner"
               />
             </div>
-            <div>
+            {/* <div>
               <img
                 className="w-full desktop-banner hidden md:block"
                 src="/listing/raksha_bandhan2.gif"
@@ -278,7 +278,7 @@ const ProductListing: React.FC = () => {
                 src="/listing/mobile_view2.gif"
                 alt="Mobile Banner"
               />
-            </div>
+            </div> */}
           </Slider>
         </div>
       </div>
