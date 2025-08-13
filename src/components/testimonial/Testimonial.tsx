@@ -5,7 +5,7 @@ import SingleTestimonialCard from "./TestimonialCard";
 
 const CustomPrevArrow = ({ onClick }: { onClick: () => void }) => (
   <button
-    className="absolute left-[46%] max-md:left-[40%] bottom-[-80px] max-md:bottom-[-60px] transform -translate-y-1/2 z-10 bg-white p-1 rounded-full shadow-md hover:bg-black transition hover:text-white"
+    className="absolute left-[46%] max-md:left-[40%] bottom-[-80px] max-md:bottom-[-60px] transform -translate-y-1/2  bg-white p-1 rounded-full shadow-md hover:bg-black transition hover:text-white"
     onClick={onClick}
   >
     <IoIosArrowBack className="text-3xl max-md:text-2xl text-gray-700 hover:text-white" />
@@ -14,7 +14,7 @@ const CustomPrevArrow = ({ onClick }: { onClick: () => void }) => (
 
 const CustomNextArrow = ({ onClick }: { onClick: () => void }) => (
   <button
-    className="absolute right-[46%] max-md:right-[40%] bottom-[-80px] max-md:bottom-[-60px] transform -translate-y-1/2 z-10 bg-white p-1 rounded-full shadow-md hover:bg-black transition hover:text-white"
+    className="absolute right-[46%] max-md:right-[40%] bottom-[-80px] max-md:bottom-[-60px] transform -translate-y-1/2  bg-white p-1 rounded-full shadow-md hover:bg-black transition hover:text-white"
     onClick={onClick}
   >
     <IoIosArrowForward className="text-3xl max-md:text-2xl text-gray-700 hover:text-white" />

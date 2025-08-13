@@ -89,7 +89,7 @@ const Item: React.FC<ItemProps> = ({
   return (
     <div className="bg-white relative mt-1 mb-2">
       <div className="flex border border-gray-200 rounded-lg overflow-hidden hover:shadow-sm transition-shadow duration-200">
-        <div className="absolute right-2 top-2 z-10">
+        <div className="absolute right-2 top-2">
           <RemoveFromBag
             id={id}
             productImage={image}
