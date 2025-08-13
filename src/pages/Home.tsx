@@ -234,9 +234,9 @@ const Home: React.FC = () => {
       });
   }, []);
 
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
+  // useEffect(() => {
+  //   window.scrollTo(0, 0);
+  // }, []);
 
   if (isLoading) return <Loader />;
 
@@ -297,7 +297,7 @@ const Home: React.FC = () => {
             <img src="/home/1.jpeg" className="w-[900px] max-md:mt-2" alt="" />
           </div>
           <img
-            src="/home/offer-banner.jpeg"
+            src="/home/offer-banner.jpg"
             className="w-[90%] block  mt-5 max-md:mt-4 h-full cursor-pointer"
             alt=""
             onClick={() => handleClick("subcat-15")}
@@ -535,10 +535,89 @@ const Home: React.FC = () => {
           </div>
         </section>
 
+        <section>
+          <div
+            className="relative bg-[url('/home/background.jpg')] bg-cover bg-center h-screen 
+             max-md:bg-[linear-gradient(to_bottom,white_0%,#F7D6E0_30%,#FAD4C0_70%,white_100%)] 
+           max-md:h-[660px]"
+            {...(isDesktop && {
+              "data-aos": "fade-up",
+              "data-aos-delay": 200,
+            })}
+          >
+            {/* Keep your heading image here for mobile */}
+            <img
+              src="/home/background_mobile.png"
+              alt="Shop by Budget"
+              className="max-md:block w-60 max-md:mb-6 hidden mx-auto pt-6"
+            />
+            {/* Desktop Layout */}
+            <div className="relative hidden md:block">
+              <Link to="/listing?cat=26&subcat=10">
+                <img
+                  src="/home/1st.png"
+                  className="w-[250px] absolute top-80 left-44 hover:scale-105 transition-transform duration-300 ease-in-out cursor-pointer"
+                  data-aos="zoom-in"
+                  data-aos-delay="300"
+                  alt=""
+                />
+              </Link>
+              <Link to="/listing?cat=26&subcat=15">
+                <img
+                  src="/home/2nd.png"
+                  className="w-[350px] absolute top-40 left-1/3 hover:scale-105 transition-transform duration-300 ease-in-out cursor-pointer"
+                  data-aos="zoom-in"
+                  data-aos-delay="800"
+                  alt=""
+                />
+              </Link>
+              <Link to="/listing?cat=26&subcat=12">
+                <img
+                  src="/home/3rd.png"
+                  className="w-[450px] absolute top-8 right-9 hover:scale-105 transition-transform duration-300 ease-in-out cursor-pointer"
+                  data-aos="zoom-in"
+                  data-aos-delay="1200"
+                  alt=""
+                />
+              </Link>
+            </div>
+
+            {/* Mobile Layout */}
+            <div className="flex flex-col items-center gap-0">
+              {/* Top row */}
+              <div className="flex justify-center gap-0 w-full">
+                <div className="flex-shrink-0">
+                  <img
+                    src="/home/1st.png"
+                    className="w-[135px] md:hidden hover:scale-105 mt-[-25px] transition-transform duration-300 ease-in-out cursor-pointer"
+                    alt=""
+                  />
+                </div>
+                <div className="flex-shrink-0">
+                  <img
+                    src="/home/2nd.png"
+                    className="w-[200px] md:hidden hover:scale-105 ml-[-10px] transition-transform duration-300 ease-in-out cursor-pointer"
+                    alt=""
+                  />
+                </div>
+              </div>
+
+              {/* Bottom row */}
+              <div className="flex justify-center w-full">
+                <img
+                  src="/home/3rd.png"
+                  className="w-[320px] md:hidden mt-[-13px] hover:scale-105 transition-transform duration-300 ease-in-out cursor-pointer"
+                  alt=""
+                />
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* Bottom Banner */}
         {bottombanner.desktop_banner.image &&
           bottombanner.mobile_banner.image && (
-            <section className="bg-white flex flex-col items-center pb-8 max-md:p-1">
+            <section className="bg-white flex flex-col items-center pb-8 pt-8 max-md:p-1">
               <div
                 className="flex justify-center items-center"
                 {...(isDesktop && {
@@ -577,7 +656,7 @@ const Home: React.FC = () => {
 
         {/* Features */}
         <section className="bg-white pb-10 max-md:pt-10">
-          <div className="bg-gradient-to-r from-purple-200 to-purple-300">
+          <div className="bg-[linear-gradient(to_bottom,white_0%,#F7D6E0_30%,#FAD4C0_70%,white_100%)]">
             <div
               className="grid grid-cols-4 max-md:grid-cols-2 items-center justify-center py-12 w-[85%] max-md:w-full text-center m-auto gap-4"
               {...(isDesktop && {

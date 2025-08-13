@@ -33,7 +33,7 @@ export default function ScrollToTop() {
       onClick={scrollToTop}
       className={`transition-opacity hover:scale-105 duration-300 ${
         isVisible ? "opacity-100" : "opacity-0 pointer-events-none"
-      } relative w-12 h-12 rounded-full bg-white shadow-xl flex items-center justify-center cursor-pointer`}
+      } relative w-12 h-12 rounded-full max-md:hidden bg-white shadow-xl flex items-center justify-center cursor-pointer`}
       aria-label="Scroll to top"
     >
       <svg
