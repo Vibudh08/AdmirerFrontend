@@ -586,30 +586,36 @@ const Home: React.FC = () => {
             <div className="flex flex-col items-center gap-0">
               {/* Top row */}
               <div className="flex justify-center gap-0 w-full">
-                <div className="flex-shrink-0">
-                  <img
-                    src="/home/1st.png"
-                    className="w-[135px] md:hidden hover:scale-105 mt-[-25px] transition-transform duration-300 ease-in-out cursor-pointer"
-                    alt=""
-                  />
-                </div>
-                <div className="flex-shrink-0">
-                  <img
-                    src="/home/2nd.png"
-                    className="w-[200px] md:hidden hover:scale-105 ml-[-10px] transition-transform duration-300 ease-in-out cursor-pointer"
-                    alt=""
-                  />
-                </div>
+                <Link to="/listing?cat=26&subcat=10">
+                  <div className="flex-shrink-0">
+                    <img
+                      src="/home/1st.png"
+                      className="w-[135px] md:hidden hover:scale-105 mt-[-25px] transition-transform duration-300 ease-in-out cursor-pointer"
+                      alt=""
+                    />
+                  </div>
+                </Link>
+                <Link to="/listing?cat=26&subcat=15">
+                  <div className="flex-shrink-0">
+                    <img
+                      src="/home/2nd.png"
+                      className="w-[200px] md:hidden hover:scale-105 ml-[-10px] transition-transform duration-300 ease-in-out cursor-pointer"
+                      alt=""
+                    />
+                  </div>
+                </Link>
               </div>
 
               {/* Bottom row */}
-              <div className="flex justify-center w-full">
-                <img
-                  src="/home/3rd.png"
-                  className="w-[320px] md:hidden mt-[-13px] hover:scale-105 transition-transform duration-300 ease-in-out cursor-pointer"
-                  alt=""
-                />
-              </div>
+              <Link to="/listing?cat=26&subcat=12">
+                <div className="flex justify-center w-full">
+                  <img
+                    src="/home/3rd.png"
+                    className="w-[320px] md:hidden mt-[-13px] hover:scale-105 transition-transform duration-300 ease-in-out cursor-pointer"
+                    alt=""
+                  />
+                </div>
+              </Link>
             </div>
           </div>
         </section>
