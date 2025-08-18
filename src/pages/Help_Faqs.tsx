@@ -118,7 +118,7 @@ const HelpContact: React.FC = () => {
           <div className="flex gap-8 max-md:gap-3 w-[75%] max-md:w-[100%] m-auto justify-around px-4 max-md:px-2">
             {/* Chat with Us */}
             <a
-              href="https://wa.me/919717072701"
+              // href="https://wa.me/919717072701"
               target="_blank"
               rel="noopener noreferrer"
               className="flex flex-col items-center gap-2 self-center mt-[-27px] hover:opacity-90 transition"

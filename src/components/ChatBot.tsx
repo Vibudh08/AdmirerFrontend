@@ -9,40 +9,44 @@ interface FAQItem {
 
 const faqData: FAQItem[] = [
   {
-    q: "What is your return policy rsefryjmh tgrethngf drhnfgfaengjy hfsgfhdg ds?",
-    a: "You can return items within 30 days is your return policy rsefryjmh tgrethngf drhnfgfaengjy hfsgfhdg ds",
+    q: "Can I cancel my order after placing it?",
+    a: "Yes, you can cancel your order before it is shipped. Once shipped, cancellation is not possible but you can request a return or exchange.",
   },
   {
-    q: "Do you offer free shipping?",
-    a: "Yes, we offer free shipping on orders over $50.",
+    q: "Do you offer product exchanges?",
+    a: "Yes, we offer easy exchanges in case you receive a damaged product or if you wish to swap with a different size or design.",
   },
   {
-    q: "How can I contact support erfergf wergfewrgf g?",
-    a: "You can email us at info@btjalphatechnology.com",
+    q: "Is there a combo offer available?",
+    a: "Yes! You can buy a combo of 3 women’s rings for just ₹1,047 under our special offer.",
   },
   {
-    q: "What is your return policy rsefryjmh tgrethngf drhnfgfaengjy hfsgfhdg ds?",
-    a: "You can return items within 30 days is your return policy rsefryjmh tgrethngf drhnfgfaengjy hfsgfhdg ds",
+    q: "Do you charge for shipping?",
+    a: "No, we provide free shipping across India on all orders.",
   },
   {
-    q: "Do you offer free shipping?",
-    a: "Yes, we offer free shipping on orders over $50.",
+    q: "How long will delivery take?",
+    a: "Orders are usually delivered within 5–7 business days depending on your location.",
+  },
+    {
+    q: "Do you offer Cash on Delivery (COD)?",
+    a: "Yes, we provide Cash on Delivery option for payment.",
   },
   {
-    q: "How can I contact support erfergf wergfewrgf g?",
-    a: "You can email us at info@btjalphatechnology.com",
+    q: "Are your products skin-friendly?",
+    a: "Absolutely! Our jewelry is made from premium artificial materials that are skin-friendly and safe for everyday use.",
   },
   {
-    q: "What is your return policy rsefryjmh tgrethngf drhnfgfaengjy hfsgfhdg ds?",
-    a: "You can return items within 30 days is your return policy rsefryjmh tgrethngf drhnfgfaengjy hfsgfhdg ds",
+    q: "How can I contact Admirer support?",
+    a: "You can reach us at support@admirer.in or through our contact form on the website. Our team will respond within 24 hours.",
   },
   {
-    q: "Do you offer free shipping?",
-    a: "Yes, we offer free shipping on orders over $50.",
+    q: "Are Admirer products made of real gold or silver?",
+    a: "No, our products are high-quality artificial jewelry designed to look stylish and elegant at affordable prices.",
   },
   {
-    q: "How can I contact support erfergf wergfewrgf g?",
-    a: "You can email us at info@btjalphatechnology.com",
+    q: "Is my payment information secure?",
+    a: "Yes, all online transactions are 100% safe and encrypted to protect your payment details.",
   },
 ];
 
@@ -73,7 +77,7 @@ export default function ChatBot() {
         >
           {/* Header */}
           <div className="flex w-full z-50 justify-between items-start text-center p-3 bg-gradient-to-r from-[#7B48A5] to-purple-800">
-            <div className="text-white font-semibold py-2">Admirer Chatbot</div>
+            <div className="text-white font-semibold py-2">Admirer Assistant</div>
             <IoIosArrowDown
               className="text-white font-semibold text-[20px] mt-2 cursor-pointer"
               onClick={() => setIsOpen(false)}
