@@ -7,7 +7,7 @@ interface FAQItem {
   a: string;
 }
 
-const faqData: FAQItem[] = [
+const faqData: FAQItem[] = [ 
   {
     q: "Can I cancel my order after placing it?",
     a: "Yes, you can cancel your order before it is shipped. Once shipped, cancellation is not possible but you can request a return or exchange.",
@@ -69,7 +69,7 @@ export default function ChatBot() {
 
         {/* Chatbot Window with animation */}
         <div
-          className={`fixed bottom-2 z-[9999] max-sm:bottom-0 right-2 max-sm:right-0 w-96 max-sm:w-full bg-white rounded-lg shadow-xl border flex flex-col overflow-hidden transform transition-all duration-300 origin-bottom-right ${
+          className={`fixed bottom-2 z-[9999] max-sm:bottom-0 right-1 max-sm:right-0 w-96 max-sm:w-full bg-white rounded-lg shadow-xl border flex flex-col overflow-hidden transform transition-all duration-300 origin-bottom-right ${
             isOpen
               ? "opacity-100 scale-100 translate-y-0"
               : "opacity-0 scale-95 translate-y-4 pointer-events-none"

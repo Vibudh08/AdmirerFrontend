@@ -48,17 +48,24 @@ p{
 .desktop-banner {
     display: block !important;
   }
-  .mobile-banner {
+.mobile-banner {
+  display: none !important;
+}
+  
+  
+@media (max-width: 768px) {
+  .desktop-banner {
     display: none !important;
   }
-  
-  
-  @media (max-width: 768px) {
-    .desktop-banner {
-      display: none !important;
-    }
-    .mobile-banner {
-      display: block !important;
-    }
+  .mobile-banner {
+    display: block !important;
   }
+}
   
+.scrollbar-hide::-webkit-scrollbar {
+  display: none; /* Chrome, Safari */
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;     /* Firefox */
+}
