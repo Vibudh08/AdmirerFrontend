@@ -243,7 +243,7 @@ const ProductListing: React.FC = () => {
 
       <button
         aria-label="Open filters"
-        className={`lg:hidden fixed bottom-6 right-5 z-10 bg-[#7b48a5] text-white p-3 rounded-full shadow-lg flex items-center justify-center transition-transform hover:scale-105 active:scale-95 ${
+        className={`lg:hidden fixed bottom-6 right-5 max-md:right-4 z-10 bg-[#7b48a5] text-white p-3 rounded-full shadow-lg flex items-center justify-center transition-transform hover:scale-105 active:scale-95 ${
           showMobileFilters ? "opacity-0 pointer-events-none" : "opacity-100"
         }`}
         onClick={() => setShowMobileFilters(true)}

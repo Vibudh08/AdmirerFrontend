@@ -72,7 +72,7 @@ const ProductItem: React.FC<productItemProps> = ({
         <img
           src={"https://admirer.in/asset/image/product/" + imageUrl}
           alt="product"
-          className="w-full h-full object-cover  rounded-lg"
+          className="w-full h-full object-cover z-0 rounded-lg"
         />
         <button
           className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 max-md:opacity-100 transition-opacity"

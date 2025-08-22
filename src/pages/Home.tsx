@@ -620,10 +620,135 @@ const Home: React.FC = () => {
           </div>
         </section>
 
+        <section>
+          <div className="bg-white flex flex-col items-center p-8 max-md:p-3 max-md:pt-0">
+            <div
+              className="flex justify-center items-center mt-3"
+              {...(isDesktop && {
+                "data-aos": "fade-up",
+                "data-aos-delay": "100",
+              })}
+            >
+              <img
+                src="/home/four_part/heading.jpg"
+                className="w-[700px] max-md:mt-2 "
+                alt=""
+              />
+            </div>
+
+            <div className="mt-10 max-md:mt-6 grid grid-cols-2 max-md:grid-cols-2 gap-2 max-md:gap-3 w-[90%] max-md:w-full m-auto">
+              <div className=" flex flex-col gap-2 max-md:gap-3">
+                <img
+                  onClick={() => handleClick("subcat-12")}
+                  src={
+                    isDesktop
+                      ? "/home/four_part/1.jpg"
+                      : "/home/four_part/1mobile.jpg"
+                  }
+                  alt="advertisement 1"
+                  className="w-full rounded-2xl shadow-md h-full cursor-pointer"
+                  {...(isDesktop && {
+                    "data-aos": "fade-up",
+                    "data-aos-delay": "400",
+                  })}
+                />
+
+                <img
+                  onClick={() => handleClick("subcat-11")}
+                  src={
+                    isDesktop
+                      ? "/home/four_part/3.jpg"
+                      : "/home/four_part/3mobile.jpg"
+                  }
+                  alt="advertisement 2"
+                  className="w-full h-full rounded-2xl shadow-md cursor-pointer"
+                  {...(isDesktop && {
+                    "data-aos": "fade-down",
+                    "data-aos-delay": "400",
+                  })}
+                />
+              </div>
+
+              <div className="flex flex-col gap-2 max-md:gap-3">
+                <img
+                  onClick={() => handleClick("subcat-12")}
+                  src={
+                    isDesktop
+                      ? "/home/four_part/2.jpg"
+                      : "/home/four_part/2mobile.jpg"
+                  }
+                  alt="advertisement 1"
+                  className="w-full h-full rounded-2xl shadow-md cursor-pointer"
+                  {...(isDesktop && {
+                    "data-aos": "fade-down",
+                    "data-aos-delay": "400",
+                  })}
+                />
+
+                <img
+                  onClick={() => handleClick("subcat-10")}
+                  src={
+                    isDesktop
+                      ? "/home/four_part/4.jpg"
+                      : "/home/four_part/4mobile.jpg"
+                  }
+                  alt="advertisement 2"
+                  className="w-full h-full rounded-2xl shadow-md cursor-pointer"
+                  {...(isDesktop && {
+                    "data-aos": "fade-up",
+                    "data-aos-delay": "400",
+                  })}
+                />
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="!pb-20 bg-white relative h-[630px] max-md:h-[400px]">
+          <div
+            className=" py-12 bg-white"
+            {...(isDesktop && {
+              "data-aos": "fade-up",
+              "data-aos-delay": "200",
+            })}
+          >
+            <img
+            onClick={() => handleClick("subcat-11")}
+              src={
+                    isDesktop
+                      ? "/home/sec/banner.jpg"
+                      : "/home/sec/mobile.jpg"
+                  }
+              alt=""
+              className=" cursor-pointer"
+            />
+          </div>
+          <div
+            className="flex py-12 max-md:py-20 gap-4 max-md:gap-3 justify-center max-md:justify-start absolute max-md:w-full max-md:px-3 top-[45%] max-md:top-[16%] overflow-x-auto scrollbar-hide"
+            {...(isDesktop && {
+              "data-aos": "fade-up",
+              "data-aos-delay": "400",
+            })}
+          >
+            <img
+            onClick={() => handleClick("subcat-12")}
+              src="/home/sec/1.jpg"
+              alt=""
+              className="p-3 rounded-xl w-[42%] max-md:w-full bg-white cursor-pointer"
+            />
+            <img
+            onClick={() => handleClick("subcat-10")}
+              src="/home/sec/2.jpg"
+              alt=""
+              className="p-3 rounded-xl w-[42%] max-md:w-full bg-white cursor-pointer"
+            />
+          </div>
+        </section>
+
         {/* Bottom Banner */}
         {bottombanner.desktop_banner.image &&
           bottombanner.mobile_banner.image && (
-            <section className="bg-white flex flex-col items-center pb-8 pt-8 max-md:p-1">
+            <section className="bg-white flex flex-col items-center pb-8 pt-16 max-md:p-1">
               <div
                 className="flex justify-center items-center"
                 {...(isDesktop && {
