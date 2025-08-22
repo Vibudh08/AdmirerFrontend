@@ -630,7 +630,7 @@ const Home: React.FC = () => {
               })}
             >
               <img
-                src="/home/3.png"
+                src="/home/four_part/heading.jpg"
                 className="w-[700px] max-md:mt-2 "
                 alt=""
               />
@@ -640,7 +640,11 @@ const Home: React.FC = () => {
               <div className=" flex flex-col gap-2 max-md:gap-3">
                 <img
                   onClick={() => handleClick("subcat-12")}
-                  src={isDesktop ? "/home/four_part/1.jpg" : "/home/four_part/1mobile.jpg"}
+                  src={
+                    isDesktop
+                      ? "/home/four_part/1.jpg"
+                      : "/home/four_part/1mobile.jpg"
+                  }
                   alt="advertisement 1"
                   className="w-full rounded-2xl shadow-md h-full cursor-pointer"
                   {...(isDesktop && {
@@ -650,8 +654,12 @@ const Home: React.FC = () => {
                 />
 
                 <img
-                  onClick={() => handleClick(advertisement[2].url)}
-                  src={isDesktop ? "/home/four_part/3.jpg" : "/home/four_part/3mobile.jpg"}
+                  onClick={() => handleClick("subcat-11")}
+                  src={
+                    isDesktop
+                      ? "/home/four_part/3.jpg"
+                      : "/home/four_part/3mobile.jpg"
+                  }
                   alt="advertisement 2"
                   className="w-full h-full rounded-2xl shadow-md cursor-pointer"
                   {...(isDesktop && {
@@ -663,8 +671,12 @@ const Home: React.FC = () => {
 
               <div className="flex flex-col gap-2 max-md:gap-3">
                 <img
-                  onClick={() => handleClick(advertisement[1].url)}
-                  src={isDesktop ? "/home/four_part/2.jpg" : "/home/four_part/2mobile.jpg"}
+                  onClick={() => handleClick("subcat-12")}
+                  src={
+                    isDesktop
+                      ? "/home/four_part/2.jpg"
+                      : "/home/four_part/2mobile.jpg"
+                  }
                   alt="advertisement 1"
                   className="w-full h-full rounded-2xl shadow-md cursor-pointer"
                   {...(isDesktop && {
@@ -674,8 +686,12 @@ const Home: React.FC = () => {
                 />
 
                 <img
-                  onClick={() => handleClick(advertisement[2].url)}
-                  src={isDesktop ? "/home/four_part/4.jpg" : "/home/four_part/4mobile.jpg"}
+                  onClick={() => handleClick("subcat-10")}
+                  src={
+                    isDesktop
+                      ? "/home/four_part/4.jpg"
+                      : "/home/four_part/4mobile.jpg"
+                  }
                   alt="advertisement 2"
                   className="w-full h-full rounded-2xl shadow-md cursor-pointer"
                   {...(isDesktop && {
@@ -688,7 +704,7 @@ const Home: React.FC = () => {
           </div>
         </section>
 
-        {/* <section className="!pb-20 bg-white relative h-[630px] max-md:h-[400px]">
+        <section className="!pb-20 bg-white relative h-[630px] max-md:h-[400px]">
           <div
             className=" py-12 bg-white"
             {...(isDesktop && {
@@ -697,9 +713,14 @@ const Home: React.FC = () => {
             })}
           >
             <img
-              src="https://www.tanishq.co.in/dw/image/v2/BKCK_PRD/on/demandware.static/-/Library-Sites-TanishqSharedLibrary/default/dw08083f53/homepage/new-arrivals/new-arrivals-background.jpg"
+            onClick={() => handleClick("subcat-11")}
+              src={
+                    isDesktop
+                      ? "/home/sec/banner.jpg"
+                      : "/home/sec/mobile.jpg"
+                  }
               alt=""
-              className=""
+              className=" cursor-pointer"
             />
           </div>
           <div
@@ -710,17 +731,19 @@ const Home: React.FC = () => {
             })}
           >
             <img
-              src="https://www.tanishq.co.in/dw/image/v2/BKCK_PRD/on/demandware.static/-/Library-Sites-TanishqSharedLibrary/default/dw05fd8a0f/homepage/new-arrivals/mangalsutra.jpg"
+            onClick={() => handleClick("subcat-12")}
+              src="/home/sec/1.jpg"
               alt=""
-              className="p-3 rounded-xl w-[42%] max-md:w-full bg-white"
+              className="p-3 rounded-xl w-[42%] max-md:w-full bg-white cursor-pointer"
             />
             <img
-              src="https://www.tanishq.co.in/dw/image/v2/BKCK_PRD/on/demandware.static/-/Library-Sites-TanishqSharedLibrary/default/dw1586e759/homepage/new-arrivals/pendants.jpg"
+            onClick={() => handleClick("subcat-10")}
+              src="/home/sec/2.jpg"
               alt=""
-              className="p-3 rounded-xl w-[42%] max-md:w-full bg-white"
+              className="p-3 rounded-xl w-[42%] max-md:w-full bg-white cursor-pointer"
             />
           </div>
-        </section> */}
+        </section>
 
         {/* Bottom Banner */}
         {bottombanner.desktop_banner.image &&
