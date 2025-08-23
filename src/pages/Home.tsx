@@ -320,7 +320,7 @@ const Home: React.FC = () => {
             <div className="flex justify-center items-center mt-3">
               <img
                 src="/home/2.jpeg"
-                className="w-[700px] max-md:mt-2 "
+                className="w-[700px] max-md:mt-2"
                 alt=""
               />
             </div>
@@ -477,82 +477,23 @@ const Home: React.FC = () => {
           </div>
         </section>
 
-        {/* Shorts */}
-        <section>
-          <div className="bg-white flex flex-col pt-0 items-center pb-16 max-md:p-1">
-            <div
-              className="flex justify-center items-center mt-3"
-              {...(isDesktop && {
-                "data-aos": "fade-up",
-                "data-aos-delay": "100",
-              })}
-            >
-              <img
-                src="/home/5.jpeg"
-                className="w-[400px] max-md:mt-2 "
-                alt=""
-              />
-            </div>
-            <div className="grid grid-cols-1 mt-6 max-md:mt-3 overflow-auto max-md:pb-7">
-              <Slider {...shortsSetting}>
-                {shorts.map((item, index) => (
-                  <div
-                    key={index}
-                    className="p-1 max-md:p-0.5"
-                    {...(isDesktop && {
-                      "data-aos": "zoom-in",
-                      "data-aos-delay": `${200 + index * 100}`,
-                    })}
-                  >
-                    <Link to={`product/${item.url}`}>
-                      {!videoErrors[index] ? (
-                        <video
-                          autoPlay
-                          muted
-                          loop
-                          preload="auto"
-                          onError={() =>
-                            setVideoErrors((prev) => ({
-                              ...prev,
-                              [index]: true,
-                            }))
-                          }
-                        >
-                          <source src={item.videoUrl} type="video/mp4" />
-                          Your browser does not support the video tag.
-                        </video>
-                      ) : (
-                        <img
-                          src="/home/video/fallback_image.png"
-                          alt="Fallback"
-                        />
-                      )}
-                    </Link>
-                  </div>
-                ))}
-              </Slider>
-            </div>
-          </div>
-        </section>
-
         <section>
           <div
             className="relative bg-[url('/home/background.jpg')] bg-cover bg-center h-screen 
-             max-md:bg-[linear-gradient(to_bottom,white_0%,#F7D6E0_30%,#FAD4C0_70%,white_100%)] 
-           max-md:h-[660px]"
+             max-lg:bg-[linear-gradient(to_bottom,white_0%,#F7D6E0_30%,#FAD4C0_70%,white_100%)] 
+           max-lg:h-[660px]"
             {...(isDesktop && {
               "data-aos": "fade-up",
               "data-aos-delay": 200,
             })}
           >
-            {/* Keep your heading image here for mobile */}
             <img
               src="/home/background_mobile.png"
               alt="Shop by Budget"
-              className="max-md:block w-60 max-md:mb-6 hidden mx-auto pt-6"
+              className="max-lg:block w-60 max-lg:mb-6 hidden mx-auto pt-6"
             />
             {/* Desktop Layout */}
-            <div className="relative hidden md:block">
+            <div className="relative hidden lg:block">
               <Link to="/listing?cat=26&subcat=10">
                 <img
                   src="/home/1st.png"
@@ -583,14 +524,14 @@ const Home: React.FC = () => {
             </div>
 
             {/* Mobile Layout */}
-            <div className="flex flex-col items-center gap-0">
+            <div className="flex flex-col items-center gap-0 ">
               {/* Top row */}
               <div className="flex justify-center gap-0 w-full">
                 <Link to="/listing?cat=26&subcat=10">
                   <div className="flex-shrink-0">
                     <img
                       src="/home/1st.png"
-                      className="w-[135px] md:hidden hover:scale-105 mt-[-25px] transition-transform duration-300 ease-in-out cursor-pointer"
+                      className="w-[135px] lg:hidden hover:scale-105 mt-[-25px] transition-transform duration-300 ease-in-out cursor-pointer"
                       alt=""
                     />
                   </div>
@@ -599,7 +540,7 @@ const Home: React.FC = () => {
                   <div className="flex-shrink-0">
                     <img
                       src="/home/2nd.png"
-                      className="w-[200px] md:hidden hover:scale-105 ml-[-10px] transition-transform duration-300 ease-in-out cursor-pointer"
+                      className="w-[200px] lg:hidden hover:scale-105 ml-[-10px] transition-transform duration-300 ease-in-out cursor-pointer"
                       alt=""
                     />
                   </div>
@@ -611,7 +552,7 @@ const Home: React.FC = () => {
                 <div className="flex justify-center w-full">
                   <img
                     src="/home/3rd.png"
-                    className="w-[320px] md:hidden mt-[-13px] hover:scale-105 transition-transform duration-300 ease-in-out cursor-pointer"
+                    className="w-[320px] lg:hidden mt-[-13px] hover:scale-105 transition-transform duration-300 ease-in-out cursor-pointer"
                     alt=""
                   />
                 </div>
@@ -621,7 +562,7 @@ const Home: React.FC = () => {
         </section>
 
         <section>
-          <div className="bg-white flex flex-col items-center p-8 max-md:p-3 max-md:pt-0">
+          <div className="bg-white flex flex-col items-center p-8  max-md:p-3 max-md:pt-0">
             <div
               className="flex justify-center items-center mt-3"
               {...(isDesktop && {
@@ -784,6 +725,64 @@ const Home: React.FC = () => {
               </div>
             </section>
           )}
+
+           {/* Shorts */}
+        <section>
+          <div className="bg-white flex flex-col pt-0 items-center pb-16 max-md:p-1">
+            <div
+              className="flex justify-center items-center mt-3"
+              {...(isDesktop && {
+                "data-aos": "fade-up",
+                "data-aos-delay": "100",
+              })}
+            >
+              <img
+                src="/home/5.jpeg"
+                className="w-[400px] max-md:mt-2 "
+                alt=""
+              />
+            </div>
+            <div className="grid grid-cols-1 mt-6 max-md:mt-3 overflow-auto max-md:pb-7">
+              <Slider {...shortsSetting}>
+                {shorts.map((item, index) => (
+                  <div
+                    key={index}
+                    className="p-1 max-md:p-0.5"
+                    {...(isDesktop && {
+                      "data-aos": "zoom-in",
+                      "data-aos-delay": `${200 + index * 100}`,
+                    })}
+                  >
+                    <Link to={`product/${item.url}`}>
+                      {!videoErrors[index] ? (
+                        <video
+                          autoPlay
+                          muted
+                          loop
+                          preload="auto"
+                          onError={() =>
+                            setVideoErrors((prev) => ({
+                              ...prev,
+                              [index]: true,
+                            }))
+                          }
+                        >
+                          <source src={item.videoUrl} type="video/mp4" />
+                          Your browser does not support the video tag.
+                        </video>
+                      ) : (
+                        <img
+                          src="/home/video/fallback_image.png"
+                          alt="Fallback"
+                        />
+                      )}
+                    </Link>
+                  </div>
+                ))}
+              </Slider>
+            </div>
+          </div>
+        </section>
 
         {/* Features */}
         <section className="bg-white pb-10 max-md:pt-10">
