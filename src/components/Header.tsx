@@ -222,7 +222,7 @@ const Header = ({}) => {
                     <Link to="/dashboard">
                       <div className="flex items-center gap-2 cursor-pointer">
                         <FaRegUser className="w-5 h-5 mb-[2px] text-[#7B48A5]" />
-                        <p className="text-md max-md:hidden tracking-wider font-semibold text-gray-600">
+                        <p className="text-md max-lg:hidden tracking-wider font-semibold text-gray-600">
                           Account
                         </p>
                       </div>
@@ -236,7 +236,7 @@ const Header = ({}) => {
                 <Link to="/LogIn">
                   <div className="flex items-center gap-2">
                     <FaRegUser className="w-5 h-5 mb-[2px] text-[#7B48A5]" />
-                    <p className="text-md max-md:hidden tracking-wider font-semibold text-gray-600">
+                    <p className="text-md max-lg:hidden tracking-wider font-semibold text-gray-600">
                       Login
                     </p>
                   </div>
@@ -249,7 +249,7 @@ const Header = ({}) => {
               <Link to="/wishlist">
                 <div className="flex items-center gap-2">
                   <Heart className="w-5 h-5 text-[#7B48A5]" strokeWidth={2.5} />
-                  <p className="text-md max-md:hidden tracking-wider font-semibold text-gray-600">
+                  <p className="text-md max-lg:hidden tracking-wider font-semibold text-gray-600">
                     Wishlist
                   </p>
                 </div>
@@ -274,7 +274,7 @@ const Header = ({}) => {
                     )}
                   </div>
 
-                  <p className="text-md max-md:hidden tracking-wider font-semibold text-gray-600">
+                  <p className="text-md max-lg:hidden tracking-wider font-semibold text-gray-600">
                     Cart
                   </p>
                 </div>

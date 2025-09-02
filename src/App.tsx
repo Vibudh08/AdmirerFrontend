@@ -36,6 +36,7 @@ import "react-toastify/dist/ReactToastify.css";
 import ThankYouPage from "./components/cart-checkout/checkout/ThankYou";
 import { GlobalContextProvider } from "./contexts/GlobalContextProvider";
 import RightSideBar from "./components/RightSideBar"
+import useLenis from "./components/SmoothScroll";
 
 // List of all valid route patterns
 const routePatterns = [
@@ -61,6 +62,7 @@ const routePatterns = [
 ];
 
 function App() {
+  // useLenis()
   const [categoryId, setCategoryId] = useState("");
   const [subcategoryId, setSubcategoryId] = useState("");
   const [showHeader, setShowHeader] = useState(true);
