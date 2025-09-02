@@ -311,32 +311,32 @@ const Home: React.FC = () => {
         {/* Categories */}
         <section>
           <div
-            className="text-center py-6 pt-8 bg-white max-md:pb-4"
+            className="text-center py-6 pb-0 pt-8 max-md:pt-4 bg-white max-md:pb-0"
             {...(isDesktop && {
               "data-aos": "fade-up",
               "data-aos-delay": "500",
             })}
           >
-            <div className="flex justify-center items-center mt-3">
+            <div className="flex justify-center items-center mt-3 max-md:mt-0">
               <img
                 src="/home/2.jpeg"
-                className="w-[700px] max-md:mt-2"
+                className="w-[650px] max-md:mt-2"
                 alt=""
               />
             </div>
 
-            <div className="mt-8 max-md:mt-4 w-[100%] max-md:w-full max-md:p-2 grid grid-cols-5 max-md:grid-cols-2  max-md:gap-2 m-auto">
+            <div className="mt-8 max-md:mt-4 w-full px-2 max-md:w-full gap-2 max-md:p-2 grid grid-cols-6 max-md:grid-cols-2 max-md:gap-2 m-auto">
               {category.map((cat, index) => (
                 <div
                   key={index}
                   onClick={() => handleClick(cat.url)}
-                  className="cursor-pointer"
+                  className="cursor-pointer "
                   {...(isDesktop && {
                     "data-aos": "zoom-in-up",
                     "data-aos-delay": `${100 + index * 100}`,
                   })}
                 >
-                  <div className="max-md:rounded-2xl overflow-hidden mb-4 max-md:mb-1.5">
+                  <div className="max-md:rounded-2xl rounded-full overflow-hidden mb-4 max-md:mb-1.5">
                     <img
                       src={cat.image}
                       alt={cat.title}
@@ -353,15 +353,40 @@ const Home: React.FC = () => {
                   </h3>
                 </div>
               ))}
+              <div
+                key={5}
+                onClick={() => handleClick("cat.url")}
+                className="cursor-pointer "
+                {...(isDesktop && {
+                  "data-aos": "zoom-in-up",
+                  "data-aos-delay": `600`,
+                })}
+              >
+                <div className="max-md:rounded-2xl rounded-full overflow-hidden mb-4 max-md:mb-1.5">
+                  <img
+                    src="https://admirer.in/asset/image/single ring.jpg"
+                    alt="Asf"
+                    className="w-full object-cover"
+                    onError={(e) => {
+                      e.currentTarget.onerror = null;
+                      e.currentTarget.src =
+                        "https://admirer.in/asset/image/single ring.jpg";
+                    }}
+                  />
+                </div>
+                <h3 className="text-lg font-semibold text-gray-800">
+                  Women's Ring
+                </h3>
+              </div>
             </div>
           </div>
         </section>
 
         {/* Advertisement */}
         <section>
-          <div className="bg-white flex flex-col items-center p-8 max-md:p-4 max-md:pt-0">
+          <div className="bg-white flex flex-col items-center p-8 pt-6 max-md:p-4 max-md:pt-3">
             <div
-              className="flex justify-center items-center mt-3"
+              className="flex justify-center items-center mt-3 max-md:mt-0"
               {...(isDesktop && {
                 "data-aos": "fade-up",
                 "data-aos-delay": "100",
@@ -422,7 +447,7 @@ const Home: React.FC = () => {
         <section>
           <div className="bg-white flex flex-col items-center p-6 pb-16 max-md:p-4">
             <div
-              className="flex justify-center items-center mt-3"
+              className="flex justify-center items-center mt-3 max-md:mt-0"
               {...(isDesktop && {
                 "data-aos": "fade-up",
                 "data-aos-delay": "100",
@@ -430,7 +455,7 @@ const Home: React.FC = () => {
             >
               <img
                 src="/home/4.jpeg"
-                className="w-[400px] max-md:mt-2 "
+                className="w-[400px] max-md:w-[250px] max-md:mt-2 "
                 alt=""
               />
             </div>
@@ -564,7 +589,7 @@ const Home: React.FC = () => {
         <section>
           <div className="bg-white flex flex-col items-center p-8  max-md:p-3 max-md:pt-0">
             <div
-              className="flex justify-center items-center mt-3"
+              className="flex justify-center items-center mt-3 max-md:mt-0"
               {...(isDesktop && {
                 "data-aos": "fade-up",
                 "data-aos-delay": "100",
@@ -654,12 +679,8 @@ const Home: React.FC = () => {
             })}
           >
             <img
-            onClick={() => handleClick("subcat-11")}
-              src={
-                    isDesktop
-                      ? "/home/sec/banner.jpg"
-                      : "/home/sec/mobile.jpg"
-                  }
+              onClick={() => handleClick("subcat-11")}
+              src={isDesktop ? "/home/sec/banner.jpg" : "/home/sec/mobile.jpg"}
               alt=""
               className=" cursor-pointer"
             />
@@ -672,13 +693,13 @@ const Home: React.FC = () => {
             })}
           >
             <img
-            onClick={() => handleClick("subcat-12")}
+              onClick={() => handleClick("subcat-12")}
               src="/home/sec/1.jpg"
               alt=""
               className="p-3 rounded-xl w-[42%] max-md:w-full bg-white cursor-pointer"
             />
             <img
-            onClick={() => handleClick("subcat-10")}
+              onClick={() => handleClick("subcat-10")}
               src="/home/sec/2.jpg"
               alt=""
               className="p-3 rounded-xl w-[42%] max-md:w-full bg-white cursor-pointer"
@@ -726,11 +747,11 @@ const Home: React.FC = () => {
             </section>
           )}
 
-           {/* Shorts */}
+        {/* Shorts */}
         <section>
           <div className="bg-white flex flex-col pt-0 items-center pb-16 max-md:p-1">
             <div
-              className="flex justify-center items-center mt-3"
+              className="flex justify-center items-center mt-3 max-md:mt-0"
               {...(isDesktop && {
                 "data-aos": "fade-up",
                 "data-aos-delay": "100",

@@ -5,29 +5,34 @@ export default function ScrollToTop() {
   const [scrollProgress, setScrollProgress] = useState(0);
 
   useEffect(() => {
+    let animationFrame: number;
+
     const updateProgress = () => {
       const scrollTop = window.scrollY;
       const docHeight =
         document.documentElement.scrollHeight - window.innerHeight;
       const progress = (scrollTop / docHeight) * 100;
       setScrollProgress(progress);
+      animationFrame = requestAnimationFrame(updateProgress);
     };
 
-    window.addEventListener("scroll", updateProgress);
-    return () => window.removeEventListener("scroll", updateProgress);
+    animationFrame = requestAnimationFrame(updateProgress);
+
+    return () => cancelAnimationFrame(animationFrame);
   }, []);
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const size = 48; // matches w-12 (48px)
+  const size = 48;
   const strokeWidth = 2.5;
-  const radius = (size - strokeWidth) / 2; // so stroke sits at border
+  const radius = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
   const offset = circumference - (scrollProgress / 100) * circumference;
 
   const isVisible = scrollProgress >= 5;
+
   return (
     <button
       onClick={scrollToTop}
@@ -58,7 +63,7 @@ export default function ScrollToTop() {
           r={radius}
           cx={size / 2}
           cy={size / 2}
-          style={{ transition: "stroke-dashoffset 0.2s" }}
+          // style={{ transition: "stroke-dashoffset 0.1s linear" }}
         />
       </svg>
       <span className="text-sm font-bold text-[#7B48A5] z-10">
