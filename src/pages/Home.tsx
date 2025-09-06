@@ -710,7 +710,7 @@ const Home: React.FC = () => {
         {/* Bottom Banner */}
         {bottombanner.desktop_banner.image &&
           bottombanner.mobile_banner.image && (
-            <section className="bg-white flex flex-col items-center pb-8 pt-16 max-md:p-1">
+            <section className="bg-white flex flex-col items-center pb-8 pt-16 max-md:p-1 2xl:pt-32">
               <div
                 className="flex justify-center items-center"
                 {...(isDesktop && {
