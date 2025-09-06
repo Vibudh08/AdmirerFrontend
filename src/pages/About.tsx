@@ -81,7 +81,7 @@ const AboutPage = () => {
         </div>
 
         {/* Description */}
-        <p className="text-gray-600 w-[90%] max-md:w-full text-xl mx-auto">
+        <p className="text-gray-600 w-[90%] max-md:w-full text-base mx-auto">
           At BTJ Admirer, we believe in the power of expression. Whether you’re
           looking to add a touch of elegance to your outfit with a beautiful
           ring, update your wardrobe with the latest trends, or discover
