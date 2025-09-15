@@ -411,7 +411,7 @@ const Home: React.FC = () => {
                     onClick={() => handleClick(advertisement[0].url)}
                     src={advertisement[0].image}
                     alt="Main collection"
-                    className="w-full h-auto rounded-2xl shadow-md cursor-pointer"
+                    className="w-full h-[800px] rounded-2xl shadow-md cursor-pointer"
                   />
                 </div>
 
@@ -420,7 +420,7 @@ const Home: React.FC = () => {
                     onClick={() => handleClick(advertisement[1].url)}
                     src={advertisement[1].image}
                     alt="advertisement 1"
-                    className="w-full h-auto rounded-2xl shadow-md cursor-pointer"
+                    className="w-full h-[395px] rounded-2xl shadow-md cursor-pointer"
                     {...(isDesktop && {
                       "data-aos": "fade-down",
                       "data-aos-delay": "400",
@@ -431,7 +431,7 @@ const Home: React.FC = () => {
                     onClick={() => handleClick(advertisement[2].url)}
                     src={advertisement[2].image}
                     alt="advertisement 2"
-                    className="w-full h-auto rounded-2xl shadow-md cursor-pointer"
+                    className="w-full h-[395px] rounded-2xl shadow-md cursor-pointer"
                     {...(isDesktop && {
                       "data-aos": "fade-up",
                       "data-aos-delay": "400",
@@ -540,7 +540,7 @@ const Home: React.FC = () => {
               <Link to="/listing?cat=26&subcat=12">
                 <img
                   src="/home/3rd.png"
-                  className="w-[450px] absolute top-8 right-9 hover:scale-105 transition-transform duration-300 ease-in-out cursor-pointer"
+                  className="w-[450px] absolute top-8 right-9  hover:scale-105 transition-transform duration-300 ease-in-out cursor-pointer"
                   data-aos="zoom-in"
                   data-aos-delay="1200"
                   alt=""
