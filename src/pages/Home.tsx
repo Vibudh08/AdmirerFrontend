@@ -168,19 +168,20 @@ const Home: React.FC = () => {
     },
   ];
 
-  // const handleClick = (url: string) => {
-  //   const catIdMatch = url.match(/cat-([a-zA-Z0-9]+)/);
-  //   const subcatIdMatch = url.match(/subcat-([a-zA-Z0-9]+)/);
-
-  //   const categoryId = catIdMatch ? catIdMatch[1] : "";
-  //   const subcategoryId = subcatIdMatch ? subcatIdMatch[1] : "";
-
-  //   setCategoryId(categoryId);
-  //   console.log("category id", categoryId);
-  //   setSubcategoryId(subcategoryId);
-  //   console.log("subcategory id", subcategoryId);
-  //   navigate("/listing");
-  // };
+  const exquisite = [
+    {
+      name: "Exquisite Designs",
+      image: "https://admirer.in/asset/image/single ring.jpg",
+    },
+    {
+      name: "Crafted to Perfection",
+      image: "https://admirer.in/asset/image/single ring.jpg",
+    },
+    {
+      name: "Timeless Elegance",
+      image: "https://admirer.in/asset/image/single ring.jpg",
+    },
+  ];
 
   useEffect(() => {
     const handleResize = () => {
@@ -379,6 +380,32 @@ const Home: React.FC = () => {
                 </h3>
               </div>
             </div>
+          </div>
+        </section>
+
+        <section className="bg-white py-10 max-md:py-4">
+          <div className="flex justify-center items-center mt-3 mb-6 max-md:mt-0">
+            <img src="/home/2.jpeg" className="w-[650px] max-md:mt-2" alt="" />
+          </div>
+          <div className="flex gap-16  max-md:gap-2 justify-center p-4 max-md:p-2">
+            <div className="cursor-pointer font-semibold text-gray-900 ">
+              Engagement Ring
+            </div>
+            <div className="cursor-pointer text-gray-600">Necklace</div>
+            <div className="cursor-pointer text-gray-600">Alphabet Ring</div>
+            <div className="cursor-pointer text-gray-600">3 Ring Combo Set</div>
+            <div className="cursor-pointer text-gray-600">Women Ring</div>
+          </div>
+          <hr className="w-[55%] m-auto" />
+          <div className="grid grid-cols-3 w-[90%] mt-10 m-auto gap-5 max-md:gap-2 max-md:grid-cols-1">
+            {exquisite.map((item, index) => (
+              <div key={index}>
+                <img src={item.image} alt="" />
+                <div className="py-4 text-xl font-semibold text-gray-800">
+                  {item.name}
+                </div>
+              </div>
+            ))}
           </div>
         </section>
 
