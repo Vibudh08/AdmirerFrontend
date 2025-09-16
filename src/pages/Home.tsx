@@ -296,6 +296,7 @@ const Home: React.FC = () => {
 
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
   const handleClick = (url: string) => {
     const catIdMatch = url.match(/cat-([a-zA-Z0-9]+)/);
     const subcatIdMatch = url.match(/subcat-([a-zA-Z0-9]+)/);
@@ -331,9 +332,9 @@ const Home: React.FC = () => {
       });
   }, []);
 
-  // useEffect(() => {
-  //   window.scrollTo(0, 0);
-  // }, []);
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   if (isLoading) return <Loader />;
 
@@ -479,6 +480,7 @@ const Home: React.FC = () => {
           </div>
         </section>
 
+        {/* Exquisite Section */}
         <section className="bg-white py-10 max-md:py-4">
           <div className="flex justify-center items-center mt-3 mb-6 max-md:mt-0">
             <img src="/home/2.jpeg" className="w-[650px] max-md:mt-2" alt="" />
@@ -641,6 +643,7 @@ const Home: React.FC = () => {
           </div>
         </section>
 
+        {/* Shop by Budget */}
         <section>
           <div
             className="relative bg-[url('/home/background.jpg')] bg-cover bg-center h-screen 
@@ -725,6 +728,7 @@ const Home: React.FC = () => {
           </div>
         </section>
 
+        {/* Four Part Section */}
         <section>
           <div className="bg-white flex flex-col items-center p-8  max-md:p-3 max-md:pt-0">
             <div
@@ -809,6 +813,7 @@ const Home: React.FC = () => {
           </div>
         </section>
 
+        {/* Banner with two sub-images */}
         <section className="!pb-20 bg-white relative h-[630px] max-md:h-[400px]">
           <div
             className=" py-12 bg-white"
