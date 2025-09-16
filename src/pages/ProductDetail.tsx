@@ -428,7 +428,7 @@ const ProductDetails = (item: { wishlist: number }) => {
                 left in stock
               </div>
             )}
-            {/* <PincodeChecker/> */}
+            <PincodeChecker/>
 
             <div className="grid grid-cols-2 gap-2 text-sm text-gray-600 mt-5">
               <div className="flex items-center gap-3 text-[15px] font-medium">
