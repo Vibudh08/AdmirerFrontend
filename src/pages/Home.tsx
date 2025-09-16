@@ -170,18 +170,114 @@ const Home: React.FC = () => {
 
   const exquisite = [
     {
-      name: "Exquisite Designs",
-      image: "https://admirer.in/asset/image/single ring.jpg",
+      id: 1,
+      label: "Engagement Ring",
+      items: [
+        {
+          name: "Exquisite Designs1",
+          image: "https://admirer.in/asset/image/single ring.jpg",
+          url: "/product/100",
+        },
+        {
+          name: "Crafted to Perfection1",
+          image: "https://admirer.in/asset/image/single ring.jpg",
+          url: "/product/100",
+        },
+        {
+          name: "Timeless Elegance1",
+          image: "https://admirer.in/asset/image/single ring.jpg",
+          url: "/product/100",
+        },
+      ],
     },
     {
-      name: "Crafted to Perfection",
-      image: "https://admirer.in/asset/image/single ring.jpg",
+      id: 2,
+      label: "Necklace",
+      items: [
+        {
+          name: "Exquisite Designs2",
+          image: "https://admirer.in/asset/image/single ring.jpg",
+          url: "/product/100",
+        },
+        {
+          name: "Crafted to Perfection2",
+          image: "https://admirer.in/asset/image/single ring.jpg",
+          url: "/product/100",
+        },
+        {
+          name: "Timeless Elegance2",
+          image: "https://admirer.in/asset/image/single ring.jpg",
+          url: "/product/100",
+        },
+      ],
     },
     {
-      name: "Timeless Elegance",
-      image: "https://admirer.in/asset/image/single ring.jpg",
+      id: 3,
+      label: "Alphabet Ring",
+      items: [
+        {
+          name: "Exquisite Designs3",
+          image: "https://admirer.in/asset/image/single ring.jpg",
+          url: "/product/100",
+        },
+        {
+          name: "Crafted to Perfection3",
+          image: "https://admirer.in/asset/image/single ring.jpg",
+          url: "/product/100",
+        },
+        {
+          name: "Timeless Elegance3",
+          image: "https://admirer.in/asset/image/single ring.jpg",
+          url: "/product/100",
+        },
+      ],
+    },
+    {
+      id: 4,
+      label: "3 Ring Combo Set",
+      items: [
+        {
+          name: "Exquisite Designs4",
+          image: "https://admirer.in/asset/image/single ring.jpg",
+          url: "/product/100",
+        },
+        {
+          name: "Crafted to Perfection4",
+          image: "https://admirer.in/asset/image/single ring.jpg",
+          url: "/product/100",
+        },
+        {
+          name: "Timeless Elegance4",
+          image: "https://admirer.in/asset/image/single ring.jpg",
+          url: "/product/100",
+        },
+      ],
+    },
+    {
+      id: 5,
+      label: "Women Ring",
+      items: [
+        {
+          name: "Exquisite Designs5",
+          image: "https://admirer.in/asset/image/single ring.jpg",
+          url: "/product/100",
+        },
+        {
+          name: "Crafted to Perfection5",
+          image: "https://admirer.in/asset/image/single ring.jpg",
+          url: "/product/100",
+        },
+        {
+          name: "Timeless Elegance5",
+          image: "https://admirer.in/asset/image/single ring.jpg",
+          url: "/product/100",
+        },
+      ],
     },
   ];
+
+  const [exquisiteId, setExquisiteId] = useState<number>(1);
+  const selectedSet = exquisite.find((set) => set.id === exquisiteId);
 
   useEffect(() => {
     const handleResize = () => {
@@ -387,25 +483,41 @@ const Home: React.FC = () => {
           <div className="flex justify-center items-center mt-3 mb-6 max-md:mt-0">
             <img src="/home/2.jpeg" className="w-[650px] max-md:mt-2" alt="" />
           </div>
-          <div className="flex gap-16  max-md:gap-2 justify-center p-4 max-md:p-2">
-            <div className="cursor-pointer font-semibold text-gray-900 ">
-              Engagement Ring
-            </div>
-            <div className="cursor-pointer text-gray-600">Necklace</div>
-            <div className="cursor-pointer text-gray-600">Alphabet Ring</div>
-            <div className="cursor-pointer text-gray-600">3 Ring Combo Set</div>
-            <div className="cursor-pointer text-gray-600">Women Ring</div>
-          </div>
-          <hr className="w-[55%] m-auto" />
-          <div className="grid grid-cols-3 w-[90%] mt-10 m-auto gap-5 max-md:gap-2 max-md:grid-cols-1">
-            {exquisite.map((item, index) => (
-              <div key={index}>
-                <img src={item.image} alt="" />
-                <div className="py-4 text-xl font-semibold text-gray-800">
-                  {item.name}
-                </div>
-              </div>
+          {/* Tabs */}
+          <div className="border-b w-fit pt-3 m-auto border-gray-200 flex justify-center">
+            {exquisite.map((set) => (
+              <button
+                key={set.id}
+                onClick={() => setExquisiteId(set.id)}
+                className={`relative mx-4 px-1.5 py-2 transition ${
+                  exquisiteId === set.id
+                    ? "font-semibold text-gray-900"
+                    : "text-gray-600"
+                }`}
+              >
+                {set.label}
+                {exquisiteId === set.id && (
+                  <span className="absolute bottom-0 left-0 w-full h-[2px] bg-gray-900"></span>
+                )}
+              </button>
             ))}
+          </div>
+
+          {/* <hr className="w-[55%] m-auto" /> */}
+
+          {/* Grid */}
+          <div className="grid grid-cols-3 w-[90%] mt-12 m-auto gap-5 max-md:gap-2 max-md:grid-cols-1">
+            {selectedSet &&
+              selectedSet.items.map((item, index) => (
+                <Link to={item.url} key={index} className="cursor-pointer">
+                  <div key={index} className="mb-8">
+                    <img src={item.image} alt={item.name} />
+                    <div className="py-4 text-xl font-semibold text-gray-800">
+                      {item.name}
+                    </div>
+                  </div>
+                </Link>
+              ))}
           </div>
         </section>
 
