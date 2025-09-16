@@ -481,17 +481,29 @@ const Home: React.FC = () => {
         </section>
 
         {/* Exquisite Section */}
-        <section className="bg-white py-10 max-md:py-4">
+        <section
+          className="bg-white py-10 max-md:py-4"
+          {...(isDesktop && {
+            "data-aos": "fade-up",
+            "data-aos-delay": "600",
+          })}
+        >
           <div className="flex justify-center items-center mt-3 mb-6 max-md:mt-0">
             <img src="/home/2.jpeg" className="w-[650px] max-md:mt-2" alt="" />
           </div>
           {/* Tabs */}
-          <div className="border-b w-fit pt-3 m-auto border-gray-200 flex justify-center">
+          <div
+            className="border-b w-fit pt-3 m-auto border-gray-200 flex justify-center"
+            {...(isDesktop && {
+              "data-aos": "fade-up",
+              "data-aos-delay": "600",
+            })}
+          >
             {exquisite.map((set) => (
               <button
                 key={set.id}
                 onClick={() => setExquisiteId(set.id)}
-                className={`relative mx-4 px-1.5 py-2 transition ${
+                className={`relative mx-4 px-1.5 py-2 transition max-md:w-full max-md:overflow-x-auto ${
                   exquisiteId === set.id
                     ? "font-semibold text-gray-900"
                     : "text-gray-600"
@@ -508,7 +520,13 @@ const Home: React.FC = () => {
           {/* <hr className="w-[55%] m-auto" /> */}
 
           {/* Grid */}
-          <div className="grid grid-cols-3 w-[90%] mt-12 m-auto gap-5 max-md:gap-2 max-md:grid-cols-1">
+          <div
+            className="grid grid-cols-3 w-[90%] mt-12 m-auto gap-5 max-md:gap-2 max-md:grid-cols-1"
+            {...(isDesktop && {
+              "data-aos": "fade-up",
+              "data-aos-delay": "700",
+            })}
+          >
             {selectedSet &&
               selectedSet.items.map((item, index) => (
                 <Link to={item.url} key={index} className="cursor-pointer">
