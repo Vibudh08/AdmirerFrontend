@@ -64,14 +64,14 @@ const Home: React.FC = () => {
   const [category, setCategory] = useState<CategoryItem[]>([]);
   const [advertisement, setAdvertisement] = useState<AdvertisementItem[]>([]);
   const [offers, setOffers] = useState<OffersItem[]>([]);
-  const [bottombanner, setBottombanner] = useState<BottomBanner>({
-    mobile_banner: { image: "", url: "" },
-    desktop_banner: { image: "", url: "" },
-  });
   const [isDesktop, setIsDesktop] = useState(true);
   const [videoErrors, setVideoErrors] = useState<{ [key: string]: boolean }>(
     {}
   );
+  const [bottombanner, setBottombanner] = useState<BottomBanner>({
+    mobile_banner: { image: "", url: "" },
+    desktop_banner: { image: "", url: "" },
+  });
   const navigate = useNavigate();
 
   const sliderSettings = {
@@ -85,6 +85,17 @@ const Home: React.FC = () => {
     arrows: true,
     prevArrow: <CustomPrevArrow onClick={() => {}} />,
     nextArrow: <CustomNextArrow onClick={() => {}} />,
+  };
+
+  const exquisiteSetting = {
+    dots: true,
+    infinite: false,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    autoplay: false,
+    autoplaySpeed: 4000,
+    arrows: true,
   };
 
   const shortsSetting = {
@@ -174,19 +185,19 @@ const Home: React.FC = () => {
       label: "Engagement Ring",
       items: [
         {
-          name: "Exquisite Designs1",
-          image: "https://admirer.in/asset/image/single ring.jpg",
-          url: "/product/100",
+          name: "Special King And Queen Adjustable Couple Rings For Lovers",
+          image: "/home/exquisite/1.jpg",
+          url: "/product/46",
         },
         {
-          name: "Crafted to Perfection1",
-          image: "https://admirer.in/asset/image/single ring.jpg",
-          url: "/product/100",
+          name: "Special Rose Gold Plated Solitaire Couple Ring Set",
+          image: "/home/exquisite/2.jpg",
+          url: "/product/61",
         },
         {
-          name: "Timeless Elegance1",
-          image: "https://admirer.in/asset/image/single ring.jpg",
-          url: "/product/100",
+          name: "Special Valentines Crown King Queen Silver Plated Cubic Zirconia Ring",
+          image: "/home/exquisite/3.jpg",
+          url: "/product/40",
         },
       ],
     },
@@ -195,19 +206,19 @@ const Home: React.FC = () => {
       label: "Necklace",
       items: [
         {
-          name: "Exquisite Designs2",
-          image: "https://admirer.in/asset/image/single ring.jpg",
-          url: "/product/100",
+          name: "Special Rhodium Plated American Diamond Studded Jewellry Set",
+          image: "/home/exquisite/10.jpg",
+          url: "/product/37",
         },
         {
-          name: "Crafted to Perfection2",
-          image: "https://admirer.in/asset/image/single ring.jpg",
-          url: "/product/100",
+          name: "Special Rhodium-Plated CZ Studded Jewellry Set",
+          image: "/home/exquisite/11.jpg",
+          url: "/product/35",
         },
         {
-          name: "Timeless Elegance2",
-          image: "https://admirer.in/asset/image/single ring.jpg",
-          url: "/product/100",
+          name: "Silver-Plated American Diamond Studded Jewelry Set",
+          image: "/home/exquisite/12.jpg",
+          url: "/product/34",
         },
       ],
     },
@@ -216,19 +227,19 @@ const Home: React.FC = () => {
       label: "Alphabet Ring",
       items: [
         {
-          name: "Exquisite Designs3",
-          image: "https://admirer.in/asset/image/single ring.jpg",
-          url: "/product/100",
+          name: "Special Women Zircon Adjustable Ring (Y) Letter",
+          image: "/home/exquisite/7.jpg",
+          url: "/product/88",
         },
         {
-          name: "Crafted to Perfection3",
-          image: "https://admirer.in/asset/image/single ring.jpg",
-          url: "/product/100",
+          name: "Special Women Zircon Adjustable Ring (U) Letter",
+          image: "/home/exquisite/8.jpg",
+          url: "/product/98",
         },
         {
-          name: "Timeless Elegance3",
-          image: "https://admirer.in/asset/image/single ring.jpg",
-          url: "/product/100",
+          name: "Special Women Zircon Adjustable Ring (I) Letter",
+          image: "/home/exquisite/9.jpg",
+          url: "/product/87",
         },
       ],
     },
@@ -237,19 +248,19 @@ const Home: React.FC = () => {
       label: "3 Ring Combo Set",
       items: [
         {
-          name: "Exquisite Designs4",
-          image: "https://admirer.in/asset/image/single ring.jpg",
-          url: "/product/100",
+          name: "Letter Ring Trio Set",
+          image: "/home/exquisite/13.jpg",
+          url: "/product/276",
         },
         {
-          name: "Crafted to Perfection4",
-          image: "https://admirer.in/asset/image/single ring.jpg",
-          url: "/product/100",
+          name: "Trinity Shine Set",
+          image: "/home/exquisite/14.jpg",
+          url: "/product/238",
         },
         {
-          name: "Timeless Elegance4",
-          image: "https://admirer.in/asset/image/single ring.jpg",
-          url: "/product/100",
+          name: "Twinkle Trio Set",
+          image: "/home/exquisite/15.jpg",
+          url: "/product/249",
         },
       ],
     },
@@ -258,19 +269,19 @@ const Home: React.FC = () => {
       label: "Women Ring",
       items: [
         {
-          name: "Exquisite Designs5",
-          image: "https://admirer.in/asset/image/single ring.jpg",
-          url: "/product/100",
+          name: "Radiant Solitaire Ring",
+          image: "/home/exquisite/4.jpg",
+          url: "/product/176",
         },
         {
-          name: "Crafted to Perfection5",
-          image: "https://admirer.in/asset/image/single ring.jpg",
-          url: "/product/100",
+          name: "Silver Plated Round Cut Zircon Korean design Ring",
+          image: "/home/exquisite/5.jpg",
+          url: "/product/102",
         },
         {
-          name: "Timeless Elegance5",
-          image: "https://admirer.in/asset/image/single ring.jpg",
-          url: "/product/100",
+          name: "Green Emerald Heart Ring",
+          image: "/home/exquisite/6.jpg",
+          url: "/product/153",
         },
       ],
     },
@@ -332,9 +343,9 @@ const Home: React.FC = () => {
       });
   }, []);
 
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
+  // useEffect(() => {
+  //   window.scrollTo(0, 0);
+  // }, []);
 
   if (isLoading) return <Loader />;
 
@@ -453,7 +464,7 @@ const Home: React.FC = () => {
               ))}
               <div
                 key={5}
-                onClick={() => handleClick("cat.url")}
+                onClick={() => handleClick("subcat-10")}
                 className="cursor-pointer "
                 {...(isDesktop && {
                   "data-aos": "zoom-in-up",
@@ -482,18 +493,22 @@ const Home: React.FC = () => {
 
         {/* Exquisite Section */}
         <section
-          className="bg-white py-10 max-md:py-4"
+          className="bg-white py-2 pt-5 max-md:py-4"
           {...(isDesktop && {
             "data-aos": "fade-up",
             "data-aos-delay": "600",
           })}
         >
           <div className="flex justify-center items-center mt-3 mb-6 max-md:mt-0">
-            <img src="/home/2.jpeg" className="w-[650px] max-md:mt-2" alt="" />
+            <img
+              src="/home/exquisite.png"
+              className="w-[500px] max-md:w-[300px] max-md:mt-2"
+              alt=""
+            />
           </div>
           {/* Tabs */}
           <div
-            className="border-b w-fit pt-3 m-auto border-gray-200 flex justify-center"
+            className="border-b w-fit max-md:w-full max-md:overflow-x-auto m-auto border-gray-200 flex justify-center max-md:justify-start"
             {...(isDesktop && {
               "data-aos": "fade-up",
               "data-aos-delay": "600",
@@ -503,7 +518,7 @@ const Home: React.FC = () => {
               <button
                 key={set.id}
                 onClick={() => setExquisiteId(set.id)}
-                className={`relative mx-4 px-1.5 py-2 transition max-md:w-full max-md:overflow-x-auto ${
+                className={`relative mx-4 px-1.5 py-2 transition max-md:text-sm max-md:whitespace-nowrap ${
                   exquisiteId === set.id
                     ? "font-semibold text-gray-900"
                     : "text-gray-600"
@@ -519,9 +534,9 @@ const Home: React.FC = () => {
 
           {/* <hr className="w-[55%] m-auto" /> */}
 
-          {/* Grid */}
+          {/* Grid Desktop */}
           <div
-            className="grid grid-cols-3 w-[90%] mt-12 m-auto gap-5 max-md:gap-2 max-md:grid-cols-1"
+            className="grid grid-cols-3 w-[90%] mt-4 m-auto gap-5 max-md:hidden"
             {...(isDesktop && {
               "data-aos": "fade-up",
               "data-aos-delay": "700",
@@ -530,14 +545,37 @@ const Home: React.FC = () => {
             {selectedSet &&
               selectedSet.items.map((item, index) => (
                 <Link to={item.url} key={index} className="cursor-pointer">
-                  <div key={index} className="mb-8">
+                  <div key={index} className="">
                     <img src={item.image} alt={item.name} />
-                    <div className="py-4 text-xl font-semibold text-gray-800">
+                    <div className="py-4 text-lg w-[90%] font-semibold text-center text-gray-800">
                       {item.name}
                     </div>
                   </div>
                 </Link>
               ))}
+          </div>
+
+          {/* Grid Mobile */}
+          <div
+            className="max-md:grid max-md:grid-cols-1 hidden w-[90%] mt-2 mb-6 m-auto gap-5 max-md:gap-2"
+            {...(isDesktop && {
+              "data-aos": "fade-up",
+              "data-aos-delay": "700",
+            })}
+          >
+            <Slider key={exquisiteId} {...exquisiteSetting}>
+              {selectedSet &&
+                selectedSet.items.map((item, index) => (
+                  <Link to={item.url} key={index} className="cursor-pointer">
+                    <div key={index} className="mb-1">
+                      <img src={item.image} alt={item.name} />
+                      <div className="pb-4 text-base font-semibold text-center text-gray-800">
+                        {item.name}
+                      </div>
+                    </div>
+                  </Link>
+                ))}
+            </Slider>
           </div>
         </section>
 
@@ -570,7 +608,7 @@ const Home: React.FC = () => {
                     onClick={() => handleClick(advertisement[0].url)}
                     src={advertisement[0].image}
                     alt="Main collection"
-                    className="w-full h-[800px] rounded-2xl shadow-md cursor-pointer"
+                    className="w-full h-[800px] max-md:h-full rounded-2xl shadow-md cursor-pointer"
                   />
                 </div>
 
@@ -579,7 +617,7 @@ const Home: React.FC = () => {
                     onClick={() => handleClick(advertisement[1].url)}
                     src={advertisement[1].image}
                     alt="advertisement 1"
-                    className="w-full h-[395px] rounded-2xl shadow-md cursor-pointer"
+                    className="w-full h-[395px] max-md:h-full rounded-2xl shadow-md cursor-pointer"
                     {...(isDesktop && {
                       "data-aos": "fade-down",
                       "data-aos-delay": "400",
@@ -590,7 +628,7 @@ const Home: React.FC = () => {
                     onClick={() => handleClick(advertisement[2].url)}
                     src={advertisement[2].image}
                     alt="advertisement 2"
-                    className="w-full h-[395px] rounded-2xl shadow-md cursor-pointer"
+                    className="w-full h-[395px] max-md:h-full rounded-2xl shadow-md cursor-pointer"
                     {...(isDesktop && {
                       "data-aos": "fade-up",
                       "data-aos-delay": "400",
