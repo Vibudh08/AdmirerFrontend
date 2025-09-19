@@ -95,7 +95,7 @@ const Home: React.FC = () => {
     slidesToScroll: 1,
     autoplay: false,
     autoplaySpeed: 4000,
-    arrows: true,
+    arrows: false,
   };
 
   const shortsSetting = {
@@ -343,9 +343,9 @@ const Home: React.FC = () => {
       });
   }, []);
 
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
+  // useEffect(() => {
+  //   window.scrollTo(0, 0);
+  // }, []);
 
   if (isLoading) return <Loader />;
 
@@ -384,7 +384,7 @@ const Home: React.FC = () => {
         </section>
 
         {/* Scrolling Text */}
-        <div className="relative overflow-hidden bg-purple-200 py-3 max-md:py-2">
+        <section className="relative overflow-hidden bg-purple-200 py-3 max-md:py-2">
           <div className="scroll-wrapper flex w-max animate-scroll">
             {[...companies, ...companies].map((company, index) => (
               <div
@@ -395,10 +395,10 @@ const Home: React.FC = () => {
               </div>
             ))}
           </div>
-        </div>
+        </section>
 
         {/* Hero Content */}
-        <div
+        <section
           className="bg-white flex items-center justify-center pt-10 max-md:pt-4 flex-col"
           {...(isDesktop && { "data-aos": "fade-up", "data-aos-delay": "300" })}
         >
@@ -415,7 +415,7 @@ const Home: React.FC = () => {
               "data-aos-delay": "400",
             })}
           />
-        </div>
+        </section>
 
         {/* Categories */}
         <section>
@@ -780,6 +780,75 @@ const Home: React.FC = () => {
                   />
                 </div>
               </Link>
+            </div>
+          </div>
+        </section>
+
+        {/* Designer Banner */}
+        <section className="bg-white max-md:py-6 pt-10">
+          {/* desktop view */}
+          <div className="flex max-md:hidden justify-center  m-auto">
+            <div>
+              <img
+                src="https://www.giva.co/cdn/shop/files/Heer_main-min.jpg?v=1757084733&width=750"
+                alt=""
+                className="h-[220px] w-[630px]"
+              />
+              <img
+                src="https://www.giva.co/cdn/shop/files/Heer_4-min.jpg?v=1757084732&width=750"
+                alt=""
+                className="h-[220px] w-[630px]"
+              />
+            </div>
+            <div className="flex">
+              <div>
+                <img
+                  src="https://www.giva.co/cdn/shop/files/Heer_2-min.jpg?v=1757084732&width=750"
+                  alt=""
+                  className="h-[220px] w-[240px]"
+                />
+                <img
+                  src="https://www.giva.co/cdn/shop/files/Heer_5-min.jpg?v=1757084732&width=750"
+                  alt=""
+                  className="h-[220px] w-[240px]"
+                />
+              </div>
+              <div>
+                <img
+                  src="https://www.giva.co/cdn/shop/files/Heer_3-min.jpg?v=1757084732&width=750"
+                  alt=""
+                  className="h-[220px] w-[240px]"
+                />
+                <img
+                  src="https://www.giva.co/cdn/shop/files/Heer_6-min.jpg?v=1757084732&width=750"
+                  alt=""
+                  className="h-[220px] w-[240px]"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* mobile view */}
+          <div className="hidden max-md:flex p-4">
+            <div>
+              <img
+                src="https://www.giva.co/cdn/shop/files/Everyday_Elegance_4_-min.png?v=1757080295&width=750"
+                alt=""
+              />
+              <img
+                src="https://www.giva.co/cdn/shop/files/Gifts_under_15k_3_-min_18f7179c-2c79-4691-89d6-50343124954c.png?v=1757080295&width=750"
+                alt=""
+              />
+            </div>
+            <div>
+              <img
+                src="https://www.giva.co/cdn/shop/files/Captivating_Solitaires_3_-min.png?v=1757080295&width=750"
+                alt=""
+              />
+              <img
+                src="https://www.giva.co/cdn/shop/files/Engagement_Rings_3_-min_bcec0ebb-712e-4246-863e-8a167dd5765e.png?v=1757080296&width=750"
+                alt=""
+              />
             </div>
           </div>
         </section>
