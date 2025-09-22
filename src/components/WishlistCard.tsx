@@ -30,9 +30,13 @@ const ProductItem: React.FC<productItemProps> = ({
   return (
     <div className="max-w-[300px] font-sans bg-white rounded-[5px]  max-md:p-0 pb-2 flex flex-col gap-1 max-md:gap-1 items-center text-center border  border-gray-300">
       {/* Product Image with Hover Button */}
-      <div className="relative group">
+      <div className="relative group overflow-hidden">
         <Link to={`/product/${id}`}>
-          <img src={imageUrl} alt="product" className="w-full h-auto rounded " />
+          <img
+            src={imageUrl}
+            alt="product"
+            className="w-full h-auto rounded hover:scale-110 transition-transform ease-out duration-400"
+          />
         </Link>
 
         {/* Heart Button at Top Right (Hidden initially, shows on hover) */}
