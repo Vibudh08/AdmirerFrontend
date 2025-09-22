@@ -65,6 +65,7 @@ const Home: React.FC = () => {
   const [advertisement, setAdvertisement] = useState<AdvertisementItem[]>([]);
   const [offers, setOffers] = useState<OffersItem[]>([]);
   const [isDesktop, setIsDesktop] = useState(true);
+  const [scrollingText, setScrollingText] = useState(false);
   const [videoErrors, setVideoErrors] = useState<{ [key: string]: boolean }>(
     {}
   );
@@ -308,6 +309,12 @@ const Home: React.FC = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  useEffect(() => {
+    setTimeout(() => {
+      setScrollingText(true);
+    }, 500);
+  }, []);
+
   const handleClick = (url: string) => {
     const catIdMatch = url.match(/cat-([a-zA-Z0-9]+)/);
     const subcatIdMatch = url.match(/subcat-([a-zA-Z0-9]+)/);
@@ -343,9 +350,9 @@ const Home: React.FC = () => {
       });
   }, []);
 
-  // useEffect(() => {
-  //   window.scrollTo(0, 0);
-  // }, []);
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   if (isLoading) return <Loader />;
 
@@ -384,18 +391,22 @@ const Home: React.FC = () => {
         </section>
 
         {/* Scrolling Text */}
-        <section className="relative overflow-hidden bg-purple-200 py-3 max-md:py-2">
-          <div className="scroll-wrapper flex w-max animate-scroll">
-            {[...companies, ...companies].map((company, index) => (
-              <div
-                key={index}
-                className="mx-8 whitespace-nowrap text-lg max-md:text-base font-semibold text-gray-800"
-              >
-                {company}
-              </div>
-            ))}
-          </div>
-        </section>
+        {scrollingText ? (
+          <section className="relative overflow-hidden bg-purple-100 py-3 max-md:py-2">
+            <div className="scroll-wrapper flex w-max animate-scroll">
+              {[...companies, ...companies].map((company, index) => (
+                <div
+                  key={index}
+                  className="mx-8 whitespace-nowrap text-lg max-md:text-base font-semibold text-gray-800"
+                >
+                  {company}
+                </div>
+              ))}
+            </div>
+          </section>
+        ) : (
+          ""
+        )}
 
         {/* Hero Content */}
         <section
@@ -608,7 +619,7 @@ const Home: React.FC = () => {
                     onClick={() => handleClick(advertisement[0].url)}
                     src={advertisement[0].image}
                     alt="Main collection"
-                    className="w-full h-[800px] max-md:h-full rounded-2xl shadow-md cursor-pointer"
+                    className="w-full max-md:h-full rounded-2xl shadow-md cursor-pointer"
                   />
                 </div>
 
@@ -617,7 +628,7 @@ const Home: React.FC = () => {
                     onClick={() => handleClick(advertisement[1].url)}
                     src={advertisement[1].image}
                     alt="advertisement 1"
-                    className="w-full h-[395px] max-md:h-full rounded-2xl shadow-md cursor-pointer"
+                    className="w-full max-md:h-full rounded-2xl shadow-md cursor-pointer"
                     {...(isDesktop && {
                       "data-aos": "fade-down",
                       "data-aos-delay": "400",
@@ -628,7 +639,7 @@ const Home: React.FC = () => {
                     onClick={() => handleClick(advertisement[2].url)}
                     src={advertisement[2].image}
                     alt="advertisement 2"
-                    className="w-full h-[395px] max-md:h-full rounded-2xl shadow-md cursor-pointer"
+                    className="w-full max-md:h-full rounded-2xl shadow-md cursor-pointer"
                     {...(isDesktop && {
                       "data-aos": "fade-up",
                       "data-aos-delay": "400",
@@ -785,45 +796,57 @@ const Home: React.FC = () => {
         </section>
 
         {/* Designer Banner */}
-        <section className="bg-white max-md:py-6 pt-10">
+        <section className="bg-white max-md:py-6 pt-14">
           {/* desktop view */}
           <div className="flex max-md:hidden justify-center  m-auto">
             <div>
-              <img
-                src="https://www.giva.co/cdn/shop/files/Heer_main-min.jpg?v=1757084733&width=750"
-                alt=""
-                className="h-[220px] w-[630px]"
-              />
-              <img
-                src="https://www.giva.co/cdn/shop/files/Heer_4-min.jpg?v=1757084732&width=750"
-                alt=""
-                className="h-[220px] w-[630px]"
-              />
+              <Link to="">
+                <img
+                  src="/home/designer_banner/Artboard 2.jpg"
+                  alt=""
+                  className="h-[220px] w-[630px]"
+                />
+              </Link>
+              <Link to="">
+                <img
+                  src="/home/designer_banner/Artboard 1.jpg"
+                  alt=""
+                  className="h-[220px] w-[630px]"
+                />
+              </Link>
             </div>
             <div className="flex">
               <div>
-                <img
-                  src="https://www.giva.co/cdn/shop/files/Heer_2-min.jpg?v=1757084732&width=750"
-                  alt=""
-                  className="h-[220px] w-[240px]"
-                />
-                <img
-                  src="https://www.giva.co/cdn/shop/files/Heer_5-min.jpg?v=1757084732&width=750"
-                  alt=""
-                  className="h-[220px] w-[240px]"
-                />
+                <Link to="">
+                  <img
+                    src="/home/designer_banner/Artboard 3.jpg"
+                    alt=""
+                    className="h-[220px] w-[240px]"
+                  />
+                </Link>
+                <Link to="">
+                  <img
+                    src="/home/designer_banner/Artboard 4.jpg"
+                    alt=""
+                    className="h-[220px] w-[240px]"
+                  />
+                </Link>
               </div>
               <div>
-                <img
-                  src="https://www.giva.co/cdn/shop/files/Heer_3-min.jpg?v=1757084732&width=750"
-                  alt=""
-                  className="h-[220px] w-[240px]"
-                />
-                <img
-                  src="https://www.giva.co/cdn/shop/files/Heer_6-min.jpg?v=1757084732&width=750"
-                  alt=""
-                  className="h-[220px] w-[240px]"
-                />
+                <Link to="">
+                  <img
+                    src="/home/designer_banner/Artboard 5.jpg"
+                    alt=""
+                    className="h-[220px] w-[240px]"
+                  />
+                </Link>
+                <Link to="">
+                  <img
+                    src="/home/designer_banner/Artboard 6.jpg"
+                    alt=""
+                    className="h-[220px] w-[240px]"
+                  />
+                </Link>
               </div>
             </div>
           </div>
@@ -831,24 +854,20 @@ const Home: React.FC = () => {
           {/* mobile view */}
           <div className="hidden max-md:flex p-4">
             <div>
-              <img
-                src="https://www.giva.co/cdn/shop/files/Everyday_Elegance_4_-min.png?v=1757080295&width=750"
-                alt=""
-              />
-              <img
-                src="https://www.giva.co/cdn/shop/files/Gifts_under_15k_3_-min_18f7179c-2c79-4691-89d6-50343124954c.png?v=1757080295&width=750"
-                alt=""
-              />
+              <Link to="">
+                <img src="/home/designer_banner/Artboard 3.jpg" alt="" />
+              </Link>
+              <Link to="">
+                <img src="/home/designer_banner/Artboard 4.jpg" alt="" />
+              </Link>
             </div>
             <div>
-              <img
-                src="https://www.giva.co/cdn/shop/files/Captivating_Solitaires_3_-min.png?v=1757080295&width=750"
-                alt=""
-              />
-              <img
-                src="https://www.giva.co/cdn/shop/files/Engagement_Rings_3_-min_bcec0ebb-712e-4246-863e-8a167dd5765e.png?v=1757080296&width=750"
-                alt=""
-              />
+              <Link to="">
+                <img src="/home/designer_banner/Artboard 5.jpg" alt="" />
+              </Link>
+              <Link to="">
+                <img src="/home/designer_banner/Artboard 6.jpg" alt="" />
+              </Link>
             </div>
           </div>
         </section>
@@ -1076,7 +1095,7 @@ const Home: React.FC = () => {
 
         {/* Features */}
         <section className="bg-white pb-10 max-md:pt-10">
-          <div className="bg-[linear-gradient(to_bottom,white_0%,#F7D6E0_30%,#FAD4C0_70%,white_100%)]">
+          <div className="bg-purple-50">
             <div
               className="grid grid-cols-4 max-md:grid-cols-2 items-center justify-center py-12 w-[85%] max-md:w-full text-center m-auto gap-4"
               {...(isDesktop && {
