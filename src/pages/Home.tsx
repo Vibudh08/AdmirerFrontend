@@ -796,57 +796,63 @@ const Home: React.FC = () => {
         </section>
 
         {/* Designer Banner */}
-        <section className="bg-white max-md:py-6 pt-14">
+        <section
+          className="bg-white max-md:py-6 pt-14"
+          {...(isDesktop && {
+            "data-aos": "fade-up",
+            "data-aos-delay": 200,
+          })}
+        >
           {/* desktop view */}
-          <div className="flex max-md:hidden justify-center  m-auto">
+          <div className="flex max-md:hidden justify-center m-auto">
             <div>
-              <Link to="">
-                <img
-                  src="/home/designer_banner/Artboard 2.jpg"
-                  alt=""
-                  className="h-[220px] w-[630px]"
-                />
-              </Link>
-              <Link to="">
-                <img
-                  src="/home/designer_banner/Artboard 1.jpg"
-                  alt=""
-                  className="h-[220px] w-[630px]"
-                />
-              </Link>
+              {/* <Link to=""> */}
+              <img
+                src="/home/designer_banner/Artboard 2.jpg"
+                alt=""
+                className="h-[220px] w-[650px]"
+              />
+              {/* </Link> */}
+              {/* <Link to=""> */}
+              <img
+                src="/home/designer_banner/Artboard 1.jpg"
+                alt=""
+                className="h-[220px] w-[650px]"
+              />
+              {/* </Link> */}
             </div>
             <div className="flex">
               <div>
-                <Link to="">
-                  <img
-                    src="/home/designer_banner/Artboard 3.jpg"
-                    alt=""
-                    className="h-[220px] w-[240px]"
-                  />
-                </Link>
-                <Link to="">
-                  <img
-                    src="/home/designer_banner/Artboard 4.jpg"
-                    alt=""
-                    className="h-[220px] w-[240px]"
-                  />
-                </Link>
+                {/* <Link to=""> */}
+                <img
+                  src="/home/designer_banner/Artboard 3.jpg"
+                  alt=""
+                  className="h-[220px] w-[240px]"
+                />
+                {/* </Link> */}
+                {/* <Link to=""> */}
+                <img
+                  src="/home/designer_banner/Artboard 6.jpg"
+                  alt=""
+                  className="h-[220px] w-[240px]"
+                />
+                {/* </Link> */}
               </div>
               <div>
-                <Link to="">
-                  <img
-                    src="/home/designer_banner/Artboard 5.jpg"
-                    alt=""
-                    className="h-[220px] w-[240px]"
-                  />
-                </Link>
-                <Link to="">
-                  <img
-                    src="/home/designer_banner/Artboard 6.jpg"
-                    alt=""
-                    className="h-[220px] w-[240px]"
-                  />
-                </Link>
+                {/* <Link to=""> */}
+                <img
+                  src="/home/designer_banner/Artboard 4.jpg"
+                  alt=""
+                  className="h-[220px] w-[240px]"
+                />
+                {/* </Link> */}
+                {/* <Link to=""> */}
+                <img
+                  src="/home/designer_banner/Artboard 5.jpg"
+                  alt=""
+                  className="h-[220px] w-[240px]"
+                />
+                {/* </Link> */}
               </div>
             </div>
           </div>
@@ -858,15 +864,15 @@ const Home: React.FC = () => {
                 <img src="/home/designer_banner/Artboard 3.jpg" alt="" />
               </Link>
               <Link to="">
-                <img src="/home/designer_banner/Artboard 4.jpg" alt="" />
+                <img src="/home/designer_banner/Artboard 6.jpg" alt="" />
               </Link>
             </div>
             <div>
               <Link to="">
-                <img src="/home/designer_banner/Artboard 5.jpg" alt="" />
+                <img src="/home/designer_banner/Artboard 4.jpg" alt="" />
               </Link>
               <Link to="">
-                <img src="/home/designer_banner/Artboard 6.jpg" alt="" />
+                <img src="/home/designer_banner/Artboard 5.jpg" alt="" />
               </Link>
             </div>
           </div>
