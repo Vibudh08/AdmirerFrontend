@@ -3,7 +3,7 @@ import ProductItem from "../components/product-listing/product-item";
 import LeftSideBar from "../components/product-listing/left-side-bar";
 import { FiFilter, FiX } from "react-icons/fi";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Empty } from "antd";
+import { Empty, Select } from "antd";
 
 import {
   product_listing_API,
@@ -98,24 +98,6 @@ const ProductListing: React.FC = () => {
     prevArrow: <CustomPrevArrow onClick={() => {}} />,
     nextArrow: <CustomNextArrow onClick={() => {}} />,
   };
-
-  // useEffect(() => {
-  //   const savedY = sessionStorage.getItem("listingScrollY");
-
-  //   if (savedY && productDataLoaded) {
-  //     // Delay scroll slightly to ensure render is complete
-  //     setTimeout(() => {
-  //       window.scrollTo(0, parseInt(savedY));
-  //       sessionStorage.removeItem("listingScrollY");
-  //     }, 0);
-  //   }
-  // }, [productDataLoaded]);
-
-  // useEffect(() => {
-  //   if (subCategory && sessionStorage.getItem("activeSubcategory")) {
-  //     sessionStorage.removeItem("activeSubcategory");
-  //   }
-  // }, [subCategory]);
 
   useEffect(() => {
     const checkIfMobile = () => {
@@ -241,7 +223,7 @@ const ProductListing: React.FC = () => {
     <div className="min-h-screen bg-gray-100 p-2 sm:p-4 relative">
       {loading && <Loader />}
 
-      <button
+      {/* <button
         aria-label="Open filters"
         className={`lg:hidden fixed bottom-6 right-5 max-md:right-4 z-10 bg-[#7b48a5] text-white p-3 rounded-full shadow-lg flex items-center justify-center transition-transform hover:scale-105 active:scale-95 ${
           showMobileFilters ? "opacity-0 pointer-events-none" : "opacity-100"
@@ -250,7 +232,7 @@ const ProductListing: React.FC = () => {
       >
         <FiFilter size={16} />
         <span className="sr-only">Open Filters</span>
-      </button>
+      </button> */}
 
       <div className="flex-grow bg-white rounded-xl shadow-sm border border-gray-200 p-2 sm:p-3 lg:p-4 mb-4 max-md:mb-2">
         <div className="relative">
@@ -283,15 +265,48 @@ const ProductListing: React.FC = () => {
         </div>
       </div>
 
-      <div className="flex flex-col lg:flex-row w-full h-full gap-4 sm:gap-5">
-        <div
-          className={`fixed lg:sticky top-0 lg:top-4 lg:h-[calc(100vh-2rem)] inset-y-0 left-0 z-[1000] w-[85%] sm:w-3/4 lg:w-[22%] xl:w-[20%] lg:min-w-[260px] bg-white rounded-r-xl lg:rounded-xl shadow-sm border border-gray-200 transform ${
-            showMobileFilters ? "translate-x-0" : "-translate-x-full"
-          } lg:translate-x-0 transition-transform duration-300 ease-in-out overflow-y-auto max-h-screen`}
+      <div className="flex justify-between items-center bg-white rounded-xl shadow-sm border border-gray-200 p-2 sm:p-3 lg:p-4 mb-4">
+        {/* Left side filter button */}
+        <button
+          aria-label="Open filters"
+          className="flex items-center gap-2 bg-[#7b48a5] text-white px-4 py-2 rounded-lg shadow hover:bg-[#693b8f] transition"
+          onClick={() => setShowMobileFilters(true)}
         >
+          <FiFilter size={18} />
+          <span className="text-sm font-medium">Filters</span>
+        </button>
+
+        {/* Right side sort by */}
+        <div className="flex items-center gap-2">
+          <span className="text-sm text-gray-600">Sort By:</span>
+          <Select
+            defaultValue="relevance"
+            style={{ width: 160 }}
+            onChange={(value) => {
+              console.log("Sort by:", value);
+              // TODO: sorting logic yahan lagao
+            }}
+            options={[
+              { value: "relevance", label: "Relevance" },
+              { value: "lowToHigh", label: "Price: Low to High" },
+              { value: "highToLow", label: "Price: High to Low" },
+              { value: "newest", label: "Newest First" },
+            ]}
+          />
+        </div>
+      </div>
+
+      <div className="flex flex-col lg:flex-row w-full h-full gap-4 sm:gap-5">
+        {/* Sidebar */}
+        <div
+          className={`fixed top-0 left-0 h-full w-[85%] sm:w-3/4 md:w-[50%] max-w-sm z-[1001] bg-white shadow-lg transform ${
+            showMobileFilters ? "translate-x-0" : "-translate-x-full"
+          } transition-transform duration-300 ease-in-out overflow-y-auto`}
+        >
+          {/* Cross Button */}
           <button
             aria-label="Close filters"
-            className="lg:hidden absolute top-4 right-4 p-2 text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500 rounded-full"
+            className="absolute top-6 right-4 p-2 text-gray-700 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-purple-500 rounded-full z-[1002]"
             onClick={() => setShowMobileFilters(false)}
           >
             <FiX size={24} />
@@ -302,22 +317,25 @@ const ProductListing: React.FC = () => {
             maximum={maxVal}
             setDynamicMin={setDynamicMinVal}
             setDynamicMax={setDynamicMaxVal}
-            // category={Number(cat)}
-            setSubCategory={setSubCategory}
+            setSubCategory={(val) => {
+              setSubCategory(val);
+              setShowMobileFilters(false); // ✅ close on option click
+            }}
             activeSubCategory={subCategory}
           />
         </div>
 
+        {/* Overlay */}
         {showMobileFilters && (
           <div
-            className="fixed inset-0 bg-black bg-opacity-50 z-[999] lg:hidden transition-opacity duration-300"
+            className="fixed inset-0 bg-black bg-opacity-60 z-[1000] transition-opacity duration-300"
             onClick={() => setShowMobileFilters(false)}
             role="presentation"
           />
         )}
 
         <div className="flex-grow bg-white rounded-xl shadow-sm border border-gray-200 p-2 sm:p-3 lg:p-4">
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-2 sm:gap-3 md:gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3 md:gap-4">
             {!loading && productDataLoaded && filteredProducts.length === 0 ? (
               <div className="col-span-full h-100vh flex items-center text-center justify-center ">
                 <Empty />
