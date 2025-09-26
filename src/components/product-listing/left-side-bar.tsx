@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { productCategoy_API, catSubcat_API } from "../api/api-end-points";
 import { Loader } from "lucide-react";
+import { FiX } from "react-icons/fi";
 interface LeftSideBarProps {
   minimum: number;
   maximum: number;
@@ -288,196 +289,171 @@ const LeftSideBar: React.FC<LeftSideBarProps> = ({
   };
 
   return (
-    <div className="p-6 ">
-      {/* Price Range Section */}
-      <div className="bg-white rounded-lg p-0 w-full max-w-md mx-auto ">
-        <div className="flex justify-between items-center mb-1">
-          <h3 className="text-lg font-bold text-[#7b48a5]">Price Range</h3>
-        </div>
-        {/* Input boxes */}
-        <div className="flex justify-between mb-2 gap-4">
-          <div className="flex-1 min-w-0">
-            <label className="block text-xs font-medium text-gray-600 mb-1">
-              Min (Rs)
-            </label>
-            <div className="relative">
-              <input
-                type="number"
-                value={minInput}
-                onChange={handleMinInput}
-                onKeyDown={(e) => handleInputKeyDown(e, "min")}
-                className="w-full px-3 py-1 border border-gray-300 rounded text-sm text-center [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none select-none"
-                min={sliderMinValue}
-                max={maxVal - minGap}
-                style={{
-                  width: `${Math.max(minInput.toString().length + 5, 6)}ch`,
-                }}
-              />
-            </div>
-          </div>
-          <div className="flex-1 min-w-0">
-            <label className="block text-xs font-medium text-gray-600 mb-1">
-              Max (Rs)
-            </label>
-            <div className="relative">
-              <input
-                type="number"
-                value={maxInput}
-                onChange={handleMaxInput}
-                onKeyDown={(e) => handleInputKeyDown(e, "max")}
-                className="w-full px-3 py-1 border border-gray-300 rounded text-sm text-center [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none select-none"
-                min={minVal + minGap}
-                max={sliderMaxValue}
-                style={{
-                  width: `${Math.max(maxInput.toString().length + 5, 6)}ch`,
-                }}
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* Slider */}
-        <div className="relative h-1 bg-gray-300 rounded-full my-6 mb-8">
-          <div
-            className="absolute h-full bg-[#7b48a5] rounded-full"
-            style={trackStyle}
-          ></div>
-
-          <input
-            type="range"
-            min={sliderMinValue}
-            max={sliderMaxValue}
-            value={minVal}
-            onChange={slideMin}
-            onMouseDown={startDrag}
-            onMouseUp={stopDrag}
-            onTouchStart={startDrag}
-            onTouchEnd={stopDrag}
-            className="absolute w-full h-1 top-1/2 -translate-y-1/2 appearance-none pointer-events-none bg-transparent [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-[#7b48a5] [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:relative [&::-webkit-slider-thumb]:z-10 [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-white [&::-webkit-slider-thumb]:shadow-md"
-          />
-
-          <input
-            type="range"
-            min={sliderMinValue}
-            max={sliderMaxValue}
-            value={maxVal}
-            onChange={slideMax}
-            onMouseDown={startDrag}
-            onMouseUp={stopDrag}
-            onTouchStart={startDrag}
-            onTouchEnd={stopDrag}
-            className="absolute w-full h-1 top-1/2 -translate-y-1/2 appearance-none pointer-events-none bg-transparent [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-[#7b48a5] [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:relative [&::-webkit-slider-thumb]:z-10 [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-white [&::-webkit-slider-thumb]:shadow-md"
-          />
-
-          {/* Tooltips */}
-          {isDragging && (
-            <>
-              <div
-                className="absolute -top-8 text-xs text-gray-600 bg-white px-2 py-1 rounded border border-gray-200 shadow-sm whitespace-nowrap"
-                style={{ left: trackStyle.left, transform: "translateX(-50%)" }}
-              >
-                ₹{minVal}
-              </div>
-              <div
-                className="absolute -top-8 text-xs text-gray-600 bg-white px-2 py-1 rounded border border-gray-200 shadow-sm whitespace-nowrap"
-                style={{
-                  right: trackStyle.right,
-                  transform: "translateX(50%)",
-                }}
-              >
-                ₹{maxVal}
-              </div>
-            </>
-          )}
-        </div>
+    <div className="p-6 space-y-6 bg-white h-full shadow-md">
+      {/* Header */}
+      <div className="flex justify-between items-center border-b pb-3">
+        <h2 className="text-2xl font-semibold text-gray-900">Filters</h2>
+        {/* <button
+          onClick={() => {
+            if (typeof (window as any).closeSidebar === "function") {
+              (window as any).closeSidebar();
+            }
+          }}
+          className="text-gray-600 hover:text-gray-900 transition"
+        >
+          <FiX size={22} />
+        </button> */}
       </div>
-      {/* Categories Section */}
-      {loading ? (
-        <Loader />
-      ) : (
-        <div>
-          <div
-            className="flex justify-between items-center cursor-pointer"
-            onClick={() => toggleSection("categories")}
-          >
-            <h3 className="text-lg font-bold text-[#7b48a5]">Categories</h3>
-            <span className="text-[#7b48a5]">
-              {expandedSections.categories ? "−" : "+"}
-            </span>
-          </div>
-          {expandedSections.categories && (
-            <div className="mt-1">
-              {Object.entries(categories).map(([category, subcategories]) => (
-                <div key={category} className="mb-4 ">
-                  <div className="flex items-center">
-                    <input
-                      type="radio"
-                      id={`cat-${category}`}
-                      name="allCategories"
-                      value={category}
-                      checked={selectedCategory === category}
-                      onChange={() => handleCategoryChange(category)}
-                      className="h-4 w-4 hidden text-[#7b48a5] focus:ring-purple-500 cursor-pointer"
-                    />
-                    <label
-                      htmlFor={`cat-${category}`}
-                      className={`ml-2 font-semibold cursor-pointer ${
-                        selectedCategory === category
-                          ? "text-[#7b48a5]"
-                          : "text-purple-700"
-                      }`}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        toggleSection(category);
-                      }}
-                    >
-                      {category}
-                    </label>
-                    {subcategories?.length > 0 && (
-                      <span
-                        className="ml-2 text-purple-800 cursor-pointer"
-                        onClick={() => toggleSection(category)}
-                      >
-                        {expandedSections[category] ? "−" : "+"}
-                      </span>
-                    )}
-                  </div>
-                  {expandedSections[category] && subcategories.length > 0 && (
-                    <div className="ml-4 space-y-2 mt-2">
-                      {subcategories.map((subcategory, idx) => (
-                        <div
-                          key={`${category}-${idx}`}
-                          className="flex items-center  "
-                        >
-                          <input
-                            type="radio"
-                            id={`${category}-${idx}`}
-                            name="allCategories"
-                            value={subcategory}
-                            checked={selectedCategory === subcategory}
-                            onChange={() => handleCategoryChange(subcategory)}
-                            className="h-4 w-4 text-purple-600 cursor-pointer focus:ring-purple-500 shrink-0"
-                          />
-                          <label
-                            htmlFor={`${category}-${idx}`}
-                            className={`ml-2 font-medium cursor-pointer ${
-                              selectedCategory === subcategory
-                                ? "text-purple-800 font-semibold"
-                                : "text-purple-600"
-                            }`}
-                          >
-                            {subcategory}
-                          </label>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              ))}
+
+      {/* Price Section */}
+      <div>
+        <h3
+          className="flex justify-between items-center text-xl font-semibold text-gray-900 cursor-pointer mb-5"
+          onClick={() => toggleSection("price")}
+        >
+          Price
+          <span className="text-gray-600 text-xl">
+            {expandedSections.price ? "−" : "+"}
+          </span>
+        </h3>
+
+        {expandedSections.price && (
+          <div className="space-y-5 animate-fadeIn">
+            {/* Slider */}
+            <div className="relative h-2 bg-gray-200 rounded-full">
+              <div
+                className="absolute h-full bg-purple-500 rounded-full transition-all"
+                style={trackStyle}
+              ></div>
+
+              {/* Min slider */}
+              <input
+                type="range"
+                min={sliderMinValue}
+                max={sliderMaxValue}
+                value={minVal}
+                onChange={slideMin}
+                onMouseDown={startDrag}
+                onMouseUp={stopDrag}
+                onTouchStart={startDrag}
+                onTouchEnd={stopDrag}
+                className="absolute w-full h-2 top-1/2 -translate-y-1/2 appearance-none pointer-events-none bg-transparent [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-purple-600 [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:cursor-pointer"
+              />
+
+              {/* Max slider */}
+              <input
+                type="range"
+                min={sliderMinValue}
+                max={sliderMaxValue}
+                value={maxVal}
+                onChange={slideMax}
+                onMouseDown={startDrag}
+                onMouseUp={stopDrag}
+                onTouchStart={startDrag}
+                onTouchEnd={stopDrag}
+                className="absolute w-full h-2 top-1/2 -translate-y-1/2 appearance-none pointer-events-none bg-transparent [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-purple-600 [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:cursor-pointer"
+              />
             </div>
-          )}
-        </div>
-      )}
+
+            {/* Inputs */}
+            <div className="flex items-center gap-3">
+              <div className="flex-1 mt-2">
+                <div className="relative w-full">
+                  {/* ₹ Label inside input */}
+                  <span className="absolute inset-y-0 left-3 flex items-center text-gray-700 font-semibold">
+                    ₹
+                  </span>
+                  <input
+                    type="number"
+                    readOnly
+                    value={minInput}
+                    onChange={handleMinInput}
+                    onKeyDown={(e) => handleInputKeyDown(e, "min")}
+                    className="w-full border border-gray-300 pl-7 pr-2 py-3 text-base text-right  bg-[#eeeeee] "
+                  />
+                </div>
+              </div>
+              <span className="text-gray-700 mt-3 font-semibold">To</span>
+              <div className="flex-1 mt-2">
+                <div className="relative w-full">
+                  {/* ₹ Label inside input */}
+                  <span className="absolute inset-y-0 left-3 flex items-center text-gray-700 font-semibold">
+                    ₹
+                  </span>
+
+                  <input
+                    type="number"
+                    readOnly
+                    value={maxInput}
+                    onChange={handleMaxInput}
+                    onKeyDown={(e) => handleInputKeyDown(e, "max")}
+                    className="w-full border border-gray-300  pl-7 pr-2 py-3 text-base text-right bg-[#eeeeee] "
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Categories Section */}
+      <div>
+        {/* Category Header */}
+        <h3
+          className="flex justify-between items-center text-xl font-semibold text-gray-900 cursor-pointer mb-3"
+          onClick={() => toggleSection("categories")}
+        >
+          Category
+          <span className="text-gray-600 text-xl">
+            {expandedSections.categories ? "−" : "+"}
+          </span>
+        </h3>
+
+        {expandedSections.categories && (
+          <div className="space-y-5 ml-1 animate-fadeIn">
+            {Object.entries(categories).map(([category, subcategories]) => (
+              <div key={category} className="space-y-3">
+                {/* Main Category */}
+                <label className="flex items-center gap-2 text-lg ml-1 font-medium text-gray-800 cursor-pointer">
+                  <input
+                    type="radio"
+                    id={`cat-${category}`}
+                    name="allCategories"
+                    value={category}
+                    checked={selectedCategory === category}
+                    onChange={() => handleCategoryChange(category)}
+                    className="w-4 h-4 accent-purple-600 hidden"
+                  />
+                  {category}
+                </label>
+
+                {/* Subcategories */}
+                {expandedSections[category] && subcategories.length > 0 && (
+                  <div className="ml-3 space-y-2">
+                    {subcategories.map((subcategory, idx) => (
+                      <label
+                        key={`${category}-${idx}`}
+                        className="flex items-center gap-2 text-base text-gray-700 cursor-pointer"
+                      >
+                        <input
+                          type="checkbox"
+                          id={`${category}-${idx}`}
+                          name="subcategory"
+                          value={subcategory}
+                          checked={selectedCategory === subcategory}
+                          onChange={() => handleCategoryChange(subcategory)}
+                          className="w-4 h-4 accent-purple-600 rounded-sm"
+                        />
+                        {subcategory}{" "}
+                      </label>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 };

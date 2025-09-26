@@ -350,9 +350,9 @@ const Home: React.FC = () => {
       });
   }, []);
 
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
+  // useEffect(() => {
+  //   window.scrollTo(0, 0);
+  // }, []);
 
   if (isLoading) return <Loader />;
 
@@ -724,7 +724,7 @@ const Home: React.FC = () => {
             <img
               src="/home/background_mobile.png"
               alt="Shop by Budget"
-              className="max-lg:block w-60 max-lg:mb-6 hidden mx-auto pt-6"
+              className="max-lg:block w-60 max-lg:mb-6 hidden mx-auto pt-6 "
             />
             {/* Desktop Layout */}
             <div className="relative hidden lg:block">
@@ -1101,7 +1101,7 @@ const Home: React.FC = () => {
 
         {/* Features */}
         <section className="bg-white pb-10 max-md:pt-10">
-          <div className="bg-purple-50">
+          <div className="bg-purple-100">
             <div
               className="grid grid-cols-4 max-md:grid-cols-2 items-center justify-center py-12 w-[85%] max-md:w-full text-center m-auto gap-4"
               {...(isDesktop && {
