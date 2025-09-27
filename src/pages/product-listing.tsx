@@ -49,6 +49,7 @@ const ProductListing: React.FC = () => {
   const [subCategory, setSubCategory] = useState("");
   const [productDataLoaded, setProductDataLoaded] = useState(false);
   const [savedScrollY, setSavedScrollY] = useState<number | null>(null);
+  const [sortOption, setSortOption] = useState("relevance");
 
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
@@ -122,6 +123,22 @@ const ProductListing: React.FC = () => {
       discountedPrice <= dynamicMaxVal &&
       (subCategory === item.sub_cat_name || subCategory === "")
     );
+  });
+
+  const sortedProducts = [...filteredProducts].sort((a, b) => {
+    const priceA = Number(a.discount) || 0; // fallback to 0
+    const priceB = Number(b.discount) || 0;
+
+    if (sortOption === "lowToHigh") {
+      return priceA - priceB;
+    }
+    if (sortOption === "highToLow") {
+      return priceB - priceA;
+    }
+    if (sortOption === "newest") {
+      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+    }
+    return 0;
   });
 
   useEffect(() => {
@@ -218,12 +235,14 @@ const ProductListing: React.FC = () => {
       .finally(() => setLoading(false));
   }, [minVal, maxVal, cat, categoryReady]);
 
+  console.log("new", filteredProducts);
   if (loading) return <Loader />;
   return (
-    <div className="min-h-screen bg-gray-100 p-2 sm:p-4 relative">
-      {loading && <Loader />}
+    <>
+      <div className="min-h-screen bg-gray-100 p-2 sm:p-4 relative">
+        {loading && <Loader />}
 
-      {/* <button
+        {/* <button
         aria-label="Open filters"
         className={`lg:hidden fixed bottom-6 right-5 max-md:right-4 z-10 bg-[#7b48a5] text-white p-3 rounded-full shadow-lg flex items-center justify-center transition-transform hover:scale-105 active:scale-95 ${
           showMobileFilters ? "opacity-0 pointer-events-none" : "opacity-100"
@@ -234,22 +253,22 @@ const ProductListing: React.FC = () => {
         <span className="sr-only">Open Filters</span>
       </button> */}
 
-      <div className="flex-grow bg-white rounded-xl shadow-sm border border-gray-200 p-2 sm:p-3 lg:p-4 mb-4 max-md:mb-2">
-        <div className="relative">
-          <Slider {...sliderSettings}>
-            <div>
-              <img
-                className="w-full desktop-banner hidden md:block"
-                src="/listing/sale.jpg"
-                alt="Desktop Banner"
-              />
-              <img
-                className="w-full mobile-banner block md:hidden"
-                src="/listing/sale_mobile.jpg"
-                alt="Mobile Banner"
-              />
-            </div>
-            {/* <div>
+        <div className="flex-grow bg-white rounded-xl shadow-sm border border-gray-200 p-2 sm:p-3 lg:p-4 mb-4 max-md:mb-2">
+          <div className="relative">
+            <Slider {...sliderSettings}>
+              <div>
+                <img
+                  className="w-full desktop-banner hidden md:block"
+                  src="/listing/sale.jpg"
+                  alt="Desktop Banner"
+                />
+                <img
+                  className="w-full mobile-banner block md:hidden"
+                  src="/listing/sale_mobile.jpg"
+                  alt="Mobile Banner"
+                />
+              </div>
+              {/* <div>
               <img
                 className="w-full desktop-banner hidden md:block"
                 src="/listing/raksha_bandhan2.gif"
@@ -261,110 +280,163 @@ const ProductListing: React.FC = () => {
                 alt="Mobile Banner"
               />
             </div> */}
-          </Slider>
-        </div>
-      </div>
-
-      <div className="flex justify-between items-center bg-white rounded-xl shadow-sm border border-gray-200 p-2 sm:p-3 lg:p-4 mb-4">
-        {/* Left side filter button */}
-        <button
-          aria-label="Open filters"
-          className="flex items-center gap-2 bg-[#7b48a5] text-white px-4 py-2 rounded-lg shadow hover:bg-[#693b8f] transition"
-          onClick={() => setShowMobileFilters(true)}
-        >
-          <FiFilter size={18} />
-          <span className="text-sm font-medium">Filters</span>
-        </button>
-
-        {/* Right side sort by */}
-        <div className="flex items-center gap-2">
-          <span className="text-sm text-gray-600">Sort By:</span>
-          <Select
-            defaultValue="relevance"
-            style={{ width: 160 }}
-            onChange={(value) => {
-              console.log("Sort by:", value);
-              // TODO: sorting logic yahan lagao
-            }}
-            options={[
-              { value: "relevance", label: "Relevance" },
-              { value: "lowToHigh", label: "Price: Low to High" },
-              { value: "highToLow", label: "Price: High to Low" },
-              { value: "newest", label: "Newest First" },
-            ]}
-          />
-        </div>
-      </div>
-
-      <div className="flex flex-col lg:flex-row w-full h-full gap-4 sm:gap-5">
-        {/* Sidebar */}
-        <div
-          className={`fixed top-0 left-0 h-full w-[85%] sm:w-3/4 md:w-[50%] max-w-sm z-[1001] bg-white shadow-lg transform ${
-            showMobileFilters ? "translate-x-0" : "-translate-x-full"
-          } transition-transform duration-300 ease-in-out overflow-y-auto`}
-        >
-          {/* Cross Button */}
-          <button
-            aria-label="Close filters"
-            className="absolute top-6 right-4 p-2 text-gray-700 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-purple-500 rounded-full z-[1002]"
-            onClick={() => setShowMobileFilters(false)}
-          >
-            <FiX size={24} />
-          </button>
-
-          <LeftSideBar
-            minimum={minVal}
-            maximum={maxVal}
-            setDynamicMin={setDynamicMinVal}
-            setDynamicMax={setDynamicMaxVal}
-            setSubCategory={(val) => {
-              setSubCategory(val);
-              setShowMobileFilters(false); // ✅ close on option click
-            }}
-            activeSubCategory={subCategory}
-          />
+            </Slider>
+          </div>
         </div>
 
-        {/* Overlay */}
-        {showMobileFilters && (
+        <div className="flex-grow bg-white rounded-xl shadow-sm border border-gray-200 p-3 px-5 max-md:px-3  sm:p-3 lg:p-4 mb-4 max-md:mb-2">
+          {/* Title + Results */}
+          <div className="flex justify-between items-center mb-1 max-md:mb-0">
+            <h2 className="text-2xl max-md:text-xl px-3 max-md:px-0 font-semibold text-gray-800 max-md:mb-0">
+              {subCategory ? subCategory : "Jewellery"}{" "}
+              <span className="text-gray-500 text-base max-md:text-sm">
+                ({filteredProducts.length} results)
+              </span>
+            </h2>
+          </div>
+
+          {/* Filter + Sort Row */}
+          <div className="flex justify-between items-center max-md:gap-2 px-3 max-md:px-0 max-md:hidden">
+            {/* Left: Filter button */}
+            <button
+              aria-label="Open filters"
+              className="flex items-center gap-2 px-4 max-md:px-4 py-[10px]  border border-gray-300 rounded-full max-md:rounded-md max-md:w-1/2 text-gray-700 hover:bg-gray-50 transition"
+              onClick={() => setShowMobileFilters(true)}
+            >
+              <FiFilter size={18} />
+              <span className="text-sm font-medium">Filter</span>
+            </button>
+
+            {/* Right: Sort */}
+            <div className="flex items-center gap-0 px-2 pl-4 py-2 max-md:py-1 border border-gray-300 rounded-full max-md:rounded-md max-md:w-1/2 text-gray-700">
+              <span className="text-sm max-md:hidden">Sort By:</span>
+              <Select
+                defaultValue="relevance"
+                bordered={false}
+                style={{ minWidth: 150 }}
+                onChange={(value) => setSortOption(value)}
+                options={[
+                  { value: "relevance", label: "Best Matches" },
+                  { value: "lowToHigh", label: "Price: Low to High" },
+                  { value: "highToLow", label: "Price: High to Low" },
+                  { value: "newest", label: "Newest First" },
+                ]}
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="flex flex-col lg:flex-row w-full h-full max-md:mb-3 gap-4 sm:gap-5">
+          {/* Sidebar */}
           <div
-            className="fixed inset-0 bg-black bg-opacity-60 z-[1000] transition-opacity duration-300"
-            onClick={() => setShowMobileFilters(false)}
-            role="presentation"
-          />
-        )}
+            className={`fixed top-0 left-0 h-full w-[85%] sm:w-3/4 md:w-[50%] max-w-sm z-[1001] bg-white shadow-lg transform ${
+              showMobileFilters ? "translate-x-0" : "-translate-x-full"
+            } transition-transform duration-300 ease-in-out overflow-y-auto`}
+          >
+            {/* Cross Button */}
+            <button
+              aria-label="Close filters"
+              className="absolute top-6 right-4 p-2 text-gray-700 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-purple-500 rounded-full z-[1002]"
+              onClick={() => setShowMobileFilters(false)}
+            >
+              <FiX size={24} />
+            </button>
 
-        <div className="flex-grow bg-white rounded-xl shadow-sm border border-gray-200 p-2 sm:p-3 lg:p-4">
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3 md:gap-4">
-            {!loading && productDataLoaded && filteredProducts.length === 0 ? (
-              <div className="col-span-full h-100vh flex items-center text-center justify-center ">
-                <Empty />
-              </div>
-            ) : (
-              filteredProducts.map((item, index) => (
-                <ProductItem
-                  key={index}
-                  id={item.id}
-                  name={item.product_name}
-                  price={item.discount}
-                  originalPrice={item.price}
-                  imageUrl={item.image}
-                  discount={`${Math.round(
-                    ((Number(item.price) - Number(item.discount)) /
-                      Number(item.price)) *
-                      100
-                  )}%`}
-                  compactView={isMobile}
-                  wishlist={item.wishlist}
-                  description={""}
-                  subcategory={undefined}
-                />
-              ))
-            )}
+            <LeftSideBar
+              minimum={minVal}
+              maximum={maxVal}
+              setDynamicMin={setDynamicMinVal}
+              setDynamicMax={setDynamicMaxVal}
+              setSubCategory={(val) => {
+                setSubCategory(val);
+                setShowMobileFilters(false); // ✅ close on option click
+              }}
+              activeSubCategory={subCategory}
+            />
+          </div>
+
+          {/* Overlay */}
+          {showMobileFilters && (
+            <div
+              className="fixed inset-0 bg-black bg-opacity-60 z-[1000] transition-opacity duration-300"
+              onClick={() => setShowMobileFilters(false)}
+              role="presentation"
+            />
+          )}
+
+          <div className="flex-grow bg-white rounded-xl shadow-sm border border-gray-200 p-2 sm:p-3 lg:p-4">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3 md:gap-4">
+              {!loading &&
+              productDataLoaded &&
+              filteredProducts.length === 0 ? (
+                <div className="col-span-full h-100vh flex items-center text-center justify-center ">
+                  <Empty />
+                </div>
+              ) : (
+                sortedProducts.map((item, index) => (
+                  <ProductItem
+                    key={index}
+                    id={item.id}
+                    name={item.product_name}
+                    price={item.discount}
+                    originalPrice={item.price}
+                    imageUrl={item.image}
+                    discount={`${Math.round(
+                      ((Number(item.price) - Number(item.discount)) /
+                        Number(item.price)) *
+                        100
+                    )}%`}
+                    compactView={isMobile}
+                    wishlist={item.wishlist}
+                    description={""}
+                    subcategory={undefined}
+                  />
+                ))
+              )}
+            </div>
           </div>
         </div>
       </div>
-    </div>
+      <div className="flex-grow hidden max-md:block bg-purple-300 sticky bottom-0 shadow-sm border border-gray-200 p-1 px-5 max-md:px-3  sm:p-3 lg:p-4 mb-4 max-md:mb-2">
+        {/* Filter + Sort Row */}
+        <div className="flex justify-center  items-center text-center text-white max-md:gap-0 px-3 max-md:px-0">
+          {/* Left: Filter button */}
+          <button
+            aria-label="Open filters"
+            className="flex items-center text-center justify-center gap-1 px-4 max-md:px-4 py-2   border-r-2  w-1/2 text-gray-700 hover:bg-gray-50 transition"
+            onClick={() => setShowMobileFilters(true)}
+          >
+            <FiFilter size={18} className="text-white" />
+            <span className="text-lg font-bold text-white">Filter</span>
+          </button>
+
+          {/* Right: Sort */}
+          <div className=" w-1/2 ">
+            <Select
+              value="sort"
+              bordered={false}
+              style={{ minWidth: 120 }}
+              className="custom-select"
+              dropdownClassName="custom-select-dropdown"
+              onChange={(value) => setSortOption(value)}
+              options={[
+                { value: "relevance", label: "Best Matches" },
+                { value: "lowToHigh", label: "Price: Low to High" },
+                { value: "highToLow", label: "Price: High to Low" },
+                { value: "newest", label: "Newest First" },
+              ]}
+              labelRender={() => <span className="font-medium">Sort</span>}
+              suffixIcon={
+                <span style={{ fontSize: 14, color: "white" }}>▼</span>
+              }
+              dropdownStyle={{
+                minWidth: 220,
+              }}
+            />
+          </div>
+        </div>
+      </div>
+    </>
   );
 };
 

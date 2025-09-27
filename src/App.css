@@ -69,3 +69,40 @@ p{
   -ms-overflow-style: none;  /* IE and Edge */
   scrollbar-width: none;     /* Firefox */
 }
+
+/* select wrapper */
+.custom-select .ant-select-selector {
+  font-size: 16px;       /* text-base jaisa */
+  border-radius: 9999px; /* rounded-full jaisa */
+  padding: 6px 14px;
+  color: white;
+}
+
+/* dropdown ke options */
+.custom-select-dropdown .ant-select-item {
+  font-size: 20px;
+}
+
+/* custom-select.css */
+.custom-select .ant-select-selection-item {
+  font-weight: 600; /* Tailwind ka font-semibold */
+  font-size: 19px;  /* text-base jaisa */
+  
+  padding: 6px 14px;
+}
+
+/* custom-select.css */
+.custom-select .ant-select-arrow {
+  font-size: 14px;  /* default ~12px hota hai */
+  color: #ffffff;
+  font-weight: 600;   /* white arrow */
+  margin-top: -4px;
+  margin-left: -15px;
+}
+
+:where(.custom-select-dropdown) .ant-select-item-option-selected {
+  font-weight: 700 !important;
+  color: #000 !important;
+  background-color: red;
+}
+

@@ -1101,7 +1101,7 @@ const Home: React.FC = () => {
 
         {/* Features */}
         <section className="bg-white pb-10 max-md:pt-10">
-          <div className="bg-purple-100">
+          <div className="bg-purple-200">
             <div
               className="grid grid-cols-4 max-md:grid-cols-2 items-center justify-center py-12 w-[85%] max-md:w-full text-center m-auto gap-4"
               {...(isDesktop && {
