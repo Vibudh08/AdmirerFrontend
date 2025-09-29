@@ -308,7 +308,7 @@ const ProductListing: React.FC = () => {
             </button>
 
             {/* Right: Sort */}
-            <div className="flex items-center gap-0 px-2 pl-4 py-2 max-md:py-1 border border-gray-300 rounded-full max-md:rounded-md max-md:w-1/2 text-gray-700">
+            <div className="flex items-center gap-0 px-1 pl-4 py-1 max-md:py-1 border border-gray-300 rounded-full max-md:rounded-md max-md:w-1/2 text-gray-700">
               <span className="text-sm max-md:hidden">Sort By:</span>
               <Select
                 defaultValue="relevance"
@@ -397,7 +397,7 @@ const ProductListing: React.FC = () => {
           </div>
         </div>
       </div>
-      <div className="flex-grow hidden max-md:block bg-purple-300 sticky bottom-0 shadow-sm border border-gray-200 p-1 px-5 max-md:px-3  sm:p-3 lg:p-4 mb-4 max-md:mb-2">
+      <div className="flex-grow hidden max-md:block bg-purple-300 sticky bottom-0 shadow-sm border border-gray-200 px-5 max-md:px-3  sm:p-3 lg:p-4 mb-4 max-md:mb-2">
         {/* Filter + Sort Row */}
         <div className="flex justify-center  items-center text-center text-white max-md:gap-0 px-3 max-md:px-0">
           {/* Left: Filter button */}
