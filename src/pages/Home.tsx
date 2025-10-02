@@ -30,6 +30,7 @@ const CustomNextArrow = ({ onClick }: { onClick: () => void }) => (
   </button>
 );
 
+
 // Interfaces
 interface BannerItem {
   image: string;
@@ -556,7 +557,7 @@ const Home: React.FC = () => {
             {selectedSet &&
               selectedSet.items.map((item, index) => (
                 <Link to={item.url} key={index} className="cursor-pointer">
-                  <div key={index} className="">
+                  <div key={index} className="p-10">
                     <img src={item.image} alt={item.name} />
                     <div className="py-4 text-lg w-[90%] font-semibold text-center text-gray-800">
                       {item.name}
@@ -578,7 +579,7 @@ const Home: React.FC = () => {
               {selectedSet &&
                 selectedSet.items.map((item, index) => (
                   <Link to={item.url} key={index} className="cursor-pointer">
-                    <div key={index} className="mb-1">
+                    <div key={index} className="mb-1 p-10">
                       <img src={item.image} alt={item.name} />
                       <div className="pb-4 text-base font-semibold text-center text-gray-800">
                         {item.name}
@@ -653,7 +654,7 @@ const Home: React.FC = () => {
 
         {/* Offers */}
         <section>
-          <div className="bg-white flex flex-col items-center p-6 pb-16 max-md:p-4">
+          <div className="bg-white flex flex-col items-center p-6 pb-0 max-md:p-4">
             <div
               className="flex justify-center items-center mt-3 max-md:mt-0"
               {...(isDesktop && {
@@ -711,11 +712,10 @@ const Home: React.FC = () => {
         </section>
 
         {/* Shop by Budget */}
-        <section>
+        <section className="bg-white">
           <div
-            className="relative bg-[url('/home/background.jpg')] bg-cover bg-center h-screen 
-             max-lg:bg-[linear-gradient(to_bottom,white_0%,#F7D6E0_30%,#FAD4C0_70%,white_100%)] 
-           max-lg:h-[660px]"
+            className="relative bg-[url('/home/background.jpg')] bg-contain bg-no-repeat bg-center h-screen 
+             max-lg:bg-[linear-gradient(to_bottom,white_0%,#F7D6E0_30%,#FAD4C0_70%,white_100%)]"
             {...(isDesktop && {
               "data-aos": "fade-up",
               "data-aos-delay": 200,
@@ -724,14 +724,14 @@ const Home: React.FC = () => {
             <img
               src="/home/background_mobile.png"
               alt="Shop by Budget"
-              className="max-lg:block w-60 max-lg:mb-6 hidden mx-auto pt-6 "
+              className="max-lg:block max-lg:mb-6 hidden mx-auto pt-6 "
             />
             {/* Desktop Layout */}
             <div className="relative hidden lg:block">
               <Link to="/listing?cat=26&subcat=10">
                 <img
                   src="/home/1st.png"
-                  className="w-[250px] absolute top-80 left-44 hover:scale-105 transition-transform duration-300 ease-in-out cursor-pointer"
+                  className="w-[250px] absolute top-96 left-44 hover:scale-105 transition-transform duration-300 ease-in-out cursor-pointer"
                   data-aos="zoom-in"
                   data-aos-delay="300"
                   alt=""
@@ -740,7 +740,7 @@ const Home: React.FC = () => {
               <Link to="/listing?cat=26&subcat=15">
                 <img
                   src="/home/2nd.png"
-                  className="w-[350px] absolute top-40 left-1/3 hover:scale-105 transition-transform duration-300 ease-in-out cursor-pointer"
+                  className="w-[350px] absolute top-60 left-1/3 hover:scale-105 transition-transform duration-300 ease-in-out cursor-pointer"
                   data-aos="zoom-in"
                   data-aos-delay="800"
                   alt=""
@@ -749,7 +749,7 @@ const Home: React.FC = () => {
               <Link to="/listing?cat=26&subcat=12">
                 <img
                   src="/home/3rd.png"
-                  className="w-[450px] absolute top-8 right-9  hover:scale-105 transition-transform duration-300 ease-in-out cursor-pointer"
+                  className="w-[450px] absolute top-28 right-9  hover:scale-105 transition-transform duration-300 ease-in-out cursor-pointer"
                   data-aos="zoom-in"
                   data-aos-delay="1200"
                   alt=""
@@ -797,7 +797,7 @@ const Home: React.FC = () => {
 
         {/* Designer Banner */}
         <section
-          className="bg-white max-md:py-6 pt-14"
+          className="bg-white max-md:py-6 pt-0"
           {...(isDesktop && {
             "data-aos": "fade-up",
             "data-aos-delay": 200,
