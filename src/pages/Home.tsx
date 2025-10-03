@@ -351,9 +351,9 @@ const Home: React.FC = () => {
       });
   }, []);
 
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
+  // useEffect(() => {
+  //   window.scrollTo(0, 0);
+  // }, []);
 
   if (isLoading) return <Loader />;
 
@@ -731,7 +731,7 @@ const Home: React.FC = () => {
               <Link to="/listing?cat=26&subcat=10">
                 <img
                   src="/home/1st.png"
-                  className="w-[250px] absolute top-96 left-44 hover:scale-105 transition-transform duration-300 ease-in-out cursor-pointer"
+                  className="w-[220px] absolute top-96 left-44 hover:scale-105 transition-transform duration-300 ease-in-out cursor-pointer"
                   data-aos="zoom-in"
                   data-aos-delay="300"
                   alt=""
@@ -740,7 +740,7 @@ const Home: React.FC = () => {
               <Link to="/listing?cat=26&subcat=15">
                 <img
                   src="/home/2nd.png"
-                  className="w-[350px] absolute top-60 left-1/3 hover:scale-105 transition-transform duration-300 ease-in-out cursor-pointer"
+                  className="w-[320px] absolute top-60 left-1/3 hover:scale-105 transition-transform duration-300 ease-in-out cursor-pointer"
                   data-aos="zoom-in"
                   data-aos-delay="800"
                   alt=""
@@ -749,7 +749,7 @@ const Home: React.FC = () => {
               <Link to="/listing?cat=26&subcat=12">
                 <img
                   src="/home/3rd.png"
-                  className="w-[450px] absolute top-28 right-9  hover:scale-105 transition-transform duration-300 ease-in-out cursor-pointer"
+                  className="w-[420px] absolute top-28 right-9  hover:scale-105 transition-transform duration-300 ease-in-out cursor-pointer"
                   data-aos="zoom-in"
                   data-aos-delay="1200"
                   alt=""
